@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bekmez Pişirim - QR Menü</title>
+    
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px; text-align: center; }
+        .header { background-color: #ff4757; color: white; padding: 15px; border-radius: 10px; margin-bottom: 20px; font-size: 24px; font-weight: bold; }
+        .product-card { background-color: white; padding: 15px; margin-bottom: 15px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); text-align: left;}
+        .product-name { font-size: 18px; font-weight: bold; color: #2f3542; }
+        .btn-group { margin-top: 10px; display: flex; gap: 10px; }
+        .add-btn { background-color: #f1c40f; border: none; padding: 10px; border-radius: 5px; font-weight: bold; cursor: pointer; flex: 1; color: black; }
+        .add-btn:active { background-color: #d4ac0d; }
+        
+        .order-panel { position: fixed; bottom: 0; left: 0; width: 100%; background: white; padding: 15px; box-shadow: 0 -5px 15px rgba(0,0,0,0.1); box-sizing: border-box; }
+        .order-btn { background-color: #2ed573; color: white; border: none; padding: 15px; font-size: 18px; font-weight: bold; border-radius: 10px; width: 100%; cursor: pointer; }
+        .order-btn:active { background-color: #21a355; }
+        #menu-container { padding-bottom: 100px; } 
+    </style>
+</head>
+<body>
+
+    <div class="header" id="masa-baslik">Bekmez Pişirim</div>
+
+    <div id="menu-container">
+        <h3 id="yukleniyor" style="color: #636e72;">Buluttan Menü Çekiliyor... Lütfen Bekleyin</h3>
+    </div>
+
+    <div class="order-panel">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-weight: bold; font-size: 18px;">
+            <span>Sepet Tutarı:</span>
+            <span id="sepet-tutar" style="color: #ff4757;">0.00 TL</span>
+        </div>
+        <button class="order-btn" onclick="SiparisGonder()">Siparişi Kasaya Gönder</button>
+    </div>
+
+    <script>
+        const firebaseMenuUrl = "https://bekmezpos-default-rtdb.firebaseio.com/Menu.json";
+        const firebaseSiparisUrl = "https://bekmezpos-default-rtdb.firebaseio.com/Siparisler.json";
+        
+        let sepet = [];
+        let toplamFiyat = 0;
+        
+        // ==========================================
+        // YENİ: URL'DEN MASA NUMARASINI BULMA SİSTEMİ
+        // ==========================================
+        const urlParams = new URLSearchParams(window.location.search);
+        let guncelMasaNo = urlParams.get('masa');
+        
+        // Eğer linkte masa numarası yoksa (direkt tıklanmışsa) mecburen Masa 1 kabul et
+        if(!guncelMasaNo) {
+            guncelMasaNo = 1;
+        }
+
+        window.onload = function() {
+            // Başlığı ekrandaki masaya göre değiştir
+            document.getElementById("masa-baslik").innerText = "Masa #" + guncelMasaNo + " - Bekmez Pişirim";
+
+            fetch(firebaseMenuUrl)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("yukleniyor").style.display = "none";
+                if(data && data.products) {
+                    MenuyuEkranaDiz(data.products); 
+                } else {
+                    document.getElementById("menu-container").innerHTML = "<h3>Menüde henüz ürün yok.</h3>";
+                }
+            })
+            .catch(error => {
+                document.getElementById("yukleniyor").innerText = "Bağlantı Hatası! Menü yüklenemedi.";
+            });
+        }
+
+        function MenuyuEkranaDiz(urunler) {
+            const container = document.getElementById("menu-container");
+            
+            urunler.forEach(urun => {
+                let butonHTML = "";
+                
+                if(urun.isKg) {
+                    butonHTML = `
+                        <div class="btn-group">
+                            <button class="add-btn" onclick="SepeteEkle('${urun.pName}', '${urun.price1Kg}', '1 KG')">1 KG</button>
+                            <button class="add-btn" onclick="SepeteEkle('${urun.pName}', '${urun.price750g}', '750 Gr')">750 Gr</button>
+                            <button class="add-btn" onclick="SepeteEkle('${urun.pName}', '${urun.price500g}', '500 Gr')">500 Gr</button>
+                        </div>
+                    `;
+                } else {
+                    butonHTML = `
+                        <div class="btn-group">
+                            <button class="add-btn" onclick="SepeteEkle('${urun.pName}', '${urun.price1Kg}', '1 Adet')">1 Adet (${urun.price1Kg} TL)</button>
+                        </div>
+                    `;
+                }
+
+                let cardHTML = `
+                <div class="product-card">
+                    <div class="product-name">${urun.pName}</div>
+                    ${butonHTML}
+                </div>
+                `;
+                container.innerHTML += cardHTML;
+            });
+        }
+
+        function SepeteEkle(isim, fiyatStr, miktarText) {
+            let fiyatNum = parseFloat(fiyatStr.replace(",", "."));
+            if(isNaN(fiyatNum)) return; 
+            
+            sepet.push({
+                itemName: miktarText + " " + isim,
+                itemPrice: fiyatNum,
+                amount: 1, 
+                rawName: isim
+            });
+
+            toplamFiyat += fiyatNum;
+            document.getElementById("sepet-tutar").innerText = toplamFiyat.toFixed(2) + " TL";
+        }
+
+        function SiparisGonder() {
+            if(sepet.length === 0) {
+                alert("Sepetiniz boş! Lütfen önce ürün ekleyin.");
+                return;
+            }
+
+            const siparisVerisi = {
+                masaId: parseInt(guncelMasaNo), // YENİ: Unity'ye giden Masa ID'si artık dinamik!
+                siparisler: sepet,
+                toplam: toplamFiyat,
+                durum: "bekliyor", 
+                zaman: new Date().toLocaleTimeString()
+            };
+
+            fetch(firebaseSiparisUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(siparisVerisi)
+            })
+            .then(response => {
+                alert("Sipariş başarıyla ustaya iletildi!");
+                sepet = [];
+                toplamFiyat = 0;
+                document.getElementById("sepet-tutar").innerText = "0.00 TL";
+            })
+            .catch(error => {
+                alert("Hata! Lütfen internet bağlantınızı kontrol edin.");
+            });
+        }
+    </script>
+</body>
+</html>
