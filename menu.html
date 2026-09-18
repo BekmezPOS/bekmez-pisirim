@@ -6,34 +6,88 @@
     <title>Bekmez Pişirim - QR Menü</title>
     
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px; text-align: center; }
-        .header { background-color: #ff4757; color: white; padding: 15px; border-radius: 10px; margin-bottom: 20px; font-size: 24px; font-weight: bold; }
-        .product-card { background-color: white; padding: 15px; margin-bottom: 15px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); text-align: left;}
-        .product-name { font-size: 18px; font-weight: bold; color: #2f3542; }
-        .btn-group { margin-top: 10px; display: flex; gap: 10px; }
-        .add-btn { background-color: #f1c40f; border: none; padding: 10px; border-radius: 5px; font-weight: bold; cursor: pointer; flex: 1; color: black; }
-        .add-btn:active { background-color: #d4ac0d; }
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 15px; text-align: center; padding-bottom: 120px;}
         
-        .order-panel { position: fixed; bottom: 0; left: 0; width: 100%; background: white; padding: 15px; box-shadow: 0 -5px 15px rgba(0,0,0,0.1); box-sizing: border-box; }
-        .order-btn { background-color: #2ed573; color: white; border: none; padding: 15px; font-size: 18px; font-weight: bold; border-radius: 10px; width: 100%; cursor: pointer; }
-        .order-btn:active { background-color: #21a355; }
-        #menu-container { padding-bottom: 100px; } 
+        /* Üst Başlık ve Hamburger Menü (SOLA ALINDI) */
+        .header { background-color: #ff4757; color: white; padding: 15px; border-radius: 10px; margin-bottom: 15px; font-size: 22px; font-weight: bold; position: relative; text-align: center; }
+        .hamburger { position: absolute; left: 15px; top: 12px; font-size: 28px; cursor: pointer; color: white; user-select: none; }
+        
+        /* Yandan Açılan Menü (SOL TARAFA ALINDI) */
+        .sidebar { height: 100%; width: 0; position: fixed; z-index: 100; top: 0; left: 0; background-color: #2f3542; overflow-x: hidden; transition: 0.3s; padding-top: 60px; box-shadow: 5px 0 15px rgba(0,0,0,0.2); text-align: left; }
+        .sidebar a { padding: 15px 25px; text-decoration: none; font-size: 20px; color: white; display: block; transition: 0.2s; border-bottom: 1px solid #3d4554;}
+        .sidebar a:hover { color: #ff4757; background-color: #1e242b; }
+        .close-btn { position: absolute; top: 10px; right: 20px; font-size: 36px; border: none; background: none; }
+
+        /* Kategori Sekmeleri (TABS) */
+        .category-tabs { display: flex; justify-content: space-around; background: white; padding: 10px 5px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .tab-btn { background: none; border: none; font-size: 15px; font-weight: bold; color: #a4b0be; padding: 8px 5px; cursor: pointer; border-bottom: 3px solid transparent; flex: 1; transition: 0.2s;}
+        .tab-btn.active { color: #ff4757; border-bottom: 3px solid #ff4757; }
+
+        /* GRID (Izgara) Sistemi (Yan yana 2 kutu) */
+        .grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        
+        .product-card { background-color: white; padding: 10px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.08); display: flex; flex-direction: column; justify-content: space-between; }
+        .product-name { font-size: 15px; font-weight: bold; color: #2f3542; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; min-height: 40px;}
+        
+        /* Grid İçin Dikey Butonlar */
+        .btn-group { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+        .add-btn { background-color: #f1c40f; border: none; padding: 8px; border-radius: 5px; font-weight: bold; cursor: pointer; color: black; font-size: 13px; width: 100%; transition: 0.2s;}
+        .add-btn:active { background-color: #d4ac0d; transform: scale(0.95); }
+        
+        /* Sepet (Siparişim) Ekranı */
+        .cart-item { background: white; padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: left;}
+        .cart-controls { display: flex; align-items: center; gap: 12px; }
+        .cart-btn { background: #ff4757; color: white; border: none; border-radius: 8px; width: 35px; height: 35px; font-size: 20px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center;}
+        .cart-btn:active { background: #e84118; }
+        .cart-amount { font-size: 18px; font-weight: bold; color: #2f3542; min-width: 20px; text-align: center; }
+
+        /* Alt Panel */
+        .order-panel { position: fixed; bottom: 0; left: 0; width: 100%; background: white; padding: 15px; box-shadow: 0 -5px 15px rgba(0,0,0,0.1); box-sizing: border-box; z-index: 50; border-top-left-radius: 15px; border-top-right-radius: 15px;}
+        .order-btn { background-color: #2ed573; color: white; border: none; padding: 15px; font-size: 18px; font-weight: bold; border-radius: 10px; width: 100%; cursor: pointer; box-shadow: 0 4px 6px rgba(46, 213, 115, 0.3);}
+        .order-btn:active { background-color: #21a355; transform: translateY(2px); }
     </style>
 </head>
 <body>
 
-    <div class="header" id="masa-baslik">Bekmez Pişirim</div>
-
-    <div id="menu-container">
-        <h3 id="yukleniyor" style="color: #636e72;">Buluttan Menü Çekiliyor... Lütfen Bekleyin</h3>
+    <!-- Yandan Açılan Menü (Artık Soldan Kayıyor) -->
+    <div id="mySidebar" class="sidebar">
+        <a href="javascript:void(0)" class="close-btn" onclick="KapatSidebar()">&times;</a>
+        <a href="javascript:void(0)" onclick="SayfaGoster('urunler')">🍽️ Menü / Ürünler</a>
+        <a href="javascript:void(0)" onclick="SayfaGoster('sepet')">🛒 Siparişim (<span id="sidebar-sepet-adet">0</span>)</a>
     </div>
 
+    <!-- Üst Başlık -->
+    <div class="header">
+        <div class="hamburger" onclick="AcSidebar()">&#9776;</div>
+        <span id="masa-baslik">Bekmez Pişirim</span>
+    </div>
+
+    <!-- 1. EKRAN: Menü (Kategorili ve Izgaralı) -->
+    <div id="menu-container">
+        
+        <!-- Kategoriler -->
+        <div class="category-tabs" id="kategori-sekmeleri" style="display: none;">
+            <button class="tab-btn active" id="tab-Ana Yemek" onclick="KategoriSec('Ana Yemek')">Ana Yemek</button>
+            <button class="tab-btn" id="tab-İçecek" onclick="KategoriSec('İçecek')">İçecek</button>
+            <button class="tab-btn" id="tab-Ekstra" onclick="KategoriSec('Ekstra')">Ekstra</button>
+        </div>
+
+        <h3 id="yukleniyor" style="color: #636e72;">Buluttan Menü Çekiliyor...</h3>
+        
+        <!-- Grid Kutusu -->
+        <div id="menu-grid" class="grid-container"></div>
+    </div>
+
+    <!-- 2. EKRAN: Siparişim (Sepet Düzenleme) -->
+    <div id="cart-container" style="display: none;"></div>
+
+    <!-- Siparişi Gönder Paneli -->
     <div class="order-panel">
         <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-weight: bold; font-size: 18px;">
-            <span>Sepet Tutarı:</span>
+            <span style="color: #2f3542;">Sepet Tutarı:</span>
             <span id="sepet-tutar" style="color: #ff4757;">0.00 TL</span>
         </div>
-        <button class="order-btn" onclick="SiparisGonder()">Siparişi Kasaya Gönder</button>
+        <button class="order-btn" onclick="SiparisGonder()">Siparişi Mutfağa Gönder</button>
     </div>
 
     <script>
@@ -42,97 +96,198 @@
         
         let sepet = [];
         let toplamFiyat = 0;
+        let tumUrunler = [];
+        let aktifKategori = 'Ana Yemek';
         
-        // ==========================================
-        // YENİ: URL'DEN MASA NUMARASINI BULMA SİSTEMİ
-        // ==========================================
         const urlParams = new URLSearchParams(window.location.search);
-        let guncelMasaNo = urlParams.get('masa');
-        
-        // Eğer linkte masa numarası yoksa (direkt tıklanmışsa) mecburen Masa 1 kabul et
-        if(!guncelMasaNo) {
-            guncelMasaNo = 1;
-        }
+        let guncelMasaNo = urlParams.get('masa') || 1;
 
         window.onload = function() {
-            // Başlığı ekrandaki masaya göre değiştir
-            document.getElementById("masa-baslik").innerText = "Masa #" + guncelMasaNo + " - Bekmez Pişirim";
+            document.getElementById("masa-baslik").innerText = "Masa #" + guncelMasaNo;
 
             fetch(firebaseMenuUrl)
             .then(response => response.json())
             .then(data => {
                 document.getElementById("yukleniyor").style.display = "none";
                 if(data && data.products) {
-                    MenuyuEkranaDiz(data.products); 
+                    tumUrunler = data.products;
+                    document.getElementById("kategori-sekmeleri").style.display = "flex";
+                    KategoriSec('Ana Yemek'); 
                 } else {
-                    document.getElementById("menu-container").innerHTML = "<h3>Menüde henüz ürün yok.</h3>";
+                    document.getElementById("menu-grid").innerHTML = "<h3>Menüde henüz ürün yok.</h3>";
                 }
             })
             .catch(error => {
-                document.getElementById("yukleniyor").innerText = "Bağlantı Hatası! Menü yüklenemedi.";
+                document.getElementById("yukleniyor").innerText = "Bağlantı Hatası!";
             });
         }
 
-        function MenuyuEkranaDiz(urunler) {
-            const container = document.getElementById("menu-container");
+        // --- İSİMDEN OTOMATİK KATEGORİ BULAN YAPAY ZEKA ---
+        function UrunKategorisiBul(isim) {
+            let ad = isim.toLowerCase();
+            if(ad.includes("cola") || ad.includes("kola") || ad.includes("ayran") || ad.includes("şalgam") || ad.includes("su") || ad.includes("fanta") || ad.includes("gazoz") || ad.includes("sprite") || ad.includes("meyve suyu")) return "İçecek";
+            if(ad.includes("lavaş") || ad.includes("salata") || ad.includes("ezme") || ad.includes("sos") || ad.includes("meze") || ad.includes("pide") || ad.includes("biber") || ad.includes("ekmek") || ad.includes("yoğurt")) return "Ekstra";
+            return "Ana Yemek";
+        }
+
+        // --- KATEGORİ DEĞİŞTİRME VE DİZME ---
+        function KategoriSec(kategoriAdi) {
+            aktifKategori = kategoriAdi;
             
-            urunler.forEach(urun => {
-                let butonHTML = "";
-                
-                if(urun.isKg) {
-                    butonHTML = `
-                        <div class="btn-group">
-                            <button class="add-btn" onclick="SepeteEkle('${urun.pName}', '${urun.price1Kg}', '1 KG')">1 KG</button>
-                            <button class="add-btn" onclick="SepeteEkle('${urun.pName}', '${urun.price750g}', '750 Gr')">750 Gr</button>
-                            <button class="add-btn" onclick="SepeteEkle('${urun.pName}', '${urun.price500g}', '500 Gr')">500 Gr</button>
-                        </div>
-                    `;
-                } else {
-                    butonHTML = `
-                        <div class="btn-group">
-                            <button class="add-btn" onclick="SepeteEkle('${urun.pName}', '${urun.price1Kg}', '1 Adet')">1 Adet (${urun.price1Kg} TL)</button>
-                        </div>
-                    `;
-                }
+            // Sekme renklerini ayarla
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('tab-' + kategoriAdi).classList.add('active');
 
-                let cardHTML = `
-                <div class="product-card">
-                    <div class="product-name">${urun.pName}</div>
-                    ${butonHTML}
-                </div>
-                `;
-                container.innerHTML += cardHTML;
+            const gridContainer = document.getElementById("menu-grid");
+            gridContainer.innerHTML = "";
+
+            let gosterilenUrunSayisi = 0;
+
+            tumUrunler.forEach(urun => {
+                let urununGercekKategorisi = UrunKategorisiBul(urun.pName);
+                
+                if(urununGercekKategorisi === aktifKategori) {
+                    gosterilenUrunSayisi++;
+                    let butonHTML = "";
+                    
+                    if(urun.isKg) {
+                        butonHTML = `
+                            <div class="btn-group">
+                                <button class="add-btn" onclick="SepeteEkle('${urun.pName}', '${urun.price1Kg}', '1 KG', this)">1 KG (${urun.price1Kg}₺)</button>
+                                <button class="add-btn" onclick="SepeteEkle('${urun.pName}', '${urun.price750g}', '750 Gr', this)">750 Gr (${urun.price750g}₺)</button>
+                                <button class="add-btn" onclick="SepeteEkle('${urun.pName}', '${urun.price500g}', '500 Gr', this)">500 Gr (${urun.price500g}₺)</button>
+                            </div>
+                        `;
+                    } else {
+                        butonHTML = `
+                            <div class="btn-group">
+                                <button class="add-btn" onclick="SepeteEkle('${urun.pName}', '${urun.price1Kg}', '1 Adet', this)">Sepete Ekle (${urun.price1Kg}₺)</button>
+                            </div>
+                        `;
+                    }
+
+                    gridContainer.innerHTML += `
+                    <div class="product-card">
+                        <div class="product-name">${urun.pName}</div>
+                        ${butonHTML}
+                    </div>`;
+                }
             });
+
+            if(gosterilenUrunSayisi === 0) {
+                gridContainer.innerHTML = `<div style="grid-column: span 2; padding:20px; color:#636e72;">Bu kategoride henüz ürün yok.</div>`;
+            }
         }
 
-        function SepeteEkle(isim, fiyatStr, miktarText) {
+        // --- SİDEBAR KONTROLLERİ ---
+        function AcSidebar() { document.getElementById("mySidebar").style.width = "270px"; }
+        function KapatSidebar() { document.getElementById("mySidebar").style.width = "0"; }
+
+        function SayfaGoster(sayfa) {
+            KapatSidebar();
+            if(sayfa === 'urunler') {
+                document.getElementById("menu-container").style.display = "block";
+                document.getElementById("cart-container").style.display = "none";
+            } else if (sayfa === 'sepet') {
+                document.getElementById("menu-container").style.display = "none";
+                document.getElementById("cart-container").style.display = "block";
+                SepetEkraniniCiz(); 
+            }
+        }
+
+        // --- SEPET MANTIĞI ---
+        function SepeteEkle(isim, fiyatStr, miktarText, btnObj) {
             let fiyatNum = parseFloat(fiyatStr.replace(",", "."));
             if(isNaN(fiyatNum)) return; 
             
-            sepet.push({
-                itemName: miktarText + " " + isim,
-                itemPrice: fiyatNum,
-                amount: 1, 
-                rawName: isim
-            });
+            let tamIsim = miktarText + " " + isim;
+            let mevcutUrun = sepet.find(u => u.itemName === tamIsim);
+            
+            if(mevcutUrun) { mevcutUrun.amount += 1; } 
+            else {
+                sepet.push({ itemName: tamIsim, itemPrice: fiyatNum, amount: 1, rawName: isim });
+            }
 
-            toplamFiyat += fiyatNum;
+            HesaplaVeGuncelle();
+            
+            // Buton Tıklama Efekti
+            let orjinalMetin = btnObj.innerText;
+            btnObj.innerText = "Eklendi ✓";
+            btnObj.style.backgroundColor = "#2ed573";
+            btnObj.style.color = "white";
+            setTimeout(() => {
+                btnObj.innerText = orjinalMetin;
+                btnObj.style.backgroundColor = "#f1c40f";
+                btnObj.style.color = "black";
+            }, 500);
+        }
+
+        function MiktarDegistir(index, degisimMiktari) {
+            sepet[index].amount += degisimMiktari;
+            if(sepet[index].amount <= 0) { sepet.splice(index, 1); }
+            HesaplaVeGuncelle();
+            SepetEkraniniCiz(); 
+        }
+
+        function HesaplaVeGuncelle() {
+            toplamFiyat = 0;
+            let toplamAdet = 0;
+            sepet.forEach(urun => {
+                toplamFiyat += (urun.itemPrice * urun.amount);
+                toplamAdet += urun.amount;
+            });
             document.getElementById("sepet-tutar").innerText = toplamFiyat.toFixed(2) + " TL";
+            document.getElementById("sidebar-sepet-adet").innerText = toplamAdet;
+        }
+
+        function SepetEkraniniCiz() {
+            const container = document.getElementById("cart-container");
+            
+            if(sepet.length === 0) {
+                container.innerHTML = `<h3 style="color:#636e72; margin-top:30px;">Sepetiniz Boş</h3>
+                                       <button class="add-btn" style="margin-top:20px; padding:15px; width:80%; font-size:16px;" onclick="SayfaGoster('urunler')">Menüye Dön</button>`;
+                return;
+            }
+
+            let html = `<h2 style="color:#2f3542; margin-top:0;">Siparişim</h2>`;
+            sepet.forEach((urun, index) => {
+                let satirFiyati = (urun.itemPrice * urun.amount).toFixed(2);
+                html += `
+                <div class="cart-item">
+                    <div style="flex:1;">
+                        <div class="product-name" style="font-size:15px; min-height:auto; justify-content:flex-start; margin-bottom:5px;">${urun.itemName}</div>
+                        <div style="color:#ff4757; font-weight:bold;">${satirFiyati} TL</div>
+                    </div>
+                    <div class="cart-controls">
+                        <button class="cart-btn" onclick="MiktarDegistir(${index}, -1)">-</button>
+                        <div class="cart-amount">${urun.amount}</div>
+                        <button class="cart-btn" onclick="MiktarDegistir(${index}, 1)">+</button>
+                    </div>
+                </div>`;
+            });
+            
+            html += `<br><button class="add-btn" style="padding:15px; width:100%; font-size:16px;" onclick="SayfaGoster('urunler')">+ Başka Ürün Ekle</button>`;
+            container.innerHTML = html;
         }
 
         function SiparisGonder() {
             if(sepet.length === 0) {
-                alert("Sepetiniz boş! Lütfen önce ürün ekleyin.");
+                alert("Sepetiniz boş!");
+                SayfaGoster('urunler');
                 return;
             }
 
             const siparisVerisi = {
-                masaId: parseInt(guncelMasaNo), // YENİ: Unity'ye giden Masa ID'si artık dinamik!
+                masaId: parseInt(guncelMasaNo), 
                 siparisler: sepet,
                 toplam: toplamFiyat,
                 durum: "bekliyor", 
                 zaman: new Date().toLocaleTimeString()
             };
+
+            let gonderButonu = document.querySelector(".order-btn");
+            gonderButonu.disabled = true;
+            gonderButonu.innerText = "Gönderiliyor...";
 
             fetch(firebaseSiparisUrl, {
                 method: "POST",
@@ -142,11 +297,15 @@
             .then(response => {
                 alert("Sipariş başarıyla ustaya iletildi!");
                 sepet = [];
-                toplamFiyat = 0;
-                document.getElementById("sepet-tutar").innerText = "0.00 TL";
+                HesaplaVeGuncelle();
+                SayfaGoster('urunler'); 
+                gonderButonu.disabled = false;
+                gonderButonu.innerText = "Siparişi Mutfağa Gönder";
             })
             .catch(error => {
-                alert("Hata! Lütfen internet bağlantınızı kontrol edin.");
+                alert("Hata! Bağlantınızı kontrol edin.");
+                gonderButonu.disabled = false;
+                gonderButonu.innerText = "Siparişi Mutfağa Gönder";
             });
         }
     </script>
