@@ -8,51 +8,69 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
     
     <style>
-        /* === KÖZ VE ANTRASİT (PREMIUM DARK) ARKA PLAN === */
         body { font-family: 'Nunito', sans-serif; background-color: #1e1e24; color: #f1f2f6; margin: 0; padding: 15px; text-align: center; padding-bottom: 120px;}
         
         .header { background: #2b2b36; color: #ff4757; padding: 15px; border-radius: 16px; margin-bottom: 20px; font-size: 22px; font-weight: 900; position: relative; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center;}
-        .hamburger { position: absolute; left: 20px; font-size: 26px; cursor: pointer; color: #ffffff; user-select: none; background: #1e1e24; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center;}
         
-        .sidebar { height: 100%; width: 0; position: fixed; z-index: 100; top: 0; left: 0; background-color: #2b2b36; overflow-x: hidden; transition: 0.3s; padding-top: 60px; box-shadow: 5px 0 25px rgba(0,0,0,0.5); text-align: left; }
+        .hamburger { position: absolute; left: 20px; font-size: 26px; cursor: pointer; color: #ffffff; user-select: none; background: #1e1e24; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; transition: transform 0.1s;}
+        .hamburger:active { transform: scale(0.85); } 
+        
+        .sidebar { height: 100%; width: 0; position: fixed; z-index: 100; top: 0; left: 0; background-color: #2b2b36; overflow-x: hidden; transition: 0.3s cubic-bezier(0.4, 0.0, 0.2, 1); padding-top: 60px; box-shadow: 5px 0 25px rgba(0,0,0,0.5); text-align: left; white-space: nowrap; }
         .sidebar a { padding: 16px 25px; text-decoration: none; font-size: 18px; color: #dcdde1; display: block; transition: 0.2s; border-bottom: 1px solid #3f3f4e; font-weight: 700;}
         .sidebar a:hover { color: #ff4757; background-color: #3f3f4e; padding-left: 30px;}
-        .close-btn { position: absolute; top: 10px; right: 20px; font-size: 36px; border: none; background: none; color: #7f8fa6; }
+        .close-btn { position: absolute; top: 10px; right: 20px; font-size: 36px; border: none; background: none; color: #7f8fa6; transition: transform 0.1s;}
+        .close-btn:active { transform: scale(0.8); }
 
-        .category-tabs { display: flex; justify-content: flex-start; gap: 10px; padding: 5px 0; margin-bottom: 20px; overflow-x: auto; white-space: nowrap; scrollbar-width: none;}
+        /* === 2. İLLÜZYON: BUZLU CAM STICKY MENÜ === */
+        .category-tabs { 
+            display: flex; justify-content: flex-start; gap: 10px; padding: 15px 5px; margin-bottom: 15px; 
+            overflow-x: auto; white-space: nowrap; scrollbar-width: none;
+            position: sticky; top: -15px; z-index: 40; 
+            background: rgba(30, 30, 36, 0.85); 
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); 
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
         .category-tabs::-webkit-scrollbar { display: none; }
-        .tab-btn { background: #2b2b36; border: 2px solid #3f3f4e; font-size: 15px; font-weight: 800; color: #a4b0be; padding: 10px 20px; cursor: pointer; border-radius: 20px; transition: 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.1);}
-        .tab-btn.active { color: #ffffff; background: #ff4757; border-color: #ff4757; box-shadow: 0 4px 12px rgba(255, 71, 87, 0.4); }
+        .tab-btn { background: #2b2b36; border: 2px solid #3f3f4e; font-size: 15px; font-weight: 800; color: #a4b0be; padding: 10px 20px; cursor: pointer; border-radius: 20px; transition: transform 0.1s, box-shadow 0.3s, background 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.1);}
+        .tab-btn.active { color: #ffffff; background: #ff4757; border-color: #ff4757; box-shadow: 0 4px 12px rgba(255, 71, 87, 0.4); transform: scale(1.05); }
+        .tab-btn:active { transform: scale(0.95); }
 
         .grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
         
-        .product-card { padding: 15px 12px; border-radius: 18px; display: flex; flex-direction: column; justify-content: space-between; transition: 0.2s; border: none;}
-        .product-name { font-size: 15px; font-weight: 800; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; min-height: 45px; text-align: center; line-height: 1.2; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.3);}
+        @keyframes fadeSlideUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+
+        .product-card { padding: 20px 12px; border-radius: 18px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: none; animation: fadeSlideUp 0.4s ease-out forwards; cursor: pointer; transition: 0.2s;}
+        .product-card:active { transform: scale(0.95); }
+        .product-name { font-size: 16px; font-weight: 900; margin-bottom: 10px; text-align: center; line-height: 1.2; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.3);}
+        .product-price-badge { background: rgba(0,0,0,0.2); padding: 5px 12px; border-radius: 10px; font-weight: 800; color: white; font-size: 13px; }
         
         .card-anayemek { background: linear-gradient(135deg, #ff4757, #ff6b81); box-shadow: 0 6px 15px rgba(255, 71, 87, 0.3); }
-        .card-anayemek .add-btn { color: #e84118; }
         .card-icecek { background: linear-gradient(135deg, #1e90ff, #70a1ff); box-shadow: 0 6px 15px rgba(30, 144, 255, 0.3); }
-        .card-icecek .add-btn { color: #192a56; }
         .card-ekstra { background: linear-gradient(135deg, #ffa502, #ff7f50); box-shadow: 0 6px 15px rgba(255, 165, 2, 0.3); }
-        .card-ekstra .add-btn { color: #d35400; }
 
-        .btn-group { display: flex; flex-direction: column; gap: 8px; width: 100%;}
-        .add-btn { background: #ffffff; border: none; padding: 12px; border-radius: 12px; font-weight: 800; cursor: pointer; font-size: 14px; width: 100%; transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.15);}
-        .add-btn:active { transform: scale(0.95); }
-        
-        /* Sepet Kartları */
-        .cart-item { background: #2b2b36; padding: 16px; border-radius: 16px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 8px 20px rgba(0,0,0,0.2); border: none; border-left: 6px solid #ff4757; transition: 0.2s;}
-        
+        /* === 1. İLLÜZYON: İSKELET YÜKLEME (SKELETON SHIMMER) === */
+        .skeleton-wrapper { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; width: 100%; }
+        .skeleton-card { background: #2b2b36; border-radius: 18px; height: 110px; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 10px;}
+        .skeleton-card::after {
+            content: ""; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+            animation: shimmer 1.2s infinite;
+        }
+        @keyframes shimmer { 100% { left: 200%; } }
+        .skeleton-line { height: 18px; background: #3f3f4e; border-radius: 8px; width: 70%; }
+        .skeleton-badge { height: 25px; background: #3f3f4e; border-radius: 10px; width: 50%; }
+
+        .cart-item { background: #2b2b36; padding: 16px; border-radius: 16px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 8px 20px rgba(0,0,0,0.2); border: none; border-left: 6px solid #ff4757; animation: fadeSlideUp 0.3s ease-out forwards;}
         .cart-controls { display: flex; align-items: center; gap: 12px; background: #1e1e24; border-radius: 12px; padding: 6px; border: 1px solid #3f3f4e;}
-        .cart-btn { background: #3f3f4e; color: #ff4757; border: none; border-radius: 8px; width: 36px; height: 36px; font-size: 22px; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 6px rgba(0,0,0,0.2); transition: 0.2s;}
-        .cart-btn:active { background: #ff4757; color: white; }
+        .cart-btn { background: #3f3f4e; color: #ff4757; border: none; border-radius: 8px; width: 36px; height: 36px; font-size: 22px; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 6px rgba(0,0,0,0.2); transition: transform 0.1s;}
+        .cart-btn:active { background: #ff4757; color: white; transform: scale(0.85);}
         .cart-amount { font-size: 18px; font-weight: 900; color: #ff4757; min-width: 26px; text-align: center; }
 
-        .note-input { width: 100%; background: #2b2b36; border: 2px solid #3f3f4e; color: #ffffff; padding: 15px; border-radius: 16px; font-family: 'Nunito', sans-serif; font-size: 15px; font-weight:700; margin-bottom: 15px; margin-top: 10px; box-sizing: border-box; resize: none; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
+        .note-input { width: 100%; background: #2b2b36; border: 2px solid #3f3f4e; color: #ffffff; padding: 15px; border-radius: 16px; font-family: 'Nunito', sans-serif; font-size: 15px; font-weight:700; margin-bottom: 15px; margin-top: 10px; box-sizing: border-box; resize: none; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.1); animation: fadeSlideUp 0.4s ease-out forwards;}
         .note-input:focus { outline: none; border-color: #ff4757; background: #1e1e24;}
         .note-input::placeholder { color: #7f8fa6; font-weight: 600;}
 
-        .history-card { flex-direction: column; background: #2b2b36; border-radius: 16px; padding: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.3); text-align: left; position: relative; overflow: hidden; border-top: 6px solid #ff4757;}
+        .history-card { flex-direction: column; background: #2b2b36; border-radius: 16px; padding: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.3); text-align: left; position: relative; overflow: hidden; border-top: 6px solid #ff4757; animation: fadeSlideUp 0.4s ease-out forwards;}
         .history-header { border-bottom: 2px dashed #3f3f4e; padding-bottom: 12px; margin-bottom: 15px; font-size: 15px; font-weight: 800; display: flex; justify-content: space-between; align-items: center; color: #a4b0be;}
         .history-item { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 15px; color: #ffffff; font-weight: 800;}
         .history-total { text-align: right; font-weight: 900; font-size: 18px; margin-top: 15px; color: #ffffff; border-top: 2px dashed #3f3f4e; padding-top: 15px;}
@@ -60,24 +78,52 @@
         .live-badge { background-color: #ff4757; color: #ffffff; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 900; animation: pulse 2s infinite;}
         @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
 
-        .order-panel { position: fixed; bottom: 0; left: 0; width: 100%; background: #2b2b36; padding: 20px; box-shadow: 0 -10px 30px rgba(0,0,0,0.4); box-sizing: border-box; z-index: 50; border-top-left-radius: 24px; border-top-right-radius: 24px;}
-        .order-btn { background: linear-gradient(135deg, #ff4757, #e84118); color: white; border: none; padding: 16px; font-size: 18px; font-weight: 900; border-radius: 16px; width: 100%; cursor: pointer; box-shadow: 0 6px 15px rgba(232, 65, 24, 0.4); text-transform: uppercase; letter-spacing: 0.5px;}
-        .order-btn:active { transform: translateY(2px); box-shadow: 0 2px 8px rgba(232, 65, 24, 0.4);}
-        
-        .empty-text { color: #7f8fa6; font-weight: 800; margin-top: 50px; font-size: 18px; }
+        @keyframes badgeBump { 0% { transform: scale(1); color: #dcdde1; } 50% { transform: scale(1.4); color: #ff4757; } 100% { transform: scale(1); color: #dcdde1; } }
+        .bump-anim { animation: badgeBump 0.4s ease-out; }
+
+        @keyframes slidePanelUp { from { bottom: -100px; } to { bottom: 0; } }
+        .order-panel { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(43, 43, 54, 0.95); backdrop-filter: blur(10px); padding: 20px; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); box-sizing: border-box; z-index: 50; border-top-left-radius: 24px; border-top-right-radius: 24px; animation: slidePanelUp 0.5s cubic-bezier(0.4, 0.0, 0.2, 1) forwards;}
+        .order-btn { background: linear-gradient(135deg, #ff4757, #e84118); color: white; border: none; padding: 16px; font-size: 18px; font-weight: 900; border-radius: 16px; width: 100%; cursor: pointer; box-shadow: 0 6px 15px rgba(232, 65, 24, 0.4); text-transform: uppercase; letter-spacing: 0.5px; transition: transform 0.1s;}
+        .order-btn:active { transform: scale(0.96); box-shadow: 0 2px 5px rgba(232, 65, 24, 0.4);}
+
+        @keyframes popupScaleIn { 0% { opacity: 0; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
+        .popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 200; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(6px); }
+        .popup-content { background: #2b2b36; width: 95%; max-width: 420px; border-radius: 28px; padding: 30px; box-sizing: border-box; animation: popupScaleIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.27) forwards; box-shadow: 0 20px 50px rgba(0,0,0,0.5); margin-bottom: 5%; }
+        .popup-header { display: flex; justify-content: space-between; align-items: center; color: white; margin-bottom: 25px; }
+        .popup-title { font-size: 24px; font-weight: 900; margin: 0; text-align: left;}
+        .popup-close { background: none; border: none; color: #a4b0be; font-size: 36px; font-weight: bold; cursor: pointer; transition: 0.2s; padding: 0; line-height: 1;}
+        .popup-close:active { transform: scale(0.8); color: #ff4757;}
+        .popup-selection { background: #1e1e24; padding: 20px; border-radius: 16px; border-left: 5px solid #ff4757; color: white; display: flex; justify-content: space-between; font-weight: 900; font-size: 22px; margin-bottom: 25px; }
+        .popup-btn-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 25px; }
+        .popup-weight-btn { background: #3f3f4e; color: white; border: none; padding: 18px 0; border-radius: 14px; font-weight: 900; font-size: 17px; cursor: pointer; transition: 0.1s; line-height: 1.4;}
+        .popup-weight-btn:active { background: #1e1e24; transform: scale(0.95); }
+        .popup-actions { display: flex; gap: 12px; }
+        .reset-btn { flex: 1; background: #1e1e24; color: #a4b0be; border: 1px solid #3f3f4e; border-radius: 14px; font-weight: 900; padding: 18px; font-size: 18px; cursor: pointer; transition: 0.1s;}
+        .reset-btn:active { transform: scale(0.95); background: #3f3f4e;}
+        .add-cart-btn { flex: 2; background: linear-gradient(135deg, #ff4757, #e84118); color: white; border: none; border-radius: 14px; font-weight: 900; padding: 18px; font-size: 18px; box-shadow: 0 4px 10px rgba(255, 71, 87, 0.3); cursor: pointer; transition: 0.1s;}
+        .add-cart-btn:active { transform: scale(0.95); }
+
+        /* === 3. İLLÜZYON: BAŞARI ONAY ANİMASYONU === */
+        .success-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(30, 30, 36, 0.98); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.3s; }
+        .success-overlay.active { opacity: 1; pointer-events: auto; }
+        .success-icon { width: 90px; height: 90px; border-radius: 50%; background: #2ed573; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 40px rgba(46, 213, 115, 0.4); transform: scale(0); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.27); }
+        .success-overlay.active .success-icon { transform: scale(1); }
+        .success-text { color: white; font-size: 24px; font-weight: 900; margin-top: 25px; transform: translateY(20px); opacity: 0; transition: all 0.5s 0.2s; text-shadow: 0 2px 10px rgba(0,0,0,0.5);}
+        .success-overlay.active .success-text { transform: translateY(0); opacity: 1; }
+
     </style>
 </head>
 <body>
 
     <div id="mySidebar" class="sidebar">
-        <a href="javascript:void(0)" class="close-btn" onclick="KapatSidebar()">&times;</a>
-        <a href="javascript:void(0)" onclick="SayfaGoster('urunler')">🍔 Menü / Ürünler</a>
-        <a href="javascript:void(0)" onclick="SayfaGoster('sepet')">🛒 Siparişim (<span id="sidebar-sepet-adet">0</span>)</a>
-        <a href="javascript:void(0)" onclick="SayfaGoster('gecmis')" style="color:#ff4757; background: #3f3f4e; border-radius: 12px; margin: 0 10px;">🧾 Canlı Adisyonum</a>
+        <a href="javascript:void(0)" class="close-btn" onclick="HapticTitresim(); KapatSidebar();">&times;</a>
+        <a href="javascript:void(0)" onclick="HapticTitresim(); SayfaGoster('urunler')">🍔 Menü / Ürünler</a>
+        <a href="javascript:void(0)" onclick="HapticTitresim(); SayfaGoster('sepet')">🛒 Siparişim (<span id="sidebar-sepet-adet" style="display:inline-block;">0</span>)</a>
+        <a href="javascript:void(0)" onclick="HapticTitresim(); SayfaGoster('gecmis')" style="color:#ff4757; background: #3f3f4e; border-radius: 12px; margin: 0 10px;">🧾 Canlı Adisyonum</a>
     </div>
 
     <div class="header">
-        <div class="hamburger" onclick="AcSidebar()">
+        <div class="hamburger" onclick="HapticTitresim(); AcSidebar();">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
         </div>
         <span id="masa-baslik">Bekmez Pişirim</span>
@@ -85,23 +131,60 @@
 
     <div id="menu-container">
         <div class="category-tabs" id="kategori-sekmeleri" style="display: none;">
-            <button class="tab-btn active" id="tab-Ana Yemek" onclick="KategoriSec('Ana Yemek')">Ana Yemek</button>
-            <button class="tab-btn" id="tab-İçecek" onclick="KategoriSec('İçecek')">İçecek</button>
-            <button class="tab-btn" id="tab-Ekstra" onclick="KategoriSec('Ekstra')">Ekstra</button>
+            <button class="tab-btn active" id="tab-Ana Yemek" onclick="HapticTitresim(); KategoriSec('Ana Yemek');">Ana Yemek</button>
+            <button class="tab-btn" id="tab-İçecek" onclick="HapticTitresim(); KategoriSec('İçecek');">İçecek</button>
+            <button class="tab-btn" id="tab-Ekstra" onclick="HapticTitresim(); KategoriSec('Ekstra');">Ekstra</button>
         </div>
-        <h3 id="yukleniyor" class="empty-text">Buluttan Menü Çekiliyor...</h3>
-        <div id="menu-grid" class="grid-container"></div>
+        
+        <!-- YENİ: SKELETON YÜKLEME ALANI -->
+        <div id="skeleton-container" class="skeleton-wrapper">
+            <div class="skeleton-card"><div class="skeleton-line"></div><div class="skeleton-badge"></div></div>
+            <div class="skeleton-card"><div class="skeleton-line" style="width: 80%;"></div><div class="skeleton-badge" style="width: 60%;"></div></div>
+            <div class="skeleton-card"><div class="skeleton-line" style="width: 60%;"></div><div class="skeleton-badge"></div></div>
+            <div class="skeleton-card"><div class="skeleton-line" style="width: 90%;"></div><div class="skeleton-badge" style="width: 40%;"></div></div>
+        </div>
+
+        <div id="menu-grid" class="grid-container" style="display: none;"></div>
     </div>
 
     <div id="cart-container" style="display: none; padding-bottom: 40px;"></div>
     <div id="history-container" style="display: none; padding-bottom: 80px;"></div>
 
-    <div class="order-panel" id="alt-panel">
+    <div class="order-panel" id="alt-panel" style="display: none;">
         <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-weight: 900; font-size: 19px;">
             <span style="color: #dcdde1;">Ara Toplam:</span>
             <span id="sepet-tutar" style="color: #ff4757; font-size: 24px;">0.00 TL</span>
         </div>
-        <button class="order-btn" onclick="SiparisGonder()">Sepeti Onayla</button>
+        <button class="order-btn" id="onay-btn" onclick="HapticTitresim(); SiparisGonder();">Sepeti Onayla</button>
+    </div>
+
+    <!-- UNITY POPUP -->
+    <div id="product-popup" class="popup-overlay" style="display:none;" onclick="if(event.target === this) PopupKapat();">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h3 id="popup-title" class="popup-title">Ürün Adı</h3>
+                <button onclick="PopupKapat()" class="popup-close">&times;</button>
+            </div>
+            <div class="popup-selection">
+                <span id="popup-amount">______</span>
+                <span id="popup-price">______ TL</span>
+            </div>
+            <div id="popup-buttons" class="popup-btn-grid"></div>
+            <div class="popup-actions">
+                <button onclick="PopupSifirla()" class="reset-btn">Sıfırla</button>
+                <button onclick="PopupSepeteEkle()" class="add-cart-btn">Sepete Ekle</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- YENİ: BAŞARI ONAY EKRANI -->
+    <div id="success-overlay" class="success-overlay">
+        <div class="success-icon">
+            <svg width="45" height="45" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+        </div>
+        <div class="success-text">Siparişiniz İletildi!</div>
     </div>
 
     <script>
@@ -109,24 +192,56 @@
         const firebaseSiparisUrl = "https://bekmezpos-default-rtdb.firebaseio.com/Siparisler.json";
         
         let sepet = [];
-        let toplamFiyat = 0;
+        let eskiToplamFiyat = 0; 
         let tumUrunler = [];
         let aktifKategori = 'Ana Yemek';
         let canliAdisyonTimer = null; 
         
+        let seciliUrun = null;
+        let seciliMiktar = 0;
+        let seciliFiyat = 0;
+
         const urlParams = new URLSearchParams(window.location.search);
         let guncelMasaNo = urlParams.get('masa') || 1;
 
         window.onload = function() {
             document.getElementById("masa-baslik").innerText = "Masa #" + guncelMasaNo;
             fetch(firebaseMenuUrl).then(r => r.json()).then(data => {
-                document.getElementById("yukleniyor").style.display = "none";
+                
+                // Menü geldiğinde iskeleti gizle, gerçek menüyü göster
+                document.getElementById("skeleton-container").style.display = "none";
+                document.getElementById("menu-grid").style.display = "grid";
+
                 if(data && data.products) {
                     tumUrunler = data.products;
                     document.getElementById("kategori-sekmeleri").style.display = "flex";
+                    SayfaGoster('urunler'); 
                     KategoriSec('Ana Yemek'); 
                 }
             });
+        }
+
+        function HapticTitresim() {
+            if (navigator.vibrate) navigator.vibrate(40); 
+        }
+
+        function SayaciKaydir(elementId, baslangic, bitis, sureMS) {
+            let baslangicZamani = null;
+            const element = document.getElementById(elementId);
+            if (!element) return;
+
+            const animasyonAdimi = (suAnkiZaman) => {
+                if (!baslangicZamani) baslangicZamani = suAnkiZaman;
+                const gecenZaman = suAnkiZaman - baslangicZamani;
+                const ilerleme = Math.min(gecenZaman / sureMS, 1);
+                const easeOut = 1 - Math.pow(1 - ilerleme, 3);
+                const guncelDeger = baslangic + (bitis - baslangic) * easeOut;
+                element.innerText = guncelDeger.toFixed(2) + " TL";
+
+                if (ilerleme < 1) window.requestAnimationFrame(animasyonAdimi);
+                else element.innerText = bitis.toFixed(2) + " TL"; 
+            };
+            window.requestAnimationFrame(animasyonAdimi);
         }
 
         function UrunKategorisiBul(isim) {
@@ -144,26 +259,110 @@
             const gridContainer = document.getElementById("menu-grid");
             gridContainer.innerHTML = "";
             
-            tumUrunler.forEach(urun => {
-                let urunTuru = UrunKategorisiBul(urun.pName);
-                if(urunTuru === aktifKategori) {
-                    
-                    let kartSinifi = "";
-                    if(urunTuru === "Ana Yemek") kartSinifi = "card-anayemek";
-                    else if (urunTuru === "İçecek") kartSinifi = "card-icecek";
-                    else kartSinifi = "card-ekstra"; 
+            setTimeout(() => {
+                tumUrunler.forEach((urun, index) => {
+                    let urunTuru = UrunKategorisiBul(urun.pName);
+                    if(urunTuru === aktifKategori) {
+                        
+                        let kartSinifi = "";
+                        if(urunTuru === "Ana Yemek") kartSinifi = "card-anayemek";
+                        else if (urunTuru === "İçecek") kartSinifi = "card-icecek";
+                        else kartSinifi = "card-ekstra"; 
+                        
+                        let gecikme = (index % 10) * 0.05; 
+                        
+                        gridContainer.innerHTML += `
+                        <div class="product-card ${kartSinifi}" style="animation-delay: ${gecikme}s" onclick="UrunPopupAc(${index})">
+                            <div class="product-name">${urun.pName}</div>
+                            <div class="product-price-badge">${urun.price1Kg} ₺ / ${urun.isKg ? 'KG' : 'Adet'}</div>
+                        </div>`;
+                    }
+                });
+            }, 10);
+        }
 
-                    let butonHTML = urun.isKg 
-                        ? `<div class="btn-group"><button class="add-btn" onclick="SepeteEkle('${urun.pName}', '${urun.price1Kg}', '1 KG', this)">1 KG (${urun.price1Kg}₺)</button><button class="add-btn" onclick="SepeteEkle('${urun.pName}', '${urun.price750g}', '750 Gr', this)">750 Gr (${urun.price750g}₺)</button><button class="add-btn" onclick="SepeteEkle('${urun.pName}', '${urun.price500g}', '500 Gr', this)">500 Gr (${urun.price500g}₺)</button></div>`
-                        : `<div class="btn-group"><button class="add-btn" onclick="SepeteEkle('${urun.pName}', '${urun.price1Kg}', '1 Adet', this)">+ Sepete Ekle (${urun.price1Kg}₺)</button></div>`;
-                    
-                    gridContainer.innerHTML += `
-                    <div class="product-card ${kartSinifi}">
-                        <div class="product-name">${urun.pName}</div>
-                        ${butonHTML}
-                    </div>`;
-                }
-            });
+        function UrunPopupAc(index) {
+            HapticTitresim();
+            seciliUrun = tumUrunler[index];
+            seciliMiktar = 0;
+            seciliFiyat = 0;
+
+            document.getElementById("popup-title").innerText = seciliUrun.pName;
+            PopupUIYenile();
+
+            let btnKutusu = document.getElementById("popup-buttons");
+            if(seciliUrun.isKg) {
+                let p1 = parseFloat(seciliUrun.price1Kg.replace(',','.'));
+                let p750 = parseFloat(seciliUrun.price750g.replace(',','.'));
+                let p500 = parseFloat(seciliUrun.price500g.replace(',','.'));
+                
+                btnKutusu.innerHTML = `
+                    <button class="popup-weight-btn" onclick="PopupEkle(1, ${p1})">1 KG<br><small style="color:#2ed573; font-size:15px;">+${seciliUrun.price1Kg} ₺</small></button>
+                    <button class="popup-weight-btn" onclick="PopupEkle(0.75, ${p750})">750 Gr<br><small style="color:#2ed573; font-size:15px;">+${seciliUrun.price750g} ₺</small></button>
+                    <button class="popup-weight-btn" onclick="PopupEkle(0.5, ${p500})">500 Gr<br><small style="color:#2ed573; font-size:15px;">+${seciliUrun.price500g} ₺</small></button>
+                `;
+            } else {
+                let pAdet = parseFloat(seciliUrun.price1Kg.replace(',','.'));
+                btnKutusu.innerHTML = `
+                    <button class="popup-weight-btn" style="grid-column: span 3;" onclick="PopupEkle(1, ${pAdet})">+ 1 Adet Ekle<br><small style="color:#2ed573; font-size:16px;">+${seciliUrun.price1Kg} ₺</small></button>
+                `;
+            }
+
+            document.getElementById("product-popup").style.display = "flex";
+        }
+
+        function PopupEkle(miktar, fiyat) {
+            HapticTitresim();
+            seciliMiktar += miktar;
+            seciliFiyat += fiyat;
+            PopupUIYenile();
+        }
+
+        function PopupSifirla() {
+            HapticTitresim();
+            seciliMiktar = 0;
+            seciliFiyat = 0;
+            PopupUIYenile();
+        }
+
+        function PopupKapat() {
+            document.getElementById("product-popup").style.display = "none";
+        }
+
+        function PopupUIYenile() {
+            let birim = seciliUrun.isKg ? " KG" : " Adet";
+            document.getElementById("popup-amount").innerText = seciliMiktar > 0 ? Number(seciliMiktar.toFixed(2)) + birim : "______" + birim;
+            document.getElementById("popup-price").innerHTML = seciliFiyat > 0 ? `<span style="color:#2ed573;">${seciliFiyat.toFixed(2)} TL</span>` : "______ TL";
+        }
+
+        function PopupSepeteEkle() {
+            if(seciliMiktar <= 0) return;
+            HapticTitresim();
+
+            let birim = seciliUrun.isKg ? " Kg " : " Adet ";
+            let miktarGosterim = Number(seciliMiktar.toFixed(2)).toString();
+            let tamIsim = miktarGosterim + birim + seciliUrun.pName;
+
+            let mevcut = sepet.find(u => u.baseName === tamIsim);
+            if(mevcut) {
+                mevcut.quantity += 1;
+            } else {
+                sepet.push({
+                    baseName: tamIsim,         
+                    basePrice: seciliFiyat,    
+                    baseStockAmount: seciliMiktar, 
+                    quantity: 1,               
+                    rawName: seciliUrun.pName  
+                });
+            }
+
+            PopupKapat();
+            HesaplaVeGuncelle();
+            
+            let adetElementi = document.getElementById("sidebar-sepet-adet");
+            adetElementi.classList.remove("bump-anim");
+            void adetElementi.offsetWidth; 
+            adetElementi.classList.add("bump-anim");
         }
 
         function AcSidebar() { document.getElementById("mySidebar").style.width = "270px"; }
@@ -194,63 +393,54 @@
             }
         }
 
-        function SepeteEkle(isim, fiyatStr, miktarText, btnObj) {
-            let fiyatNum = parseFloat(fiyatStr.replace(",", "."));
-            let tamIsim = miktarText + " " + isim;
-            let mevcut = sepet.find(u => u.itemName === tamIsim);
-            if(mevcut) { mevcut.amount += 1; } else { sepet.push({ itemName: tamIsim, itemPrice: fiyatNum, amount: 1, rawName: isim }); }
-            HesaplaVeGuncelle();
-            
-            let orjinalMetin = btnObj.innerText;
-            btnObj.innerText = "✓ Eklendi"; 
-            btnObj.style.background = "#2ed573"; 
-            btnObj.style.color = "#ffffff";
-            setTimeout(() => { 
-                btnObj.innerText = orjinalMetin; 
-                btnObj.style.background = ""; 
-                btnObj.style.color = ""; 
-            }, 600);
-        }
-
         function MiktarDegistir(index, degisimMiktari) {
-            sepet[index].amount += degisimMiktari;
-            if(sepet[index].amount <= 0) { sepet.splice(index, 1); }
+            sepet[index].quantity += degisimMiktari;
+            if(sepet[index].quantity <= 0) { sepet.splice(index, 1); }
             HesaplaVeGuncelle(); SepetEkraniniCiz(); 
         }
 
         function HesaplaVeGuncelle() {
-            toplamFiyat = 0; let toplamAdet = 0;
-            sepet.forEach(urun => { toplamFiyat += (urun.itemPrice * urun.amount); toplamAdet += urun.amount; });
-            document.getElementById("sepet-tutar").innerText = toplamFiyat.toFixed(2) + " TL";
+            let yeniToplam = 0; let toplamAdet = 0;
+            sepet.forEach(urun => { 
+                yeniToplam += (urun.basePrice * urun.quantity); 
+                toplamAdet += urun.quantity; 
+            });
+            
+            SayaciKaydir("sepet-tutar", eskiToplamFiyat, yeniToplam, 600);
+            eskiToplamFiyat = yeniToplam;
+
             document.getElementById("sidebar-sepet-adet").innerText = toplamAdet;
         }
 
         function SepetEkraniniCiz() {
             const container = document.getElementById("cart-container");
             if(sepet.length === 0) {
-                container.innerHTML = `<div class="empty-text">Sepetiniz şu an boş 🛒</div><br><button class="order-btn" style="width:70%; margin-top:10px; font-size:16px; background:#2b2b36; color:#ffffff; border:2px solid #3f3f4e; box-shadow:0 4px 10px rgba(0,0,0,0.2);" onclick="SayfaGoster('urunler')">Ürünlere Göz At</button>`;
+                container.innerHTML = `<div class="empty-text">Sepetiniz şu an boş 🛒</div><br><button class="order-btn" style="width:70%; margin-top:10px; font-size:16px; background:#2b2b36; color:#ffffff; border:2px solid #3f3f4e; box-shadow:0 4px 10px rgba(0,0,0,0.2);" onclick="HapticTitresim(); SayfaGoster('urunler')">Ürünlere Göz At</button>`;
                 return;
             }
             let html = `<h2 style="color:#ffffff; margin-top:0; font-weight:900;">Sepetim</h2>`;
             sepet.forEach((urun, index) => {
-                let satirFiyati = (urun.itemPrice * urun.amount).toFixed(2);
+                let satirFiyati = (urun.basePrice * urun.quantity).toFixed(2);
+                let gecikme = index * 0.05; 
+                
+                let gosterilenIsim = (urun.quantity > 1 ? `<span style="color:#ff4757;">${urun.quantity}x</span> ` : "") + urun.baseName;
+
                 html += `
-                <div class="cart-item">
+                <div class="cart-item" style="animation-delay: ${gecikme}s">
                     <div style="flex:1; padding-right:10px;">
-                        <div class="product-name" style="font-size:16px; min-height:auto; justify-content:flex-start; margin-bottom:6px; color:#ffffff; text-shadow:none; text-align:left;">${urun.itemName}</div>
+                        <div class="product-name" style="font-size:16px; min-height:auto; justify-content:flex-start; margin-bottom:6px; color:#ffffff; text-shadow:none; text-align:left;">${gosterilenIsim}</div>
                         <div style="color:#ff4757; font-weight:900; font-size:16px; text-align:left;">${satirFiyati} TL</div>
                     </div>
                     <div class="cart-controls">
-                        <button class="cart-btn" onclick="MiktarDegistir(${index}, -1)">-</button>
-                        <div class="cart-amount">${urun.amount}</div>
-                        <button class="cart-btn" onclick="MiktarDegistir(${index}, 1)">+</button>
+                        <button class="cart-btn" onclick="HapticTitresim(); MiktarDegistir(${index}, -1)">-</button>
+                        <div class="cart-amount">${urun.quantity}</div>
+                        <button class="cart-btn" onclick="HapticTitresim(); MiktarDegistir(${index}, 1)">+</button>
                     </div>
                 </div>`;
             });
             
             html += `<textarea id="siparis-notu" class="note-input" rows="2" placeholder="Şefe Notunuz (Örn: Acısız olsun)"></textarea>`;
-            
-            html += `<button class="order-btn" style="padding:16px; width:100%; font-size:16px; background:#2b2b36; color:#ffffff; border:2px solid #3f3f4e; box-shadow:0 4px 10px rgba(0,0,0,0.2);" onclick="SayfaGoster('urunler')">+ Masaya Başka Ürün Ekle</button>`;
+            html += `<button class="order-btn" style="padding:16px; width:100%; font-size:16px; background:#2b2b36; color:#ffffff; border:2px solid #3f3f4e; box-shadow:0 4px 10px rgba(0,0,0,0.2);" onclick="HapticTitresim(); SayfaGoster('urunler')">+ Masaya Başka Ürün Ekle</button>`;
             container.innerHTML = html;
         }
 
@@ -260,13 +450,13 @@
             fetch(url).then(r => r.json()).then(data => {
                 const container = document.getElementById("history-container");
                 if(!data || !data.aktifMasalar) {
-                    container.innerHTML = `<div class="empty-text">Henüz masanıza işlenen bir sipariş yok 🍽️</div><br><button class="order-btn" style="width:70%; margin-top:10px; font-size:16px; background:#2b2b36; color:#ffffff; border:2px solid #3f3f4e; box-shadow:0 4px 10px rgba(0,0,0,0.2);" onclick="SayfaGoster('urunler')">Sipariş Ver</button>`;
+                    container.innerHTML = `<div class="empty-text">Henüz masanıza işlenen bir sipariş yok 🍽️</div><br><button class="order-btn" style="width:70%; margin-top:10px; font-size:16px; background:#2b2b36; color:#ffffff; border:2px solid #3f3f4e; box-shadow:0 4px 10px rgba(0,0,0,0.2);" onclick="HapticTitresim(); SayfaGoster('urunler')">Sipariş Ver</button>`;
                     return;
                 }
                 
                 let benimMasam = data.aktifMasalar.find(m => m.masaId === parseInt(guncelMasaNo));
                 if(!benimMasam) {
-                    container.innerHTML = `<div class="empty-text">Hesabınız kesilmiş veya sipariş hazırlanıyor.</div><br><button class="order-btn" style="width:70%; margin-top:10px; font-size:16px; background:#2b2b36; color:#ffffff; border:2px solid #3f3f4e; box-shadow:0 4px 10px rgba(0,0,0,0.2);" onclick="SayfaGoster('urunler')">Yeni Sipariş Ver</button>`;
+                    container.innerHTML = `<div class="empty-text">Hesabınız kesilmiş veya sipariş hazırlanıyor.</div><br><button class="order-btn" style="width:70%; margin-top:10px; font-size:16px; background:#2b2b36; color:#ffffff; border:2px solid #3f3f4e; box-shadow:0 4px 10px rgba(0,0,0,0.2);" onclick="HapticTitresim(); SayfaGoster('urunler')">Yeni Sipariş Ver</button>`;
                     return;
                 }
 
@@ -285,7 +475,6 @@
                              </div>`;
                 });
 
-                // === YENİ: SİPARİŞ NOTU BURADA GÖSTERİLİYOR ===
                 if (benimMasam.siparisNotu && benimMasam.siparisNotu.trim() !== "") {
                     html += `<div style="margin-top: 15px; padding: 12px; background: #1e1e24; border-radius: 10px; border-left: 4px solid #ff4757; font-size: 14px; color: #a4b0be; font-style: italic;">
                                <b style="color: #ff4757;">Notunuz:</b> ${benimMasam.siparisNotu}
@@ -294,38 +483,61 @@
                 
                 html += `<div class="history-total">Toplam Tutar: ${benimMasam.toplamTutar.toFixed(2)} TL</div>`;
                 html += `</div>`;
-                html += `<br><button class="order-btn" style="padding:16px; width:100%; font-size:16px; background:#2b2b36; color:#ffffff; border:2px solid #3f3f4e; box-shadow:0 4px 10px rgba(0,0,0,0.2);" onclick="SayfaGoster('urunler')">Masaya Yeni Ürün Söyle</button>`;
+                html += `<br><button class="order-btn" style="padding:16px; width:100%; font-size:16px; background:#2b2b36; color:#ffffff; border:2px solid #3f3f4e; box-shadow:0 4px 10px rgba(0,0,0,0.2);" onclick="HapticTitresim(); SayfaGoster('urunler')">Masaya Yeni Ürün Söyle</button>`;
                 
                 container.innerHTML = html;
             }).catch(e => console.log("Canlı yayın çekilemedi"));
         }
 
+        // === YENİ: ANİMASYONLU BAŞARI GÖNDERİMİ ===
         function SiparisGonder() {
             if(sepet.length === 0) { alert("Sepetiniz boş!"); SayfaGoster('urunler'); return; }
 
             let notKutusu = document.getElementById("siparis-notu");
             let alinanNot = notKutusu ? notKutusu.value : "";
 
+            let gidenSiparisler = sepet.map(u => {
+                return {
+                    itemName: (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName, 
+                    itemPrice: u.basePrice * u.quantity,                              
+                    amount: u.baseStockAmount * u.quantity,                           
+                    rawName: u.rawName                                                
+                };
+            });
+
             const siparisVerisi = {
                 masaId: parseInt(guncelMasaNo), 
-                siparisler: sepet,
-                toplam: toplamFiyat,
+                siparisler: gidenSiparisler,
+                toplam: eskiToplamFiyat,
                 durum: "bekliyor", 
                 zaman: new Date().toLocaleTimeString(),
                 siparisNotu: alinanNot 
             };
 
-            let gonderButonu = document.querySelector(".order-btn");
+            let gonderButonu = document.getElementById("onay-btn");
             gonderButonu.disabled = true; gonderButonu.innerText = "İLETİLİYOR...";
 
             fetch(firebaseSiparisUrl, {
                 method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(siparisVerisi)
             }).then(response => {
-                alert("Sipariş başarıyla ustaya iletildi!");
+                
+                // Mükemmel Başarı Animasyonu Başlıyor
+                HapticTitresim();
+                let basariEkrani = document.getElementById("success-overlay");
+                basariEkrani.classList.add("active");
+                
                 sepet = [];
-                HesaplaVeGuncelle();
-                SayfaGoster('gecmis'); 
-                gonderButonu.disabled = false; gonderButonu.innerText = "SEPETİ ONAYLA";
+                eskiToplamFiyat = 0;
+                document.getElementById("sepet-tutar").innerText = "0.00 TL";
+                document.getElementById("sidebar-sepet-adet").innerText = "0";
+                
+                // 1.8 Saniye sonra menüye dön
+                setTimeout(() => {
+                    basariEkrani.classList.remove("active");
+                    SayfaGoster('gecmis'); 
+                    gonderButonu.disabled = false; gonderButonu.innerText = "SEPETİ ONAYLA";
+                }, 1800);
+
             }).catch(error => {
                 alert("Hata! Bağlantınızı kontrol edin.");
                 gonderButonu.disabled = false; gonderButonu.innerText = "SEPETİ ONAYLA";
