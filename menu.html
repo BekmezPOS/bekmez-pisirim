@@ -8,9 +8,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
     
     <style>
-        body { font-family: 'Nunito', sans-serif; background-color: #1e1e24; color: #f1f2f6; margin: 0; padding: 15px; text-align: center; padding-bottom: 120px;}
+        body { font-family: 'Nunito', sans-serif; background-color: #1e1e24; color: #f1f2f6; margin: 0; padding: 15px; text-align: center; padding-bottom: 100px;}
         
-        .header { background: #2b2b36; color: #ff4757; padding: 15px; border-radius: 16px; margin-bottom: 20px; font-size: 22px; font-weight: 900; position: relative; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center;}
+        .header { background: #2b2b36; color: #ff4757; padding: 15px; border-radius: 16px; margin-bottom: 15px; font-size: 22px; font-weight: 900; position: relative; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center;}
         
         .hamburger { position: absolute; left: 20px; font-size: 26px; cursor: pointer; color: #ffffff; user-select: none; background: #1e1e24; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; transition: transform 0.1s;}
         .hamburger:active { transform: scale(0.85); } 
@@ -21,22 +21,18 @@
         .close-btn { position: absolute; top: 10px; right: 20px; font-size: 36px; border: none; background: none; color: #7f8fa6; transition: transform 0.1s;}
         .close-btn:active { transform: scale(0.8); }
 
-        /* === 2. İLLÜZYON: BUZLU CAM STICKY MENÜ === */
-        .category-tabs { 
-            display: flex; justify-content: flex-start; gap: 10px; padding: 15px 5px; margin-bottom: 15px; 
-            overflow-x: auto; white-space: nowrap; scrollbar-width: none;
-            position: sticky; top: -15px; z-index: 40; 
-            background: rgba(30, 30, 36, 0.85); 
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); 
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
+        .search-container { margin-bottom: 15px; }
+        .search-input { width: 100%; background: #2b2b36; border: 2px solid #3f3f4e; color: #ffffff; padding: 14px 20px; border-radius: 20px; font-family: 'Nunito', sans-serif; font-size: 16px; font-weight:700; box-sizing: border-box; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .search-input:focus { outline: none; border-color: #ff4757; background: #1e1e24; }
+        .search-input::placeholder { color: #7f8fa6; }
+
+        .category-tabs { display: flex; justify-content: flex-start; gap: 10px; padding: 15px 5px; margin-bottom: 15px; overflow-x: auto; white-space: nowrap; scrollbar-width: none; position: sticky; top: -15px; z-index: 40; background: rgba(30, 30, 36, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.05); }
         .category-tabs::-webkit-scrollbar { display: none; }
         .tab-btn { background: #2b2b36; border: 2px solid #3f3f4e; font-size: 15px; font-weight: 800; color: #a4b0be; padding: 10px 20px; cursor: pointer; border-radius: 20px; transition: transform 0.1s, box-shadow 0.3s, background 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.1);}
         .tab-btn.active { color: #ffffff; background: #ff4757; border-color: #ff4757; box-shadow: 0 4px 12px rgba(255, 71, 87, 0.4); transform: scale(1.05); }
         .tab-btn:active { transform: scale(0.95); }
 
         .grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        
         @keyframes fadeSlideUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
 
         .product-card { padding: 20px 12px; border-radius: 18px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: none; animation: fadeSlideUp 0.4s ease-out forwards; cursor: pointer; transition: 0.2s;}
@@ -48,14 +44,9 @@
         .card-icecek { background: linear-gradient(135deg, #1e90ff, #70a1ff); box-shadow: 0 6px 15px rgba(30, 144, 255, 0.3); }
         .card-ekstra { background: linear-gradient(135deg, #ffa502, #ff7f50); box-shadow: 0 6px 15px rgba(255, 165, 2, 0.3); }
 
-        /* === 1. İLLÜZYON: İSKELET YÜKLEME (SKELETON SHIMMER) === */
         .skeleton-wrapper { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; width: 100%; }
         .skeleton-card { background: #2b2b36; border-radius: 18px; height: 110px; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 10px;}
-        .skeleton-card::after {
-            content: ""; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
-            animation: shimmer 1.2s infinite;
-        }
+        .skeleton-card::after { content: ""; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent); animation: shimmer 1.2s infinite; }
         @keyframes shimmer { 100% { left: 200%; } }
         .skeleton-line { height: 18px; background: #3f3f4e; border-radius: 8px; width: 70%; }
         .skeleton-badge { height: 25px; background: #3f3f4e; border-radius: 10px; width: 50%; }
@@ -66,7 +57,12 @@
         .cart-btn:active { background: #ff4757; color: white; transform: scale(0.85);}
         .cart-amount { font-size: 18px; font-weight: 900; color: #ff4757; min-width: 26px; text-align: center; }
 
-        .note-input { width: 100%; background: #2b2b36; border: 2px solid #3f3f4e; color: #ffffff; padding: 15px; border-radius: 16px; font-family: 'Nunito', sans-serif; font-size: 15px; font-weight:700; margin-bottom: 15px; margin-top: 10px; box-sizing: border-box; resize: none; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.1); animation: fadeSlideUp 0.4s ease-out forwards;}
+        .smart-chips-container { display: flex; gap: 8px; overflow-x: auto; white-space: nowrap; margin-bottom: 10px; scrollbar-width: none; padding-bottom: 5px;}
+        .smart-chips-container::-webkit-scrollbar { display: none; }
+        .smart-chip { background: #3f3f4e; color: #dcdde1; border: 1px solid #7f8fa6; padding: 8px 15px; border-radius: 15px; font-weight: 800; font-size: 13px; cursor: pointer; transition: 0.1s; }
+        .smart-chip:active { background: #ff4757; color: white; border-color: #ff4757; transform: scale(0.9);}
+
+        .note-input { width: 100%; background: #2b2b36; border: 2px solid #3f3f4e; color: #ffffff; padding: 15px; border-radius: 16px; font-family: 'Nunito', sans-serif; font-size: 15px; font-weight:700; margin-bottom: 15px; box-sizing: border-box; resize: none; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.1); animation: fadeSlideUp 0.4s ease-out forwards;}
         .note-input:focus { outline: none; border-color: #ff4757; background: #1e1e24;}
         .note-input::placeholder { color: #7f8fa6; font-weight: 600;}
 
@@ -77,9 +73,6 @@
         
         .live-badge { background-color: #ff4757; color: #ffffff; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 900; animation: pulse 2s infinite;}
         @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
-
-        @keyframes badgeBump { 0% { transform: scale(1); color: #dcdde1; } 50% { transform: scale(1.4); color: #ff4757; } 100% { transform: scale(1); color: #dcdde1; } }
-        .bump-anim { animation: badgeBump 0.4s ease-out; }
 
         @keyframes slidePanelUp { from { bottom: -100px; } to { bottom: 0; } }
         .order-panel { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(43, 43, 54, 0.95); backdrop-filter: blur(10px); padding: 20px; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); box-sizing: border-box; z-index: 50; border-top-left-radius: 24px; border-top-right-radius: 24px; animation: slidePanelUp 0.5s cubic-bezier(0.4, 0.0, 0.2, 1) forwards;}
@@ -103,14 +96,31 @@
         .add-cart-btn { flex: 2; background: linear-gradient(135deg, #ff4757, #e84118); color: white; border: none; border-radius: 14px; font-weight: 900; padding: 18px; font-size: 18px; box-shadow: 0 4px 10px rgba(255, 71, 87, 0.3); cursor: pointer; transition: 0.1s;}
         .add-cart-btn:active { transform: scale(0.95); }
 
-        /* === 3. İLLÜZYON: BAŞARI ONAY ANİMASYONU === */
         .success-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(30, 30, 36, 0.98); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.3s; }
         .success-overlay.active { opacity: 1; pointer-events: auto; }
         .success-icon { width: 90px; height: 90px; border-radius: 50%; background: #2ed573; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 40px rgba(46, 213, 115, 0.4); transform: scale(0); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.27); }
         .success-overlay.active .success-icon { transform: scale(1); }
         .success-text { color: white; font-size: 24px; font-weight: 900; margin-top: 25px; transform: translateY(20px); opacity: 0; transition: all 0.5s 0.2s; text-shadow: 0 2px 10px rgba(0,0,0,0.5);}
         .success-overlay.active .success-text { transform: translateY(0); opacity: 1; }
+        
+        /* === YENİ: UÇAN SEPET (Trendyol Yemek Tarzı Oval Buton) === */
+        .floating-cart { 
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); 
+            width: 90%; max-width: 400px; height: 60px; 
+            background: linear-gradient(135deg, #ff4757, #e84118); 
+            border-radius: 30px; display: flex; align-items: center; justify-content: space-between; 
+            padding: 0 25px; box-sizing: border-box; font-size: 18px; font-weight: 900; color: white;
+            box-shadow: 0 10px 25px rgba(255, 71, 87, 0.4); z-index: 100; cursor: pointer; transition: 0.2s; 
+        }
+        .floating-cart:active { transform: translateX(-50%) scale(0.95); }
+        .fc-left { display: flex; align-items: center; gap: 10px; }
+        .fc-right { display: flex; align-items: center; gap: 10px; }
+        .floating-badge { background: #ffffff; color: #ff4757; width: 28px; height: 28px; border-radius: 50%; font-size: 15px; font-weight: 900; display: flex; align-items: center; justify-content: center; }
+        
+        @keyframes badgeBump { 0% { transform: scale(1); } 50% { transform: scale(1.4); } 100% { transform: scale(1); } }
+        .bump-anim { animation: badgeBump 0.4s ease-out; }
 
+        .empty-text { color: #7f8fa6; font-weight: 800; margin-top: 50px; font-size: 18px; animation: fadeSlideUp 0.4s ease-out forwards;}
     </style>
 </head>
 <body>
@@ -130,13 +140,18 @@
     </div>
 
     <div id="menu-container">
+        <!-- ARAMA ÇUBUĞU -->
+        <div class="search-container">
+            <input type="text" id="search-input" class="search-input" placeholder="🍔 Ürün veya İçecek Ara..." onkeyup="UrunAra()">
+        </div>
+
         <div class="category-tabs" id="kategori-sekmeleri" style="display: none;">
             <button class="tab-btn active" id="tab-Ana Yemek" onclick="HapticTitresim(); KategoriSec('Ana Yemek');">Ana Yemek</button>
             <button class="tab-btn" id="tab-İçecek" onclick="HapticTitresim(); KategoriSec('İçecek');">İçecek</button>
             <button class="tab-btn" id="tab-Ekstra" onclick="HapticTitresim(); KategoriSec('Ekstra');">Ekstra</button>
+            <button class="tab-btn" id="tab-Arama" style="display:none; color:#2ed573; border-color:#2ed573;">Sonuçlar</button>
         </div>
         
-        <!-- YENİ: SKELETON YÜKLEME ALANI -->
         <div id="skeleton-container" class="skeleton-wrapper">
             <div class="skeleton-card"><div class="skeleton-line"></div><div class="skeleton-badge"></div></div>
             <div class="skeleton-card"><div class="skeleton-line" style="width: 80%;"></div><div class="skeleton-badge" style="width: 60%;"></div></div>
@@ -150,6 +165,7 @@
     <div id="cart-container" style="display: none; padding-bottom: 40px;"></div>
     <div id="history-container" style="display: none; padding-bottom: 80px;"></div>
 
+    <!-- ONAY PANELİ (Artık sadece Sepet ekranında çıkacak) -->
     <div class="order-panel" id="alt-panel" style="display: none;">
         <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-weight: 900; font-size: 19px;">
             <span style="color: #dcdde1;">Ara Toplam:</span>
@@ -158,7 +174,16 @@
         <button class="order-btn" id="onay-btn" onclick="HapticTitresim(); SiparisGonder();">Sepeti Onayla</button>
     </div>
 
-    <!-- UNITY POPUP -->
+    <!-- YENİ: UÇAN SEPET İKONU (Oval Şekilli) -->
+    <div id="floating-cart" class="floating-cart" onclick="HapticTitresim(); SayfaGoster('sepet')" style="display: none;">
+        <div class="fc-left">
+            🛒 <span id="floating-badge" class="floating-badge">0</span>
+        </div>
+        <div class="fc-right">
+            <span id="floating-total">0.00 TL</span> <span>&#10095;</span>
+        </div>
+    </div>
+
     <div id="product-popup" class="popup-overlay" style="display:none;" onclick="if(event.target === this) PopupKapat();">
         <div class="popup-content">
             <div class="popup-header">
@@ -177,12 +202,9 @@
         </div>
     </div>
 
-    <!-- YENİ: BAŞARI ONAY EKRANI -->
     <div id="success-overlay" class="success-overlay">
         <div class="success-icon">
-            <svg width="45" height="45" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="20 6 9 17 4 12"></polyline>
-            </svg>
+            <svg width="45" height="45" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
         </div>
         <div class="success-text">Siparişiniz İletildi!</div>
     </div>
@@ -197,18 +219,28 @@
         let aktifKategori = 'Ana Yemek';
         let canliAdisyonTimer = null; 
         
-        let seciliUrun = null;
-        let seciliMiktar = 0;
-        let seciliFiyat = 0;
+        let seciliUrun = null; let seciliMiktar = 0; let seciliFiyat = 0;
 
         const urlParams = new URLSearchParams(window.location.search);
-        let guncelMasaNo = urlParams.get('masa') || 1;
+        let urlMasaNo = urlParams.get('masa') || 1;
+        
+        // MASA KİLİDİ
+        let kilitliMasa = localStorage.getItem("aktifMasaKilidi");
+        if(!kilitliMasa) {
+            localStorage.setItem("aktifMasaKilidi", urlMasaNo);
+            guncelMasaNo = urlMasaNo;
+        } else {
+            if(kilitliMasa !== urlMasaNo) {
+                alert("Güvenlik: Başka bir masanın QR kodunu okuttunuz. Kendi masanıza ("+kilitliMasa+") yönlendiriliyorsunuz.");
+                guncelMasaNo = kilitliMasa;
+            } else {
+                guncelMasaNo = urlMasaNo;
+            }
+        }
 
         window.onload = function() {
             document.getElementById("masa-baslik").innerText = "Masa #" + guncelMasaNo;
             fetch(firebaseMenuUrl).then(r => r.json()).then(data => {
-                
-                // Menü geldiğinde iskeleti gizle, gerçek menüyü göster
                 document.getElementById("skeleton-container").style.display = "none";
                 document.getElementById("menu-grid").style.display = "grid";
 
@@ -221,28 +253,7 @@
             });
         }
 
-        function HapticTitresim() {
-            if (navigator.vibrate) navigator.vibrate(40); 
-        }
-
-        function SayaciKaydir(elementId, baslangic, bitis, sureMS) {
-            let baslangicZamani = null;
-            const element = document.getElementById(elementId);
-            if (!element) return;
-
-            const animasyonAdimi = (suAnkiZaman) => {
-                if (!baslangicZamani) baslangicZamani = suAnkiZaman;
-                const gecenZaman = suAnkiZaman - baslangicZamani;
-                const ilerleme = Math.min(gecenZaman / sureMS, 1);
-                const easeOut = 1 - Math.pow(1 - ilerleme, 3);
-                const guncelDeger = baslangic + (bitis - baslangic) * easeOut;
-                element.innerText = guncelDeger.toFixed(2) + " TL";
-
-                if (ilerleme < 1) window.requestAnimationFrame(animasyonAdimi);
-                else element.innerText = bitis.toFixed(2) + " TL"; 
-            };
-            window.requestAnimationFrame(animasyonAdimi);
-        }
+        function HapticTitresim() { if (navigator.vibrate) navigator.vibrate(40); }
 
         function UrunKategorisiBul(isim) {
             let ad = isim.toLocaleLowerCase('tr-TR'); 
@@ -251,42 +262,61 @@
             return "Ana Yemek";
         }
 
+        function EkranaUrunleriCiz(urunListesi) {
+            const gridContainer = document.getElementById("menu-grid");
+            gridContainer.innerHTML = "";
+            
+            if(urunListesi.length === 0) {
+                gridContainer.innerHTML = `<div class="empty-text" style="grid-column: span 2;">Aradığınız ürün bulunamadı 🔍</div>`;
+                return;
+            }
+
+            urunListesi.forEach((urun, index) => {
+                let kartSinifi = "card-anayemek";
+                let tur = UrunKategorisiBul(urun.pName);
+                if(tur === "İçecek") kartSinifi = "card-icecek";
+                else if(tur === "Ekstra") kartSinifi = "card-ekstra";
+
+                let orjinalIndex = tumUrunler.findIndex(u => u.pName === urun.pName);
+                let gecikme = (index % 10) * 0.05; 
+                
+                gridContainer.innerHTML += `
+                <div class="product-card ${kartSinifi}" style="animation-delay: ${gecikme}s" onclick="UrunPopupAc(${orjinalIndex})">
+                    <div class="product-name">${urun.pName}</div>
+                    <div class="product-price-badge">${urun.price1Kg} ₺ / ${urun.isKg ? 'KG' : 'Adet'}</div>
+                </div>`;
+            });
+        }
+
+        function UrunAra() {
+            let arananKelime = document.getElementById("search-input").value.toLocaleLowerCase('tr-TR');
+            
+            if(arananKelime.length > 0) {
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                document.getElementById('tab-Arama').style.display = "block";
+                document.getElementById('tab-Arama').classList.add('active');
+                
+                let sonuclar = tumUrunler.filter(u => u.pName.toLocaleLowerCase('tr-TR').includes(arananKelime));
+                EkranaUrunleriCiz(sonuclar);
+            } else {
+                document.getElementById('tab-Arama').style.display = "none";
+                KategoriSec(aktifKategori); 
+            }
+        }
+
         function KategoriSec(kategoriAdi) {
             aktifKategori = kategoriAdi;
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById('tab-' + kategoriAdi).classList.add('active');
+            document.getElementById('tab-Arama').style.display = "none";
+            document.getElementById("search-input").value = ""; 
 
-            const gridContainer = document.getElementById("menu-grid");
-            gridContainer.innerHTML = "";
-            
-            setTimeout(() => {
-                tumUrunler.forEach((urun, index) => {
-                    let urunTuru = UrunKategorisiBul(urun.pName);
-                    if(urunTuru === aktifKategori) {
-                        
-                        let kartSinifi = "";
-                        if(urunTuru === "Ana Yemek") kartSinifi = "card-anayemek";
-                        else if (urunTuru === "İçecek") kartSinifi = "card-icecek";
-                        else kartSinifi = "card-ekstra"; 
-                        
-                        let gecikme = (index % 10) * 0.05; 
-                        
-                        gridContainer.innerHTML += `
-                        <div class="product-card ${kartSinifi}" style="animation-delay: ${gecikme}s" onclick="UrunPopupAc(${index})">
-                            <div class="product-name">${urun.pName}</div>
-                            <div class="product-price-badge">${urun.price1Kg} ₺ / ${urun.isKg ? 'KG' : 'Adet'}</div>
-                        </div>`;
-                    }
-                });
-            }, 10);
+            let filtrelenmis = tumUrunler.filter(u => UrunKategorisiBul(u.pName) === aktifKategori);
+            EkranaUrunleriCiz(filtrelenmis);
         }
 
         function UrunPopupAc(index) {
-            HapticTitresim();
-            seciliUrun = tumUrunler[index];
-            seciliMiktar = 0;
-            seciliFiyat = 0;
-
+            HapticTitresim(); seciliUrun = tumUrunler[index]; seciliMiktar = 0; seciliFiyat = 0;
             document.getElementById("popup-title").innerText = seciliUrun.pName;
             PopupUIYenile();
 
@@ -295,7 +325,6 @@
                 let p1 = parseFloat(seciliUrun.price1Kg.replace(',','.'));
                 let p750 = parseFloat(seciliUrun.price750g.replace(',','.'));
                 let p500 = parseFloat(seciliUrun.price500g.replace(',','.'));
-                
                 btnKutusu.innerHTML = `
                     <button class="popup-weight-btn" onclick="PopupEkle(1, ${p1})">1 KG<br><small style="color:#2ed573; font-size:15px;">+${seciliUrun.price1Kg} ₺</small></button>
                     <button class="popup-weight-btn" onclick="PopupEkle(0.75, ${p750})">750 Gr<br><small style="color:#2ed573; font-size:15px;">+${seciliUrun.price750g} ₺</small></button>
@@ -303,32 +332,15 @@
                 `;
             } else {
                 let pAdet = parseFloat(seciliUrun.price1Kg.replace(',','.'));
-                btnKutusu.innerHTML = `
-                    <button class="popup-weight-btn" style="grid-column: span 3;" onclick="PopupEkle(1, ${pAdet})">+ 1 Adet Ekle<br><small style="color:#2ed573; font-size:16px;">+${seciliUrun.price1Kg} ₺</small></button>
-                `;
+                btnKutusu.innerHTML = `<button class="popup-weight-btn" style="grid-column: span 3;" onclick="PopupEkle(1, ${pAdet})">+ 1 Adet Ekle<br><small style="color:#2ed573; font-size:16px;">+${seciliUrun.price1Kg} ₺</small></button>`;
             }
-
             document.getElementById("product-popup").style.display = "flex";
         }
 
-        function PopupEkle(miktar, fiyat) {
-            HapticTitresim();
-            seciliMiktar += miktar;
-            seciliFiyat += fiyat;
-            PopupUIYenile();
-        }
-
-        function PopupSifirla() {
-            HapticTitresim();
-            seciliMiktar = 0;
-            seciliFiyat = 0;
-            PopupUIYenile();
-        }
-
-        function PopupKapat() {
-            document.getElementById("product-popup").style.display = "none";
-        }
-
+        function PopupEkle(miktar, fiyat) { HapticTitresim(); seciliMiktar += miktar; seciliFiyat += fiyat; PopupUIYenile(); }
+        function PopupSifirla() { HapticTitresim(); seciliMiktar = 0; seciliFiyat = 0; PopupUIYenile(); }
+        function PopupKapat() { document.getElementById("product-popup").style.display = "none"; }
+        
         function PopupUIYenile() {
             let birim = seciliUrun.isKg ? " KG" : " Adet";
             document.getElementById("popup-amount").innerText = seciliMiktar > 0 ? Number(seciliMiktar.toFixed(2)) + birim : "______" + birim;
@@ -338,36 +350,24 @@
         function PopupSepeteEkle() {
             if(seciliMiktar <= 0) return;
             HapticTitresim();
-
             let birim = seciliUrun.isKg ? " Kg " : " Adet ";
             let miktarGosterim = Number(seciliMiktar.toFixed(2)).toString();
             let tamIsim = miktarGosterim + birim + seciliUrun.pName;
 
             let mevcut = sepet.find(u => u.baseName === tamIsim);
-            if(mevcut) {
-                mevcut.quantity += 1;
-            } else {
-                sepet.push({
-                    baseName: tamIsim,         
-                    basePrice: seciliFiyat,    
-                    baseStockAmount: seciliMiktar, 
-                    quantity: 1,               
-                    rawName: seciliUrun.pName  
-                });
+            if(mevcut) { mevcut.quantity += 1; } else {
+                sepet.push({ baseName: tamIsim, basePrice: seciliFiyat, baseStockAmount: seciliMiktar, quantity: 1, rawName: seciliUrun.pName });
             }
+            PopupKapat(); HesaplaVeGuncelle();
 
-            PopupKapat();
-            HesaplaVeGuncelle();
-            
-            let adetElementi = document.getElementById("sidebar-sepet-adet");
-            adetElementi.classList.remove("bump-anim");
-            void adetElementi.offsetWidth; 
-            adetElementi.classList.add("bump-anim");
+            // Uçan Sepet animasyonu tetikleme
+            let badgeElement = document.getElementById("floating-badge");
+            badgeElement.classList.remove("bump-anim");
+            void badgeElement.offsetWidth; 
+            badgeElement.classList.add("bump-anim");
         }
 
-        function AcSidebar() { document.getElementById("mySidebar").style.width = "270px"; }
-        function KapatSidebar() { document.getElementById("mySidebar").style.width = "0"; }
-
+        // === PANELLERİ GÖSTER/GİZLE MANTIĞI YENİLENDİ ===
         function SayfaGoster(sayfa) {
             KapatSidebar();
             if(canliAdisyonTimer) clearInterval(canliAdisyonTimer);
@@ -376,122 +376,140 @@
             document.getElementById("cart-container").style.display = "none";
             document.getElementById("history-container").style.display = "none";
             
+            // İki paneli de varsayılan olarak gizliyoruz
+            document.getElementById("alt-panel").style.display = "none";
+            document.getElementById("floating-cart").style.display = "none";
+            
             if(sayfa === 'urunler') {
                 document.getElementById("menu-container").style.display = "block";
-                document.getElementById("alt-panel").style.display = "block"; 
+                
+                // Menü ekranındayken sepette ürün varsa SADECE UÇAN SEPET'i göster
+                if (sepet.length > 0) {
+                    document.getElementById("floating-cart").style.display = "flex";
+                }
             } 
             else if (sayfa === 'sepet') {
                 document.getElementById("cart-container").style.display = "block";
+                
+                // Sepet ekranına geçince Uçan Sepet kaybolur, ONAY PANELİ açılır
                 document.getElementById("alt-panel").style.display = "block";
                 SepetEkraniniCiz(); 
             }
             else if (sayfa === 'gecmis') {
                 document.getElementById("history-container").style.display = "block";
-                document.getElementById("alt-panel").style.display = "none"; 
                 CanliAdisyonCek();
                 canliAdisyonTimer = setInterval(CanliAdisyonCek, 3000);
             }
         }
-
-        function MiktarDegistir(index, degisimMiktari) {
-            sepet[index].quantity += degisimMiktari;
-            if(sepet[index].quantity <= 0) { sepet.splice(index, 1); }
-            HesaplaVeGuncelle(); SepetEkraniniCiz(); 
-        }
+        
+        function AcSidebar() { document.getElementById("mySidebar").style.width = "270px"; }
+        function KapatSidebar() { document.getElementById("mySidebar").style.width = "0"; }
 
         function HesaplaVeGuncelle() {
             let yeniToplam = 0; let toplamAdet = 0;
-            sepet.forEach(urun => { 
-                yeniToplam += (urun.basePrice * urun.quantity); 
-                toplamAdet += urun.quantity; 
-            });
+            sepet.forEach(urun => { yeniToplam += (urun.basePrice * urun.quantity); toplamAdet += urun.quantity; });
             
-            SayaciKaydir("sepet-tutar", eskiToplamFiyat, yeniToplam, 600);
+            document.getElementById("sepet-tutar").innerText = yeniToplam.toFixed(2) + " TL";
+            document.getElementById("floating-total").innerText = yeniToplam.toFixed(2) + " TL";
             eskiToplamFiyat = yeniToplam;
-
+            
             document.getElementById("sidebar-sepet-adet").innerText = toplamAdet;
+            document.getElementById("floating-badge").innerText = toplamAdet;
+            
+            // Menü ekranındaysak, toplam adet 0'dan büyükse uçan sepeti anında göster
+            if(document.getElementById("menu-container").style.display === "block") {
+                document.getElementById("floating-cart").style.display = toplamAdet > 0 ? "flex" : "none";
+            }
+        }
+
+        function HizliNotEkle(notMetni) {
+            HapticTitresim();
+            let notKutusu = document.getElementById("siparis-notu");
+            if(notKutusu) {
+                notKutusu.value += (notKutusu.value.length > 0 ? ", " : "") + notMetni;
+            }
         }
 
         function SepetEkraniniCiz() {
             const container = document.getElementById("cart-container");
             if(sepet.length === 0) {
                 container.innerHTML = `<div class="empty-text">Sepetiniz şu an boş 🛒</div><br><button class="order-btn" style="width:70%; margin-top:10px; font-size:16px; background:#2b2b36; color:#ffffff; border:2px solid #3f3f4e; box-shadow:0 4px 10px rgba(0,0,0,0.2);" onclick="HapticTitresim(); SayfaGoster('urunler')">Ürünlere Göz At</button>`;
+                document.getElementById("alt-panel").style.display = "none"; // Sepet boşalınca alttaki paneli tamamen gizle
                 return;
             }
             let html = `<h2 style="color:#ffffff; margin-top:0; font-weight:900;">Sepetim</h2>`;
             sepet.forEach((urun, index) => {
                 let satirFiyati = (urun.basePrice * urun.quantity).toFixed(2);
-                let gecikme = index * 0.05; 
-                
                 let gosterilenIsim = (urun.quantity > 1 ? `<span style="color:#ff4757;">${urun.quantity}x</span> ` : "") + urun.baseName;
-
                 html += `
-                <div class="cart-item" style="animation-delay: ${gecikme}s">
+                <div class="cart-item">
                     <div style="flex:1; padding-right:10px;">
                         <div class="product-name" style="font-size:16px; min-height:auto; justify-content:flex-start; margin-bottom:6px; color:#ffffff; text-shadow:none; text-align:left;">${gosterilenIsim}</div>
                         <div style="color:#ff4757; font-weight:900; font-size:16px; text-align:left;">${satirFiyati} TL</div>
                     </div>
                     <div class="cart-controls">
-                        <button class="cart-btn" onclick="HapticTitresim(); MiktarDegistir(${index}, -1)">-</button>
+                        <button class="cart-btn" onclick="HapticTitresim(); sepet[${index}].quantity--; if(sepet[${index}].quantity<=0) sepet.splice(${index},1); HesaplaVeGuncelle(); SepetEkraniniCiz();">-</button>
                         <div class="cart-amount">${urun.quantity}</div>
-                        <button class="cart-btn" onclick="HapticTitresim(); MiktarDegistir(${index}, 1)">+</button>
+                        <button class="cart-btn" onclick="HapticTitresim(); sepet[${index}].quantity++; HesaplaVeGuncelle(); SepetEkraniniCiz();">+</button>
                     </div>
                 </div>`;
             });
             
-            html += `<textarea id="siparis-notu" class="note-input" rows="2" placeholder="Şefe Notunuz (Örn: Acısız olsun)"></textarea>`;
-            html += `<button class="order-btn" style="padding:16px; width:100%; font-size:16px; background:#2b2b36; color:#ffffff; border:2px solid #3f3f4e; box-shadow:0 4px 10px rgba(0,0,0,0.2);" onclick="HapticTitresim(); SayfaGoster('urunler')">+ Masaya Başka Ürün Ekle</button>`;
+            html += `
+            <div style="text-align: left; margin-top: 15px;">
+                <span style="color: #a4b0be; font-size: 14px; font-weight: 800; margin-bottom: 8px; display: block;">Hızlı Not Ekle:</span>
+                <div class="smart-chips-container">
+                    <button class="smart-chip" onclick="HizliNotEkle('Acılı')">🌶️ Acılı</button>
+                    <button class="smart-chip" onclick="HizliNotEkle('Acısız')">Acısız</button>
+                    <button class="smart-chip" onclick="HizliNotEkle('Bol Lavaşlı')">🌮 Bol Lavaşlı</button>
+                    <button class="smart-chip" onclick="HizliNotEkle('Soğansız')">🧅 Soğansız</button>
+                    <button class="smart-chip" onclick="HizliNotEkle('İyi Pişmiş')">🔥 İyi Pişmiş</button>
+                </div>
+            </div>
+            <textarea id="siparis-notu" class="note-input" rows="2" placeholder="Özel Notunuz..."></textarea>`;
+            
+            html += `<button class="order-btn" style="padding:16px; width:100%; font-size:16px; background:#2b2b36; color:#ffffff; border:2px solid #3f3f4e; box-shadow:0 4px 10px rgba(0,0,0,0.2); margin-bottom: 50px;" onclick="HapticTitresim(); SayfaGoster('urunler')">+ Masaya Başka Ürün Ekle</button>`;
             container.innerHTML = html;
         }
 
         function CanliAdisyonCek() {
             const url = "https://bekmezpos-default-rtdb.firebaseio.com/CanliMasalar.json";
-            
             fetch(url).then(r => r.json()).then(data => {
                 const container = document.getElementById("history-container");
-                if(!data || !data.aktifMasalar) {
-                    container.innerHTML = `<div class="empty-text">Henüz masanıza işlenen bir sipariş yok 🍽️</div><br><button class="order-btn" style="width:70%; margin-top:10px; font-size:16px; background:#2b2b36; color:#ffffff; border:2px solid #3f3f4e; box-shadow:0 4px 10px rgba(0,0,0,0.2);" onclick="HapticTitresim(); SayfaGoster('urunler')">Sipariş Ver</button>`;
-                    return;
-                }
+                if(!data || !data.aktifMasalar) return;
                 
                 let benimMasam = data.aktifMasalar.find(m => m.masaId === parseInt(guncelMasaNo));
                 if(!benimMasam) {
-                    container.innerHTML = `<div class="empty-text">Hesabınız kesilmiş veya sipariş hazırlanıyor.</div><br><button class="order-btn" style="width:70%; margin-top:10px; font-size:16px; background:#2b2b36; color:#ffffff; border:2px solid #3f3f4e; box-shadow:0 4px 10px rgba(0,0,0,0.2);" onclick="HapticTitresim(); SayfaGoster('urunler')">Yeni Sipariş Ver</button>`;
+                    container.innerHTML = `<div class="empty-text">Masanız kapalı veya sipariş bekleniyor.</div><br><button class="order-btn" style="width:70%; margin-top:10px; font-size:16px; background:#2b2b36; color:#ffffff; border:2px solid #3f3f4e; box-shadow:0 4px 10px rgba(0,0,0,0.2);" onclick="HapticTitresim(); SayfaGoster('urunler')">Yeni Sipariş Ver</button>`;
                     return;
                 }
 
                 let html = `<h2 style="color:#ffffff; margin-top:0; font-weight:900;">Canlı Masam</h2>`;
                 html += `<div class="history-card">`;
-                html += `  <div class="history-header">
-                             <span>Sipariş Durumu</span>
-                             <span class="live-badge">Mutfağa İletildi ✓</span>
-                           </div>`;
-                
+                html += `  <div class="history-header"><span>Durum</span><span class="live-badge">Mutfağa İletildi ✓</span></div>`;
                 benimMasam.siparisler.forEach(urun => {
-                    let satirFiyati = (urun.itemPrice * urun.amount).toFixed(2);
-                    html += `<div class="history-item">
-                               <span><b style="color:#ff4757;">${urun.amount}x</b> ${urun.itemName}</span>
-                               <span>${satirFiyati} ₺</span>
-                             </div>`;
+                    html += `<div class="history-item"><span><b style="color:#ff4757;">${urun.amount}x</b> ${urun.itemName}</span><span>${(urun.itemPrice * urun.amount).toFixed(2)} ₺</span></div>`;
                 });
-
-                if (benimMasam.siparisNotu && benimMasam.siparisNotu.trim() !== "") {
-                    html += `<div style="margin-top: 15px; padding: 12px; background: #1e1e24; border-radius: 10px; border-left: 4px solid #ff4757; font-size: 14px; color: #a4b0be; font-style: italic;">
-                               <b style="color: #ff4757;">Notunuz:</b> ${benimMasam.siparisNotu}
-                             </div>`;
+                if (benimMasam.siparisNotu) {
+                    html += `<div style="margin-top: 15px; padding: 12px; background: #1e1e24; border-radius: 10px; border-left: 4px solid #ff4757; font-size: 14px; color: #a4b0be; font-style: italic;"><b style="color: #ff4757;">Notunuz:</b> ${benimMasam.siparisNotu}</div>`;
                 }
-                
-                html += `<div class="history-total">Toplam Tutar: ${benimMasam.toplamTutar.toFixed(2)} TL</div>`;
-                html += `</div>`;
-                html += `<br><button class="order-btn" style="padding:16px; width:100%; font-size:16px; background:#2b2b36; color:#ffffff; border:2px solid #3f3f4e; box-shadow:0 4px 10px rgba(0,0,0,0.2);" onclick="HapticTitresim(); SayfaGoster('urunler')">Masaya Yeni Ürün Söyle</button>`;
-                
+                html += `<div class="history-total">Toplam: ${benimMasam.toplamTutar.toFixed(2)} TL</div></div>`;
                 container.innerHTML = html;
             }).catch(e => console.log("Canlı yayın çekilemedi"));
         }
 
-        // === YENİ: ANİMASYONLU BAŞARI GÖNDERİMİ ===
         function SiparisGonder() {
-            if(sepet.length === 0) { alert("Sepetiniz boş!"); SayfaGoster('urunler'); return; }
+            if(sepet.length === 0) return;
+
+            let sonSiparisZamani = localStorage.getItem("sonSiparisZamani_" + guncelMasaNo);
+            if(sonSiparisZamani) {
+                let gecenSureMs = Date.now() - parseInt(sonSiparisZamani);
+                if(gecenSureMs < (3 * 60 * 1000)) { 
+                    let kalanSaniye = Math.ceil((180000 - gecenSureMs) / 1000);
+                    alert(`Sistemi meşgul etmemek için yeni sipariş vermeden önce ${kalanSaniye} saniye daha beklemelisiniz.`);
+                    return;
+                }
+            }
 
             let notKutusu = document.getElementById("siparis-notu");
             let alinanNot = notKutusu ? notKutusu.value : "";
@@ -521,17 +539,16 @@
                 method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(siparisVerisi)
             }).then(response => {
                 
-                // Mükemmel Başarı Animasyonu Başlıyor
+                localStorage.setItem("sonSiparisZamani_" + guncelMasaNo, Date.now());
+
                 HapticTitresim();
                 let basariEkrani = document.getElementById("success-overlay");
                 basariEkrani.classList.add("active");
                 
                 sepet = [];
                 eskiToplamFiyat = 0;
-                document.getElementById("sepet-tutar").innerText = "0.00 TL";
-                document.getElementById("sidebar-sepet-adet").innerText = "0";
+                HesaplaVeGuncelle();
                 
-                // 1.8 Saniye sonra menüye dön
                 setTimeout(() => {
                     basariEkrani.classList.remove("active");
                     SayfaGoster('gecmis'); 
