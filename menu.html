@@ -207,8 +207,6 @@
         let tumUrunler = [];
         let aktifKategori = 'Ana Yemek';
         let canliAdisyonTimer = null; 
-        
-        // YENİ: Görsel hafıza eklendi (Zıplamayı önler)
         let sonCekilenAdisyonHTML = "";
         
         let seciliUrun = null; let seciliMiktar = 0; let seciliFiyat = 0;
@@ -379,7 +377,7 @@
             }
             else if (sayfa === 'gecmis') {
                 document.getElementById("history-container").style.display = "block";
-                sonCekilenAdisyonHTML = ""; // YENİ: Geçmiş sekmesi ilk açıldığında hafızayı sil ki 1 kere animasyon yapsın
+                sonCekilenAdisyonHTML = ""; 
                 CanliAdisyonCek();
                 canliAdisyonTimer = setInterval(CanliAdisyonCek, 3000);
             }
@@ -481,7 +479,6 @@
                     }
                 }
 
-                // YENİ: SADECE SAYFA İÇERİĞİ DEĞİŞİRSE EKRANI GÜNCELLE! (Zıplamayı çözen sihir)
                 if (sonCekilenAdisyonHTML !== html) {
                     container.innerHTML = html;
                     sonCekilenAdisyonHTML = html;
@@ -490,14 +487,15 @@
             }).catch(e => console.log("Canlı yayın çekilemedi"));
         }
 
+        // === BUG FİX: 1 DAKİKA KORUMASI (60.000 ms) ===
         function SiparisGonder() {
             if(sepet.length === 0) return;
 
             let sonSiparisZamani = localStorage.getItem("sonSiparisZamani_" + guncelMasaNo);
             if(sonSiparisZamani) {
                 let gecenSureMs = Date.now() - parseInt(sonSiparisZamani);
-                if(gecenSureMs < (3 * 60 * 1000)) { 
-                    let kalanSaniye = Math.ceil((180000 - gecenSureMs) / 1000);
+                if(gecenSureMs < (1 * 60 * 1000)) { // 1 Dakika!
+                    let kalanSaniye = Math.ceil((60000 - gecenSureMs) / 1000);
                     alert(`Sistemi meşgul etmemek için yeni sipariş vermeden önce ${kalanSaniye} saniye daha beklemelisiniz.`);
                     return;
                 }
