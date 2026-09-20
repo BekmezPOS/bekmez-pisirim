@@ -103,15 +103,7 @@
         .success-text { color: white; font-size: 24px; font-weight: 900; margin-top: 25px; transform: translateY(20px); opacity: 0; transition: all 0.5s 0.2s; text-shadow: 0 2px 10px rgba(0,0,0,0.5);}
         .success-overlay.active .success-text { transform: translateY(0); opacity: 1; }
         
-        /* === YENİ: UÇAN SEPET (Trendyol Yemek Tarzı Oval Buton) === */
-        .floating-cart { 
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); 
-            width: 90%; max-width: 400px; height: 60px; 
-            background: linear-gradient(135deg, #ff4757, #e84118); 
-            border-radius: 30px; display: flex; align-items: center; justify-content: space-between; 
-            padding: 0 25px; box-sizing: border-box; font-size: 18px; font-weight: 900; color: white;
-            box-shadow: 0 10px 25px rgba(255, 71, 87, 0.4); z-index: 100; cursor: pointer; transition: 0.2s; 
-        }
+        .floating-cart { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; height: 60px; background: linear-gradient(135deg, #ff4757, #e84118); border-radius: 30px; display: flex; align-items: center; justify-content: space-between; padding: 0 25px; box-sizing: border-box; font-size: 18px; font-weight: 900; color: white; box-shadow: 0 10px 25px rgba(255, 71, 87, 0.4); z-index: 100; cursor: pointer; transition: 0.2s; }
         .floating-cart:active { transform: translateX(-50%) scale(0.95); }
         .fc-left { display: flex; align-items: center; gap: 10px; }
         .fc-right { display: flex; align-items: center; gap: 10px; }
@@ -140,7 +132,6 @@
     </div>
 
     <div id="menu-container">
-        <!-- ARAMA ÇUBUĞU -->
         <div class="search-container">
             <input type="text" id="search-input" class="search-input" placeholder="🍔 Ürün veya İçecek Ara..." onkeyup="UrunAra()">
         </div>
@@ -165,7 +156,6 @@
     <div id="cart-container" style="display: none; padding-bottom: 40px;"></div>
     <div id="history-container" style="display: none; padding-bottom: 80px;"></div>
 
-    <!-- ONAY PANELİ (Artık sadece Sepet ekranında çıkacak) -->
     <div class="order-panel" id="alt-panel" style="display: none;">
         <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-weight: 900; font-size: 19px;">
             <span style="color: #dcdde1;">Ara Toplam:</span>
@@ -174,7 +164,6 @@
         <button class="order-btn" id="onay-btn" onclick="HapticTitresim(); SiparisGonder();">Sepeti Onayla</button>
     </div>
 
-    <!-- YENİ: UÇAN SEPET İKONU (Oval Şekilli) -->
     <div id="floating-cart" class="floating-cart" onclick="HapticTitresim(); SayfaGoster('sepet')" style="display: none;">
         <div class="fc-left">
             🛒 <span id="floating-badge" class="floating-badge">0</span>
@@ -219,12 +208,14 @@
         let aktifKategori = 'Ana Yemek';
         let canliAdisyonTimer = null; 
         
+        // YENİ: Görsel hafıza eklendi (Zıplamayı önler)
+        let sonCekilenAdisyonHTML = "";
+        
         let seciliUrun = null; let seciliMiktar = 0; let seciliFiyat = 0;
 
         const urlParams = new URLSearchParams(window.location.search);
         let urlMasaNo = urlParams.get('masa') || 1;
         
-        // MASA KİLİDİ
         let kilitliMasa = localStorage.getItem("aktifMasaKilidi");
         if(!kilitliMasa) {
             localStorage.setItem("aktifMasaKilidi", urlMasaNo);
@@ -360,14 +351,12 @@
             }
             PopupKapat(); HesaplaVeGuncelle();
 
-            // Uçan Sepet animasyonu tetikleme
             let badgeElement = document.getElementById("floating-badge");
             badgeElement.classList.remove("bump-anim");
             void badgeElement.offsetWidth; 
             badgeElement.classList.add("bump-anim");
         }
 
-        // === PANELLERİ GÖSTER/GİZLE MANTIĞI YENİLENDİ ===
         function SayfaGoster(sayfa) {
             KapatSidebar();
             if(canliAdisyonTimer) clearInterval(canliAdisyonTimer);
@@ -376,27 +365,21 @@
             document.getElementById("cart-container").style.display = "none";
             document.getElementById("history-container").style.display = "none";
             
-            // İki paneli de varsayılan olarak gizliyoruz
             document.getElementById("alt-panel").style.display = "none";
             document.getElementById("floating-cart").style.display = "none";
             
             if(sayfa === 'urunler') {
                 document.getElementById("menu-container").style.display = "block";
-                
-                // Menü ekranındayken sepette ürün varsa SADECE UÇAN SEPET'i göster
-                if (sepet.length > 0) {
-                    document.getElementById("floating-cart").style.display = "flex";
-                }
+                if (sepet.length > 0) document.getElementById("floating-cart").style.display = "flex";
             } 
             else if (sayfa === 'sepet') {
                 document.getElementById("cart-container").style.display = "block";
-                
-                // Sepet ekranına geçince Uçan Sepet kaybolur, ONAY PANELİ açılır
                 document.getElementById("alt-panel").style.display = "block";
                 SepetEkraniniCiz(); 
             }
             else if (sayfa === 'gecmis') {
                 document.getElementById("history-container").style.display = "block";
+                sonCekilenAdisyonHTML = ""; // YENİ: Geçmiş sekmesi ilk açıldığında hafızayı sil ki 1 kere animasyon yapsın
                 CanliAdisyonCek();
                 canliAdisyonTimer = setInterval(CanliAdisyonCek, 3000);
             }
@@ -416,7 +399,6 @@
             document.getElementById("sidebar-sepet-adet").innerText = toplamAdet;
             document.getElementById("floating-badge").innerText = toplamAdet;
             
-            // Menü ekranındaysak, toplam adet 0'dan büyükse uçan sepeti anında göster
             if(document.getElementById("menu-container").style.display === "block") {
                 document.getElementById("floating-cart").style.display = toplamAdet > 0 ? "flex" : "none";
             }
@@ -434,7 +416,7 @@
             const container = document.getElementById("cart-container");
             if(sepet.length === 0) {
                 container.innerHTML = `<div class="empty-text">Sepetiniz şu an boş 🛒</div><br><button class="order-btn" style="width:70%; margin-top:10px; font-size:16px; background:#2b2b36; color:#ffffff; border:2px solid #3f3f4e; box-shadow:0 4px 10px rgba(0,0,0,0.2);" onclick="HapticTitresim(); SayfaGoster('urunler')">Ürünlere Göz At</button>`;
-                document.getElementById("alt-panel").style.display = "none"; // Sepet boşalınca alttaki paneli tamamen gizle
+                document.getElementById("alt-panel").style.display = "none"; 
                 return;
             }
             let html = `<h2 style="color:#ffffff; margin-top:0; font-weight:900;">Sepetim</h2>`;
@@ -475,26 +457,36 @@
         function CanliAdisyonCek() {
             const url = "https://bekmezpos-default-rtdb.firebaseio.com/CanliMasalar.json";
             fetch(url).then(r => r.json()).then(data => {
-                const container = document.getElementById("history-container");
-                if(!data || !data.aktifMasalar) return;
-                
-                let benimMasam = data.aktifMasalar.find(m => m.masaId === parseInt(guncelMasaNo));
-                if(!benimMasam) {
-                    container.innerHTML = `<div class="empty-text">Masanız kapalı veya sipariş bekleniyor.</div><br><button class="order-btn" style="width:70%; margin-top:10px; font-size:16px; background:#2b2b36; color:#ffffff; border:2px solid #3f3f4e; box-shadow:0 4px 10px rgba(0,0,0,0.2);" onclick="HapticTitresim(); SayfaGoster('urunler')">Yeni Sipariş Ver</button>`;
-                    return;
+                let container = document.getElementById("history-container");
+                let html = "";
+
+                if(!data || !data.aktifMasalar) {
+                    html = `<div class="empty-text">Masanız kapalı veya sipariş bekleniyor.</div><br><button class="order-btn" style="width:70%; margin-top:10px; font-size:16px; background:#2b2b36; color:#ffffff; border:2px solid #3f3f4e; box-shadow:0 4px 10px rgba(0,0,0,0.2);" onclick="HapticTitresim(); SayfaGoster('urunler')">Yeni Sipariş Ver</button>`;
+                } else {
+                    let benimMasam = data.aktifMasalar.find(m => m.masaId === parseInt(guncelMasaNo));
+                    if(!benimMasam) {
+                        html = `<div class="empty-text">Masanız kapalı veya sipariş bekleniyor.</div><br><button class="order-btn" style="width:70%; margin-top:10px; font-size:16px; background:#2b2b36; color:#ffffff; border:2px solid #3f3f4e; box-shadow:0 4px 10px rgba(0,0,0,0.2);" onclick="HapticTitresim(); SayfaGoster('urunler')">Yeni Sipariş Ver</button>`;
+                    } else {
+                        html = `<h2 style="color:#ffffff; margin-top:0; font-weight:900;">Canlı Masam</h2>`;
+                        html += `<div class="history-card">`;
+                        html += `  <div class="history-header"><span>Durum</span><span class="live-badge">Mutfağa İletildi ✓</span></div>`;
+                        benimMasam.siparisler.forEach(urun => {
+                            html += `<div class="history-item"><span><b style="color:#ff4757;">${urun.amount}x</b> ${urun.itemName}</span><span>${(urun.itemPrice * urun.amount).toFixed(2)} ₺</span></div>`;
+                        });
+                        if (benimMasam.siparisNotu) {
+                            html += `<div style="margin-top: 15px; padding: 12px; background: #1e1e24; border-radius: 10px; border-left: 4px solid #ff4757; font-size: 14px; color: #a4b0be; font-style: italic;"><b style="color: #ff4757;">Notunuz:</b> ${benimMasam.siparisNotu}</div>`;
+                        }
+                        html += `<div class="history-total">Toplam: ${benimMasam.toplamTutar.toFixed(2)} TL</div></div>`;
+                        html += `<br><button class="order-btn" style="padding:16px; width:100%; font-size:16px; background:#2b2b36; color:#ffffff; border:2px solid #3f3f4e; box-shadow:0 4px 10px rgba(0,0,0,0.2); margin-bottom:50px;" onclick="HapticTitresim(); SayfaGoster('urunler')">Masaya Yeni Ürün Söyle</button>`;
+                    }
                 }
 
-                let html = `<h2 style="color:#ffffff; margin-top:0; font-weight:900;">Canlı Masam</h2>`;
-                html += `<div class="history-card">`;
-                html += `  <div class="history-header"><span>Durum</span><span class="live-badge">Mutfağa İletildi ✓</span></div>`;
-                benimMasam.siparisler.forEach(urun => {
-                    html += `<div class="history-item"><span><b style="color:#ff4757;">${urun.amount}x</b> ${urun.itemName}</span><span>${(urun.itemPrice * urun.amount).toFixed(2)} ₺</span></div>`;
-                });
-                if (benimMasam.siparisNotu) {
-                    html += `<div style="margin-top: 15px; padding: 12px; background: #1e1e24; border-radius: 10px; border-left: 4px solid #ff4757; font-size: 14px; color: #a4b0be; font-style: italic;"><b style="color: #ff4757;">Notunuz:</b> ${benimMasam.siparisNotu}</div>`;
+                // YENİ: SADECE SAYFA İÇERİĞİ DEĞİŞİRSE EKRANI GÜNCELLE! (Zıplamayı çözen sihir)
+                if (sonCekilenAdisyonHTML !== html) {
+                    container.innerHTML = html;
+                    sonCekilenAdisyonHTML = html;
                 }
-                html += `<div class="history-total">Toplam: ${benimMasam.toplamTutar.toFixed(2)} TL</div></div>`;
-                container.innerHTML = html;
+
             }).catch(e => console.log("Canlı yayın çekilemedi"));
         }
 
