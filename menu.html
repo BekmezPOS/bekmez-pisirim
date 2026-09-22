@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bekmez Pişirim - QR Menü</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -10,7 +10,7 @@
     <style>
         :root {
             --bg-color: #0f0f13; 
-            --card-bg: rgba(24, 24, 32, 0.85); /* Filigransız, pürüzsüz koyu cam */
+            --card-bg: rgba(24, 24, 32, 0.85); 
             --border-color: #272732;
             --text-main: #ffffff;
             --text-muted: #9ba4b5;
@@ -22,7 +22,10 @@
             --extra-color: #f7b731;
         }
 
-        body { font-family: 'Nunito', sans-serif; background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 15px; text-align: center; padding-bottom: 110px; -webkit-tap-highlight-color: transparent;}
+        /* YENİ: Otomatik sığdırma ve taşma önleyici kilitler */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body { font-family: 'Nunito', sans-serif; background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 15px; text-align: center; padding-bottom: 110px; overflow-x: hidden;}
         
         /* =========================================================
            SİNEMATİK AÇILIŞ (SPLASH) EKRANI 
@@ -124,8 +127,8 @@
         /* ========================================================= */
 
         .header { background: rgba(24, 24, 32, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); color: var(--text-main); padding: 18px; border-radius: 20px; margin-bottom: 20px; font-size: 22px; font-weight: 800; position: relative; text-align: center; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 10px 30px rgba(0,0,0,0.4);}
-        .hamburger { position: absolute; left: 15px; font-size: 26px; cursor: pointer; color: var(--text-main); user-select: none; background: var(--bg-color); width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; transition: 0.2s; border: 1px solid var(--border-color);}
-        .hamburger:active { transform: scale(0.9); background: var(--primary-gradient); color: white; border-color: transparent;} 
+        .hamburger { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); font-size: 26px; cursor: pointer; color: var(--text-main); user-select: none; background: var(--bg-color); width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; transition: 0.2s; border: 1px solid var(--border-color);}
+        .hamburger:active { transform: translateY(-50%) scale(0.9); background: var(--primary-gradient); color: white; border-color: transparent;} 
         
         .sidebar { height: 100%; width: 0; position: fixed; z-index: 999; top: 0; left: 0; background-color: rgba(24, 24, 32, 0.95); backdrop-filter: blur(20px); overflow-x: hidden; transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1); padding-top: 80px; box-shadow: 10px 0 40px rgba(0,0,0,0.8); text-align: left; white-space: nowrap; border-right: 1px solid var(--border-color);}
         .sidebar a { padding: 18px 25px; text-decoration: none; font-size: 17px; color: var(--text-muted); display: block; transition: 0.2s; border-bottom: 1px solid rgba(255,255,255,0.02); font-weight: 700;}
@@ -144,20 +147,17 @@
         .tab-btn { background: #181820; border: 1px solid var(--border-color); font-size: 14px; font-weight: 700; color: var(--text-muted); padding: 14px 26px; cursor: pointer; border-radius: 30px; transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1);}
         .tab-btn.active { color: #ffffff; background: var(--primary-gradient); border: none; box-shadow: 0 8px 20px var(--primary-glow); transform: translateY(-2px);}
 
-        .grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        /* YENİ: Mobilde 1, Geniş ekranda 2 sütun */
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
         @keyframes fadeSlideUpCard { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
         
-        /* YENİ: SADE VE LÜKS ÜRÜN KARTLARI (FİLİGRAN İPTAL EDİLDİ) */
         .product-card { 
-            background: var(--card-bg); 
-            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255,255,255,0.03); 
+            background: var(--card-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.03); 
             padding: 25px 12px; border-radius: 24px; display: flex; flex-direction: column; justify-content: center; align-items: center; 
             animation: fadeSlideUpCard 0.5s ease-out forwards; cursor: pointer; transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); 
             position: relative; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.4);
         }
         
-        /* Kartın İçinden Vuran Yumuşak ve Minimal Işık (Soft Glow) */
         .card-anayemek { border-bottom: 3px solid var(--primary); }
         .card-anayemek::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at top, rgba(255, 71, 87, 0.05) 0%, transparent 60%); z-index: -1; pointer-events: none; transition: 0.4s; }
         .card-anayemek:active::before { background: radial-gradient(circle at top, rgba(255, 71, 87, 0.15) 0%, transparent 70%); }
@@ -173,68 +173,84 @@
         .card-ekstra:active::before { background: radial-gradient(circle at top, rgba(247, 183, 49, 0.15) 0%, transparent 70%); }
         .card-ekstra:active { transform: scale(0.96); box-shadow: 0 4px 15px rgba(247, 183, 49, 0.2); }
 
-        .product-name { font-size: 16px; font-weight: 800; margin-bottom: 12px; text-align: center; color: var(--text-main); line-height: 1.3;}
+        .product-name { font-size: 16px; font-weight: 800; margin-bottom: 12px; text-align: center; color: var(--text-main); line-height: 1.3; word-break: break-word;}
         .product-price-badge { background: rgba(0,0,0,0.3); padding: 8px 16px; border-radius: 12px; font-weight: 800; color: var(--text-main); font-size: 14px; display: inline-block; border: 1px solid rgba(255,255,255,0.02);}
         .card-anayemek .product-price-badge { color: var(--primary); background: rgba(255, 71, 87, 0.05); }
         .card-icecek .product-price-badge { color: var(--drink-color); background: rgba(15, 185, 177, 0.05); }
         .card-ekstra .product-price-badge { color: var(--extra-color); background: rgba(247, 183, 49, 0.05); }
 
-        .cart-item { background: var(--card-bg); padding: 20px; border-radius: 24px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.03); position: relative; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.15);}
+        /* YENİ: Esnek ve asla taşmayan Sepet Kartı */
+        .cart-item { background: var(--card-bg); padding: 15px; border-radius: 20px; margin-bottom: 15px; display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: space-between; border: 1px solid rgba(255,255,255,0.03); position: relative; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.15);}
         .cart-item::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 5px; background: var(--primary-gradient); }
-        .cart-controls { display: flex; align-items: center; gap: 15px; background: var(--bg-color); border-radius: 16px; padding: 8px 10px; border: 1px solid var(--border-color);}
-        .cart-btn { background: transparent; color: var(--text-muted); border: none; width: 34px; height: 34px; font-size: 22px; font-weight: 600; cursor: pointer; transition: 0.2s; border-radius: 10px; display: flex; align-items: center; justify-content: center;}
+        .cart-item-details { flex: 1 1 140px; text-align: left; min-width: 0; padding-left: 5px;}
+        .cart-item-name { font-size: 15px; font-weight: 800; margin-bottom: 6px; color: var(--text-main); line-height: 1.4; word-break: break-word;}
+        .cart-item-price { color: var(--text-muted); font-weight: 700; font-size: 14px; }
+        .cart-controls { display: flex; align-items: center; gap: 10px; background: var(--bg-color); border-radius: 14px; padding: 6px 10px; border: 1px solid var(--border-color); flex-wrap: nowrap;}
+        .cart-btn { background: transparent; color: var(--text-muted); border: none; width: 32px; height: 32px; font-size: 22px; font-weight: 600; cursor: pointer; transition: 0.2s; border-radius: 8px; display: flex; align-items: center; justify-content: center;}
         .cart-btn:active { background: var(--border-color); color: var(--text-main); transform: scale(0.85);}
-        .cart-amount { font-size: 16px; font-weight: 800; color: var(--text-main); min-width: 24px; text-align: center; }
+        .cart-amount { font-size: 15px; font-weight: 800; color: var(--text-main); min-width: 24px; text-align: center; }
 
-        .note-input { width: 100%; background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main); padding: 18px; border-radius: 20px; font-family: 'Nunito', sans-serif; font-size: 14px; font-weight:600; margin-bottom: 20px; box-sizing: border-box; resize: none; transition: 0.3s; box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);}
+        .note-input { width: 100%; background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main); padding: 15px; border-radius: 20px; font-family: 'Nunito', sans-serif; font-size: 14px; font-weight:600; margin-bottom: 20px; box-sizing: border-box; resize: none; transition: 0.3s; box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);}
         .note-input:focus { outline: none; border-color: var(--primary); background: var(--bg-color); box-shadow: 0 0 15px var(--primary-glow);}
         .note-input::placeholder { color: #5a6270; }
 
-        .coupon-wrapper { display: flex; gap: 10px; margin-bottom: 20px; margin-top: 15px;}
-        .coupon-input { flex: 1; background: var(--card-bg); border: 1px dashed var(--border-color); color: var(--text-main); padding: 15px; border-radius: 16px; font-size: 14px; font-weight: 800; text-transform: uppercase; font-family: 'Nunito', sans-serif; transition: 0.3s;}
+        .coupon-wrapper { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; margin-top: 15px;}
+        .coupon-input { flex: 1 1 150px; background: var(--card-bg); border: 1px dashed var(--border-color); color: var(--text-main); padding: 15px; border-radius: 16px; font-size: 14px; font-weight: 800; text-transform: uppercase; font-family: 'Nunito', sans-serif; transition: 0.3s;}
         .coupon-input:focus { outline: none; border-color: var(--success); background: var(--bg-color);}
-        .coupon-btn { background: var(--border-color); color: var(--text-muted); border: none; border-radius: 16px; padding: 0 22px; font-weight: 800; font-size: 14px; cursor: pointer; transition: 0.3s;}
+        .coupon-btn { background: var(--border-color); color: var(--text-muted); border: none; border-radius: 16px; padding: 15px 22px; font-weight: 800; font-size: 14px; cursor: pointer; transition: 0.3s;}
         .coupon-btn.active { background: var(--success); color: var(--bg-color); box-shadow: 0 6px 15px rgba(46, 213, 115, 0.25);}
-        .coupon-msg { font-size: 13px; font-weight: 700; margin-top: -10px; margin-bottom: 15px; text-align: left; padding-left: 10px;}
+        .coupon-msg { font-size: 13px; font-weight: 700; margin-top: -10px; margin-bottom: 15px; text-align: left; padding-left: 10px; word-break: break-word;}
         .coupon-used-msg { background: rgba(255, 71, 87, 0.1); color: var(--primary); padding: 15px; border-radius: 16px; font-size: 13px; font-weight: 800; text-align: center; margin-bottom: 20px; border: 1px solid var(--primary-glow); display: none;}
 
-        .history-card { background: var(--card-bg); border-radius: 24px; padding: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); text-align: left; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.03); border-top: 4px solid var(--primary); animation: fadeSlideUpCard 0.5s ease-out forwards;}
+        .history-card { background: var(--card-bg); border-radius: 24px; padding: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); text-align: left; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.03); border-top: 4px solid var(--primary); animation: fadeSlideUpCard 0.5s ease-out forwards;}
         .history-header { border-bottom: 1px dashed var(--border-color); padding-bottom: 15px; margin-bottom: 15px; font-size: 14px; font-weight: 800; display: flex; justify-content: space-between; align-items: center; color: var(--text-muted);}
-        .history-item { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 15px; color: var(--text-main); font-weight: 700;}
+        .history-item { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 12px; font-size: 14.5px; color: var(--text-main); font-weight: 700; align-items: flex-start;}
+        .history-item span:first-child { flex: 1; word-break: break-word; line-height: 1.3; }
+        .history-item span:last-child { white-space: nowrap; }
         .history-total { text-align: right; font-weight: 900; font-size: 22px; margin-top: 20px; color: var(--text-main); border-top: 1px dashed var(--border-color); padding-top: 20px;}
         .live-badge { background-color: rgba(255, 71, 87, 0.15); color: var(--primary); padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 800; animation: pulse 2s infinite; border: 1px solid var(--primary-glow);}
 
-        .order-panel { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(24, 24, 32, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 25px 25px 35px 25px; box-shadow: 0 -15px 40px rgba(0,0,0,0.5); box-sizing: border-box; z-index: 50; border-top-left-radius: 35px; border-top-right-radius: 35px; border-top: 1px solid rgba(255,255,255,0.05); animation: slidePanelUp 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;}
+        .order-panel { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(24, 24, 32, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 20px 15px 30px 15px; box-shadow: 0 -15px 40px rgba(0,0,0,0.5); box-sizing: border-box; z-index: 50; border-top-left-radius: 35px; border-top-right-radius: 35px; border-top: 1px solid rgba(255,255,255,0.05); animation: slidePanelUp 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;}
         @keyframes slidePanelUp { from { bottom: -150px; } to { bottom: 0; } }
         
-        .order-btn { background: var(--primary-gradient); color: white; border: none; padding: 20px; font-size: 16px; font-weight: 800; border-radius: 20px; width: 100%; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 25px var(--primary-glow);}
+        .order-btn { background: var(--primary-gradient); color: white; border: none; padding: 18px; font-size: 16px; font-weight: 800; border-radius: 20px; width: 100%; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 25px var(--primary-glow);}
         .order-btn:active { transform: scale(0.95); box-shadow: 0 5px 15px var(--primary-glow);}
         .order-btn-secondary { background: #181820; color: var(--text-main); border: 1px solid var(--border-color); box-shadow: none;}
         .order-btn-secondary:active { background: var(--border-color);}
 
-        .floating-cart { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 400px; height: 68px; background: var(--primary-gradient); border-radius: 34px; display: flex; align-items: center; justify-content: space-between; padding: 0 25px; box-sizing: border-box; font-size: 16px; font-weight: 800; color: white; box-shadow: 0 15px 35px var(--primary-glow); z-index: 100; cursor: pointer; transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1); border: 1px solid rgba(255,255,255,0.2);}
+        .floating-cart { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 400px; height: 64px; background: var(--primary-gradient); border-radius: 32px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; box-sizing: border-box; font-size: 15px; font-weight: 800; color: white; box-shadow: 0 15px 35px var(--primary-glow); z-index: 100; cursor: pointer; transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1); border: 1px solid rgba(255,255,255,0.2);}
         .floating-cart:active { transform: translateX(-50%) scale(0.94); }
-        .floating-badge { background: white; color: var(--primary); width: 32px; height: 32px; border-radius: 50%; font-size: 15px; font-weight: 900; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2);}
+        .floating-badge { background: white; color: var(--primary); width: 30px; height: 30px; border-radius: 50%; font-size: 14px; font-weight: 900; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2);}
 
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 15, 19, 0.9); z-index: 9999; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.4s; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);}
-        .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .modal-content { background: var(--card-bg); width: 85%; max-width: 340px; border-radius: 30px; padding: 40px 25px; text-align: center; box-shadow: 0 25px 60px rgba(0,0,0,0.6); transform: scale(0.7); transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.27); border: 1px solid rgba(255,255,255,0.05); border-top: 5px solid var(--extra-color);}
-        .modal-overlay.active .modal-content { transform: scale(1); }
-        .modal-icon { font-size: 46px; margin-bottom: 15px; }
-        .modal-title { color: var(--text-main); font-size: 20px; font-weight: 900; margin-bottom: 12px; }
-        .modal-text { color: var(--text-muted); font-size: 15px; font-weight: 600; margin-bottom: 30px; line-height: 1.5; white-space: pre-line; }
-        .modal-btn { background: var(--extra-color); color: #000; border: none; padding: 16px 35px; font-size: 16px; font-weight: 800; border-radius: 18px; cursor: pointer; box-shadow: 0 8px 20px rgba(247, 183, 49, 0.4); transition: 0.2s;}
-        .modal-btn:active { transform: scale(0.92); }
-
+        /* YENİ: Esnek ve Asla Taşmayan Popup Ayarları */
         .popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 15, 19, 0.9); z-index: 200; display: flex; align-items: flex-end; justify-content: center; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); opacity: 0; pointer-events: none; transition: 0.4s;}
         .popup-overlay.active { opacity: 1; pointer-events: auto; }
-        .popup-content { background: var(--card-bg); width: 100%; max-width: 450px; border-top-left-radius: 35px; border-top-right-radius: 35px; padding: 35px 25px 45px 25px; box-sizing: border-box; transform: translateY(100%); transition: 0.5s cubic-bezier(0.25, 1, 0.5, 1); border-top: 1px solid rgba(255,255,255,0.05); box-shadow: 0 -20px 50px rgba(0,0,0,0.5);}
+        .popup-content { background: var(--card-bg); width: 100%; max-width: 500px; border-top-left-radius: 35px; border-top-right-radius: 35px; padding: 25px 15px 35px 15px; box-sizing: border-box; transform: translateY(100%); transition: 0.5s cubic-bezier(0.25, 1, 0.5, 1); border-top: 1px solid rgba(255,255,255,0.05); box-shadow: 0 -20px 50px rgba(0,0,0,0.5);}
         .popup-overlay.active .popup-content { transform: translateY(0); }
         
-        .popup-weight-btn { background: var(--bg-color); color: var(--text-main); border: 1px solid var(--border-color); padding: 22px 0; border-radius: 20px; font-weight: 800; font-size: 16px; cursor: pointer; line-height: 1.5; transition: 0.2s;}
+        .popup-info-box { background: var(--bg-color); padding: 15px 15px; border-radius: 20px; border: 1px solid var(--border-color); border-left: 5px solid var(--primary); color: var(--text-main); display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 18px; margin-bottom: 20px; box-shadow: inset 0 4px 10px rgba(0,0,0,0.2); flex-wrap: wrap; gap: 10px; }
+        .popup-weight-btn { background: var(--bg-color); color: var(--text-main); border: 1px solid var(--border-color); padding: 15px 5px; border-radius: 20px; font-weight: 800; font-size: 14px; cursor: pointer; line-height: 1.4; transition: 0.2s;}
         .popup-weight-btn:active { background: var(--border-color); transform: scale(0.95);}
 
-        /* YENİ: APPLE PAY TARZI SADE VE LÜKS BAŞARI (ONAY) EKRANI */
+        .ingredient-section { margin-bottom: 20px; text-align: left; background: var(--bg-color); padding: 15px; border-radius: 20px; border: 1px solid var(--border-color); display: none; box-shadow: inset 0 5px 15px rgba(0,0,0,0.2); }
+        .ingredient-title { color: var(--text-muted); font-size: 12px; font-weight: 800; margin-bottom: 12px; display: block; text-transform: uppercase; letter-spacing: 1px;}
+        .ingredient-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+        .ingredient-btn { background: #181820; color: var(--text-main); border: 1px solid var(--border-color); padding: 12px 10px; border-radius: 16px; font-weight: 700; font-size: 12.5px; cursor: pointer; transition: 0.2s; flex: 1 1 calc(50% - 10px); text-align: center;}
+        .ingredient-btn.active { background: rgba(255, 71, 87, 0.1); color: var(--primary); border-color: var(--primary);}
+        
+        .bread-selector { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; }
+        .bread-btn { background: #181820; color: var(--text-main); border: 1px solid var(--border-color); padding: 12px 5px; border-radius: 16px; font-weight: 800; font-size: 13px; cursor: pointer; flex: 1 1 calc(33.333% - 8px); transition: 0.2s;}
+        .bread-btn.active { background: var(--primary-gradient); color: white; border: none; box-shadow: 0 6px 15px var(--primary-glow); transform: translateY(-2px);}
+        
+        .counter-wrapper { display: flex; align-items: center; gap: 10px; background: #181820; border: 1px solid var(--border-color); padding: 6px; border-radius: 18px; width: max-content;}
+        .counter-btn { background: var(--bg-color); color: var(--text-main); border: none; width: 38px; height: 38px; border-radius: 12px; font-size: 22px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;}
+        .counter-btn:active { background: var(--border-color); transform: scale(0.85);}
+        .counter-val { font-size: 18px; font-weight: 900; color: var(--text-main); min-width: 25px; text-align: center;}
+
+        /* Özel Popup Buton Izgarası */
+        .popup-btn-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-bottom: 20px; }
+
+        /* SADE VE LÜKS ONAY EKRANI (APPLE PAY TARZI) */
         .success-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 10, 14, 0.98); z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.5s ease; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); overflow: hidden;}
         .success-overlay.active { opacity: 1; pointer-events: auto; }
         
@@ -245,7 +261,6 @@
         .success-text { color: var(--text-main); font-size: 26px; font-weight: 900; opacity: 0; transform: translateY(15px); }
         .success-subtext { color: var(--text-muted); font-size: 15px; font-weight: 600; margin-top: 10px; opacity: 0; transform: translateY(15px); }
 
-        /* Animasyon Tetikleyicileri */
         .success-overlay.active .success-ring { animation: ringExpand 2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .success-overlay.active .success-circle { animation: popInCircle 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.27) forwards 0.2s; }
         .success-overlay.active .success-check { animation: drawCheck 0.6s ease forwards 0.6s; }
@@ -257,20 +272,16 @@
         @keyframes drawCheck { to { stroke-dashoffset: 0; } }
         @keyframes fadeUpText { to { opacity: 1; transform: translateY(0); } }
 
-        .ingredient-section { margin-bottom: 25px; text-align: left; background: var(--bg-color); padding: 22px; border-radius: 24px; border: 1px solid var(--border-color); display: none; box-shadow: inset 0 5px 15px rgba(0,0,0,0.2); }
-        .ingredient-title { color: var(--text-muted); font-size: 13px; font-weight: 800; margin-bottom: 12px; display: block; text-transform: uppercase; letter-spacing: 1px;}
-        .ingredient-grid { display: flex; flex-wrap: wrap; gap: 10px; }
-        .ingredient-btn { background: #181820; color: var(--text-main); border: 1px solid var(--border-color); padding: 14px 18px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer; transition: 0.2s; flex-grow: 1; text-align: center;}
-        .ingredient-btn.active { background: rgba(255, 71, 87, 0.1); color: var(--primary); border-color: var(--primary);}
-        
-        .bread-selector { display: flex; gap: 10px; margin-bottom: 20px; }
-        .bread-btn { background: #181820; color: var(--text-main); border: 1px solid var(--border-color); padding: 14px; border-radius: 18px; font-weight: 800; font-size: 14px; cursor: pointer; flex: 1; transition: 0.2s;}
-        .bread-btn.active { background: var(--primary-gradient); color: white; border: none; box-shadow: 0 6px 15px var(--primary-glow); transform: translateY(-2px);}
-        
-        .counter-wrapper { display: flex; align-items: center; gap: 15px; background: #181820; border: 1px solid var(--border-color); padding: 8px; border-radius: 20px; width: max-content;}
-        .counter-btn { background: var(--bg-color); color: var(--text-main); border: none; width: 44px; height: 44px; border-radius: 14px; font-size: 24px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;}
-        .counter-btn:active { background: var(--border-color); transform: scale(0.85);}
-        .counter-val { font-size: 20px; font-weight: 900; color: var(--text-main); min-width: 30px; text-align: center;}
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 15, 19, 0.9); z-index: 9999; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.4s; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);}
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-content { background: var(--card-bg); width: 85%; max-width: 340px; border-radius: 30px; padding: 40px 25px; text-align: center; box-shadow: 0 25px 60px rgba(0,0,0,0.6); transform: scale(0.7); transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.27); border: 1px solid rgba(255,255,255,0.05); border-top: 5px solid var(--extra-color);}
+        .modal-overlay.active .modal-content { transform: scale(1); }
+        .modal-icon { font-size: 46px; margin-bottom: 15px; }
+        .modal-title { color: var(--text-main); font-size: 20px; font-weight: 900; margin-bottom: 12px; }
+        .modal-text { color: var(--text-muted); font-size: 15px; font-weight: 600; margin-bottom: 30px; line-height: 1.5; white-space: pre-line; }
+        .modal-btn { background: var(--extra-color); color: #000; border: none; padding: 16px 35px; font-size: 16px; font-weight: 800; border-radius: 18px; cursor: pointer; box-shadow: 0 8px 20px rgba(247, 183, 49, 0.4); transition: 0.2s;}
+        .modal-btn:active { transform: scale(0.92); }
+        .empty-text { color: var(--text-muted); font-weight: 700; margin-top: 60px; font-size: 16px; }
     </style>
 </head>
 <body>
@@ -358,26 +369,26 @@
 
     <div id="product-popup" class="popup-overlay" onclick="if(event.target === this) PopupKapat();">
         <div class="popup-content">
-            <div style="display: flex; justify-content: space-between; align-items: center; color: white; margin-bottom: 25px;">
-                <h3 id="popup-title" style="font-size: 24px; font-weight: 800; margin: 0; color: var(--text-main);">Ürün Adı</h3>
-                <button onclick="PopupKapat()" style="background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-muted); width: 40px; height: 40px; border-radius: 14px; font-size: 26px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;">&times;</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; color: white; margin-bottom: 20px; gap: 10px;">
+                <h3 id="popup-title" style="font-size: 22px; font-weight: 800; margin: 0; color: var(--text-main); text-align: left; line-height: 1.2; word-break: break-word;">Ürün Adı</h3>
+                <button onclick="PopupKapat()" style="min-width: 38px; background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-muted); width: 38px; height: 38px; border-radius: 12px; font-size: 26px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;">&times;</button>
             </div>
             
-            <div style="background: var(--bg-color); padding: 22px; border-radius: 22px; border: 1px solid var(--border-color); border-left: 5px solid var(--primary); color: var(--text-main); display: flex; justify-content: space-between; font-weight: 800; font-size: 20px; margin-bottom: 25px; box-shadow: inset 0 4px 10px rgba(0,0,0,0.2);">
-                <span id="popup-amount" style="color: var(--text-muted);">______</span><span id="popup-price">______ TL</span>
+            <div class="popup-info-box">
+                <span id="popup-amount" style="color: var(--text-muted);">______</span>
+                <span id="popup-price">______ TL</span>
             </div>
             
             <div id="popup-custom-area" class="ingredient-section"></div>
-            <div id="popup-buttons" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 25px;"></div>
+            <div id="popup-buttons" class="popup-btn-grid"></div>
             
-            <div style="display: flex; gap: 12px;">
-                <button onclick="PopupSifirla()" style="flex: 1; background: var(--bg-color); color: var(--text-muted); border: 1px solid var(--border-color); border-radius: 20px; font-weight: 800; padding: 18px; font-size: 16px; cursor: pointer; transition: 0.2s;">Sıfırla</button>
-                <button onclick="PopupSepeteEkle()" style="flex: 2; background: var(--primary-gradient); color: white; border: none; border-radius: 20px; font-weight: 800; padding: 18px; font-size: 16px; cursor: pointer; box-shadow: 0 10px 25px var(--primary-glow); transition: 0.2s;">Sepete Ekle</button>
+            <div style="display: flex; gap: 10px;">
+                <button onclick="PopupSifirla()" style="flex: 1; background: var(--bg-color); color: var(--text-muted); border: 1px solid var(--border-color); border-radius: 20px; font-weight: 800; padding: 15px; font-size: 15px; cursor: pointer; transition: 0.2s;">Sıfırla</button>
+                <button onclick="PopupSepeteEkle()" style="flex: 2; background: var(--primary-gradient); color: white; border: none; border-radius: 20px; font-weight: 800; padding: 15px; font-size: 15px; cursor: pointer; box-shadow: 0 10px 25px var(--primary-glow); transition: 0.2s;">Sepete Ekle</button>
             </div>
         </div>
     </div>
 
-    <!-- YENİ: SADE VE LÜKS ONAY EKRANI -->
     <div id="success-overlay" class="success-overlay">
         <div class="success-icon-wrapper">
             <div class="success-ring"></div>
@@ -561,7 +572,7 @@
             document.getElementById("menu-grid").style.display = "grid";
 
             if(urunListesi.length === 0) { 
-                gridContainer.innerHTML = `<div class="empty-text" style="grid-column: span 2;">Aradığınız ürün bulunamadı 🔍</div>`; 
+                gridContainer.innerHTML = `<div class="empty-text" style="grid-column: 1 / -1;">Aradığınız ürün bulunamadı 🔍</div>`; 
                 return; 
             }
             
@@ -665,7 +676,7 @@
                     <button class="popup-weight-btn" onclick="PopupEkle(0.5, ${p500}, 2)">500 Gr<br><small style="color:var(--text-muted); font-weight:600; font-size:13px; margin-top:5px; display:block;">+${p500} ₺</small></button>`;
             } else {
                 let pAdet = safeParse(seciliUrun.price1Kg);
-                btnKutusu.innerHTML = `<button class="popup-weight-btn" style="grid-column: span 3; padding: 18px 0;" onclick="PopupEkle(1, ${pAdet}, 0)"><span style="font-size: 16px;">+ 1 Adet Ekle</span><br><small style="color:var(--text-muted); font-weight:600; font-size:14px; margin-top:6px; display:block;">+${pAdet} ₺</small></button>`;
+                btnKutusu.innerHTML = `<button class="popup-weight-btn" style="grid-column: 1 / -1; padding: 15px 0;" onclick="PopupEkle(1, ${pAdet}, 0)"><span style="font-size: 16px;">+ 1 Adet Ekle</span><br><small style="color:var(--text-muted); font-weight:600; font-size:14px; margin-top:6px; display:block;">+${pAdet} ₺</small></button>`;
             }
             
             let popup = document.getElementById("product-popup"); popup.style.display = "flex";
@@ -916,9 +927,9 @@
                 let gosterilenIsim = (urun.quantity > 1 ? `<span style="color:var(--primary);">${urun.quantity}x</span> ` : "") + escapeHTML(urun.baseName);
                 html += `
                 <div class="cart-item">
-                    <div style="flex:1; padding-right:15px;">
-                        <div id="cart-name-${index}" style="font-size:15px; font-weight:800; margin-bottom:8px; color:var(--text-main); text-align:left; line-height: 1.3;">${gosterilenIsim}</div>
-                        <div id="cart-price-${index}" style="color:var(--text-muted); font-weight:700; font-size:14px; text-align:left;">${(urun.basePrice * urun.quantity).toFixed(2)} TL</div>
+                    <div class="cart-item-details">
+                        <div id="cart-name-${index}" class="cart-item-name">${gosterilenIsim}</div>
+                        <div id="cart-price-${index}" class="cart-item-price">${(urun.basePrice * urun.quantity).toFixed(2)} TL</div>
                     </div>
                     <div class="cart-controls">
                         <button class="cart-btn" onclick="SepetMiktarDegistir(${index}, -1)">-</button>
@@ -995,7 +1006,8 @@
                         fetch(firebaseSiparisUrl, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(siparisVerisi) }),
                         fetch(zamanUrl, { method: "PUT", headers: { "Content-Type": "application/json" }, body: simdikiZaman.toString() })
                     ]).then(() => {
-                        HapticTitresim(); document.getElementById("success-overlay").classList.add("active");
+                        HapticTitresim(); 
+                        document.getElementById("success-overlay").classList.add("active");
                         
                         sepet = []; aktifKuponKodu = ""; aktifKuponIndirimTutari = 0; aktifKuponAltLimit = 0; 
                         HesaplaVeGuncelle(); seciliEkstraIstekler = [];
