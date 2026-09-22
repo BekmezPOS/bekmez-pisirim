@@ -10,7 +10,7 @@
     <style>
         :root {
             --bg-color: #0f0f13; 
-            --card-bg: #181820;
+            --card-bg: rgba(24, 24, 32, 0.85); /* Filigransız, pürüzsüz koyu cam */
             --border-color: #272732;
             --text-main: #ffffff;
             --text-muted: #9ba4b5;
@@ -24,26 +24,104 @@
 
         body { font-family: 'Nunito', sans-serif; background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 15px; text-align: center; padding-bottom: 110px; -webkit-tap-highlight-color: transparent;}
         
+        /* =========================================================
+           SİNEMATİK AÇILIŞ (SPLASH) EKRANI 
+           ========================================================= */
         #splash-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-color); z-index: 999999;
+            background-color: #050507; 
+            z-index: 999999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: opacity 0.6s ease;
+            overflow: hidden;
         }
+
+        #splash-content {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+            width: 100%;
+        }
+
+        .splash-glow-1, .splash-glow-2 {
+            position: absolute; width: 350px; height: 350px; border-radius: 50%;
+            filter: blur(90px); opacity: 0.35; z-index: -1;
+            animation: floatGlow 6s infinite alternate ease-in-out;
+        }
+        .splash-glow-1 { background: var(--primary); top: -100px; left: -100px; }
+        .splash-glow-2 { background: var(--extra-color); bottom: -100px; right: -100px; animation-delay: -3s; }
+
+        @keyframes floatGlow {
+            0% { transform: scale(1) translate(0, 0); }
+            100% { transform: scale(1.2) translate(40px, 40px); }
+        }
+
+        .hero-greeting {
+            font-size: 13.5px; color: var(--text-main); font-weight: 800; letter-spacing: 2px; text-transform: uppercase;
+            margin-bottom: 25px; display: flex; align-items: center; gap: 10px;
+            opacity: 0; animation: fadeUp 0.8s ease forwards 0.2s;
+            background: rgba(255,255,255,0.03); padding: 10px 24px; border-radius: 30px; 
+            border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+        }
+        
+        .status-dot { 
+            position: relative;
+            width: 10px; height: 10px; 
+            background: var(--success); 
+            border-radius: 50%; 
+            box-shadow: 0 0 12px var(--success); 
+        }
+        .status-dot::after {
+            content: '';
+            position: absolute; top: -4px; left: -4px; right: -4px; bottom: -4px;
+            border-radius: 50%;
+            border: 2px solid var(--success);
+            animation: radarPulse 1.5s linear infinite;
+        }
+        @keyframes radarPulse {
+            0% { transform: scale(0.5); opacity: 1; }
+            100% { transform: scale(1.8); opacity: 0; }
+        }
+
         .splash-logo {
-            font-size: 36px; font-weight: 900; color: transparent;
-            background: var(--primary-gradient);
+            font-size: 46px; font-weight: 900; color: transparent;
+            background: linear-gradient(to right, #ffffff 20%, var(--primary) 50%, #ffffff 80%);
+            background-size: 200% auto;
             -webkit-background-clip: text; background-clip: text;
-            margin-bottom: 20px; letter-spacing: 1px;
-            animation: popIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.27) forwards;
+            margin-bottom: 15px; letter-spacing: -1px; line-height: 1.1;
+            opacity: 0; transform: scale(0.9);
+            animation: textShine 3s linear infinite, popInScale 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.27) forwards 0.4s;
         }
-        .splash-loader {
-            width: 40px; height: 40px; border: 4px solid var(--border-color);
-            border-top: 4px solid var(--primary); border-radius: 50%;
-            animation: spin 1s linear infinite;
+
+        .hero-subtitle {
+            font-size: 15px; color: var(--text-muted); font-weight: 600; line-height: 1.6;
+            max-width: 85%; opacity: 0; animation: fadeUp 0.8s ease forwards 0.6s;
         }
-        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .fluid-spinner-wrapper {
+            position: relative;
+            margin-top: 40px; opacity: 0; animation: fadeUp 0.8s ease forwards 0.8s;
+            display: flex; flex-direction: column; align-items: center; gap: 15px;
+        }
+        .fluid-spinner {
+            width: 44px; height: 44px;
+            border: 3px solid rgba(255,255,255,0.06); 
+            border-top: 3px solid var(--primary); 
+            border-radius: 50%;
+            animation: fluidSpin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+        .fluid-spinner-wrapper::after {
+            content: ''; position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+            width: 26px; height: 26px; background: var(--primary);
+            filter: blur(15px); z-index: -1; opacity: 0.4; animation: pulse 2s infinite;
+        }
+        .loading-text { font-size: 12px; color: var(--text-muted); font-weight: 800; letter-spacing: 2px; text-transform: uppercase;}
+
+        @keyframes fluidSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes textShine { to { background-position: 200% center; } }
+        @keyframes popInScale { to { opacity: 1; transform: scale(1); } }
+        @keyframes fadeUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+        /* ========================================================= */
 
         .header { background: rgba(24, 24, 32, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); color: var(--text-main); padding: 18px; border-radius: 20px; margin-bottom: 20px; font-size: 22px; font-weight: 800; position: relative; text-align: center; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 10px 30px rgba(0,0,0,0.4);}
         .hamburger { position: absolute; left: 15px; font-size: 26px; cursor: pointer; color: var(--text-main); user-select: none; background: var(--bg-color); width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; transition: 0.2s; border: 1px solid var(--border-color);}
@@ -63,27 +141,43 @@
 
         .category-tabs { display: flex; gap: 10px; padding: 15px 5px; margin-bottom: 10px; overflow-x: auto; white-space: nowrap; scrollbar-width: none; position: sticky; top: -15px; z-index: 40; background: rgba(15, 15, 19, 0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255,255,255,0.05); }
         .category-tabs::-webkit-scrollbar { display: none; }
-        .tab-btn { background: var(--card-bg); border: 1px solid var(--border-color); font-size: 14px; font-weight: 700; color: var(--text-muted); padding: 14px 26px; cursor: pointer; border-radius: 30px; transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1);}
+        .tab-btn { background: #181820; border: 1px solid var(--border-color); font-size: 14px; font-weight: 700; color: var(--text-muted); padding: 14px 26px; cursor: pointer; border-radius: 30px; transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1);}
         .tab-btn.active { color: #ffffff; background: var(--primary-gradient); border: none; box-shadow: 0 8px 20px var(--primary-glow); transform: translateY(-2px);}
 
         .grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        @keyframes fadeSlideUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeSlideUpCard { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
         
-        .product-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.03); padding: 25px 12px; border-radius: 24px; display: flex; flex-direction: column; justify-content: center; align-items: center; animation: fadeSlideUp 0.5s ease-out forwards; cursor: pointer; transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1); position: relative; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.2);}
-        .product-card:active { transform: scale(0.95); box-shadow: 0 5px 10px rgba(0,0,0,0.3);}
+        /* YENİ: SADE VE LÜKS ÜRÜN KARTLARI (FİLİGRAN İPTAL EDİLDİ) */
+        .product-card { 
+            background: var(--card-bg); 
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.03); 
+            padding: 25px 12px; border-radius: 24px; display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            animation: fadeSlideUpCard 0.5s ease-out forwards; cursor: pointer; transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); 
+            position: relative; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        }
         
-        .card-anayemek { border-bottom: 4px solid var(--primary); }
-        .card-anayemek:active { box-shadow: 0 10px 25px var(--primary-glow); }
-        .card-icecek { border-bottom: 4px solid var(--drink-color); }
-        .card-icecek:active { box-shadow: 0 10px 25px rgba(15, 185, 177, 0.25); }
-        .card-ekstra { border-bottom: 4px solid var(--extra-color); }
-        .card-ekstra:active { box-shadow: 0 10px 25px rgba(247, 183, 49, 0.25); }
+        /* Kartın İçinden Vuran Yumuşak ve Minimal Işık (Soft Glow) */
+        .card-anayemek { border-bottom: 3px solid var(--primary); }
+        .card-anayemek::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at top, rgba(255, 71, 87, 0.05) 0%, transparent 60%); z-index: -1; pointer-events: none; transition: 0.4s; }
+        .card-anayemek:active::before { background: radial-gradient(circle at top, rgba(255, 71, 87, 0.15) 0%, transparent 70%); }
+        .card-anayemek:active { transform: scale(0.96); box-shadow: 0 4px 15px rgba(255, 71, 87, 0.2); }
+
+        .card-icecek { border-bottom: 3px solid var(--drink-color); }
+        .card-icecek::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at top, rgba(15, 185, 177, 0.05) 0%, transparent 60%); z-index: -1; pointer-events: none; transition: 0.4s; }
+        .card-icecek:active::before { background: radial-gradient(circle at top, rgba(15, 185, 177, 0.15) 0%, transparent 70%); }
+        .card-icecek:active { transform: scale(0.96); box-shadow: 0 4px 15px rgba(15, 185, 177, 0.2); }
+
+        .card-ekstra { border-bottom: 3px solid var(--extra-color); }
+        .card-ekstra::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at top, rgba(247, 183, 49, 0.05) 0%, transparent 60%); z-index: -1; pointer-events: none; transition: 0.4s; }
+        .card-ekstra:active::before { background: radial-gradient(circle at top, rgba(247, 183, 49, 0.15) 0%, transparent 70%); }
+        .card-ekstra:active { transform: scale(0.96); box-shadow: 0 4px 15px rgba(247, 183, 49, 0.2); }
 
         .product-name { font-size: 16px; font-weight: 800; margin-bottom: 12px; text-align: center; color: var(--text-main); line-height: 1.3;}
-        .product-price-badge { background: rgba(0,0,0,0.3); padding: 8px 16px; border-radius: 12px; font-weight: 800; color: var(--text-main); font-size: 14px; display: inline-block;}
-        .card-anayemek .product-price-badge { color: var(--primary); background: rgba(255, 71, 87, 0.1); }
-        .card-icecek .product-price-badge { color: var(--drink-color); background: rgba(15, 185, 177, 0.1); }
-        .card-ekstra .product-price-badge { color: var(--extra-color); background: rgba(247, 183, 49, 0.1); }
+        .product-price-badge { background: rgba(0,0,0,0.3); padding: 8px 16px; border-radius: 12px; font-weight: 800; color: var(--text-main); font-size: 14px; display: inline-block; border: 1px solid rgba(255,255,255,0.02);}
+        .card-anayemek .product-price-badge { color: var(--primary); background: rgba(255, 71, 87, 0.05); }
+        .card-icecek .product-price-badge { color: var(--drink-color); background: rgba(15, 185, 177, 0.05); }
+        .card-ekstra .product-price-badge { color: var(--extra-color); background: rgba(247, 183, 49, 0.05); }
 
         .cart-item { background: var(--card-bg); padding: 20px; border-radius: 24px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.03); position: relative; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.15);}
         .cart-item::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 5px; background: var(--primary-gradient); }
@@ -104,19 +198,18 @@
         .coupon-msg { font-size: 13px; font-weight: 700; margin-top: -10px; margin-bottom: 15px; text-align: left; padding-left: 10px;}
         .coupon-used-msg { background: rgba(255, 71, 87, 0.1); color: var(--primary); padding: 15px; border-radius: 16px; font-size: 13px; font-weight: 800; text-align: center; margin-bottom: 20px; border: 1px solid var(--primary-glow); display: none;}
 
-        .history-card { background: var(--card-bg); border-radius: 24px; padding: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); text-align: left; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.03); border-top: 4px solid var(--primary); animation: fadeSlideUp 0.5s ease-out forwards;}
+        .history-card { background: var(--card-bg); border-radius: 24px; padding: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); text-align: left; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.03); border-top: 4px solid var(--primary); animation: fadeSlideUpCard 0.5s ease-out forwards;}
         .history-header { border-bottom: 1px dashed var(--border-color); padding-bottom: 15px; margin-bottom: 15px; font-size: 14px; font-weight: 800; display: flex; justify-content: space-between; align-items: center; color: var(--text-muted);}
         .history-item { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 15px; color: var(--text-main); font-weight: 700;}
         .history-total { text-align: right; font-weight: 900; font-size: 22px; margin-top: 20px; color: var(--text-main); border-top: 1px dashed var(--border-color); padding-top: 20px;}
         .live-badge { background-color: rgba(255, 71, 87, 0.15); color: var(--primary); padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 800; animation: pulse 2s infinite; border: 1px solid var(--primary-glow);}
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
 
         .order-panel { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(24, 24, 32, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 25px 25px 35px 25px; box-shadow: 0 -15px 40px rgba(0,0,0,0.5); box-sizing: border-box; z-index: 50; border-top-left-radius: 35px; border-top-right-radius: 35px; border-top: 1px solid rgba(255,255,255,0.05); animation: slidePanelUp 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;}
         @keyframes slidePanelUp { from { bottom: -150px; } to { bottom: 0; } }
         
         .order-btn { background: var(--primary-gradient); color: white; border: none; padding: 20px; font-size: 16px; font-weight: 800; border-radius: 20px; width: 100%; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 25px var(--primary-glow);}
         .order-btn:active { transform: scale(0.95); box-shadow: 0 5px 15px var(--primary-glow);}
-        .order-btn-secondary { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--border-color); box-shadow: none;}
+        .order-btn-secondary { background: #181820; color: var(--text-main); border: 1px solid var(--border-color); box-shadow: none;}
         .order-btn-secondary:active { background: var(--border-color);}
 
         .floating-cart { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 400px; height: 68px; background: var(--primary-gradient); border-radius: 34px; display: flex; align-items: center; justify-content: space-between; padding: 0 25px; box-sizing: border-box; font-size: 16px; font-weight: 800; color: white; box-shadow: 0 15px 35px var(--primary-glow); z-index: 100; cursor: pointer; transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1); border: 1px solid rgba(255,255,255,0.2);}
@@ -141,35 +234,65 @@
         .popup-weight-btn { background: var(--bg-color); color: var(--text-main); border: 1px solid var(--border-color); padding: 22px 0; border-radius: 20px; font-weight: 800; font-size: 16px; cursor: pointer; line-height: 1.5; transition: 0.2s;}
         .popup-weight-btn:active { background: var(--border-color); transform: scale(0.95);}
 
-        .success-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 15, 19, 0.95); z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.4s; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        /* YENİ: APPLE PAY TARZI SADE VE LÜKS BAŞARI (ONAY) EKRANI */
+        .success-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 10, 14, 0.98); z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.5s ease; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); overflow: hidden;}
         .success-overlay.active { opacity: 1; pointer-events: auto; }
-        .success-icon { width: 96px; height: 96px; border-radius: 50%; background: rgba(46, 213, 115, 0.15); display: flex; align-items: center; justify-content: center; transform: scale(0); transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.27); border: 2px solid var(--success);}
-        .success-overlay.active .success-icon { transform: scale(1); }
-        .empty-text { color: var(--text-muted); font-weight: 700; margin-top: 60px; font-size: 16px; }
+        
+        .success-icon-wrapper { position: relative; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; margin-bottom: 30px; }
+        .success-ring { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; border: 3px solid rgba(46, 213, 115, 0.2); }
+        .success-circle { width: 80px; height: 80px; border-radius: 50%; background: var(--success); display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(46, 213, 115, 0.4); transform: scale(0); }
+        .success-check { width: 35px; height: 35px; color: white; stroke-dasharray: 50; stroke-dashoffset: 50; }
+        .success-text { color: var(--text-main); font-size: 26px; font-weight: 900; opacity: 0; transform: translateY(15px); }
+        .success-subtext { color: var(--text-muted); font-size: 15px; font-weight: 600; margin-top: 10px; opacity: 0; transform: translateY(15px); }
 
-        /* --- ÖZEL SİPARİŞ KISMI --- */
+        /* Animasyon Tetikleyicileri */
+        .success-overlay.active .success-ring { animation: ringExpand 2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .success-overlay.active .success-circle { animation: popInCircle 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.27) forwards 0.2s; }
+        .success-overlay.active .success-check { animation: drawCheck 0.6s ease forwards 0.6s; }
+        .success-overlay.active .success-text { animation: fadeUpText 0.6s ease forwards 0.8s; }
+        .success-overlay.active .success-subtext { animation: fadeUpText 0.6s ease forwards 1s; }
+
+        @keyframes ringExpand { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(2.5); opacity: 0; } }
+        @keyframes popInCircle { to { transform: scale(1); } }
+        @keyframes drawCheck { to { stroke-dashoffset: 0; } }
+        @keyframes fadeUpText { to { opacity: 1; transform: translateY(0); } }
+
         .ingredient-section { margin-bottom: 25px; text-align: left; background: var(--bg-color); padding: 22px; border-radius: 24px; border: 1px solid var(--border-color); display: none; box-shadow: inset 0 5px 15px rgba(0,0,0,0.2); }
         .ingredient-title { color: var(--text-muted); font-size: 13px; font-weight: 800; margin-bottom: 12px; display: block; text-transform: uppercase; letter-spacing: 1px;}
         .ingredient-grid { display: flex; flex-wrap: wrap; gap: 10px; }
-        .ingredient-btn { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--border-color); padding: 14px 18px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer; transition: 0.2s; flex-grow: 1; text-align: center;}
+        .ingredient-btn { background: #181820; color: var(--text-main); border: 1px solid var(--border-color); padding: 14px 18px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer; transition: 0.2s; flex-grow: 1; text-align: center;}
         .ingredient-btn.active { background: rgba(255, 71, 87, 0.1); color: var(--primary); border-color: var(--primary);}
         
         .bread-selector { display: flex; gap: 10px; margin-bottom: 20px; }
-        .bread-btn { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--border-color); padding: 14px; border-radius: 18px; font-weight: 800; font-size: 14px; cursor: pointer; flex: 1; transition: 0.2s;}
+        .bread-btn { background: #181820; color: var(--text-main); border: 1px solid var(--border-color); padding: 14px; border-radius: 18px; font-weight: 800; font-size: 14px; cursor: pointer; flex: 1; transition: 0.2s;}
         .bread-btn.active { background: var(--primary-gradient); color: white; border: none; box-shadow: 0 6px 15px var(--primary-glow); transform: translateY(-2px);}
         
-        .counter-wrapper { display: flex; align-items: center; gap: 15px; background: var(--card-bg); border: 1px solid var(--border-color); padding: 8px; border-radius: 20px; width: max-content;}
+        .counter-wrapper { display: flex; align-items: center; gap: 15px; background: #181820; border: 1px solid var(--border-color); padding: 8px; border-radius: 20px; width: max-content;}
         .counter-btn { background: var(--bg-color); color: var(--text-main); border: none; width: 44px; height: 44px; border-radius: 14px; font-size: 24px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;}
         .counter-btn:active { background: var(--border-color); transform: scale(0.85);}
         .counter-val { font-size: 20px; font-weight: 900; color: var(--text-main); min-width: 30px; text-align: center;}
     </style>
 </head>
 <body>
-
-    <!-- AÇILIŞ (SPLASH) EKRANI -->
+    
     <div id="splash-screen">
-        <div class="splash-logo">Bekmez Pişirim</div>
-        <div class="splash-loader"></div>
+        <div class="splash-glow-1"></div>
+        <div class="splash-glow-2"></div>
+        
+        <div id="splash-content">
+            <div class="hero-greeting">
+                <span class="status-dot"></span> 
+                <span id="dinamik-karsilama">Hoş Geldiniz</span>
+            </div>
+            
+            <div class="splash-logo">Bekmez<br>Pişirim</div>
+            <div class="hero-subtitle">Ateşin lezzetle buluştuğu yer.<br>Özenle hazırlanıyor...</div>
+            
+            <div class="fluid-spinner-wrapper">
+                <div class="fluid-spinner"></div>
+                <div class="loading-text" style="margin-top: 5px;">Menü Yükleniyor</div>
+            </div>
+        </div>
     </div>
 
     <div id="mySidebar" class="sidebar">
@@ -254,11 +377,18 @@
         </div>
     </div>
 
-    <!-- BAŞARI EKRANI -->
+    <!-- YENİ: SADE VE LÜKS ONAY EKRANI -->
     <div id="success-overlay" class="success-overlay">
-        <div class="success-icon"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-        <div style="color: var(--text-main); font-size: 24px; font-weight: 800; margin-top: 25px;">Siparişiniz İletildi!</div>
-        <div style="color: var(--text-muted); font-size: 15px; font-weight: 600; margin-top: 10px;">Afiyet olsun.</div>
+        <div class="success-icon-wrapper">
+            <div class="success-ring"></div>
+            <div class="success-circle">
+                <svg class="success-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+            </div>
+        </div>
+        <div class="success-text">Siparişiniz İletildi</div>
+        <div class="success-subtext">Hemen hazırlamaya başlıyoruz.</div>
     </div>
 
     <div id="custom-alert-modal" class="modal-overlay" onclick="if(event.target === this) this.classList.remove('active');">
@@ -292,7 +422,8 @@
         let aktifKategori = 'Ana Yemek'; 
         let canliAdisyonTimer = null; 
         let sonCekilenAdisyonHTML = ""; 
-        let sonMenuVerisi = ""; // YENİ: Canlı Menü Takibi İçin
+        let sonMenuVerisi = ""; 
+        let sonMenuVersiyonu = "";
         
         let seciliUrun = null; 
         let seciliMiktar = 0; 
@@ -314,14 +445,30 @@
             document.getElementById("custom-alert-modal").classList.add("active");
         }
 
+        function SaatlikKarsilama() {
+            let saat = new Date().getHours();
+            let mesaj = "Hoş Geldiniz";
+            if (saat >= 06 && saat < 12) mesaj = "Günaydın";
+            else if (saat >= 12 && saat < 18) mesaj = "İyi Günler";
+            else if (saat >= 18 && saat <= 23) mesaj = "İyi Akşamlar";
+            document.getElementById("dinamik-karsilama").innerText = mesaj;
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
+            SaatlikKarsilama();
             let splash = document.getElementById('splash-screen');
+            let splashContent = document.getElementById('splash-content');
+            
             if(!sessionStorage.getItem('splashGosterildi')) {
                 setTimeout(() => {
-                    splash.style.opacity = '0';
-                    setTimeout(() => { splash.style.display = 'none'; }, 600);
+                    splashContent.style.transform = 'scale(0.9)';
+                    splashContent.style.opacity = '0';
+                    setTimeout(() => {
+                        splash.style.opacity = '0';
+                        setTimeout(() => { splash.style.display = 'none'; }, 600);
+                    }, 350);
                     sessionStorage.setItem('splashGosterildi', 'true');
-                }, 1800); 
+                }, 3000); 
             } else {
                 splash.style.display = 'none';
             }
@@ -339,44 +486,53 @@
         window.onload = function() {
             document.getElementById("masa-baslik").innerText = "Masa #" + guncelMasaNo;
             CanliAdisyonCek();
-            CanliMenuCek(true); // YENİ: İlk yükleme
-            
-            // YENİ: Her 10 saniyede bir menüyü arka planda sessizce kontrol eder
+            CanliMenuCek(true); 
             setInterval(() => { CanliMenuCek(false); }, 10000); 
         }
 
-        // YENİ: CANLI MENÜ SENKRONİZASYON ALGORİTMASI
         function CanliMenuCek(ilkYukleme) {
-            fetch(firebaseMenuUrl + "?t=" + new Date().getTime(), { cache: "no-store" })
+            fetch("https://bekmezpos-default-rtdb.firebaseio.com/MenuVersion.json?t=" + new Date().getTime(), { cache: "no-store" })
                 .then(r => r.json())
-                .then(data => {
-                    if(data && data.products) { 
-                        let yeniVeri = JSON.stringify(data.products);
-                        
-                        if (sonMenuVerisi !== yeniVeri) {
-                            tumUrunler = data.products; 
-                            sonMenuVerisi = yeniVeri;
+                .then(vData => {
+                    if (!ilkYukleme && vData && vData.v == sonMenuVersiyonu) return; 
+                    if (vData) sonMenuVersiyonu = vData.v;
+                    
+                    fetch(firebaseMenuUrl + "?t=" + new Date().getTime(), { cache: "no-store" })
+                        .then(r => r.json())
+                        .then(data => {
+                            if(data && data.products) { 
+                                let yeniVeri = JSON.stringify(data.products);
+                                
+                                if (sonMenuVerisi !== yeniVeri) {
+                                    tumUrunler = data.products; 
+                                    sonMenuVerisi = yeniVeri;
 
-                            let ekmek = tumUrunler.find(u => u.pName.trim().toLocaleLowerCase('tr-TR') === ekmekUrunAdi.trim().toLocaleLowerCase('tr-TR'));
-                            if (ekmek) {
-                                let parsed = parseFloat(ekmek.price1Kg.replace(',', '.'));
-                                ekmekBirimFiyati = isNaN(parsed) ? 0 : parsed;
-                            }
+                                    let ekmek = tumUrunler.find(u => u.pName.trim().toLocaleLowerCase('tr-TR') === ekmekUrunAdi.trim().toLocaleLowerCase('tr-TR'));
+                                    if (ekmek) {
+                                        let parsed = parseFloat(ekmek.price1Kg.replace(',', '.'));
+                                        ekmekBirimFiyati = isNaN(parsed) ? 0 : parsed;
+                                    }
 
-                            if (ilkYukleme) {
-                                document.getElementById("kategori-sekmeleri").style.display = "flex"; 
-                                SayfaGoster('urunler'); KategoriSec('Ana Yemek'); 
-                            } else {
-                                // Arka planda değiştiyse ve müşteri menüdeyse, menüyü anında güncelle
-                                if (document.getElementById("menu-container").style.display === "block") {
-                                    if (document.getElementById('tab-Arama').style.display === "block") UrunAra();
-                                    else KategoriSec(aktifKategori);
+                                    if (ilkYukleme) {
+                                        document.getElementById("kategori-sekmeleri").style.display = "flex"; 
+                                        SayfaGoster('urunler'); KategoriSec('Ana Yemek'); 
+                                    } else {
+                                        if (document.getElementById("menu-container").style.display === "block") {
+                                            if (document.getElementById('tab-Arama').style.display === "block") UrunAra();
+                                            else KategoriSec(aktifKategori);
+                                        }
+                                    }
                                 }
                             }
-                        }
-                    }
+                        }).catch(e => {
+                            if(ilkYukleme) OzelUyariGoster("Bağlantı Hatası", "Menü yüklenirken sorun oluştu. Lütfen internetinizi kontrol edin.", "📡");
+                        });
                 }).catch(e => {
-                    if(ilkYukleme) OzelUyariGoster("Bağlantı Hatası", "Menü yüklenirken sorun oluştu. Lütfen internetinizi kontrol edin.", "📡");
+                    if(ilkYukleme) {
+                        fetch(firebaseMenuUrl + "?t=" + new Date().getTime(), { cache: "no-store" })
+                            .then(r => r.json())
+                            .then(data => { if(data && data.products) { tumUrunler = data.products; SayfaGoster('urunler'); KategoriSec('Ana Yemek'); }});
+                    }
                 });
         }
 
@@ -797,15 +953,14 @@
         }
 
         function CanliAdisyonCek() {
-            fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliMasalar.json?t=${new Date().getTime()}`, { cache: "no-store" })
+            fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliMasalar/Masa_${guncelMasaNo}.json?t=${new Date().getTime()}`, { cache: "no-store" })
                 .then(r => r.json())
-                .then(data => {
+                .then(benimMasam => {
                     let html = "";
-                    if(!data || !data.aktifMasalar || !data.aktifMasalar.find(m => m.masaId === parseInt(guncelMasaNo))) {
+                    if(!benimMasam) {
                         masaKuponKullandiMi = false;
                         html = `<div class="empty-text">Masanız kapalı veya sipariş bekleniyor.</div><br><button class="order-btn" style="width:70%; margin-top:20px; font-size:15px; background:var(--card-bg); color:var(--text-main); border:1px solid var(--border-color); box-shadow:none;" onclick="HapticTitresim(); SayfaGoster('urunler')">Yeni Sipariş Ver</button>`;
                     } else {
-                        let benimMasam = data.aktifMasalar.find(m => m.masaId === parseInt(guncelMasaNo));
                         masaKuponKullandiMi = benimMasam.siparisNotu && benimMasam.siparisNotu.includes("[KUPON:");
                         html = `<h2 style="color:var(--text-main); margin-top:0; font-weight:800; text-align:left; padding-left:5px;">Canlı Masam</h2><div class="history-card">  <div class="history-header"><span>Durum</span><span class="live-badge">Mutfağa İletildi ✓</span></div>`;
                         benimMasam.siparisler.forEach(urun => { html += `<div class="history-item"><span><b style="color:var(--primary);">${urun.amount}x</b> ${escapeHTML(urun.itemName)}</span><span>${(urun.itemPrice * urun.amount).toFixed(2)} ₺</span></div>`; });
@@ -841,9 +996,16 @@
                         fetch(zamanUrl, { method: "PUT", headers: { "Content-Type": "application/json" }, body: simdikiZaman.toString() })
                     ]).then(() => {
                         HapticTitresim(); document.getElementById("success-overlay").classList.add("active");
+                        
                         sepet = []; aktifKuponKodu = ""; aktifKuponIndirimTutari = 0; aktifKuponAltLimit = 0; 
                         HesaplaVeGuncelle(); seciliEkstraIstekler = [];
-                        setTimeout(() => { document.getElementById("success-overlay").classList.remove("active"); SayfaGoster('gecmis'); btn.disabled = false; btn.innerText = "SİPARİŞİ ONAYLA"; }, 1800);
+                        
+                        setTimeout(() => { 
+                            document.getElementById("success-overlay").classList.remove("active"); 
+                            SayfaGoster('gecmis'); 
+                            btn.disabled = false; 
+                            btn.innerText = "SİPARİŞİ ONAYLA"; 
+                        }, 2500);
                     }).catch(e => { 
                         document.getElementById("success-overlay").classList.remove("active");
                         OzelUyariGoster("Sipariş Hatası", "Sipariş iletilemedi. Lütfen bağlantınızı kontrol edip tekrar deneyin.", "❌"); 
