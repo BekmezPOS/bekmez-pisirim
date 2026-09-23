@@ -22,14 +22,10 @@
             --extra-color: #f7b731;
         }
 
-        /* YENİ: Otomatik sığdırma ve taşma önleyici kilitler */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body { font-family: 'Nunito', sans-serif; background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 15px; text-align: center; padding-bottom: 110px; overflow-x: hidden;}
         
-        /* =========================================================
-           SİNEMATİK AÇILIŞ (SPLASH) EKRANI 
-           ========================================================= */
         #splash-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: #050507; 
@@ -124,7 +120,6 @@
         @keyframes popInScale { to { opacity: 1; transform: scale(1); } }
         @keyframes fadeUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
-        /* ========================================================= */
 
         .header { background: rgba(24, 24, 32, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); color: var(--text-main); padding: 18px; border-radius: 20px; margin-bottom: 20px; font-size: 22px; font-weight: 800; position: relative; text-align: center; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 10px 30px rgba(0,0,0,0.4);}
         .hamburger { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); font-size: 26px; cursor: pointer; color: var(--text-main); user-select: none; background: var(--bg-color); width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; transition: 0.2s; border: 1px solid var(--border-color);}
@@ -147,7 +142,6 @@
         .tab-btn { background: #181820; border: 1px solid var(--border-color); font-size: 14px; font-weight: 700; color: var(--text-muted); padding: 14px 26px; cursor: pointer; border-radius: 30px; transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1);}
         .tab-btn.active { color: #ffffff; background: var(--primary-gradient); border: none; box-shadow: 0 8px 20px var(--primary-glow); transform: translateY(-2px);}
 
-        /* YENİ: Mobilde 1, Geniş ekranda 2 sütun */
         .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
         @keyframes fadeSlideUpCard { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
         
@@ -179,7 +173,6 @@
         .card-icecek .product-price-badge { color: var(--drink-color); background: rgba(15, 185, 177, 0.05); }
         .card-ekstra .product-price-badge { color: var(--extra-color); background: rgba(247, 183, 49, 0.05); }
 
-        /* YENİ: Esnek ve asla taşmayan Sepet Kartı */
         .cart-item { background: var(--card-bg); padding: 15px; border-radius: 20px; margin-bottom: 15px; display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: space-between; border: 1px solid rgba(255,255,255,0.03); position: relative; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.15);}
         .cart-item::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 5px; background: var(--primary-gradient); }
         .cart-item-details { flex: 1 1 140px; text-align: left; min-width: 0; padding-left: 5px;}
@@ -222,7 +215,6 @@
         .floating-cart:active { transform: translateX(-50%) scale(0.94); }
         .floating-badge { background: white; color: var(--primary); width: 30px; height: 30px; border-radius: 50%; font-size: 14px; font-weight: 900; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2);}
 
-        /* YENİ: Esnek ve Asla Taşmayan Popup Ayarları */
         .popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 15, 19, 0.9); z-index: 200; display: flex; align-items: flex-end; justify-content: center; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); opacity: 0; pointer-events: none; transition: 0.4s;}
         .popup-overlay.active { opacity: 1; pointer-events: auto; }
         .popup-content { background: var(--card-bg); width: 100%; max-width: 500px; border-top-left-radius: 35px; border-top-right-radius: 35px; padding: 25px 15px 35px 15px; box-sizing: border-box; transform: translateY(100%); transition: 0.5s cubic-bezier(0.25, 1, 0.5, 1); border-top: 1px solid rgba(255,255,255,0.05); box-shadow: 0 -20px 50px rgba(0,0,0,0.5);}
@@ -247,10 +239,8 @@
         .counter-btn:active { background: var(--border-color); transform: scale(0.85);}
         .counter-val { font-size: 18px; font-weight: 900; color: var(--text-main); min-width: 25px; text-align: center;}
 
-        /* Özel Popup Buton Izgarası */
         .popup-btn-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-bottom: 20px; }
 
-        /* SADE VE LÜKS ONAY EKRANI (APPLE PAY TARZI) */
         .success-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 10, 14, 0.98); z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.5s ease; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); overflow: hidden;}
         .success-overlay.active { opacity: 1; pointer-events: auto; }
         
@@ -423,9 +413,11 @@
         let hamToplamFiyat = 0; 
         let sonOdenecekFiyat = 0;
         
+        // KUPON YÖNETİM DEĞİŞKENLERİ
         let aktifKuponKodu = "";
         let aktifKuponIndirimTutari = 0;
         let aktifKuponAltLimit = 0;
+        let aktifKuponHedefUrun = "Herşey"; 
         
         let masaKuponKullandiMi = false;
 
@@ -884,10 +876,18 @@
             HesaplaVeGuncelle();
         }
 
+        // ==========================================================
+        // KUPON SORGULAMA SİSTEMİ (ÖZEL ÜRÜN & YALITILMIŞ SEPET KURALI)
+        // ==========================================================
         function KuponSorgula() {
             let girilenKod = document.getElementById("coupon-code").value.trim().toUpperCase();
-            let msg = document.getElementById("coupon-message"); let btn = document.getElementById("coupon-apply-btn");
-            if(girilenKod === "") { aktifKuponKodu = ""; aktifKuponIndirimTutari = 0; aktifKuponAltLimit = 0; msg.innerHTML = ""; HesaplaVeGuncelle(); KuponArayuzunuGuncelle(); return; }
+            let msg = document.getElementById("coupon-message"); 
+            let btn = document.getElementById("coupon-apply-btn");
+            
+            if(girilenKod === "") { 
+                aktifKuponKodu = ""; aktifKuponIndirimTutari = 0; aktifKuponAltLimit = 0; aktifKuponHedefUrun = "Herşey";
+                msg.innerHTML = ""; HesaplaVeGuncelle(); KuponArayuzunuGuncelle(); return; 
+            }
             
             btn.innerText = "..."; btn.disabled = true;
 
@@ -896,16 +896,67 @@
                 .then(data => {
                     btn.disabled = false; btn.innerText = "Uygula";
                     if(data && data.discountAmount > 0) {
-                        if (hamToplamFiyat < data.bottomLimit) {
-                            aktifKuponKodu = ""; aktifKuponIndirimTutari = 0; aktifKuponAltLimit = 0;
-                            OzelUyariGoster("Sepet Tutarı Yetersiz", `Bu kuponu kullanabilmek için sepetinize en az ${(data.bottomLimit - hamToplamFiyat).toFixed(2)} TL'lik daha ürün eklemelisiniz.`, "🛒");
-                            msg.innerHTML = `<span style="color: var(--primary);">✖ Alt limit karşılanmadı.</span>`; btn.classList.remove("active"); HesaplaVeGuncelle(); return;
+                        
+                        // 1. ÜRÜN ŞARTI KONTROLÜ (SEPETTE *SADECE* O ÜRÜN MÜ VAR?)
+                        let arananUrun = (data.targetProduct && data.targetProduct !== "") ? data.targetProduct : "Herşey";
+                        let urunSartiSaglandi = false;
+                        let hataMesaji = "";
+
+                        if(arananUrun === "Herşey") {
+                            urunSartiSaglandi = true;
+                        } else {
+                            let arananVarMi = false;
+                            let baskaUrunVarMi = false;
+
+                            for(let i=0; i<sepet.length; i++) {
+                                if(sepet[i].rawName.toLocaleLowerCase('tr-TR') === arananUrun.toLocaleLowerCase('tr-TR')) {
+                                    arananVarMi = true;
+                                } else {
+                                    baskaUrunVarMi = true; // Sepette farklı bir ürün yakaladık!
+                                }
+                            }
+
+                            if (!arananVarMi) {
+                                hataMesaji = `Bu kupon sadece '${arananUrun}' ürünü için geçerlidir. Sepetinizde bulunmuyor.`;
+                            } else if (baskaUrunVarMi) {
+                                hataMesaji = `Bu kuponu kullanabilmek için sepetinizde SADECE '${arananUrun}' olmalıdır. Lütfen diğer ürünleri sepetten çıkarın.`;
+                            } else {
+                                urunSartiSaglandi = true;
+                            }
                         }
-                        HapticTitresim(); aktifKuponKodu = girilenKod; aktifKuponIndirimTutari = data.discountAmount; aktifKuponAltLimit = data.bottomLimit;
-                        msg.innerHTML = `<span style="color: var(--success);">✓ ${data.discountAmount} TL İndirim Uygulandı!</span>`; btn.classList.add("active"); btn.innerText = "Aktif"; HesaplaVeGuncelle();
+
+                        // Şart sağlanmadıysa ANINDA REDDET ve KUPONU YAKMA
+                        if(!urunSartiSaglandi) {
+                            aktifKuponKodu = ""; aktifKuponIndirimTutari = 0; aktifKuponAltLimit = 0; aktifKuponHedefUrun = "Herşey";
+                            OzelUyariGoster("Kupon Kullanılamaz", hataMesaji, "🛍️");
+                            msg.innerHTML = `<span style="color: var(--primary);">✖ ${hataMesaji}</span>`; 
+                            btn.classList.remove("active"); HesaplaVeGuncelle(); return;
+                        }
+
+                        // 2. SEPET ALT LİMİTİ KONTROLÜ
+                        if (hamToplamFiyat < data.bottomLimit) {
+                            aktifKuponKodu = ""; aktifKuponIndirimTutari = 0; aktifKuponAltLimit = 0; aktifKuponHedefUrun = "Herşey";
+                            OzelUyariGoster("Sepet Tutarı Yetersiz", `Bu kuponu kullanabilmek için sepetinize en az ${(data.bottomLimit - hamToplamFiyat).toFixed(2)} TL'lik daha ürün eklemelisiniz.`, "🛒");
+                            msg.innerHTML = `<span style="color: var(--primary);">✖ Alt limit karşılanmadı.</span>`; 
+                            btn.classList.remove("active"); HesaplaVeGuncelle(); return;
+                        }
+
+                        // HER ŞEY KUSURSUZSA KUPONU UYGULA
+                        HapticTitresim(); 
+                        aktifKuponKodu = girilenKod; 
+                        aktifKuponIndirimTutari = data.discountAmount; 
+                        aktifKuponAltLimit = data.bottomLimit;
+                        aktifKuponHedefUrun = arananUrun;
+
+                        let urunNotu = arananUrun !== "Herşey" ? ` (Sadece ${arananUrun} için geçerli)` : "";
+                        msg.innerHTML = `<span style="color: var(--success);">✓ ${data.discountAmount} TL İndirim${urunNotu} Uygulandı!</span>`; 
+                        btn.classList.add("active"); btn.innerText = "Aktif"; 
+                        HesaplaVeGuncelle();
+                        
                     } else {
-                        aktifKuponKodu = ""; aktifKuponIndirimTutari = 0; aktifKuponAltLimit = 0;
-                        msg.innerHTML = `<span style="color: var(--primary);">✖ Geçersiz veya tükenmiş kupon.</span>`; btn.classList.remove("active"); HesaplaVeGuncelle();
+                        aktifKuponKodu = ""; aktifKuponIndirimTutari = 0; aktifKuponAltLimit = 0; aktifKuponHedefUrun = "Herşey";
+                        msg.innerHTML = `<span style="color: var(--primary);">✖ Geçersiz veya kullanılmış kupon.</span>`; 
+                        btn.classList.remove("active"); HesaplaVeGuncelle();
                     }
                 }).catch(e => { btn.disabled = false; btn.innerText = "Uygula"; msg.innerHTML = `<span style="color: var(--primary);">Bağlantı hatası.</span>`; });
         }
@@ -945,18 +996,52 @@
             else { document.getElementById("coupon-box").style.display = "flex"; document.getElementById("coupon-used-message").style.display = "none"; document.getElementById("coupon-code").value = aktifKuponKodu; KuponArayuzunuGuncelle(); }
         }
 
+        // ==========================================================
+        // GÜVENLİK YAMASI: KUPONU YAKMADAN İADE ETME SİSTEMİ
+        // ==========================================================
         function HesaplaVeGuncelle() {
             hamToplamFiyat = 0; let toplamAdet = 0;
             sepet.forEach(urun => { hamToplamFiyat += (urun.basePrice * urun.quantity); toplamAdet += urun.quantity; });
             
-            if (aktifKuponIndirimTutari > 0 && hamToplamFiyat < aktifKuponAltLimit) {
-                aktifKuponKodu = ""; aktifKuponIndirimTutari = 0; aktifKuponAltLimit = 0; document.getElementById("coupon-message").innerHTML = `<span style="color: var(--primary);">✖ Sepet tutarı düştüğü için kupon iptal edildi.</span>`; KuponArayuzunuGuncelle();
+            // EĞER KUPON AKTİFKEN MÜŞTERİ SEPETLE OYNARSA (GÜVENLİK YAMASI)
+            if (aktifKuponIndirimTutari > 0) {
+                let kuponHalaGecerliMi = true;
+                let iptalSebebi = "";
+                
+                // 1. Hedef ürün şartı bozuldu mu?
+                if (aktifKuponHedefUrun !== "Herşey") {
+                    let arananVarMi = sepet.some(u => u.rawName.toLocaleLowerCase('tr-TR') === aktifKuponHedefUrun.toLocaleLowerCase('tr-TR'));
+                    let baskaVarMi = sepet.some(u => u.rawName.toLocaleLowerCase('tr-TR') !== aktifKuponHedefUrun.toLocaleLowerCase('tr-TR'));
+                    
+                    if (!arananVarMi) {
+                        kuponHalaGecerliMi = false;
+                        iptalSebebi = "Ürün sepetten çıkarıldığı için kupon iptal edildi (Kuponunuz yanmadı).";
+                    } else if (baskaVarMi) {
+                        kuponHalaGecerliMi = false;
+                        iptalSebebi = "Sepete başka ürün eklendiği için kupon iptal edildi (Kuponunuz yanmadı).";
+                    }
+                }
+
+                // 2. Alt limit düştü mü?
+                if (hamToplamFiyat < aktifKuponAltLimit && kuponHalaGecerliMi) {
+                    kuponHalaGecerliMi = false;
+                    iptalSebebi = "Sepet tutarı düştüğü için kupon iade edildi (Kuponunuz yanmadı).";
+                }
+
+                // EĞER KURAL BOZULDUYSA KUPONU İPTAL ET VE GERİ İADE ET (YAKMA)
+                if (!kuponHalaGecerliMi) {
+                    aktifKuponKodu = ""; aktifKuponIndirimTutari = 0; aktifKuponAltLimit = 0; aktifKuponHedefUrun = "Herşey";
+                    document.getElementById("coupon-message").innerHTML = `<span style="color: var(--primary);">✖ ${iptalSebebi}</span>`; 
+                    KuponArayuzunuGuncelle();
+                }
             }
 
             if(aktifKuponIndirimTutari > 0) {
                 sonOdenecekFiyat = hamToplamFiyat - aktifKuponIndirimTutari; if (sonOdenecekFiyat < 0) sonOdenecekFiyat = 0; 
                 document.getElementById("eski-fiyat-ustu-cizik").style.display = "block"; document.getElementById("eski-fiyat-ustu-cizik").innerText = hamToplamFiyat.toFixed(2) + " TL";
-            } else { sonOdenecekFiyat = hamToplamFiyat; document.getElementById("eski-fiyat-ustu-cizik").style.display = "none"; }
+            } else { 
+                sonOdenecekFiyat = hamToplamFiyat; document.getElementById("eski-fiyat-ustu-cizik").style.display = "none"; 
+            }
 
             document.getElementById("sepet-tutar").innerText = sonOdenecekFiyat.toFixed(2) + " TL"; document.getElementById("floating-total").innerText = sonOdenecekFiyat.toFixed(2) + " TL";
             document.getElementById("sidebar-sepet-adet").innerText = toplamAdet; document.getElementById("floating-badge").innerText = toplamAdet;
@@ -1009,7 +1094,7 @@
                         HapticTitresim(); 
                         document.getElementById("success-overlay").classList.add("active");
                         
-                        sepet = []; aktifKuponKodu = ""; aktifKuponIndirimTutari = 0; aktifKuponAltLimit = 0; 
+                        sepet = []; aktifKuponKodu = ""; aktifKuponIndirimTutari = 0; aktifKuponAltLimit = 0; aktifKuponHedefUrun = "Herşey"; 
                         HesaplaVeGuncelle(); seciliEkstraIstekler = [];
                         
                         setTimeout(() => { 
