@@ -7,20 +7,11 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     
+    <!-- GERÇEK MANIFEST DOSYASI BURAYA BAĞLANDI -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- PWA SİSTEMİ İÇİN ZORUNLU SERVICE WORKER KAYDI -->
     <script>
-        const manifestJSON = {
-          "name": "Bekmez Pişirim",
-          "short_name": "Bekmez",
-          "start_url": window.location.origin + window.location.pathname,
-          "display": "standalone",
-          "background_color": "#0f0f13",
-          "theme_color": "#ff4757",
-          "icons": [{"src": "https://cdn-icons-png.flaticon.com/512/3264/3264003.png", "sizes": "512x512", "type": "image/png"}]
-        };
-        const blob = new Blob([JSON.stringify(manifestJSON)], {type: 'application/json'});
-        document.write(`<link rel="manifest" href="${URL.createObjectURL(blob)}">`);
-
-        // PWA SİSTEMİ İÇİN ZORUNLU SERVICE WORKER KAYDI
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js').catch(err => console.log('SW Hatası:', err));
@@ -250,7 +241,6 @@
             <div id="coupon-used-message" class="coupon-used-msg">Bu masa için kupon hakkı kullanılmıştır.</div>
             <div id="coupon-box" class="coupon-wrapper"><input type="text" id="coupon-code" class="coupon-input" placeholder="KUPON KODU (Varsa)"><button id="coupon-apply-btn" class="coupon-btn" onclick="KuponSorgula()">Uygula</button></div>
             <div id="coupon-message" class="coupon-msg"></div>
-            <!-- Masalar İçin Sipariş Notu -->
             <textarea id="siparis-notu" class="note-input" rows="3" placeholder="Özel Notunuz (İsteğe bağlı)..."></textarea>
             <button class="order-btn order-btn-secondary" style="margin-bottom: 50px;" onclick="HapticTitresim(); SayfaGoster('urunler')">+ Başka Ürün Ekle</button>
         </div>
@@ -286,7 +276,6 @@
         </div>
     </div>
 
-    <!-- EVDEN SİPARİŞ (PAKET SERVİS) BİLGİ EKRANI (NOT ALANI AYRILDI) -->
     <div id="delivery-modal" class="modal-overlay" onclick="if(event.target === this) this.classList.remove('active');">
         <div class="modal-content" style="text-align: left;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
@@ -357,7 +346,7 @@
 
         window.onload = function() {
             document.getElementById("masa-baslik").innerText = siparisModu === "Masa" ? ("Masa #" + guncelMasaNo) : "🛵 Paket Servis";
-            if (siparisModu === "Masa") { CanliAdisyonCek(); } else { CanliAdisyonCek(); } // Paket serviste de artık Canlı Adisyon çekilecek
+            if (siparisModu === "Masa") { CanliAdisyonCek(); } else { CanliAdisyonCek(); }
             CanliMenuCek(true); setInterval(() => { CanliMenuCek(false); }, 10000); 
         }
 
@@ -390,7 +379,6 @@
                 let kartSinifi = "card-anayemek"; let tur = GetKategoriAd(urun); if(tur === "İçecek") kartSinifi = "card-icecek"; else if(tur === "Ekstra") kartSinifi = "card-ekstra";
                 let orjinalIndex = tumUrunler.findIndex(u => u.pName === urun.pName);
                 
-                // GÜNCELLENDİ: STOK SIFIR KONTROLÜ
                 let stok = (urun.stockAmount !== undefined) ? parseFloat(urun.stockAmount) : (urun.stock !== undefined ? parseFloat(urun.stock) : 999);
                 let stokSifirMi = stok <= 0;
                 let clickAction = stokSifirMi ? `OzelUyariGoster('Tükendi', 'Bu ürün şu an stoklarımızda kalmamıştır.', '🚫')` : `UrunPopupAc(${orjinalIndex})`;
@@ -615,24 +603,16 @@
             if(document.getElementById("menu-container").style.display === "block") { document.getElementById("floating-cart").style.display = toplamAdet > 0 ? "flex" : "none"; }
         }
 
-        // GÜNCELLENDİ: PAKET SERVİS CANLI ADİSYONU
         function CanliAdisyonCek() {
             if (siparisModu === "Paket") {
                 let paketData = localStorage.getItem("sonPaketSiparisi");
                 if(paketData) {
                     let p = JSON.parse(paketData);
-                    let html = `<h2 style="color:var(--text-main); margin-top:0; font-weight:800; text-align:left; padding-left:5px;">Paket Adisyonum</h2>
-                    <div style="padding-top: 10px; padding-bottom: 20px;">
-                        <div class="receipt-card">
-                            <div style="text-align: center; margin-bottom: 20px; font-weight: 900; font-size: 22px; line-height: 1.2;">BEKMEZ PİŞİRİM<br><span style="font-size: 13px; font-weight: 600; letter-spacing: 1px;">PAKET SERVİS</span><div style="font-size: 10px; font-weight: 400; margin-top: 5px;">Tarih: ${p.tarih}</div></div>
-                            <div class="receipt-header"><span>DURUM</span><span class="live-badge-receipt">YOLDA / HAZIRLANIYOR</span></div>`;
+                    let html = `<h2 style="color:var(--text-main); margin-top:0; font-weight:800; text-align:left; padding-left:5px;">Paket Adisyonum</h2><div style="padding-top: 10px; padding-bottom: 20px;"><div class="receipt-card"><div style="text-align: center; margin-bottom: 20px; font-weight: 900; font-size: 22px; line-height: 1.2;">BEKMEZ PİŞİRİM<br><span style="font-size: 13px; font-weight: 600; letter-spacing: 1px;">PAKET SERVİS</span><div style="font-size: 10px; font-weight: 400; margin-top: 5px;">Tarih: ${p.tarih}</div></div><div class="receipt-header"><span>DURUM</span><span class="live-badge-receipt">YOLDA / HAZIRLANIYOR</span></div>`;
                     p.urunler.forEach(urun => { html += `<div class="receipt-item"><span><b style="font-size: 15px;">${urun.miktar}x</b> ${escapeHTML(urun.isim)}</span><span>${urun.fiyat.toFixed(2)} ₺</span></div>`; });
-                    html += `<div class="receipt-total">TOPLAM:<br><span>${p.toplam.toFixed(2)} TL</span></div><div class="receipt-barcode"></div><div style="text-align: center; font-size: 11px; margin-top: 10px; font-weight: 600;">Paketiniz en kısa sürede<br>adresinize teslim edilecektir.</div></div></div>
-                    <button class="order-btn order-btn-secondary" style="margin-bottom:50px;" onclick="HapticTitresim(); SayfaGoster('urunler')">Yeni Sipariş Ver</button>`;
+                    html += `<div class="receipt-total">TOPLAM:<br><span>${p.toplam.toFixed(2)} TL</span></div><div class="receipt-barcode"></div><div style="text-align: center; font-size: 11px; margin-top: 10px; font-weight: 600;">Paketiniz en kısa sürede<br>adresinize teslim edilecektir.</div></div></div><button class="order-btn order-btn-secondary" style="margin-bottom:50px;" onclick="HapticTitresim(); SayfaGoster('urunler')">Yeni Sipariş Ver</button>`;
                     document.getElementById("history-container").innerHTML = html;
-                } else {
-                    document.getElementById("history-container").innerHTML = `<div class="empty-text">Henüz aktif bir paket siparişiniz yok.</div><br><button class="order-btn" style="width:70%; margin-top:20px; font-size:15px; background:var(--card-bg); color:var(--text-main); border:1px solid var(--border-color); box-shadow:none;" onclick="HapticTitresim(); SayfaGoster('urunler')">Sipariş Ver</button>`;
-                }
+                } else { document.getElementById("history-container").innerHTML = `<div class="empty-text">Henüz aktif bir paket siparişiniz yok.</div><br><button class="order-btn" style="width:70%; margin-top:20px; font-size:15px; background:var(--card-bg); color:var(--text-main); border:1px solid var(--border-color); box-shadow:none;" onclick="HapticTitresim(); SayfaGoster('urunler')">Sipariş Ver</button>`; }
                 return;
             }
 
@@ -660,15 +640,12 @@
 
         function PaketSiparisiGonder() {
             let ad = document.getElementById("del-name").value.trim(); let tel = document.getElementById("del-phone").value.trim(); let adres = document.getElementById("del-address").value.trim();
-            // GÜNCELLENDİ: PAKETE ÖZEL NOT EKLENDİ
             let paketNotu = document.getElementById("del-note").value.trim();
-
             if(ad === "" || tel === "" || adres === "") { OzelUyariGoster("Eksik Bilgi", "Lütfen adınızı, telefonunuzu ve adresinizi eksiksiz giriniz.", "📝"); return; }
             document.getElementById("delivery-modal").classList.remove("active");
             
             let musteriNotu = `[PAKET] İsim: ${ad} | Tel: ${tel} | Adres: ${adres}`;
             if(paketNotu !== "") musteriNotu += ` | Not: ${paketNotu}`;
-
             SiparisGonder(musteriNotu);
         }
 
@@ -680,7 +657,6 @@
                 if (sonSiparis && (simdikiZaman - parseInt(sonSiparis)) < 60000) { let kalan = Math.ceil((60000 - (simdikiZaman - parseInt(sonSiparis))) / 1000); OzelUyariGoster("Lütfen Bekleyin", `Sistemi meşgul etmemek için yeni sipariş vermeden önce ${kalan} saniye daha beklemelisiniz.`, "⏱️"); btn.disabled = false; btn.innerText = "SİPARİŞİ ONAYLA"; return; }
                 
                 let n = document.getElementById("siparis-notu").value;
-                // Masa notunu paket notuyla birleştirmektense sadece hangisi doluysa onu yolla
                 let finalNot = ekMusteriNotu !== "" ? ekMusteriNotu : n;
 
                 const siparisVerisi = { masaId: parseInt(guncelMasaNo), siparisler: sepet.map(u => ({ itemName: (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName, itemPrice: u.basePrice * u.quantity, amount: u.baseStockAmount * u.quantity, rawName: u.rawName })), toplam: sonOdenecekFiyat, couponCode: aktifKuponKodu, durum: "bekliyor", zaman: new Date().toLocaleTimeString(), siparisNotu: escapeHTML(finalNot) };
@@ -692,7 +668,6 @@
                 ]).then(() => {
                     HapticTitresim(); document.getElementById("success-overlay").classList.add("active");
                     
-                    // PAKET SİPARİŞİ LOKAL OLARAK KAYDET (CANLI ADİSYON İÇİN)
                     if (siparisModu === "Paket") {
                         let savePaket = { tarih: new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString().slice(0,5), toplam: sonOdenecekFiyat, urunler: sepet.map(u => ({isim: u.baseName, miktar: u.quantity, fiyat: u.basePrice * u.quantity})) };
                         localStorage.setItem("sonPaketSiparisi", JSON.stringify(savePaket));
