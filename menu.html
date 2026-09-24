@@ -365,12 +365,21 @@
         let kilitZamani = localStorage.getItem("masaKilitZamani"); let simdikiZaman = new Date().getTime();
         if (kilitZamani && (simdikiZaman - parseInt(kilitZamani) > 10800000)) { localStorage.removeItem("aktifMasaKilidi"); localStorage.removeItem("masaKilitZamani"); }
 
-        const urlParams = new URLSearchParams(window.location.search); let urlMasaNo = urlParams.get('masa'); let kilitliMasa = localStorage.getItem("aktifMasaKilidi");
+      const urlParams = new URLSearchParams(window.location.search); let urlMasaNo = urlParams.get('masa'); let kilitliMasa = localStorage.getItem("aktifMasaKilidi");
         let guncelMasaNo = 0; let siparisModu = "Paket"; 
 
-        if (urlMasaNo) { localStorage.setItem("aktifMasaKilidi", urlMasaNo); localStorage.setItem("masaKilitZamani", simdikiZaman.toString()); guncelMasaNo = urlMasaNo; siparisModu = "Masa";
-        } else if (kilitliMasa) { guncelMasaNo = kilitliMasa; siparisModu = "Masa";
-        } else { guncelMasaNo = 0; siparisModu = "Paket"; }
+        // === YENİ: UYGULAMA RADARI ===
+        if (isStandalone) { 
+            // Eğer ana ekrandaki uygulama ikonundan girildiyse, masa kilidini anında KIR!
+            localStorage.removeItem("aktifMasaKilidi"); localStorage.removeItem("masaKilitZamani");
+            guncelMasaNo = 0; siparisModu = "Paket";
+        } else if (urlMasaNo) { 
+            localStorage.setItem("aktifMasaKilidi", urlMasaNo); localStorage.setItem("masaKilitZamani", simdikiZaman.toString()); guncelMasaNo = urlMasaNo; siparisModu = "Masa";
+        } else if (kilitliMasa) { 
+            guncelMasaNo = kilitliMasa; siparisModu = "Masa";
+        } else { 
+            guncelMasaNo = 0; siparisModu = "Paket"; 
+        }
         
         function OzelUyariGoster(baslik, mesaj, ikon = "⚠️") { document.getElementById("custom-alert-title").innerText = baslik; document.getElementById("custom-alert-text").innerText = mesaj; document.getElementById("custom-alert-icon").innerText = ikon; document.getElementById("custom-alert-modal").classList.add("active"); }
 
