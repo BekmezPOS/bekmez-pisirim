@@ -2,24 +2,11 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <!-- GÜNCELLENDİ: UYGULAMA OLARAK AÇILDIĞINDA MASAÜSTÜ GİBİ KÜÇÜK GÖZÜKMESİNİ ENGELLEYEN KİLİTLER -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no">
     <title>Bekmez Pişirim - Paket & Menü</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- GERÇEK MANIFEST DOSYASI BURAYA BAĞLANDI -->
-    <link rel="manifest" href="manifest.json">
-    
-    <!-- PWA SİSTEMİ İÇİN ZORUNLU SERVICE WORKER KAYDI -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js').catch(err => console.log('SW Hatası:', err));
-            });
-        }
-    </script>
-
     <style>
         :root { --bg-color: #0f0f13; --card-bg: rgba(24, 24, 32, 0.85); --border-color: #272732; --text-main: #ffffff; --text-muted: #9ba4b5; --primary: #ff4757; --primary-gradient: linear-gradient(135deg, #ff4757, #ff6b81); --primary-glow: rgba(255, 71, 87, 0.3); --success: #2ed573; --drink-color: #0fb9b1; --extra-color: #f7b731;}
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -199,36 +186,10 @@
         
         #delivery-modal .modal-content { border-top: 5px solid var(--primary); padding-top: 25px; width: 95%; max-width: 450px;}
         #delivery-modal input, #delivery-modal textarea { margin-bottom: 15px; padding: 18px; font-size: 15px; }
-        
-        /* GÜNCELLENDİ: ESNEK VE KUSURSUZ PWA AFİŞ TASARIMI */
-        .pwa-banner { 
-            display: none; position: fixed; bottom: 20px; left: 5%; width: 90%; max-width: 400px;
-            background: var(--primary-gradient); padding: 15px; border-radius: 20px;
-            color: white; z-index: 99999; box-shadow: 0 10px 25px rgba(255,71,87,0.4);
-            align-items: center; justify-content: space-between; gap: 10px;
-            border: 1px solid rgba(255,255,255,0.2); box-sizing: border-box;
-            animation: fadeSlideUpCard 0.6s ease-out forwards;
-        }
-        .pwa-banner-text { flex: 1; text-align: left; line-height: 1.2; }
-        .pwa-banner-title { font-size: 14px; font-weight: 900; }
-        .pwa-banner-sub { font-size: 11px; font-weight: 600; opacity: 0.9; }
-        .pwa-btn-install { background: white; color: var(--primary); border: none; padding: 8px 12px; border-radius: 12px; font-weight: 900; font-size: 12px; cursor: pointer; white-space: nowrap; }
-        .pwa-btn-close { background: transparent; border: none; color: white; font-size: 24px; cursor: pointer; padding: 0 5px; line-height: 1; }
     </style>
 </head>
 <body>
     <div id="splash-screen"><div class="splash-glow-1"></div><div class="splash-glow-2"></div><div id="splash-content"><div class="hero-greeting"><span class="status-dot"></span><span id="dinamik-karsilama">Hoş Geldiniz</span></div><div class="splash-logo">Bekmez<br>Pişirim</div><div class="hero-subtitle">Ateşin lezzetle buluştuğu yer.<br>Özenle hazırlanıyor...</div><div class="fluid-spinner-wrapper"><div class="fluid-spinner"></div><div class="loading-text" style="margin-top: 5px;">Menü Yükleniyor</div></div></div></div>
-
-    <!-- GÜNCELLENDİ: PWA KURULUM AFİŞİ -->
-    <div id="pwa-banner" class="pwa-banner">
-        <span style="font-size:24px;">📱</span>
-        <div class="pwa-banner-text">
-            <div class="pwa-banner-title">Uygulamamızı İndirin</div>
-            <div class="pwa-banner-sub">Evden hızlıca sipariş verin</div>
-        </div>
-        <button id="pwa-install-btn" class="pwa-btn-install">YÜKLE</button>
-        <button onclick="DismissPWA()" class="pwa-btn-close">&times;</button>
-    </div>
 
     <div id="mySidebar" class="sidebar">
         <a href="javascript:void(0)" class="close-btn" onclick="HapticTitresim(); KapatSidebar();">&times;</a>
@@ -260,7 +221,6 @@
             <div id="coupon-used-message" class="coupon-used-msg">Bu masa için kupon hakkı kullanılmıştır.</div>
             <div id="coupon-box" class="coupon-wrapper"><input type="text" id="coupon-code" class="coupon-input" placeholder="KUPON KODU (Varsa)"><button id="coupon-apply-btn" class="coupon-btn" onclick="KuponSorgula()">Uygula</button></div>
             <div id="coupon-message" class="coupon-msg"></div>
-            <!-- Masalar İçin Sipariş Notu -->
             <textarea id="siparis-notu" class="note-input" rows="3" placeholder="Özel Notunuz (İsteğe bağlı)..."></textarea>
             <button class="order-btn order-btn-secondary" style="margin-bottom: 50px;" onclick="HapticTitresim(); SayfaGoster('urunler')">+ Başka Ürün Ekle</button>
         </div>
@@ -333,53 +293,15 @@
         let seciliUrun = null; let seciliMiktar = 0; let seciliFiyat = 0;
         let seciliEkstraIstekler = []; let seciliLavasTip = "Normal"; let baseKgBread = 0; let ekstraEkmekKg = 0;
 
-        // GÜNCELLENDİ: PWA Kurulum Yönetimi
-        let deferredPrompt;
-        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone || document.referrer.includes('android-app://');
-        const isPwaDismissed = localStorage.getItem('pwaDismissed') === 'true';
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault(); 
-            deferredPrompt = e;
-            // Eğer uygulama yüklenmediyse ve kullanıcı "Çarpı"ya basmadıysa afişi göster
-            if (!isStandalone && !isPwaDismissed) {
-                setTimeout(() => { document.getElementById('pwa-banner').style.display = 'flex'; }, 3000);
-            }
-        });
-
-        document.getElementById('pwa-install-btn').addEventListener('click', async () => {
-            document.getElementById('pwa-banner').style.display = 'none'; 
-            if(deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice; 
-                deferredPrompt = null;
-            }
-        });
-
-        // GÜNCELLENDİ: Afişi Kapatma (Bir Daha Çıkmaz)
-        function DismissPWA() {
-            document.getElementById('pwa-banner').style.display = 'none';
-            localStorage.setItem('pwaDismissed', 'true');
-        }
-
         let kilitZamani = localStorage.getItem("masaKilitZamani"); let simdikiZaman = new Date().getTime();
         if (kilitZamani && (simdikiZaman - parseInt(kilitZamani) > 10800000)) { localStorage.removeItem("aktifMasaKilidi"); localStorage.removeItem("masaKilitZamani"); }
 
-      const urlParams = new URLSearchParams(window.location.search); let urlMasaNo = urlParams.get('masa'); let kilitliMasa = localStorage.getItem("aktifMasaKilidi");
+        const urlParams = new URLSearchParams(window.location.search); let urlMasaNo = urlParams.get('masa'); let kilitliMasa = localStorage.getItem("aktifMasaKilidi");
         let guncelMasaNo = 0; let siparisModu = "Paket"; 
 
-        // === YENİ: UYGULAMA RADARI ===
-        if (isStandalone) { 
-            // Eğer ana ekrandaki uygulama ikonundan girildiyse, masa kilidini anında KIR!
-            localStorage.removeItem("aktifMasaKilidi"); localStorage.removeItem("masaKilitZamani");
-            guncelMasaNo = 0; siparisModu = "Paket";
-        } else if (urlMasaNo) { 
-            localStorage.setItem("aktifMasaKilidi", urlMasaNo); localStorage.setItem("masaKilitZamani", simdikiZaman.toString()); guncelMasaNo = urlMasaNo; siparisModu = "Masa";
-        } else if (kilitliMasa) { 
-            guncelMasaNo = kilitliMasa; siparisModu = "Masa";
-        } else { 
-            guncelMasaNo = 0; siparisModu = "Paket"; 
-        }
+        if (urlMasaNo) { localStorage.setItem("aktifMasaKilidi", urlMasaNo); localStorage.setItem("masaKilitZamani", simdikiZaman.toString()); guncelMasaNo = urlMasaNo; siparisModu = "Masa";
+        } else if (kilitliMasa) { guncelMasaNo = kilitliMasa; siparisModu = "Masa";
+        } else { guncelMasaNo = 0; siparisModu = "Paket"; }
         
         function OzelUyariGoster(baslik, mesaj, ikon = "⚠️") { document.getElementById("custom-alert-title").innerText = baslik; document.getElementById("custom-alert-text").innerText = mesaj; document.getElementById("custom-alert-icon").innerText = ikon; document.getElementById("custom-alert-modal").classList.add("active"); }
 
