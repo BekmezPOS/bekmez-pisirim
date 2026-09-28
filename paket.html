@@ -131,6 +131,8 @@
         .tab-btn { background: linear-gradient(135deg, rgba(30, 30, 35, 0.5) 0%, rgba(20, 20, 24, 0.5) 100%); border: 1px solid var(--border-highlight); font-size: 13px; font-weight: 700; color: var(--text-muted); padding: 10px 20px; cursor: pointer; border-radius: 100px; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); white-space: nowrap; display: flex; align-items: center; gap: 6px; backdrop-filter: blur(15px) saturate(180%); box-shadow: 0 2px 10px rgba(0,0,0,0.2);}
         .tab-btn.active { color: #fff; background: var(--gradient-fire); border: 1px solid transparent; box-shadow: 0 6px 15px var(--primary-glow), inset 0 1px 1px rgba(255,255,255,0.2); transform: translateY(-2px);}
 
+        @keyframes cardEntrance { 0% { opacity: 0; transform: translateY(40px) scale(0.9); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+        
         .grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 15px 25px 15px; }
         .product-card { opacity: 0; animation: cardEntrance 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; background: linear-gradient(145deg, rgba(30, 30, 35, 0.5) 0%, rgba(15, 15, 20, 0.8) 100%); backdrop-filter: blur(25px) saturate(200%); border: 1px solid rgba(255,255,255,0.05); border-top: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 16px 12px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer; position: relative; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.05);}
         .product-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.05) 0%, transparent 60%); pointer-events: none; }
@@ -180,22 +182,29 @@
         .order-btn:active { transform: scale(0.95) translateY(2px); box-shadow: 0 5px 10px rgba(52, 199, 89, 0.3), inset 0 2px 6px rgba(0,0,0,0.2); }
         .order-btn.loading { background: #52525B; cursor: not-allowed; box-shadow: none; transform: none; }
 
+        /* YENİ POPUP BOYUTLARI (MOBİL KÜÇÜLTME) */
         .popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(15px); z-index: 2000; display: none; align-items: flex-end; opacity: 0; pointer-events: none; transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);}
         .popup-overlay.active { opacity: 1; pointer-events: auto; }
         .popup-content { background: linear-gradient(180deg, #1a1a24 0%, #070709 100%); width: 100%; border-top-left-radius: 32px; border-top-right-radius: 32px; padding: 15px 20px 30px 20px; transform: translateY(100%); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); border-top: 1px solid rgba(255,255,255,0.1); box-shadow: 0 -20px 60px rgba(0,0,0,0.8); max-height: 90vh; overflow-y: auto; position: relative;}
         .popup-overlay.active .popup-content { transform: translateY(0); }
         .popup-drag-handle { width: 40px; height: 5px; background: rgba(255,255,255,0.15); border-radius: 10px; margin: 0 auto 25px auto; }
-        
         .popup-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px;}
-        .popup-title { font-size: 22px; font-weight: 900; color: var(--text-main); line-height: 1.2; letter-spacing: -1px; text-shadow: 0 2px 8px rgba(0,0,0,0.5);}
+        .popup-title { font-size: 20px; font-weight: 900; color: var(--text-main); line-height: 1.2; letter-spacing: -0.5px; text-shadow: 0 2px 8px rgba(0,0,0,0.5);}
+        .popup-info-box { background: rgba(0,0,0,0.5); padding: 12px 16px; border-radius: 20px; border: 1px solid var(--border-highlight); display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: inset 0 2px 10px rgba(0,0,0,0.6);}
         
-        .popup-info-box { background: rgba(0,0,0,0.5); padding: 16px; border-radius: 24px; border: 1px solid var(--border-highlight); display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: inset 0 2px 15px rgba(0,0,0,0.6);}
+        .p-sec-title { font-size:11px; color:var(--text-muted); font-weight:800; margin-bottom:10px; letter-spacing:1px; text-transform:uppercase; }
+        .p-btn-row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px; }
+        .p-counter-box { display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.5); padding:10px 14px; border-radius:16px; border:1px solid var(--border-highlight); box-shadow: inset 0 2px 8px rgba(0,0,0,0.5); margin-bottom:10px; }
+        .p-c-label { font-size:13px; font-weight:800; color:var(--text-main); }
+        .p-c-ctrls { display:flex; align-items:center; gap:10px; }
+        .p-c-btn { background:rgba(255,255,255,0.05); color:white; border:1px solid rgba(255,255,255,0.1); width:32px; height:32px; border-radius:50%; font-size:18px; font-weight:700; display:flex; align-items:center; justify-content:center; transition:0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.2); cursor:pointer; }
+        .p-c-val { font-weight:900; font-size:16px; color:var(--primary); min-width:24px; text-align:center; }
         
-        .ingredient-btn { background: rgba(255,255,255,0.03); color: var(--text-main); border: 1px solid var(--border-highlight); padding: 12px 6px; border-radius: 16px; font-weight: 700; font-size: 12px; cursor: pointer; flex: 1 1 calc(50% - 8px); transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.2);}
+        .ingredient-btn { background: rgba(255,255,255,0.03); color: var(--text-main); border: 1px solid var(--border-highlight); padding: 10px 4px; border-radius: 12px; font-weight: 700; font-size: 11px; cursor: pointer; flex: 1 1 calc(33.333% - 8px); transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.2); text-align:center;}
         .ingredient-btn.active { background: linear-gradient(to bottom, var(--primary-light), rgba(255,94,0,0.05)); color: var(--primary); border-color: rgba(255,94,0,0.4); box-shadow: inset 0 0 15px rgba(255, 94, 0, 0.15), 0 2px 10px rgba(255,94,0,0.1);}
         
-        .bread-btn { background: rgba(255,255,255,0.03); color: var(--text-main); border: 1px solid var(--border-highlight); padding: 12px 4px; border-radius: 16px; font-weight: 700; font-size: 12px; cursor: pointer; flex: 1 1 calc(33.333% - 8px); transition: all 0.4s; box-shadow: 0 2px 8px rgba(0,0,0,0.2);}
-        .bread-btn.active { background: var(--gradient-fire); color: white; border-color: transparent; box-shadow: 0 10px 20px var(--primary-glow), inset 0 1px 1px rgba(255,255,255,0.3); transform: translateY(-2px);}
+        .bread-btn { background: rgba(255,255,255,0.03); color: var(--text-main); border: 1px solid var(--border-highlight); padding: 10px 4px; border-radius: 12px; font-weight: 700; font-size: 11px; cursor: pointer; flex: 1 1 calc(33.333% - 8px); transition: all 0.4s; box-shadow: 0 2px 8px rgba(0,0,0,0.2); text-align:center;}
+        .bread-btn.active { background: var(--gradient-fire); color: white; border-color: transparent; box-shadow: 0 6px 15px var(--primary-glow), inset 0 1px 1px rgba(255,255,255,0.3); transform: translateY(-2px);}
 
         .cc-box { background: rgba(0,0,0,0.4); padding: 16px; border-radius: 20px; border: 1px solid var(--border-highlight); margin-bottom: 20px; }
 
@@ -302,9 +311,9 @@
             <input type="text" id="search-input" class="search-input" placeholder="Ne yemek istersiniz?" onkeyup="UrunAra()">
         </div>
         <div class="category-tabs" id="kategori-sekmeleri" style="display: none;">
-            <button class="tab-btn active" id="tab-Ana Yemek" onclick="KategoriSec('Ana Yemek');">🥩 Ana Yemek</button>
-            <button class="tab-btn" id="tab-İçecek" onclick="KategoriSec('İçecek');">🥤 İçecek</button>
-            <button class="tab-btn" id="tab-Ekstra" onclick="KategoriSec('Ekstra');">🍟 Ekstra</button>
+            <button class="tab-btn active" id="tab-AnaYemek" onclick="KategoriSec('Ana Yemek', this);">🥩 Ana Yemek</button>
+            <button class="tab-btn" id="tab-İçecek" onclick="KategoriSec('İçecek', this);">🥤 İçecek</button>
+            <button class="tab-btn" id="tab-Ekstra" onclick="KategoriSec('Ekstra', this);">🍟 Ekstra</button>
             <button class="tab-btn" id="tab-Arama" style="display:none; color:var(--success); border-color:transparent; background: rgba(16, 185, 129, 0.15);">🔍 Sonuçlar</button>
         </div>
         
@@ -380,6 +389,7 @@
         <div class="floating-btn" id="floating-total">0.00 TL</div>
     </div>
 
+    <!-- MOBİL UYUMLU ÜRÜN SEÇİM POPUP -->
     <div id="product-popup" class="popup-overlay" onclick="if(event.target === this) PopupKapat();">
         <div class="popup-content">
             <div class="popup-drag-handle"></div>
@@ -389,17 +399,19 @@
             </div>
             
             <div class="popup-info-box">
-                <div style="display: flex; align-items: center; gap: 14px; background: rgba(0,0,0,0.6); padding: 6px; border-radius: 100px; border: 1px solid var(--border-highlight); box-shadow: inset 0 2px 8px rgba(0,0,0,0.5);">
-                    <button onclick="PopupIciMiktarDegistir(-1)" style="width: 36px; height: 36px; border-radius: 50%; border: none; background: rgba(255,255,255,0.05); color: white; font-size: 20px; font-weight: bold; cursor: pointer;">-</button>
-                    <span id="popup-amount" style="color: var(--text-main); font-weight: 900; min-width: 50px; text-align: center; font-size: 15px;">______</span>
-                    <button onclick="PopupIciMiktarDegistir(1)" style="width: 36px; height: 36px; border-radius: 50%; border: none; background: var(--gradient-fire); color: white; font-size: 20px; font-weight: bold; cursor: pointer;">+</button>
+                <div style="display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.6); padding: 6px; border-radius: 100px; border: 1px solid var(--border-highlight); box-shadow: inset 0 2px 8px rgba(0,0,0,0.5);">
+                    <button onclick="PopupIciMiktarDegistir(-1)" style="width: 32px; height: 32px; border-radius: 50%; border: none; background: rgba(255,255,255,0.05); color: white; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s;">-</button>
+                    <span id="popup-amount" style="color: var(--text-main); font-weight: 900; min-width: 40px; text-align: center; font-size: 14px;">______</span>
+                    <button onclick="PopupIciMiktarDegistir(1)" style="width: 32px; height: 32px; border-radius: 50%; border: none; background: var(--gradient-fire); color: white; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s;">+</button>
                 </div>
-                <span id="popup-price" style="color: var(--primary); font-size: 24px; font-weight: 900; letter-spacing: -1px;">______ TL</span>
+                <span id="popup-price" style="color: var(--primary); font-size: 20px; font-weight: 900; letter-spacing: -1px;">______ TL</span>
             </div>
-            <div id="popup-custom-area" style="display: none; margin-bottom: 25px;"></div>
-            <div style="display: flex; gap: 12px;">
-                <button onclick="PopupSifirla()" style="flex: 1; background: rgba(255,255,255,0.05); color: var(--text-main); border: 1px solid var(--border-highlight); border-radius: 100px; font-weight: 800; font-size: 14px; cursor: pointer;">Sıfırla</button>
-                <button id="popup-add-btn" class="shimmer-btn" onclick="PopupSepeteEkle()" style="flex: 2; background: var(--gradient-fire); color: white; border: none; border-radius: 100px; font-weight: 800; font-size: 15px; cursor: pointer; padding: 18px 0;">Sepete Ekle</button>
+            
+            <div id="popup-custom-area" style="display: none; margin-bottom: 20px;"></div>
+            
+            <div style="display: flex; gap: 10px;">
+                <button onclick="PopupSifirla()" style="flex: 1; background: rgba(255,255,255,0.05); color: var(--text-main); border: 1px solid var(--border-highlight); border-radius: 100px; font-weight: 800; font-size: 13px; cursor: pointer; padding: 12px 0;">Sıfırla</button>
+                <button id="popup-add-btn" class="shimmer-btn" onclick="PopupSepeteEkle()" style="flex: 2; background: var(--gradient-fire); color: white; border: none; border-radius: 100px; font-weight: 800; font-size: 14px; cursor: pointer; padding: 14px 0; box-shadow: 0 10px 20px var(--primary-glow);">Sepete Ekle</button>
             </div>
         </div>
     </div>
@@ -628,6 +640,7 @@
             KuponSorgula();
         }
 
+        // ================= YENİ: KUSURSUZ GÜVENLİ MENÜ PARSER =================
         async function CanliMenuCek(ilkYukleme) {
             try {
                 try {
@@ -649,7 +662,7 @@
                 
                 if (sonMenuVerisi !== yeniVeri) {
                     tumUrunler = liste; sonMenuVerisi = yeniVeri;
-                    let ekmek = tumUrunler.find(u => u.pName.trim().toLocaleLowerCase('tr-TR') === ekmekUrunAdi.trim().toLocaleLowerCase('tr-TR')); 
+                    let ekmek = tumUrunler.find(u => u.pName && u.pName.trim().toLocaleLowerCase('tr-TR') === ekmekUrunAdi.trim().toLocaleLowerCase('tr-TR')); 
                     if (ekmek) { let p = parseFloat(ekmek.price1Kg.replace(',', '.')); ekmekBirimFiyati = isNaN(p) ? 0 : p; }
                     
                     if (ilkYukleme) { 
@@ -670,25 +683,55 @@
             }
         }
 
-        function GetKategoriAd(urun) { if(urun.categoryIndex !== undefined) { if(urun.categoryIndex === 1) return "İçecek"; if(urun.categoryIndex === 2) return "Ekstra"; return "Ana Yemek"; } let ad = urun.pName.toLocaleLowerCase('tr-TR'); if(ad.includes("cola") || ad.includes("ayran") || ad.includes("su") || ad.includes("şalgam")) return "İçecek"; if(ad.includes("ekmek") || ad.includes("salata") || ad.includes("ezme")) return "Ekstra"; return "Ana Yemek"; }
+        function GetKategoriAd(urun) { 
+            try {
+                if(urun.categoryIndex !== undefined && urun.categoryIndex !== null) { 
+                    let c = parseInt(urun.categoryIndex);
+                    if(c === 1) return "İçecek"; 
+                    if(c === 2) return "Ekstra"; 
+                    if(c === 0) return "Ana Yemek";
+                } 
+                if(!urun.pName) return "Ana Yemek";
+                let ad = urun.pName.toString().toLocaleLowerCase('tr-TR'); 
+                if(ad.includes("cola") || ad.includes("ayran") || ad.includes("su") || ad.includes("şalgam") || ad.includes("fanta") || ad.includes("sprite")) return "İçecek"; 
+                if(ad.includes("ekmek") || ad.includes("salata") || ad.includes("ezme") || ad.includes("meze") || ad.includes("patates")) return "Ekstra"; 
+                return "Ana Yemek"; 
+            } catch(e) { return "Ana Yemek"; }
+        }
 
         function EkranaUrunleriCiz(urunListesi) {
             const gridContainer = document.getElementById("menu-grid"); gridContainer.innerHTML = ""; document.getElementById("menu-grid").style.display = "grid";
             if(urunListesi.length === 0) { gridContainer.innerHTML = `<div class="empty-text">Ürün bulunamadı 🔍</div>`; return; }
             urunListesi.forEach((urun, index) => {
-                let tur = GetKategoriAd(urun); let icon = "🥩"; if(tur === "İçecek") icon = "🥤"; else if(tur === "Ekstra") icon = "🍟";
-                let orjinalIndex = tumUrunler.findIndex(u => u.pName === urun.pName);
-                let stok = (urun.stockAmount !== undefined) ? parseFloat(urun.stockAmount) : (urun.stock !== undefined ? parseFloat(urun.stock) : 999);
-                let stokSifirMi = stok <= 0; let clickAction = stokSifirMi ? `OzelUyariGoster('Tükendi', 'Bu ürün şu an stoklarımızda kalmamıştır.', '🚫')` : `UrunPopupAc(${orjinalIndex})`;
-                let badgeStr = stokSifirMi ? `TÜKENDİ` : `${escapeHTML(urun.price1Kg)} ₺`; let kartOpaklik = stokSifirMi ? "opacity: 0.5; filter: grayscale(1);" : "";
-                let isPopular = populerUrunlerListesi.includes(urun.pName); let popularBadgeHTML = (isPopular && !stokSifirMi) ? `<div class="popular-badge">🔥 POPÜLER</div>` : "";
+                try {
+                    let tur = GetKategoriAd(urun); let icon = "🥩"; if(tur === "İçecek") icon = "🥤"; else if(tur === "Ekstra") icon = "🍟";
+                    let orjinalIndex = tumUrunler.findIndex(u => u.pName === urun.pName);
+                    
+                    let stok = 999;
+                    if(urun.stockAmount !== undefined && urun.stockAmount !== null) stok = parseFloat(urun.stockAmount);
+                    else if (urun.stock !== undefined && urun.stock !== null) stok = parseFloat(urun.stock);
 
-                gridContainer.innerHTML += `<div class="product-card" style="${kartOpaklik} animation-delay: ${index * 0.05}s;" onclick="${clickAction}">${popularBadgeHTML}<div class="product-icon-wrapper"><div class="product-icon">${icon}</div></div><div class="product-name">${escapeHTML(urun.pName)}</div><div class="product-price-badge">${badgeStr}</div></div>`;
+                    let stokSifirMi = stok <= 0; let clickAction = stokSifirMi ? `OzelUyariGoster('Tükendi', 'Bu ürün şu an stoklarımızda kalmamıştır.', '🚫')` : `UrunPopupAc(${orjinalIndex})`;
+                    let p1KgStr = urun.price1Kg ? escapeHTML(urun.price1Kg.toString()) : "0";
+                    let badgeStr = stokSifirMi ? `TÜKENDİ` : `${p1KgStr} ₺`; let kartOpaklik = stokSifirMi ? "opacity: 0.5; filter: grayscale(1);" : "";
+                    
+                    let isPopular = urun.pName ? populerUrunlerListesi.includes(urun.pName) : false; 
+                    let popularBadgeHTML = (isPopular && !stokSifirMi) ? `<div class="popular-badge">🔥 POPÜLER</div>` : "";
+
+                    gridContainer.innerHTML += `<div class="product-card" style="${kartOpaklik} animation-delay: ${index * 0.05}s;" onclick="${clickAction}">${popularBadgeHTML}<div class="product-icon-wrapper"><div class="product-icon">${icon}</div></div><div class="product-name">${escapeHTML(urun.pName)}</div><div class="product-price-badge">${badgeStr}</div></div>`;
+                } catch(e) { console.error("Çizim hatası:", e); }
             });
         }
 
-        function UrunAra() { let ar = document.getElementById("search-input").value.toLocaleLowerCase('tr-TR'); if(ar.length > 0) { document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); document.getElementById('tab-Arama').style.display = "flex"; document.getElementById('tab-Arama').classList.add('active'); EkranaUrunleriCiz(tumUrunler.filter(u => u.pName.toLocaleLowerCase('tr-TR').includes(ar))); } else { document.getElementById('tab-Arama').style.display = "none"; KategoriSec(aktifKategori); } }
-        function KategoriSec(kategoriAdi) { HapticTitresim(); aktifKategori = kategoriAdi; document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); document.getElementById('tab-' + kategoriAdi).classList.add('active'); document.getElementById('tab-Arama').style.display = "none"; document.getElementById("search-input").value = ""; EkranaUrunleriCiz(tumUrunler.filter(u => GetKategoriAd(u) === aktifKategori)); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+        function UrunAra() { let ar = document.getElementById("search-input").value.toLocaleLowerCase('tr-TR'); if(ar.length > 0) { document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); document.getElementById('tab-Arama').style.display = "flex"; document.getElementById('tab-Arama').classList.add('active'); EkranaUrunleriCiz(tumUrunler.filter(u => u.pName && u.pName.toLocaleLowerCase('tr-TR').includes(ar))); } else { document.getElementById('tab-Arama').style.display = "none"; KategoriSec(aktifKategori); } }
+        
+        function KategoriSec(kategoriAdi, btnObj) { 
+            HapticTitresim(); aktifKategori = kategoriAdi; 
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); 
+            if(btnObj) { btnObj.classList.add('active'); } 
+            else { let safeId = kategoriAdi.replace(/\s+/g, ''); let el = document.getElementById('tab-' + safeId); if(el) el.classList.add('active'); }
+            document.getElementById('tab-Arama').style.display = "none"; document.getElementById("search-input").value = ""; EkranaUrunleriCiz(tumUrunler.filter(u => GetKategoriAd(u) === aktifKategori)); window.scrollTo({ top: 0, behavior: 'smooth' }); 
+        }
 
         function ExtractBreadTotal(itemName, isKg, amount) {
             let lowerName = itemName.toLocaleLowerCase('tr-TR'); let totalBread = 0; let multiplier = 1; let mQty = itemName.match(/^([0-9]+)x\s/);
@@ -716,20 +759,55 @@
             PopupUIYenile(true);
         }
 
+        // ================= YENİ: KUSURSUZ MOBİL POPUP HTML =================
         function UrunPopupAc(index) {
             HapticTitresim(); seciliUrun = tumUrunler[index]; seciliMiktar = 0; seciliFiyat = 0; seciliEkstraIstekler = []; seciliOzelEkmekTip = "Normal"; baseKgBread = 0; ekstraEkmekKg = 0; oncekiPopupFiyat = 0; oncekiPopupMiktar = 0;
-            seciliUrunStok = (seciliUrun.stockAmount !== undefined) ? parseFloat(seciliUrun.stockAmount) : (seciliUrun.stock !== undefined ? parseFloat(seciliUrun.stock) : 999);
-            document.getElementById("popup-title").innerText = seciliUrun.pName; seciliMiktar = seciliUrun.isKg ? 1 : 1; seciliFiyat = UnityFiyatiniHesapla(seciliUrun, seciliMiktar); if (seciliUrun.isKg) baseKgBread = 4;
+            
+            seciliUrunStok = 999;
+            if(seciliUrun.stockAmount !== undefined && seciliUrun.stockAmount !== null) seciliUrunStok = parseFloat(seciliUrun.stockAmount);
+            else if (seciliUrun.stock !== undefined && seciliUrun.stock !== null) seciliUrunStok = parseFloat(seciliUrun.stock);
+
+            document.getElementById("popup-title").innerText = seciliUrun.pName || "Ürün"; 
+            seciliMiktar = seciliUrun.isKg ? 1 : 1; seciliFiyat = UnityFiyatiniHesapla(seciliUrun, seciliMiktar); if (seciliUrun.isKg) baseKgBread = 4;
             PopupUIYenile(false); 
             
-            let pLower = seciliUrun.pName.toLocaleLowerCase('tr-TR'); let customArea = document.getElementById("popup-custom-area"); let isSpecial = pLower.includes("dürüm") || pLower.includes("doner") || pLower.includes("kebap"); let htmlIcerik = "";
+            let pLower = seciliUrun.pName ? seciliUrun.pName.toString().toLocaleLowerCase('tr-TR') : ""; 
+            let customArea = document.getElementById("popup-custom-area"); 
+            let isSpecial = pLower.includes("dürüm") || pLower.includes("doner") || pLower.includes("kebap"); 
+            let htmlIcerik = "";
 
-            if (GetKategoriAd(seciliUrun) === "İçecek" || GetKategoriAd(seciliUrun) === "Ekstra") { customArea.style.display = "none"; }
+            if (GetKategoriAd(seciliUrun) === "İçecek" || GetKategoriAd(seciliUrun) === "Ekstra") { 
+                customArea.style.display = "none"; 
+            }
             else if (seciliUrun.isKg) {
-                htmlIcerik = `<div style="font-size:11px; color:var(--text-muted); font-weight:800; margin-bottom:12px; letter-spacing:1px; text-transform: uppercase;">İstemediğiniz Malzemeler:</div><div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:25px;"><button class="ingredient-btn" onclick="EkstraIstekToggle(this, 'Zerzavatsız')">Zerzavatsız</button><button class="ingredient-btn" id="btn-ekmeksiz" onclick="EkstraIstekToggle(this, 'Ekmeksiz')">Ekmeksiz</button><button class="ingredient-btn" onclick="EkstraIstekToggle(this, 'Domatessiz')">Domatessiz</button></div><div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.5); padding:16px 20px; border-radius:24px; border:1px solid var(--border-highlight); box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);"><span style="font-size:14px; font-weight:800; color:var(--text-main);">Ekstra Ekmek Adeti:</span><div style="display:flex; align-items:center; gap:14px;"><button style="background:rgba(255,255,255,0.05); color:white; border:1px solid rgba(255,255,255,0.1); width:36px; height:36px; border-radius:50%; font-size:20px; font-weight:700; transition:0.3s; box-shadow: 0 2px 6px rgba(0,0,0,0.3);" onclick="EkmekSayaciDegistir(-1)">-</button><span id="ekmek-sayac" style="font-weight:900; font-size:18px; color:var(--primary); min-width:24px; text-align:center;">${baseKgBread}</span><button style="background:rgba(255,255,255,0.05); color:white; border:1px solid rgba(255,255,255,0.1); width:36px; height:36px; border-radius:50%; font-size:20px; font-weight:700; transition:0.3s; box-shadow: 0 2px 6px rgba(0,0,0,0.3);" onclick="EkmekSayaciDegistir(1)">+</button></div></div>`;
+                htmlIcerik = `<div class="p-sec-title">İstemediğiniz Malzemeler:</div>
+                <div class="p-btn-row">
+                    <button class="ingredient-btn" onclick="EkstraIstekToggle(this, 'Zerzavatsız')">Zerzavatsız</button>
+                    <button class="ingredient-btn" id="btn-ekmeksiz" onclick="EkstraIstekToggle(this, 'Ekmeksiz')">Ekmeksiz</button>
+                    <button class="ingredient-btn" onclick="EkstraIstekToggle(this, 'Domatessiz')">Domatessiz</button>
+                </div>
+                <div class="p-counter-box">
+                    <span class="p-c-label">Ekstra Ekmek Adeti:</span>
+                    <div class="p-c-ctrls">
+                        <button class="p-c-btn" onclick="EkmekSayaciDegistir(-1)">-</button>
+                        <span id="ekmek-sayac" class="p-c-val">${baseKgBread}</span>
+                        <button class="p-c-btn" onclick="EkmekSayaciDegistir(1)">+</button>
+                    </div>
+                </div>`;
                 customArea.style.display = "block";
             } else if (isSpecial) {
-                htmlIcerik = `<div style="font-size:11px; color:var(--text-muted); font-weight:800; margin-bottom:12px; letter-spacing:1px; text-transform: uppercase;">Ekmek Seçimi:</div><div style="display:flex; gap:12px; margin-bottom:25px;"><button class="bread-btn" id="ekmek-1.5" onclick="OzelEkmekSec('1.5 Ekmek', this)">1.5 Ekmek</button><button class="bread-btn active" id="ekmek-normal" onclick="OzelEkmekSec('Normal', this)">Normal (2)</button><button class="bread-btn" id="ekmek-3" onclick="OzelEkmekSec('3 Ekmek', this)">3 Ekmek</button></div><div style="font-size:11px; color:var(--text-muted); font-weight:800; margin-bottom:12px; letter-spacing:1px; text-transform: uppercase;">İstemediğiniz Malzemeler:</div><div style="display:flex; gap:12px; flex-wrap:wrap;"><button class="ingredient-btn" onclick="EkstraIstekToggle(this, 'Soğansız')">Soğansız</button><button class="ingredient-btn" onclick="EkstraIstekToggle(this, 'Domatessiz')">Domatessiz</button><button class="ingredient-btn" onclick="EkstraIstekToggle(this, 'Acısı İçinde')">Acısı İçinde</button></div>`;
+                htmlIcerik = `<div class="p-sec-title">Ekmek Seçimi:</div>
+                <div class="p-btn-row">
+                    <button class="bread-btn" id="ekmek-1.5" onclick="OzelEkmekSec('1.5 Ekmek', this)">1.5 Ekmek</button>
+                    <button class="bread-btn active" id="ekmek-normal" onclick="OzelEkmekSec('Normal', this)">Normal (2)</button>
+                    <button class="bread-btn" id="ekmek-3" onclick="OzelEkmekSec('3 Ekmek', this)">3 Ekmek</button>
+                </div>
+                <div class="p-sec-title">İstemediğiniz Malzemeler:</div>
+                <div class="p-btn-row" style="margin-bottom:0;">
+                    <button class="ingredient-btn" onclick="EkstraIstekToggle(this, 'Soğansız')">Soğansız</button>
+                    <button class="ingredient-btn" onclick="EkstraIstekToggle(this, 'Domatessiz')">Domatessiz</button>
+                    <button class="ingredient-btn" onclick="EkstraIstekToggle(this, 'Acısı İçinde')">Acısı İçinde</button>
+                </div>`;
                 customArea.style.display = "block";
             } else { customArea.style.display = "none"; }
             customArea.innerHTML = htmlIcerik;
@@ -746,7 +824,8 @@
         function PopupUIYenile(animasyonlu = true) { 
             let ekstraEkmekUcreti = 0;
             if (seciliUrun) {
-                let pLower = seciliUrun.pName.toLocaleLowerCase('tr-TR'); let isSpecial = pLower.includes("dürüm") || pLower.includes("doner") || pLower.includes("kebap");
+                let pLower = seciliUrun.pName ? seciliUrun.pName.toString().toLocaleLowerCase('tr-TR') : ""; 
+                let isSpecial = pLower.includes("dürüm") || pLower.includes("doner") || pLower.includes("kebap");
                 if (seciliUrun.isKg && ekstraEkmekKg > 0 && !seciliEkstraIstekler.includes('Ekmeksiz')) { ekstraEkmekUcreti = ekstraEkmekKg * ekmekBirimFiyati; }
                 else if (!seciliUrun.isKg && isSpecial && seciliOzelEkmekTip === "3 Ekmek") { ekstraEkmekUcreti = seciliMiktar * ekmekBirimFiyati; }
             }
@@ -769,7 +848,7 @@
         function PopupSepeteEkle() {
             if(seciliMiktar <= 0) return; HapticTitresim();
             let tamIsim = ""; let eklenecekAdet = 1; let gercekStokMiktari = seciliMiktar; let ekstraEkmekUcreti = 0;
-            let pLower = seciliUrun.pName.toLocaleLowerCase('tr-TR'); let isSpecial = pLower.includes("dürüm") || pLower.includes("doner") || pLower.includes("kebap");
+            let pLower = seciliUrun.pName ? seciliUrun.pName.toString().toLocaleLowerCase('tr-TR') : ""; let isSpecial = pLower.includes("dürüm") || pLower.includes("doner") || pLower.includes("kebap");
 
             if (seciliUrun.isKg) { tamIsim = Number(seciliMiktar.toFixed(2)) + " KG " + seciliUrun.pName; eklenecekAdet = 1; if (ekstraEkmekKg > 0 && !seciliEkstraIstekler.includes('Ekmeksiz')) { ekstraEkmekUcreti = ekstraEkmekKg * ekmekBirimFiyati; }
             } else { tamIsim = seciliUrun.pName; eklenecekAdet = seciliMiktar; gercekStokMiktari = 1; if (isSpecial && seciliOzelEkmekTip === "3 Ekmek") ekstraEkmekUcreti = ekmekBirimFiyati; }
@@ -781,7 +860,7 @@
 
             let testIsim = (eklenecekAdet > 1 ? eklenecekAdet + "x " : "") + tamIsim;
             let newBreadRequired = ExtractBreadTotal(testIsim, seciliUrun.isKg, gercekStokMiktari * eklenecekAdet);
-            let ekmekInfo = tumUrunler.find(u => u.pName.trim().toLocaleLowerCase('tr-TR') === ekmekUrunAdi.trim().toLocaleLowerCase('tr-TR'));
+            let ekmekInfo = tumUrunler.find(u => u.pName && u.pName.trim().toLocaleLowerCase('tr-TR') === ekmekUrunAdi.trim().toLocaleLowerCase('tr-TR'));
             if (ekmekInfo) { let curBreadStock = (ekmekInfo.stockAmount !== undefined) ? parseFloat(ekmekInfo.stockAmount) : ((ekmekInfo.stock !== undefined) ? parseFloat(ekmekInfo.stock) : 999); let alreadyInCartBread = GuncelEkmekIhtiyaci(sepet); if (alreadyInCartBread + newBreadRequired > curBreadStock) { OzelUyariGoster("Stok Yetersiz", `Ekstra Ekmek için stoğumuz yetersiz! Lütfen sayıyı azaltın.`, "⚠️"); return; } }
 
             let safBirimFiyat = seciliUrun.isKg ? seciliFiyat : (seciliFiyat / seciliMiktar); let gercekBirimFiyat = safBirimFiyat + ekstraEkmekUcreti;
@@ -797,7 +876,7 @@
                 let maksStok = (gercekUrun && gercekUrun.stockAmount !== undefined) ? parseFloat(gercekUrun.stockAmount) : ((gercekUrun && gercekUrun.stock !== undefined) ? parseFloat(gercekUrun.stock) : 999);
                 let sepetteToplamBuUrun = 0; sepet.forEach(u => { if (u.rawName === sepet[index].rawName) { sepetteToplamBuUrun += (u.baseStockAmount * u.quantity); } });
                 if (sepetteToplamBuUrun + (sepetUrunu.baseStockAmount * artisMiktari) > maksStok) { OzelUyariGoster("Sınır Aşıldı", "Bu ürün için maksimum stoğa ulaştınız.", "⚠️"); return; }
-                let ekmekInfo = tumUrunler.find(u => u.pName.trim().toLocaleLowerCase('tr-TR') === ekmekUrunAdi.trim().toLocaleLowerCase('tr-TR'));
+                let ekmekInfo = tumUrunler.find(u => u.pName && u.pName.trim().toLocaleLowerCase('tr-TR') === ekmekUrunAdi.trim().toLocaleLowerCase('tr-TR'));
                 if (ekmekInfo) { let curBreadStock = (ekmekInfo.stockAmount !== undefined) ? parseFloat(ekmekInfo.stockAmount) : ((ekmekInfo.stock !== undefined) ? parseFloat(ekmekInfo.stock) : 999); let testSepet = JSON.parse(JSON.stringify(sepet)); testSepet[index].quantity += artisMiktari; let reqBread = GuncelEkmekIhtiyaci(testSepet); if (reqBread > curBreadStock) { OzelUyariGoster("Stok Yetersiz", `Siparişi artırmak için Ekmek stoğumuz yetersiz!`, "⚠️"); return; } }
             }
             sepet[index].quantity += artisMiktari;
@@ -959,7 +1038,7 @@
                             }
 
                             if (!stokHatasi) {
-                                let ekmekInfo = liste.find(u => u.pName.trim().toLocaleLowerCase('tr-TR') === ekmekUrunAdi.trim().toLocaleLowerCase('tr-TR'));
+                                let ekmekInfo = liste.find(u => u.pName && u.pName.trim().toLocaleLowerCase('tr-TR') === ekmekUrunAdi.trim().toLocaleLowerCase('tr-TR'));
                                 if (ekmekInfo) {
                                     let maksEkmekStok = (ekmekInfo.stockAmount !== undefined) ? parseFloat(ekmekInfo.stockAmount) : ((ekmekInfo.stock !== undefined) ? parseFloat(ekmekInfo.stock) : 999);
                                     let totalBreadReq = GuncelEkmekIhtiyaci(sepet);
