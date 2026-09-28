@@ -1100,7 +1100,7 @@
 
         function OdemeTuruSec(tur, btnObj) { HapticTitresim(); seciliOdemeTuru = tur; document.querySelectorAll('.payment-btn').forEach(b => b.classList.remove('active')); btnObj.classList.add('active'); }
 
-        function PaketSiparisiGonder() {
+       function PaketSiparisiGonder() {
             if(sepet.length === 0) return;
             HapticTitresim();
             
@@ -1138,6 +1138,63 @@
                         }
                     }
 
+                    if(stokHatasi) { OzelUyariGoster("Stok Yetersiz!", hataMesaji, "⚠️"); btn.disabled = false; btn.innerText = "Siparişi Onayla"; return; }
+                    
+                    let n = document.getElementById("siparis-notu").value;
+                    let siparisDetayMetni = "";
+                    sepet.forEach(u => { siparisDetayMetni += (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName + "\n"; });
+
+                    // YENİ: Unity'de "Düzenle" butonunun çalışması için ürünlerin birebir dizisini hazırlıyoruz
+                    let unityIcinSiparisDizisi = sepet.map(u => ({ 
+                        itemName: (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName, 
+                        itemPrice: u.basePrice * u.quantity, 
+                        amount: u.baseStockAmount * u.quantity, 
+                        rawName: u.rawName 
+                    }));
+                    
+                    // YENİ: Eğer Kupon indirim kullanılmışsa, kasada açık çıkmaması için indirim tutarını "eksi bakiye" ürün olarak sepete ekliyoruz
+                    let indirimFarkiJS = hamToplamFiyat - sonOdenecekFiyat;
+                    if(indirimFarkiJS > 0) {
+                        unityIcinSiparisDizisi.push({ itemName: "Web Kupon İndirimi", itemPrice: -indirimFarkiJS, amount: 0, rawName: "" });
+                    }
+
+                    const paketVerisi = { 
+                        tip: "paket",
+                        musteriAd: escapeHTML(isim),
+                        telefon: escapeHTML(tel),
+                        adres: escapeHTML(adres),
+                        odemeTuru: seciliOdemeTuru,
+                        siparisDetayi: siparisDetayMetni, 
+                        siparisler: unityIcinSiparisDizisi, // Gizli listeyi Unity'e yolluyoruz
+                        toplam: sonOdenecekFiyat, 
+                        zaman: new Date().toLocaleTimeString(), 
+                        siparisNotu: escapeHTML(n) 
+                    };
+                    
+                    let safeTel = tel.replace(/[^0-9]/g, '');
+
+                    fetch(`https://bekmezpos-default-rtdb.firebaseio.com/PaketSiparisler/${safeTel}.json${authKeyStr}`, { 
+                        method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(paketVerisi) 
+                    }).then(() => {
+                        
+                        const canliAdisyonVerisi = {
+                            durum: "MUTFAKTA HAZIRLANIYOR",
+                            toplamTutar: sonOdenecekFiyat,
+                            siparisNotu: escapeHTML(n),
+                            siparisler: sepet.map(u => ({ itemName: (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName, itemPrice: u.basePrice * u.quantity }))
+                        };
+                        
+                        fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliPaketler/Paket_${safeTel}.json${authKeyStr}`, {
+                            method: "PUT", body: JSON.stringify(canliAdisyonVerisi)
+                        });
+
+                        HapticTitresim(); CheckoutKapat(); BasariEkraniGoster();
+                        sepet = []; aktifKuponKodu = ""; aktifKuponIndirimTutari = 0; aktifKuponAltLimit = 0; aktifKuponHedefUrun = "Herşey"; document.getElementById("siparis-notu").value = ""; HesaplaVeGuncelle(); seciliEkstraIstekler = [];
+                    }).catch(e => { OzelUyariGoster("Hata", "Sipariş mutfağa iletilemedi.", "❌"); btn.disabled = false; btn.innerText = "Siparişi Onayla"; });
+
+                }
+            }).catch(e => { OzelUyariGoster("Bağlantı Hatası", "Sunucu ile bağlantı kurulamadı.", "📡"); btn.disabled = false; btn.innerText = "Siparişi Onayla"; });
+        }
                     if(stokHatasi) { OzelUyariGoster("Stok Yetersiz!", hataMesaji, "⚠️"); btn.disabled = false; btn.innerText = "Siparişi Onayla"; return; }
                     
                     let n = document.getElementById("siparis-notu").value;
