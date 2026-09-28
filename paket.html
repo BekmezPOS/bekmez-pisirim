@@ -33,9 +33,18 @@
         }
         
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        html { scroll-behavior: smooth; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-dark); background-image: var(--bg-gradient); color: var(--text-main); margin: 0; padding: 0; padding-bottom: 110px; overflow-x: hidden; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; min-height: 100vh; position: relative; }
-        ::-webkit-scrollbar { width: 4px; height: 4px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; } ::-webkit-scrollbar-thumb:hover { background: rgba(255,107,0,0.5); }
+        html { scroll-behavior: smooth; overscroll-behavior-y: none; }
+        
+        /* MOBİL APP GİBİ HİSSETTİRMESİ İÇİN METİN SEÇİMİNİ KAPAT (INPUTLAR HARİÇ) */
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-dark); background-image: var(--bg-gradient); color: var(--text-main); margin: 0; padding: 0; 
+            padding-bottom: calc(110px + env(safe-area-inset-bottom)); 
+            overflow-x: hidden; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; min-height: 100vh; position: relative; 
+            user-select: none; -webkit-user-select: none; 
+        }
+        input, textarea { user-select: auto; -webkit-user-select: auto; }
+
+        ::-webkit-scrollbar { display: none; } /* App'lerde scrollbar gizlenir */
 
         .embers-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 0; overflow: hidden; }
         .ember { position: absolute; bottom: -20px; background: var(--primary); border-radius: 50%; filter: blur(2px); opacity: 0; animation: floatUp ease-in infinite; }
@@ -71,11 +80,40 @@
 
         @keyframes floatUpFade { 0% { opacity: 0; transform: translate(-50%, -20%) scale(0.8); } 20% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); } 80% { opacity: 1; transform: translate(-50%, -70%) scale(1); } 100% { opacity: 0; transform: translate(-50%, -90%) scale(0.9); } }
 
-        .app-header { display: flex; align-items: center; padding: 25px 20px 15px 20px; position: sticky; top: 0; background: rgba(0, 0, 0, 0.75); z-index: 100; border-bottom: 1px solid var(--border-light); gap: 16px; backdrop-filter: blur(30px); box-shadow: 0 4px 30px rgba(0,0,0,0.5); }
-        .hamburger-btn { background: transparent; border: none; color: var(--text-main); font-size: 26px; cursor: pointer; padding: 0; display: flex; align-items: center; justify-content: center; transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s; }
-        .hamburger-btn:active { transform: scale(0.85); color: var(--primary); }
-        .brand-name { font-size: 24px; font-weight: 900; color: var(--text-main); letter-spacing: -1px; white-space: nowrap; line-height: 1; padding-top: 2px;}
+        /* YENİ APP HEADER (MERKEZİ) */
+        .app-header { display: flex; align-items: center; justify-content: center; padding: 20px 20px 15px 20px; position: sticky; top: 0; background: rgba(0, 0, 0, 0.75); z-index: 100; border-bottom: 1px solid var(--border-light); backdrop-filter: blur(30px); box-shadow: 0 4px 30px rgba(0,0,0,0.5); }
+        .brand-name { font-size: 22px; font-weight: 900; color: var(--text-main); letter-spacing: -0.5px; white-space: nowrap; line-height: 1; text-align: center;}
         .brand-name span { background: var(--gradient-fire); -webkit-background-clip: text; color: transparent; margin-left: 2px; }
+
+        /* YENİ NATIVE ALT MENÜ (BOTTOM NAVIGATION) */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: rgba(15, 15, 20, 0.85);
+            backdrop-filter: blur(40px) saturate(200%); -webkit-backdrop-filter: blur(40px) saturate(200%);
+            border-top: 1px solid rgba(255,255,255,0.08);
+            display: flex; justify-content: space-around; align-items: center;
+            padding: 12px 10px calc(12px + env(safe-area-inset-bottom)) 10px;
+            z-index: 2000; box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
+        }
+        .nav-item {
+            background: transparent; border: none; color: var(--text-muted);
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            font-family: inherit; font-size: 11px; font-weight: 700;
+            cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative; flex: 1; -webkit-tap-highlight-color: transparent;
+        }
+        .nav-item .icon { font-size: 24px; filter: grayscale(1); transition: 0.3s; margin-bottom: 2px; }
+        .nav-item.active { color: var(--primary); }
+        .nav-item.active .icon { filter: grayscale(0); transform: translateY(-3px) scale(1.15); filter: drop-shadow(0 4px 10px rgba(255,107,0,0.4));}
+        .nav-badge {
+            position: absolute; top: -4px; right: 50%; margin-right: -16px;
+            background: var(--gradient-fire); color: white;
+            font-size: 10px; font-weight: 900; min-width: 18px; height: 18px; border-radius: 9px;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; transform: scale(0); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 10px var(--primary-glow); border: 2px solid #121215;
+        }
+        .nav-badge.show { opacity: 1; transform: scale(1); }
 
         #pwa-install-banner { display:none; background: var(--gradient-fire); padding: 14px 20px; color: white; justify-content: space-between; align-items: center; z-index: 99; position: relative; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; box-shadow: 0 10px 20px rgba(255,107,0,0.3); margin-top: -1px; }
         #pwa-install-btn { background: white; color: var(--primary); border: none; padding: 8px 16px; border-radius: 100px; font-weight: 800; font-size: 14px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
@@ -98,36 +136,6 @@
         .security-badge .icon { font-size: 28px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
         .security-badge .text { color: #A1A1AA; font-size: 13px; font-weight: 500; line-height: 1.6; }
         .security-badge .text strong { color: var(--success); font-size: 15px; display: block; margin-bottom: 6px; letter-spacing: -0.3px;}
-
-        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); z-index: 3000; display: none; opacity: 0; transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1); backdrop-filter: blur(10px); }
-        .sidebar-overlay.active { opacity: 1; pointer-events: auto; }
-        .sidebar { position: fixed; top: 0; left: 0; width: 320px; max-width: 85vw; height: 100vh; background: rgba(18, 18, 23, 0.85); backdrop-filter: blur(40px) saturate(200%); z-index: 3001; transform: translateX(-100%); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); border-right: 1px solid var(--border-highlight); box-shadow: 30px 0 80px rgba(0,0,0,0.8); display: flex; flex-direction: column; overflow-y: auto; padding-bottom: 40px;}
-        .sidebar.active { transform: translateX(0); }
-        .sidebar-header { padding: 40px 24px 24px 24px; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; }
-        .sidebar-brand { font-size: 24px; font-weight: 900; color: var(--text-main); letter-spacing: -1px; }
-        .sidebar-brand span { background: var(--gradient-fire); -webkit-background-clip: text; color: transparent; margin-left: 2px;}
-        .close-sidebar { background: rgba(255,255,255,0.03); border: 1px solid var(--border-highlight); border-radius: 50%; color: var(--text-muted); width: 40px; height: 40px; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-        .close-sidebar:active { background: rgba(255,255,255,0.1); transform: scale(0.9) rotate(90deg); color: var(--text-main); }
-        .sidebar-info { padding: 20px; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0.2) 100%); margin: 24px; border-radius: 24px; border: 1px solid var(--border-light); box-shadow: inset 0 2px 10px rgba(0,0,0,0.5), 0 10px 20px rgba(0,0,0,0.2); }
-        .sidebar-table { font-weight: 800; color: var(--text-main); font-size: 15px; display: flex; align-items: center; gap: 10px; letter-spacing: -0.3px;}
-        .sidebar-clock { font-weight: 700; color: var(--text-muted); font-size: 14px; display: flex; align-items: center; gap: 8px; }
-        .sidebar-menu { display: flex; flex-direction: column; padding: 0 24px; gap: 12px; }
-        .sidebar-item { transform: translateX(-30px); opacity: 0; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease; }
-        .sidebar.active .sidebar-item { transform: translateX(0); opacity: 1; }
-        .sidebar.active .sidebar-item:nth-child(1) { transition-delay: 0.05s; }
-        .sidebar.active .sidebar-item:nth-child(2) { transition-delay: 0.1s; }
-        .sidebar.active .sidebar-item:nth-child(3) { transition-delay: 0.15s; }
-        .sidebar.active .sidebar-item:nth-child(4) { transition-delay: 0.2s; }
-        .sidebar-link { background: transparent; border: 1px solid transparent; width: 100%; text-align: left; padding: 18px 24px; border-radius: 20px; font-size: 16px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; align-items: center; gap: 18px; position: relative; }
-        .sidebar-link:active { transform: scale(0.96); background: rgba(255,255,255,0.03); }
-        .sidebar-link.active { background: linear-gradient(to right, var(--primary-light), transparent); color: var(--text-main); border-left: 3px solid var(--primary); border-radius: 12px 20px 20px 12px; }
-        .sidebar-link.active .sidebar-icon { transform: scale(1.2); filter: grayscale(0); }
-        .sidebar-icon { font-size: 24px; filter: grayscale(1); transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-        
-        .sidebar-badge { position: absolute; right: 20px; background: var(--gradient-fire); color: white; font-size: 12px; font-weight: 800; min-width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border-radius: 13px; padding: 0 8px; opacity: 0; transform: scale(0); transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 4px 15px var(--primary-glow); }
-        .sidebar-badge.show { opacity: 1; transform: scale(1); }
-        
-        .sidebar-divider { height: 1px; background: var(--border-light); margin: 16px 0; }
 
         .search-container { padding: 24px 20px 10px 20px; position: relative;}
         .search-input { width: 100%; background: rgba(15, 15, 18, 0.6); backdrop-filter: blur(20px) saturate(180%); border: 1px solid var(--border-highlight); color: var(--text-main); padding: 20px 20px 20px 55px; border-radius: 24px; font-size: 15px; font-weight:600; font-family: inherit; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: inset 0 2px 10px rgba(0,0,0,0.3), 0 10px 30px rgba(0,0,0,0.2);}
@@ -167,7 +175,9 @@
 
         @keyframes cartBounce { 0%, 100% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.05) translateY(-5px); box-shadow: 0 40px 60px rgba(255, 94, 0, 0.5), inset 0 2px 4px rgba(255,255,255,0.5); } }
         .floating-cart.bounce { animation: cartBounce 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .floating-cart { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: calc(100% - 40px); max-width: 420px; height: 75px; background: linear-gradient(135deg, rgba(255, 107, 0, 0.95), rgba(220, 45, 0, 0.95)); backdrop-filter: blur(25px) saturate(200%); border-radius: 100px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px 0 32px; font-size: 17px; font-weight: 800; color: white; box-shadow: 0 25px 50px rgba(255, 94, 0, 0.4), inset 0 2px 4px rgba(255,255,255,0.3); z-index: 100; cursor: pointer; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); border: 1px solid rgba(255,255,255,0.15);}
+        
+        /* APP İÇİN FLOATING CART POZİSYONU GÜNCELLENDİ */
+        .floating-cart { position: fixed; bottom: calc(85px + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); width: calc(100% - 40px); max-width: 420px; height: 75px; background: linear-gradient(135deg, rgba(255, 107, 0, 0.95), rgba(220, 45, 0, 0.95)); backdrop-filter: blur(25px) saturate(200%); border-radius: 100px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px 0 32px; font-size: 17px; font-weight: 800; color: white; box-shadow: 0 25px 50px rgba(255, 94, 0, 0.4), inset 0 2px 4px rgba(255,255,255,0.3); z-index: 100; cursor: pointer; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); border: 1px solid rgba(255,255,255,0.15);}
         .floating-cart:active { transform: translateX(-50%) scale(0.94) translateY(4px); box-shadow: 0 10px 20px rgba(255, 94, 0, 0.3), inset 0 4px 10px rgba(0,0,0,0.2);}
         .floating-btn { background: #ffffff; color: var(--primary); padding: 18px 28px; border-radius: 100px; font-size: 16px; font-weight: 900; box-shadow: 0 10px 25px rgba(0,0,0,0.2); letter-spacing: -0.3px; text-shadow: none;}
 
@@ -246,6 +256,27 @@
 </head>
 <body>
 
+    <!-- YENİ NATIVE ALT MENÜ (SİDEBAR YERİNE) -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" id="nav-urunler" onclick="SayfaGoster('urunler')">
+            <span class="icon">🥩</span>
+            <span>Menü</span>
+        </button>
+        <button class="nav-item" id="nav-sepet" onclick="SayfaGoster('sepet')">
+            <span class="icon">🛒</span>
+            <span>Sepet</span>
+            <div class="nav-badge" id="nav-sepet-badge">0</div>
+        </button>
+        <button class="nav-item" id="nav-gecmis" onclick="SayfaGoster('gecmis')">
+            <span class="icon">🧾</span>
+            <span>Adisyon</span>
+        </button>
+        <button class="nav-item" id="nav-profil" onclick="SayfaGoster('profil')">
+            <span class="icon">👤</span>
+            <span>Profil</span>
+        </button>
+    </nav>
+
     <div id="pwa-install-banner" style="display:none; background: var(--gradient-fire); padding: 14px 20px; color: white; align-items: center; justify-content: space-between; z-index: 99; position: relative; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; box-shadow: 0 10px 20px rgba(255,107,0,0.3); margin-top: -1px;">
         <div style="display:flex; align-items:center; gap:12px;">
             <span style="font-size:22px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3));">📱</span>
@@ -271,36 +302,6 @@
         <div class="ember"></div><div class="ember"></div><div class="ember"></div>
     </div>
 
-    <div id="sidebar-overlay" class="sidebar-overlay" onclick="ToggleSidebar()"></div>
-    <div id="sidebar" class="sidebar">
-        <div class="sidebar-header">
-            <div class="sidebar-brand">Bekmez<span>Paket</span></div>
-            <button class="close-sidebar" onclick="ToggleSidebar()">&times;</button>
-        </div>
-        
-        <div class="sidebar-info">
-            <div class="sidebar-table" style="color:var(--text-main);">🛵 Paket Servis</div>
-            <div class="sidebar-clock">🕒 <span id="live-clock">00:00</span></div>
-        </div>
-        
-        <div class="sidebar-menu">
-            <button class="sidebar-link sidebar-item active" id="nav-urunler" onclick="SayfaGoster('urunler')">
-                <span class="sidebar-icon">🥩</span> Menü
-            </button>
-            <button class="sidebar-link sidebar-item" id="nav-sepet" onclick="SayfaGoster('sepet')">
-                <span class="sidebar-icon">🛒</span> Sepet
-                <div class="sidebar-badge" id="nav-sepet-badge">0</div>
-            </button>
-            <button class="sidebar-link sidebar-item" id="nav-gecmis" onclick="SayfaGoster('gecmis')">
-                <span class="sidebar-icon">🧾</span> Canlı Adisyon
-            </button>
-            <div class="sidebar-divider sidebar-item"></div>
-            <button class="sidebar-link sidebar-item" id="nav-profil" onclick="SayfaGoster('profil')">
-                <span class="sidebar-icon" style="filter: grayscale(0);">👤</span> Profilim
-            </button>
-        </div>
-    </div>
-
     <div id="splash-screen">
         <div class="aura-bg"></div>
         <div id="splash-content">
@@ -310,8 +311,8 @@
         </div>
     </div>
 
+    <!-- MERKEZİ LOGO BAŞLIĞI -->
     <div class="app-header" id="app-header">
-        <button class="hamburger-btn" onclick="ToggleSidebar()">☰</button>
         <div class="brand-name">Bekmez<span>Paket</span></div>
     </div>
 
@@ -360,6 +361,7 @@
         </div>
     </div>
 
+    <!-- 3. SEKME: PROFİLİM & GÜVENLİK -->
     <div id="profile-container" style="display: none;">
         <h2 class="page-title">Profilim</h2>
         <div class="security-badge">
@@ -375,11 +377,11 @@
             <textarea id="prof-adres" class="checkout-input" rows="3" placeholder="Mahalle, Sokak, Kapı No, Kat, Daire..."></textarea>
             <button class="order-btn shimmer-btn neon-border" onclick="ProfiliKaydet()" style="margin-top: 15px; background: var(--primary);">Bilgilerimi Kaydet</button>
             <button onclick="ProfiliSil()" style="width:100%; background:transparent; border:1px solid rgba(239, 68, 68, 0.4); color:var(--danger); padding:22px; border-radius:100px; font-weight:800; font-size:16px; margin-top:20px; cursor:pointer; transition:0.3s;">Kişisel Verilerimi Cihazdan Sil</button>
-            <!-- MANUEL İNDİRME BUTONU YEDEĞİ -->
             <button class="order-btn shimmer-btn" onclick="ManuelUygulamaIndir()" style="margin-top: 40px; background: var(--success); box-shadow: 0 10px 25px rgba(52, 199, 89, 0.3);">📱 Uygulamayı Cihazıma Kur</button>
         </div>
     </div>
 
+    <!-- 4. SEKME: GEÇMİŞ (ADİSYON) -->
     <div id="history-container" style="display: none;">
         <h2 class="page-title">Canlı Adisyon</h2>
         <div id="history-content"></div>
@@ -547,7 +549,6 @@
 
         function UnityFiyatiniHesapla(urun, hedefMiktar) { let safeParse = (val) => { if (!val) return 0; let parsed = parseFloat(val.replace(',', '.')); return isNaN(parsed) ? 0 : parsed; }; let p1 = safeParse(urun.price1Kg); if (!urun.isKg) return p1 * hedefMiktar; let p750 = safeParse(urun.price750g); let p500 = safeParse(urun.price500g); if (p750 <= 0) p750 = p1 * 0.75; if (p500 <= 0) p500 = p1 * 0.50; if (hedefMiktar === 1) return p1; if (hedefMiktar === 0.75) return p750; if (hedefMiktar === 0.50) return p500; return (hedefMiktar * p1);  }
 
-        function ToggleSidebar() { HapticTitresim(); let overlay = document.getElementById("sidebar-overlay"); let sidebar = document.getElementById("sidebar"); if (sidebar.classList.contains("active")) { sidebar.classList.remove("active"); overlay.classList.remove("active"); setTimeout(() => { overlay.style.display = "none"; }, 500); } else { overlay.style.display = "block"; setTimeout(() => { overlay.classList.add("active"); sidebar.classList.add("active"); }, 10); } }
         function CanliSaatCalistir() { let clockEl = document.getElementById("live-clock"); if(!clockEl) return; setInterval(() => { let now = new Date(); clockEl.innerText = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`; }, 1000); let now = new Date(); clockEl.innerText = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`; }
         function OzelUyariGoster(baslik, mesaj, ikon = "⚠️") { document.getElementById("custom-alert-title").innerText = baslik; document.getElementById("custom-alert-text").innerText = mesaj; document.getElementById("custom-alert-icon").innerText = ikon; let glow = document.getElementById("custom-alert-glow"); let isError = ikon.includes("⚠️") || ikon.includes("❌") || ikon.includes("🚫") || ikon.includes("🗑️") || ikon.includes("⏳") || ikon.includes("🌐"); glow.style.background = isError ? "var(--danger)" : "var(--primary)"; let overlay = document.getElementById("custom-alert-overlay"); let box = document.getElementById("custom-alert-box"); overlay.style.display = "flex"; box.classList.remove("error-shake"); setTimeout(() => { overlay.classList.add("active"); if(isError) { setTimeout(() => { box.classList.add("error-shake"); }, 400); } }, 10); }
         function KapatUyariModal(event, force = false) { if (force || event.target.id === 'custom-alert-overlay') { let overlay = document.getElementById("custom-alert-overlay"); let box = document.getElementById("custom-alert-box"); overlay.classList.remove("active"); box.classList.remove("error-shake"); setTimeout(() => { overlay.style.display = "none"; }, 400); } }
@@ -575,14 +576,17 @@
             HapticTitresim();
             if(canliAdisyonTimer) { clearInterval(canliAdisyonTimer); canliAdisyonTimer = null; }
             document.getElementById("menu-container").style.display = "none"; document.getElementById("cart-container").style.display = "none"; document.getElementById("profile-container").style.display = "none"; document.getElementById("history-container").style.display = "none"; document.getElementById("floating-cart").style.display = "none";
-            document.getElementById("nav-urunler").classList.remove("active"); document.getElementById("nav-sepet").classList.remove("active"); document.getElementById("nav-gecmis").classList.remove("active"); let navProf = document.getElementById("nav-profil"); if(navProf) navProf.classList.remove("active"); 
-            let tgt = document.getElementById("nav-" + sayfa); if(tgt) tgt.classList.add("active"); else { sayfa = 'urunler'; document.getElementById("nav-urunler").classList.add("active"); }
+            
+            // Alt Menü Seçimi Güncelle
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            let tgt = document.getElementById("nav-" + sayfa); 
+            if(tgt) tgt.classList.add("active"); else { sayfa = 'urunler'; document.getElementById("nav-urunler").classList.add("active"); }
 
             if(sayfa === 'urunler') { document.getElementById("menu-container").style.display = "block"; if(sepet.length > 0) document.getElementById("floating-cart").style.display = "flex";
             } else if (sayfa === 'sepet') { document.getElementById("cart-container").style.display = "block"; SepetEkraniniCiz(); 
             } else if (sayfa === 'profil') { document.getElementById("profile-container").style.display = "block";
             } else if (sayfa === 'gecmis') { document.getElementById("history-container").style.display = "block"; sonCekilenAdisyonHTML = ""; CanliAdisyonCek(); canliAdisyonTimer = setInterval(CanliAdisyonCek, 2000); } 
-            window.scrollTo({ top: 0, behavior: 'smooth' }); let sidebar = document.getElementById("sidebar"); if(sidebar && sidebar.classList.contains("active")) { ToggleSidebar(); }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         // ================= YENİ: ASENKRON GÜVENLİ MENÜ ÇEKİCİ =================
