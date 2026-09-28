@@ -34,7 +34,6 @@
         
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         html { scroll-behavior: smooth; overscroll-behavior-y: none; }
-        
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-dark); background-image: var(--bg-gradient); color: var(--text-main); margin: 0; padding: 0; padding-bottom: calc(90px + env(safe-area-inset-bottom)); overflow-x: hidden; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; min-height: 100vh; position: relative; user-select: none; -webkit-user-select: none; }
         input, textarea { user-select: auto; -webkit-user-select: auto; }
         ::-webkit-scrollbar { display: none; } 
@@ -388,6 +387,7 @@
         <div class="floating-btn" id="floating-total">0.00 TL</div>
     </div>
 
+    <!-- MOBİL UYUMLU ÜRÜN SEÇİM POPUP -->
     <div id="product-popup" class="popup-overlay" onclick="if(event.target === this) PopupKapat();">
         <div class="popup-content">
             <div class="popup-drag-handle"></div>
@@ -615,8 +615,8 @@
                         for (let kod in data) {
                             let kupon = data[kod];
                             
-                            // SADECE UYGULAMA KUPONLARINI FİLTRELE
-                            let isApp = kupon.isAppCoupon === true || kupon.uygulamaKuponu === true || String(kupon.isAppCoupon).toLowerCase() === "true" || String(kupon.uygulamaKuponu).toLowerCase() === "true";
+                            // GÜVENLİ FİLTRELEME
+                            let isApp = kupon.isAppCoupon === true || String(kupon.isAppCoupon).toLowerCase() === "true";
                             
                             if (isApp) {
                                 uygulamayaOzelKuponSayisi++;
