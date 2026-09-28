@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no">
-    <title>Bekmez Pişirim - Paket Servis</title>
+    <title>Bekmez Pişirim - Premium Paket</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
@@ -62,12 +62,7 @@
 
         .embers-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 0; overflow: hidden; }
         .ember { position: absolute; bottom: -20px; background: var(--primary); border-radius: 50%; filter: blur(2px); opacity: 0; animation: floatUp ease-in infinite; }
-        @keyframes floatUp { 
-            0% { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
-            20% { opacity: 0.6; }
-            80% { opacity: 0.3; }
-            100% { transform: translateY(-100vh) translateX(30px) scale(0.4); opacity: 0; }
-        }
+        @keyframes floatUp { 0% { transform: translateY(0) translateX(0) scale(1); opacity: 0; } 20% { opacity: 0.6; } 80% { opacity: 0.3; } 100% { transform: translateY(-100vh) translateX(30px) scale(0.4); opacity: 0; } }
         .ember:nth-child(1) { left: 10%; width: 4px; height: 4px; animation-duration: 9s; animation-delay: 0s; }
         .ember:nth-child(2) { left: 30%; width: 5px; height: 5px; animation-duration: 12s; animation-delay: 2s; background: #FF9500;}
         .ember:nth-child(3) { left: 50%; width: 3px; height: 3px; animation-duration: 8s; animation-delay: 1s; }
@@ -79,7 +74,6 @@
         #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-dark); z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.8s ease; overflow: hidden; }
         .aura-bg { position: absolute; width: 500px; height: 500px; background: var(--primary); border-radius: 50%; filter: blur(180px); opacity: 0.12; animation: auraPulse 5s infinite alternate ease-in-out; z-index: 1;}
         @keyframes auraPulse { 0% { transform: scale(0.8); opacity: 0.08; } 100% { transform: scale(1.1); opacity: 0.15; } }
-        
         #splash-content { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease; width: 100%; }
         
         .hero-greeting { font-size: 13px; color: var(--text-main); font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 35px; display: flex; align-items: center; gap: 12px; opacity: 0; animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.2s; background: rgba(255,255,255,0.04); padding: 10px 24px; border-radius: 100px; border: 1px solid var(--border); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
@@ -100,13 +94,7 @@
         .neon-border:active::before { opacity: 0.8; filter: blur(10px); }
         @keyframes neonFlow { 0% { background-position: 0% 0%; } 100% { background-position: 300% 0%; } }
 
-        /* BULANIKLIK BUG FIX UYGULANDI */
-        @keyframes floatUpFade { 
-            0% { opacity: 0; transform: translate(-50%, -20%) scale(0.8); } 
-            20% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); } 
-            80% { opacity: 1; transform: translate(-50%, -70%) scale(1); } 
-            100% { opacity: 0; transform: translate(-50%, -90%) scale(0.9); } 
-        }
+        @keyframes floatUpFade { 0% { opacity: 0; transform: translate(-50%, -20%) scale(0.8); } 20% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); } 80% { opacity: 1; transform: translate(-50%, -70%) scale(1); } 100% { opacity: 0; transform: translate(-50%, -90%) scale(0.9); } }
 
         .app-header { display: flex; align-items: center; padding: 25px 20px 15px 20px; position: sticky; top: 0; background: rgba(0, 0, 0, 0.75); z-index: 100; border-bottom: 1px solid var(--border-light); gap: 16px; backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); box-shadow: 0 4px 30px rgba(0,0,0,0.5); }
         .hamburger-btn { background: transparent; border: none; color: var(--text-main); font-size: 26px; cursor: pointer; padding: 0; display: flex; align-items: center; justify-content: center; transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s; }
@@ -114,9 +102,28 @@
         .brand-name { font-size: 24px; font-weight: 900; color: var(--text-main); letter-spacing: -1px; white-space: nowrap; line-height: 1; padding-top: 2px;}
         .brand-name span { background: var(--gradient-fire); -webkit-background-clip: text; color: transparent; margin-left: 2px; }
 
-        /* APP INSTALL BANNER */
+        /* ================== PWA YEDEK (KÜÇÜK) BANNER ================== */
         #pwa-install-banner { display:none; background: var(--gradient-fire); padding: 14px 20px; color: white; justify-content: space-between; align-items: center; z-index: 99; position: relative; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; box-shadow: 0 10px 20px rgba(255,107,0,0.2); margin-bottom: 10px; }
         #pwa-install-btn { background: white; color: var(--primary); border: none; padding: 8px 16px; border-radius: 100px; font-weight: 800; font-size: 14px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+
+        /* ================== PWA TAM EKRAN PREMIUM PROMPT ================== */
+        .pwa-fullscreen-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); z-index: 9999999; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.5s ease; padding: 20px; box-sizing: border-box; }
+        .pwa-fullscreen-overlay.active { opacity: 1; }
+        
+        .pwa-close-btn { position: absolute; top: 30px; right: 30px; background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); width: 50px; height: 50px; border-radius: 50%; font-size: 28px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 5; }
+        .pwa-close-btn:active { transform: scale(0.9); background: rgba(255,255,255,0.15); color: #fff; }
+        
+        .pwa-content-box { background: linear-gradient(180deg, #1a1a24 0%, #070709 100%); padding: 50px 35px; border-radius: 48px; text-align: center; width: 100%; max-width: 420px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 40px 100px rgba(0,0,0,0.8), inset 0 2px 10px rgba(255,255,255,0.05); position: relative; overflow: hidden; transform: translateY(40px) scale(0.95); transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .pwa-fullscreen-overlay.active .pwa-content-box { transform: translateY(0) scale(1); }
+        
+        .pwa-icon-glow { position: absolute; width: 250px; height: 250px; background: var(--primary); border-radius: 50%; filter: blur(120px); opacity: 0.2; top: -50px; left: 50%; transform: translateX(-50%); z-index: 0; pointer-events: none;}
+        .pwa-icon { font-size: 85px; margin-bottom: 25px; position: relative; z-index: 1; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.5)); animation: floatUpAndDown 4s ease-in-out infinite; }
+        @keyframes floatUpAndDown { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        
+        .pwa-title { font-size: 28px; font-weight: 900; color: var(--text-main); margin-bottom: 18px; line-height: 1.2; letter-spacing: -1px; position: relative; z-index: 1; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .pwa-desc { font-size: 16px; font-weight: 500; color: var(--text-muted); margin-bottom: 40px; line-height: 1.6; position: relative; z-index: 1; }
+        .pwa-main-btn { background: var(--gradient-fire); color: white; border: none; padding: 24px; font-size: 18px; font-weight: 800; border-radius: 100px; width: 100%; cursor: pointer; box-shadow: 0 20px 40px var(--primary-glow), inset 0 2px 4px rgba(255,255,255,0.3); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); letter-spacing: 0.5px; position: relative; z-index: 1;}
+        .pwa-main-btn:active { transform: scale(0.95); box-shadow: 0 10px 20px var(--primary-glow); }
 
         .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); z-index: 3000; display: none; opacity: 0; transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
         .sidebar-overlay.active { opacity: 1; pointer-events: auto; }
@@ -145,9 +152,6 @@
         .sidebar-link.active .sidebar-icon { transform: scale(1.2); filter: grayscale(0); }
         .sidebar-icon { font-size: 24px; filter: grayscale(1); transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         
-        .sidebar-badge { position: absolute; right: 20px; background: var(--gradient-fire); color: white; font-size: 12px; font-weight: 800; min-width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border-radius: 13px; padding: 0 8px; opacity: 0; transform: scale(0); transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 4px 15px var(--primary-glow); }
-        .sidebar-badge.show { opacity: 1; transform: scale(1); }
-
         .search-container { padding: 24px 20px 10px 20px; position: relative;}
         .search-input { width: 100%; background: rgba(15, 15, 18, 0.6); backdrop-filter: blur(20px) saturate(180%); border: 1px solid var(--border-highlight); color: var(--text-main); padding: 20px 20px 20px 55px; border-radius: 24px; font-size: 15px; font-weight:600; font-family: inherit; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: inset 0 2px 10px rgba(0,0,0,0.3), 0 10px 30px rgba(0,0,0,0.2);}
         .search-input:focus { outline: none; border-color: var(--primary); background: var(--surface-solid); box-shadow: inset 0 2px 5px rgba(0,0,0,0.5), 0 0 0 3px var(--primary-light), 0 15px 40px rgba(0,0,0,0.5); transform: translateY(-2px); }
@@ -163,19 +167,13 @@
         @keyframes cardEntrance { 0% { opacity: 0; transform: translateY(40px) scale(0.9); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
         
         .grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; padding: 0 20px 30px 20px; }
-        .product-card { 
-            opacity: 0; animation: cardEntrance 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-            background: linear-gradient(145deg, rgba(30, 30, 35, 0.5) 0%, rgba(15, 15, 20, 0.8) 100%); backdrop-filter: blur(25px) saturate(200%); border: 1px solid rgba(255,255,255,0.05); border-top: 1px solid rgba(255,255,255,0.1); border-radius: 32px; padding: 24px 16px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer; position: relative; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.05);
-        }
+        .product-card { opacity: 0; animation: cardEntrance 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; background: linear-gradient(145deg, rgba(30, 30, 35, 0.5) 0%, rgba(15, 15, 20, 0.8) 100%); backdrop-filter: blur(25px) saturate(200%); border: 1px solid rgba(255,255,255,0.05); border-top: 1px solid rgba(255,255,255,0.1); border-radius: 32px; padding: 24px 16px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer; position: relative; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.05);}
         .product-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.05) 0%, transparent 60%); pointer-events: none; }
         .product-card:active { transform: scale(0.93) translateY(2px); background: linear-gradient(145deg, rgba(20, 20, 25, 0.6) 0%, rgba(10, 10, 15, 0.9) 100%); border-color: rgba(255,94,0,0.3); box-shadow: 0 5px 15px rgba(0,0,0,0.6), inset 0 2px 10px rgba(0,0,0,0.5); }
-        
         .popular-badge { position: absolute; top: 16px; right: 16px; background: var(--gradient-gold); color: #000; font-size: 9px; font-weight: 900; padding: 6px 12px; border-radius: 12px; box-shadow: 0 4px 15px rgba(250, 204, 21, 0.3); z-index: 5; letter-spacing: 0.8px; text-transform: uppercase;}
-
         .product-icon-wrapper { width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(145deg, #1f1f25, #141419); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.02); position: relative; box-shadow: 8px 8px 16px #070709, -8px -8px 16px #23232b, inset 0px 2px 4px rgba(255, 94, 0, 0.1); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);}
         .product-card:active .product-icon-wrapper { transform: scale(0.9); box-shadow: inset 8px 8px 16px #070709, inset -8px -8px 16px #23232b; }
         .product-icon { font-size: 32px; z-index: 2; filter: drop-shadow(0 6px 8px rgba(0,0,0,0.6));}
-        
         .product-name { font-size: 15px; font-weight: 800; color: var(--text-main); margin-bottom: 18px; line-height: 1.3; letter-spacing: -0.4px; min-height: 40px; display: flex; align-items: center; justify-content: center; text-shadow: 0 2px 4px rgba(0,0,0,0.5);}
         .product-price-badge { background: rgba(0,0,0,0.4); color: var(--text-main); padding: 12px 16px; border-radius: 100px; font-weight: 800; font-size: 14px; border: 1px solid var(--border-highlight); width: 100%; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5), 0 4px 12px rgba(0,0,0,0.2); letter-spacing: 0.5px; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);}
         .product-card:active .product-price-badge { background: var(--gradient-fire); color: white; border-color: transparent; box-shadow: 0 8px 20px var(--primary-glow), inset 0 1px 1px rgba(255,255,255,0.3);}
@@ -192,7 +190,6 @@
 
         @keyframes cartBounce { 0%, 100% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.05) translateY(-5px); box-shadow: 0 40px 60px rgba(255, 94, 0, 0.5), inset 0 2px 4px rgba(255,255,255,0.5); } }
         .floating-cart.bounce { animation: cartBounce 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        
         .floating-cart { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: calc(100% - 40px); max-width: 420px; height: 75px; background: linear-gradient(135deg, rgba(255, 107, 0, 0.95), rgba(220, 45, 0, 0.95)); backdrop-filter: blur(25px) saturate(200%); border-radius: 100px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px 0 32px; font-size: 17px; font-weight: 800; color: white; box-shadow: 0 25px 50px rgba(255, 94, 0, 0.4), inset 0 2px 4px rgba(255,255,255,0.3); z-index: 100; cursor: pointer; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); border: 1px solid rgba(255,255,255,0.15);}
         .floating-cart:active { transform: translateX(-50%) scale(0.94) translateY(4px); box-shadow: 0 10px 20px rgba(255, 94, 0, 0.3), inset 0 4px 10px rgba(0,0,0,0.2);}
         .floating-btn { background: #ffffff; color: var(--primary); padding: 18px 28px; border-radius: 100px; font-size: 16px; font-weight: 900; box-shadow: 0 10px 25px rgba(0,0,0,0.2); letter-spacing: -0.3px; text-shadow: none;}
@@ -203,7 +200,6 @@
         .cart-item-details { flex: 1; }
         .cart-item-name { font-size: 16px; font-weight: 700; margin-bottom: 10px; color: var(--text-main); line-height: 1.4; letter-spacing: -0.4px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);}
         .cart-item-price { color: var(--primary); font-weight: 800; font-size: 15px; letter-spacing: 0.5px;}
-        
         .cart-controls { display: flex; align-items: center; gap: 12px; background: rgba(0,0,0,0.6); border-radius: 100px; padding: 6px; border: 1px solid var(--border-highlight); box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);}
         .cart-btn { background: var(--surface-solid); color: var(--text-main); border: 1px solid var(--border); width: 40px; height: 40px; font-size: 20px; font-weight: 600; cursor: pointer; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 4px 10px rgba(0,0,0,0.3);}
         .cart-btn:active { background: var(--gradient-fire); color: white; transform: scale(0.85); border-color: transparent; box-shadow: 0 4px 15px var(--primary-glow);}
@@ -212,7 +208,6 @@
         .note-input, .checkout-input { width: calc(100% - 40px); margin: 10px 20px 25px 20px; background: rgba(15, 15, 18, 0.6); backdrop-filter: blur(20px) saturate(180%); border: 1px solid var(--border-highlight); color: var(--text-main); padding: 24px; border-radius: 32px; font-family: inherit; font-size: 15px; font-weight:600; box-sizing: border-box; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: inset 0 2px 10px rgba(0,0,0,0.4), 0 10px 30px rgba(0,0,0,0.2);}
         .note-input:focus, .checkout-input:focus { outline: none; border-color: var(--primary); background: var(--surface-solid); box-shadow: inset 0 2px 5px rgba(0,0,0,0.5), 0 0 0 3px var(--primary-light), 0 15px 40px rgba(0,0,0,0.5); transform: translateY(-2px);}
         .note-input::placeholder, .checkout-input::placeholder { color: #52525B; }
-        
         .checkout-input { margin: 0 0 16px 0; width: 100%; border-radius: 20px; padding: 20px; }
 
         .order-panel { margin: 35px 20px 40px 20px; background: linear-gradient(145deg, rgba(30, 30, 35, 0.6) 0%, rgba(15, 15, 20, 0.8) 100%); backdrop-filter: blur(30px) saturate(200%); padding: 30px; border-radius: 40px; border: 1px solid rgba(255,255,255,0.05); border-top: 1px solid rgba(255,255,255,0.15); box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.05);}
@@ -271,13 +266,26 @@
 </head>
 <body>
 
-    <!-- YENİ: UYGULAMAYI İNDİR BANNERI (PWA) -->
+    <!-- YENİ: UYGULAMAYI İNDİR BANNERI (YEDEK OLARAK KALACAK) -->
     <div id="pwa-install-banner" style="display:none; background: var(--gradient-fire); padding: 14px 20px; color: white; align-items: center; justify-content: space-between; z-index: 99; position: relative; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; box-shadow: 0 10px 20px rgba(255,107,0,0.3); margin-top: -1px;">
         <div style="display:flex; align-items:center; gap:12px;">
             <span style="font-size:22px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3));">📱</span>
             <span style="font-weight: 700; font-size: 14px; line-height: 1.3;">Tek tıkla sipariş için<br>uygulamamızı indirin!</span>
         </div>
-        <button id="pwa-install-btn" style="background: white; color: var(--primary); border: none; padding: 10px 18px; border-radius: 100px; font-weight: 900; font-size: 14px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">İndir</button>
+        <button onclick="TetiklePwaPrompt()" style="background: white; color: var(--primary); border: none; padding: 10px 18px; border-radius: 100px; font-weight: 900; font-size: 14px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">İndir</button>
+    </div>
+
+    <!-- YENİ: TAM EKRAN PREMIUM İNDİRME PANELİ (İLK GİRİŞ İÇİN) -->
+    <div id="pwa-fullscreen-prompt" class="pwa-fullscreen-overlay">
+        <button class="pwa-close-btn" onclick="CloseFullscreenPrompt()">&times;</button>
+        <div class="pwa-content-box">
+            <div class="pwa-icon-glow"></div>
+            <div class="pwa-icon">📱</div>
+            <h2 class="pwa-title">Bekmez Pişirim'i<br><span style="color:var(--primary);">Telefonunuza Kurun</span></h2>
+            <p class="pwa-desc">Sıra beklemeden paket siparişi verin, kuponları kaçırmayın ve lezzete tek tıkla ulaşın.</p>
+            <button class="pwa-main-btn shimmer-btn neon-border" onclick="TetiklePwaPrompt()">Uygulamayı İndir</button>
+            <p style="font-size:12px; color:var(--text-muted); margin-top:25px; font-weight:600;">*Cihazınızda yer kaplamaz, anında kurulur.</p>
+        </div>
     </div>
 
     <!-- ATEŞ PARTİKÜLLERİ -->
@@ -311,7 +319,7 @@
         </div>
     </div>
 
-    <!-- SİNEMATİK SPLASH EKRANI -->
+    <!-- SİNEMATİK SPLASH EKRANI (ORİJİNAL) -->
     <div id="splash-screen">
         <div class="aura-bg"></div>
         <div id="splash-content">
@@ -491,25 +499,63 @@
         let oncekiPopupFiyat = 0; let oncekiPopupMiktar = 0;
         let populerUrunlerListesi = [];
 
-        // --- PWA: UYGULAMA İNDİRME MOTORU ---
+        // --- PWA: AKILLI UYGULAMA İNDİRME MOTORU ---
         let deferredPrompt;
+        // Kullanıcı daha önce X'e basıp darlanmak istemediğini belirttiyse hafızadan oku
+        let installPromptDismissed = localStorage.getItem('pwa_prompt_dismissed') === 'true';
+
         window.addEventListener('beforeinstallprompt', (e) => {
+            // Tarayıcının standart çirkin uyarısını engelle
             e.preventDefault();
             deferredPrompt = e;
-            document.getElementById("pwa-install-banner").style.display = "flex";
-        });
-        
-        document.getElementById("pwa-install-btn").addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') { document.getElementById("pwa-install-banner").style.display = "none"; }
-                deferredPrompt = null;
+            
+            // Eğer cihaz "Standalone" yani uygulama olarak açılmamışsa (tarayıcıdaysa)
+            if (!window.matchMedia('(display-mode: standalone)').matches) {
+                if (!installPromptDismissed) {
+                    // Kullanıcı ilk defa giriyor veya hiç X'e basmamış: TAM EKRAN ŞOV
+                    let promptOverlay = document.getElementById('pwa-fullscreen-prompt');
+                    promptOverlay.style.display = 'flex';
+                    setTimeout(() => { promptOverlay.classList.add('active'); }, 10);
+                } else {
+                    // Kullanıcı daha önce X'e basmış: Sadece üstte yedek banner göster
+                    document.getElementById("pwa-install-banner").style.display = "flex";
+                }
             }
         });
 
+        // Tam Ekran Paneli Sağ Üstten Kapatma
+        function CloseFullscreenPrompt() {
+            HapticTitresim();
+            let prompt = document.getElementById('pwa-fullscreen-prompt');
+            prompt.classList.remove('active');
+            setTimeout(() => { prompt.style.display = 'none'; }, 500);
+            
+            // Hafızaya kazı: "Beni bir daha darlama"
+            localStorage.setItem('pwa_prompt_dismissed', 'true');
+            
+            // Ancak yedek banner üstte kalsın ki sonradan indirebilsin
+            if (deferredPrompt) {
+                document.getElementById('pwa-install-banner').style.display = 'flex';
+            }
+        }
+        
+        // Uygulama Kurulumunu Başlat
+        function TetiklePwaPrompt() {
+            HapticTitresim();
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') { 
+                        document.getElementById("pwa-fullscreen-prompt").style.display = "none"; 
+                        document.getElementById("pwa-install-banner").style.display = "none"; 
+                    }
+                    deferredPrompt = null;
+                });
+            }
+        }
+
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); });
+            window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js'); });
         }
 
         // --- TEMEL FONKSİYONLAR ---
@@ -802,7 +848,6 @@
             oncekiPopupMiktar = seciliMiktar; oncekiPopupFiyat = gosterilenFiyat;
         }
 
-        // ================= BULANIKLIK SORUNU ÇÖZÜLEN UÇAN BİLDİRİM =================
         function ShowFloatingPlusOne() {
             let fxContainer = document.getElementById("fx-container");
             if (!fxContainer) {
