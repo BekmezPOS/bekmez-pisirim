@@ -117,13 +117,16 @@
         .sidebar.active .sidebar-item:nth-child(1) { transition-delay: 0.05s; }
         .sidebar.active .sidebar-item:nth-child(2) { transition-delay: 0.1s; }
         .sidebar.active .sidebar-item:nth-child(3) { transition-delay: 0.15s; }
+        .sidebar.active .sidebar-item:nth-child(4) { transition-delay: 0.2s; }
         .sidebar-link { background: transparent; border: 1px solid transparent; width: 100%; text-align: left; padding: 18px 24px; border-radius: 20px; font-size: 16px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; align-items: center; gap: 18px; position: relative; }
         .sidebar-link:active { transform: scale(0.96); background: rgba(255,255,255,0.03); }
         .sidebar-link.active { background: linear-gradient(to right, var(--primary-light), transparent); color: var(--text-main); border-left: 3px solid var(--primary); border-radius: 12px 20px 20px 12px; }
         .sidebar-link.active .sidebar-icon { transform: scale(1.2); filter: grayscale(0); }
         .sidebar-icon { font-size: 24px; filter: grayscale(1); transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        
         .sidebar-badge { position: absolute; right: 20px; background: var(--gradient-fire); color: white; font-size: 12px; font-weight: 800; min-width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border-radius: 13px; padding: 0 8px; opacity: 0; transform: scale(0); transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 4px 15px var(--primary-glow); }
         .sidebar-badge.show { opacity: 1; transform: scale(1); }
+        
         .sidebar-divider { height: 1px; background: var(--border-light); margin: 16px 0; }
 
         .search-container { padding: 24px 20px 10px 20px; position: relative;}
@@ -242,12 +245,11 @@
         .receipt-header { border-bottom: 2px dashed #D4D4D8; padding-bottom: 26px; margin-bottom: 30px; font-size: 14px; font-weight: 800; display: flex; justify-content: space-between; align-items: center; color: #71717A;}
         .receipt-item { display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 16px; font-weight: 700; color: #27272A;}
         .receipt-total { border-top: 2px dashed #D4D4D8; padding-top: 26px; margin-top: 30px; font-size: 32px; font-weight: 900; text-align: right; color: var(--primary); letter-spacing: -1.5px;}
-
     </style>
 </head>
 <body>
 
-    <!-- YENİ: UYGULAMAYI İNDİR BANNERI (YEDEK OLARAK KALACAK) -->
+    <!-- PWA BANNER -->
     <div id="pwa-install-banner" style="display:none; background: var(--gradient-fire); padding: 14px 20px; color: white; align-items: center; justify-content: space-between; z-index: 99; position: relative; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; box-shadow: 0 10px 20px rgba(255,107,0,0.3); margin-top: -1px;">
         <div style="display:flex; align-items:center; gap:12px;">
             <span style="font-size:22px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3));">📱</span>
@@ -256,7 +258,7 @@
         <button onclick="TetiklePwaPrompt()" style="background: white; color: var(--primary); border: none; padding: 10px 18px; border-radius: 100px; font-weight: 900; font-size: 14px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">İndir</button>
     </div>
 
-    <!-- YENİ: TAM EKRAN PREMIUM İNDİRME PANELİ (İLK GİRİŞ İÇİN) -->
+    <!-- PWA TAM EKRAN -->
     <div id="pwa-fullscreen-prompt" class="pwa-fullscreen-overlay">
         <button class="pwa-close-btn" onclick="CloseFullscreenPrompt()">&times;</button>
         <div class="pwa-content-box">
@@ -300,10 +302,7 @@
             <button class="sidebar-link sidebar-item" id="nav-gecmis" onclick="SayfaGoster('gecmis')">
                 <span class="sidebar-icon">🧾</span> Canlı Adisyon
             </button>
-            
             <div class="sidebar-divider sidebar-item"></div>
-            
-            <!-- YENİ: PROFİLİM BUTONU -->
             <button class="sidebar-link sidebar-item" id="nav-profil" onclick="SayfaGoster('profil')">
                 <span class="sidebar-icon" style="filter: grayscale(0);">👤</span> Profilim
             </button>
@@ -374,7 +373,7 @@
         </div>
     </div>
 
-    <!-- YENİ: 3. SEKME: PROFİLİM & GÜVENLİK -->
+    <!-- 3. SEKME: PROFİLİM & GÜVENLİK -->
     <div id="profile-container" style="display: none;">
         <h2 class="page-title">Profilim</h2>
         
@@ -523,7 +522,6 @@
         let populerUrunlerListesi = [];
         let canliAdisyonTimer = null; let sonCekilenAdisyonHTML = "";
 
-        // --- PWA MOTORU ---
         let deferredPrompt;
         let installPromptDismissed = localStorage.getItem('pwa_prompt_dismissed') === 'true';
 
@@ -566,7 +564,6 @@
 
         if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js'); }); }
 
-        // --- YENİ: PROFİL YÖNETİMİ ---
         function ProfiliKaydet() {
             HapticTitresim();
             let isim = document.getElementById("prof-isim").value.trim();
@@ -593,7 +590,6 @@
             OzelUyariGoster("Tamamen Silindi", "Tüm kişisel verileriniz bu cihazın hafızasından kalıcı olarak yok edildi.", "🗑️");
         }
 
-        // --- TEMEL FONKSİYONLAR ---
         function UnityFiyatiniHesapla(urun, hedefMiktar) {
             let safeParse = (val) => { if (!val) return 0; let parsed = parseFloat(val.replace(',', '.')); return isNaN(parsed) ? 0 : parsed; };
             let p1 = safeParse(urun.price1Kg); if (!urun.isKg) return p1 * hedefMiktar;
@@ -1100,7 +1096,7 @@
 
         function OdemeTuruSec(tur, btnObj) { HapticTitresim(); seciliOdemeTuru = tur; document.querySelectorAll('.payment-btn').forEach(b => b.classList.remove('active')); btnObj.classList.add('active'); }
 
-       function PaketSiparisiGonder() {
+        function PaketSiparisiGonder() {
             if(sepet.length === 0) return;
             HapticTitresim();
             
@@ -1144,7 +1140,6 @@
                     let siparisDetayMetni = "";
                     sepet.forEach(u => { siparisDetayMetni += (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName + "\n"; });
 
-                    // YENİ: Unity'de "Düzenle" butonunun çalışması için ürünlerin birebir dizisini hazırlıyoruz
                     let unityIcinSiparisDizisi = sepet.map(u => ({ 
                         itemName: (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName, 
                         itemPrice: u.basePrice * u.quantity, 
@@ -1152,7 +1147,6 @@
                         rawName: u.rawName 
                     }));
                     
-                    // YENİ: Eğer Kupon indirim kullanılmışsa, kasada açık çıkmaması için indirim tutarını "eksi bakiye" ürün olarak sepete ekliyoruz
                     let indirimFarkiJS = hamToplamFiyat - sonOdenecekFiyat;
                     if(indirimFarkiJS > 0) {
                         unityIcinSiparisDizisi.push({ itemName: "Web Kupon İndirimi", itemPrice: -indirimFarkiJS, amount: 0, rawName: "" });
@@ -1165,49 +1159,7 @@
                         adres: escapeHTML(adres),
                         odemeTuru: seciliOdemeTuru,
                         siparisDetayi: siparisDetayMetni, 
-                        siparisler: unityIcinSiparisDizisi, // Gizli listeyi Unity'e yolluyoruz
-                        toplam: sonOdenecekFiyat, 
-                        zaman: new Date().toLocaleTimeString(), 
-                        siparisNotu: escapeHTML(n) 
-                    };
-                    
-                    let safeTel = tel.replace(/[^0-9]/g, '');
-
-                    fetch(`https://bekmezpos-default-rtdb.firebaseio.com/PaketSiparisler/${safeTel}.json${authKeyStr}`, { 
-                        method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(paketVerisi) 
-                    }).then(() => {
-                        
-                        const canliAdisyonVerisi = {
-                            durum: "MUTFAKTA HAZIRLANIYOR",
-                            toplamTutar: sonOdenecekFiyat,
-                            siparisNotu: escapeHTML(n),
-                            siparisler: sepet.map(u => ({ itemName: (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName, itemPrice: u.basePrice * u.quantity }))
-                        };
-                        
-                        fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliPaketler/Paket_${safeTel}.json${authKeyStr}`, {
-                            method: "PUT", body: JSON.stringify(canliAdisyonVerisi)
-                        });
-
-                        HapticTitresim(); CheckoutKapat(); BasariEkraniGoster();
-                        sepet = []; aktifKuponKodu = ""; aktifKuponIndirimTutari = 0; aktifKuponAltLimit = 0; aktifKuponHedefUrun = "Herşey"; document.getElementById("siparis-notu").value = ""; HesaplaVeGuncelle(); seciliEkstraIstekler = [];
-                    }).catch(e => { OzelUyariGoster("Hata", "Sipariş mutfağa iletilemedi.", "❌"); btn.disabled = false; btn.innerText = "Siparişi Onayla"; });
-
-                }
-            }).catch(e => { OzelUyariGoster("Bağlantı Hatası", "Sunucu ile bağlantı kurulamadı.", "📡"); btn.disabled = false; btn.innerText = "Siparişi Onayla"; });
-        }
-                    if(stokHatasi) { OzelUyariGoster("Stok Yetersiz!", hataMesaji, "⚠️"); btn.disabled = false; btn.innerText = "Siparişi Onayla"; return; }
-                    
-                    let n = document.getElementById("siparis-notu").value;
-                    let siparisDetayMetni = "";
-                    sepet.forEach(u => { siparisDetayMetni += (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName + "\n"; });
-
-                    const paketVerisi = { 
-                        tip: "paket",
-                        musteriAd: escapeHTML(isim),
-                        telefon: escapeHTML(tel),
-                        adres: escapeHTML(adres),
-                        odemeTuru: seciliOdemeTuru,
-                        siparisDetayi: siparisDetayMetni, 
+                        siparisler: unityIcinSiparisDizisi,
                         toplam: sonOdenecekFiyat, 
                         zaman: new Date().toLocaleTimeString(), 
                         siparisNotu: escapeHTML(n) 
