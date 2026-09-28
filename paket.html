@@ -433,7 +433,6 @@
                 <textarea id="chk-adres" class="checkout-input" rows="3" placeholder="Açık Adresiniz (Mahalle, Sokak, No...)" style="resize:none;"></textarea>
             </div>
 
-            <!-- KREDİ KARTI ARAYÜZÜ -->
             <div style="font-size:13px; color:var(--text-muted); font-weight:800; margin-bottom:16px; letter-spacing:2px; text-transform: uppercase;">Kart Bilgileri (Online Ödeme):</div>
             <div class="cc-box">
                 <input type="text" id="cc-name" class="checkout-input" placeholder="Kart Üzerindeki İsim" style="margin-bottom:12px; padding: 18px;">
@@ -486,7 +485,6 @@
         let seciliEkstraIstekler = []; let seciliOzelEkmekTip = "Normal"; let baseKgBread = 0; let ekstraEkmekKg = 0;
         let seciliUrunStok = 999; let oncekiToplamFiyat = 0;
         
-        let seciliOdemeTuru = "Nakit"; 
         let oncekiPopupFiyat = 0; let oncekiPopupMiktar = 0;
         let populerUrunlerListesi = [];
         let canliAdisyonTimer = null; let sonCekilenAdisyonHTML = "";
@@ -508,6 +506,32 @@
 
         if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js'); }); }
 
+        function ProfiliKaydet() {
+            HapticTitresim();
+            let isim = document.getElementById("prof-isim").value.trim();
+            let tel = document.getElementById("prof-telefon").value.trim();
+            let adres = document.getElementById("prof-adres").value.trim();
+            
+            if(isim === "" || tel === "" || adres === "") { OzelUyariGoster("Eksik Bilgi", "Lütfen tüm kişisel bilgilerinizi eksiksiz doldurun.", "⚠️"); return; }
+            if(tel.length < 10) { OzelUyariGoster("Geçersiz Numara", "Lütfen geçerli bir telefon numarası giriniz.", "📱"); return; }
+            if(adres.length < 10) { OzelUyariGoster("Kısa Adres", "Lütfen açık adresinizi daha detaylı giriniz.", "📍"); return; }
+            
+            localStorage.setItem("bekmez_isim", isim); localStorage.setItem("bekmez_tel", tel); localStorage.setItem("bekmez_adres", adres);
+            
+            document.getElementById("chk-isim").value = isim; document.getElementById("chk-telefon").value = tel; document.getElementById("chk-adres").value = adres;
+            OzelUyariGoster("Güvenli Kayıt", "Kişisel bilgileriniz sadece bu cihazda kalacak şekilde şifrelenerek kaydedildi.", "🔒");
+        }
+
+        function ProfiliSil() {
+            HapticTitresim();
+            localStorage.removeItem("bekmez_isim"); localStorage.removeItem("bekmez_tel"); localStorage.removeItem("bekmez_adres");
+            
+            document.getElementById("prof-isim").value = ""; document.getElementById("prof-telefon").value = ""; document.getElementById("prof-adres").value = "";
+            document.getElementById("chk-isim").value = ""; document.getElementById("chk-telefon").value = ""; document.getElementById("chk-adres").value = "";
+            
+            OzelUyariGoster("Tamamen Silindi", "Tüm kişisel verileriniz bu cihazın hafızasından kalıcı olarak yok edildi.", "🗑️");
+        }
+
         function UnityFiyatiniHesapla(urun, hedefMiktar) { let safeParse = (val) => { if (!val) return 0; let parsed = parseFloat(val.replace(',', '.')); return isNaN(parsed) ? 0 : parsed; }; let p1 = safeParse(urun.price1Kg); if (!urun.isKg) return p1 * hedefMiktar; let p750 = safeParse(urun.price750g); let p500 = safeParse(urun.price500g); if (p750 <= 0) p750 = p1 * 0.75; if (p500 <= 0) p500 = p1 * 0.50; if (hedefMiktar === 1) return p1; if (hedefMiktar === 0.75) return p750; if (hedefMiktar === 0.50) return p500; return (hedefMiktar * p1);  }
 
         function ToggleSidebar() { HapticTitresim(); let overlay = document.getElementById("sidebar-overlay"); let sidebar = document.getElementById("sidebar"); if (sidebar.classList.contains("active")) { sidebar.classList.remove("active"); overlay.classList.remove("active"); setTimeout(() => { overlay.style.display = "none"; }, 500); } else { overlay.style.display = "block"; setTimeout(() => { overlay.classList.add("active"); sidebar.classList.add("active"); }, 10); } }
@@ -516,7 +540,7 @@
         
         function OzelUyariGoster(baslik, mesaj, ikon = "⚠️") { 
             document.getElementById("custom-alert-title").innerText = baslik; document.getElementById("custom-alert-text").innerText = mesaj; document.getElementById("custom-alert-icon").innerText = ikon; 
-            let glow = document.getElementById("custom-alert-glow"); let isError = ikon.includes("⚠️") || ikon.includes("❌") || ikon.includes("🚫") || ikon.includes("🗑️"); glow.style.background = isError ? "var(--danger)" : "var(--primary)";
+            let glow = document.getElementById("custom-alert-glow"); let isError = ikon.includes("⚠️") || ikon.includes("❌") || ikon.includes("🚫") || ikon.includes("🗑️") || ikon.includes("⏳"); glow.style.background = isError ? "var(--danger)" : "var(--primary)";
             let overlay = document.getElementById("custom-alert-overlay"); let box = document.getElementById("custom-alert-box");
             overlay.style.display = "flex"; box.classList.remove("error-shake"); setTimeout(() => { overlay.classList.add("active"); if(isError) { setTimeout(() => { box.classList.add("error-shake"); }, 400); } }, 10);
         }
@@ -553,16 +577,16 @@
             if(sayfa === 'urunler') { document.getElementById("menu-container").style.display = "block"; if(sepet.length > 0) document.getElementById("floating-cart").style.display = "flex";
             } else if (sayfa === 'sepet') { document.getElementById("cart-container").style.display = "block"; SepetEkraniniCiz(); 
             } else if (sayfa === 'profil') { document.getElementById("profile-container").style.display = "block";
-            } else if (sayfa === 'gecmis') { document.getElementById("history-container").style.display = "block"; sonCekilenAdisyonHTML = ""; CanliAdisyonCek(); canliAdisyonTimer = setInterval(CanliAdisyonCek, 2000); } // 2 SANİYEDE BİR ÇEKER
+            } else if (sayfa === 'gecmis') { document.getElementById("history-container").style.display = "block"; sonCekilenAdisyonHTML = ""; CanliAdisyonCek(); canliAdisyonTimer = setInterval(CanliAdisyonCek, 2000); } 
             window.scrollTo({ top: 0, behavior: 'smooth' }); let sidebar = document.getElementById("sidebar"); if(sidebar && sidebar.classList.contains("active")) { ToggleSidebar(); }
         }
 
         function CanliMenuCek(ilkYukleme) {
-            fetch(`https://bekmezpos-default-rtdb.firebaseio.com/PopulerUrunler.json${authKeyStr}&t=${new Date().getTime()}`).then(r => r.json()).then(popData => {
+            fetch(`https://bekmezpos-default-rtdb.firebaseio.com/PopulerUrunler.json?t=${new Date().getTime()}`).then(r => r.json()).then(popData => {
                 if (popData && Array.isArray(popData)) populerUrunlerListesi = popData;
-                fetch(`https://bekmezpos-default-rtdb.firebaseio.com/MenuVersion.json${authKeyStr}&t=` + new Date().getTime(), { cache: "no-store" }).then(r => r.json()).then(vData => {
+                fetch(`https://bekmezpos-default-rtdb.firebaseio.com/MenuVersion.json?t=` + new Date().getTime(), { cache: "no-store" }).then(r => r.json()).then(vData => {
                     if (!ilkYukleme && vData && vData.v == sonMenuVersiyonu) return; if (vData) sonMenuVersiyonu = vData.v;
-                    fetch(firebaseMenuUrl + authKeyStr + "&t=" + new Date().getTime(), { cache: "no-store" }).then(r => r.json()).then(data => {
+                    fetch(firebaseMenuUrl + "?t=" + new Date().getTime(), { cache: "no-store" }).then(r => r.json()).then(data => {
                         let liste = (data && data.products) ? data.products : []; let yeniVeri = JSON.stringify(liste);
                         if (sonMenuVerisi !== yeniVeri) {
                             tumUrunler = liste; sonMenuVerisi = yeniVeri;
@@ -838,110 +862,86 @@
 
             let btn = document.getElementById("final-submit-btn"); btn.disabled = true; btn.classList.add("loading"); btn.innerText = "Ödeme Alınıyor...";
 
-            setTimeout(() => {
-                btn.innerText = "İLETİLİYOR...";
-                fetch(firebaseMenuUrl + authKeyStr + "&t=" + new Date().getTime(), { cache: "no-store" }).then(r => r.json()).then(data => {
-                    let liste = (data && data.products) ? data.products : [];
-                    if(liste.length > 0) {
-                        let stokHatasi = false; let hataMesaji = "";
-                        for(let i=0; i<sepet.length; i++) {
-                            let gercekUrun = liste.find(u => u.pName === sepet[i].rawName);
-                            if(gercekUrun) {
-                                let maksStok = (gercekUrun.stockAmount !== undefined) ? parseFloat(gercekUrun.stockAmount) : ((gercekUrun.stock !== undefined) ? parseFloat(gercekUrun.stock) : 999);
-                                let sepettekiToplam = 0; sepet.forEach(u => { if(u.rawName === gercekUrun.pName) sepettekiToplam += (u.baseStockAmount * u.quantity); });
-                                if(sepettekiToplam > maksStok) { stokHatasi = true; hataMesaji = `Maalesef "${gercekUrun.pName}" ürününden sadece ${maksStok} adet/kg kaldı.`; break; }
-                            }
-                        }
-
-                        if (!stokHatasi) {
-                            let ekmekInfo = liste.find(u => u.pName.trim().toLocaleLowerCase('tr-TR') === ekmekUrunAdi.trim().toLocaleLowerCase('tr-TR'));
-                            if (ekmekInfo) {
-                                let maksEkmekStok = (ekmekInfo.stockAmount !== undefined) ? parseFloat(ekmekInfo.stockAmount) : ((ekmekInfo.stock !== undefined) ? parseFloat(ekmekInfo.stock) : 999);
-                                let totalBreadReq = GuncelEkmekIhtiyaci(sepet);
-                                if (totalBreadReq > maksEkmekStok) { stokHatasi = true; hataMesaji = `Maalesef Ekmek stoğumuz yetersiz!`; }
-                            }
-                        }
-
-                        if(stokHatasi) { OzelUyariGoster("Stok Yetersiz!", hataMesaji, "⚠️"); btn.disabled = false; btn.classList.remove("loading"); btn.innerText = "Ödeme Yap ve Onayla"; return; }
-                        
-                        let n = document.getElementById("siparis-notu").value;
-                        let siparisDetayMetni = ""; sepet.forEach(u => { siparisDetayMetni += (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName + "\n"; });
-
-                        let unityIcinSiparisDizisi = sepet.map(u => ({ itemName: (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName, itemPrice: u.basePrice * u.quantity, amount: u.baseStockAmount * u.quantity, rawName: u.rawName }));
-                        let indirimFarkiJS = hamToplamFiyat - sonOdenecekFiyat;
-                        if(indirimFarkiJS > 0) { unityIcinSiparisDizisi.push({ itemName: "Web Kupon İndirimi", itemPrice: -indirimFarkiJS, amount: 0, rawName: "" }); }
-
-                        const paketVerisi = { 
-                            tip: "paket", musteriAd: escapeHTML(isim), telefon: escapeHTML(tel), adres: escapeHTML(adres), odemeTuru: "Online Ödeme (Kart)",
-                            siparisDetayi: siparisDetayMetni, siparisler: unityIcinSiparisDizisi, toplam: sonOdenecekFiyat, zaman: new Date().toLocaleTimeString(), siparisNotu: escapeHTML(n) 
-                        };
-                        
-                        let safeTel = tel.replace(/[^0-9]/g, '');
-
-                        fetch(`https://bekmezpos-default-rtdb.firebaseio.com/PaketSiparisler/${safeTel}.json${authKeyStr}`, { 
-                            method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(paketVerisi) 
-                        }).then(() => {
-                            const canliAdisyonVerisi = {
-                                durum: "SİPARİŞ ONAYLANDI", toplamTutar: sonOdenecekFiyat, siparisNotu: escapeHTML(n),
-                                siparisler: sepet.map(u => ({ itemName: (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName, itemPrice: u.basePrice * u.quantity }))
-                            };
-                            
-                            fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliPaketler/Paket_${safeTel}.json${authKeyStr}`, { method: "PUT", body: JSON.stringify(canliAdisyonVerisi) });
-
-                            HapticTitresim(); CheckoutKapat(); BasariEkraniGoster();
-                            
-                            // SEPET TAMAMEN SIFIRLANIR
-                            sepet = []; aktifKuponKodu = ""; aktifKuponIndirimTutari = 0; aktifKuponAltLimit = 0; aktifKuponHedefUrun = "Herşey"; 
-                            document.getElementById("siparis-notu").value = ""; SepetEkraniniCiz(); HesaplaVeGuncelle(); seciliEkstraIstekler = [];
-                            document.getElementById("cc-number").value = ""; document.getElementById("cc-exp").value = ""; document.getElementById("cc-cvv").value = "";
-                        }).catch(e => { OzelUyariGoster("Hata", "Sipariş mutfağa iletilemedi.", "❌"); btn.disabled = false; btn.classList.remove("loading"); btn.innerText = "Ödeme Yap ve Onayla"; });
-
-                    }
-                }).catch(e => { OzelUyariGoster("Bağlantı Hatası", "Sunucu ile bağlantı kurulamadı.", "📡"); btn.disabled = false; btn.classList.remove("loading"); btn.innerText = "Ödeme Yap ve Onayla"; });
-            }, 2000); 
-        }
-
-        function CanliAdisyonCek() {
-            let telRaw = localStorage.getItem("bekmez_tel");
-            if(!telRaw || telRaw.length < 10) {
-                document.getElementById("history-content").innerHTML = `<div class="empty-text">Henüz aktif bir siparişiniz bulunmuyor.<br><br>Sipariş verdiyseniz <strong>Profilim</strong> sekmesinden telefon numaranızın doğruluğunu kontrol edin.</div>`;
-                return;
-            }
-            
-            let safeTel = telRaw.replace(/[^0-9]/g, '');
-
-            fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliPaketler/Paket_${safeTel}.json${authKeyStr}&t=${new Date().getTime()}`, { cache: "no-store" }).then(r => r.json()).then(benimPaketim => {
-                let html = "";
-                if(!benimPaketim) {
-                    html = `<div class="empty-text">Şu anda aktif veya yolda olan bir paket siparişiniz bulunmuyor.</div>`;
-                } else {
-                    let durum = benimPaketim.durum || "SİPARİŞ ALINDI";
-                    
-                    // İPTAL EDİLDİYSE ÇARPI EKRANI
-                    if(durum.includes("İPTAL")) {
-                        html = `<div class="empty-text" style="color: var(--danger); border-color: rgba(255, 59, 48, 0.3); background: rgba(255, 59, 48, 0.05); padding: 40px 20px;">
-                                    <div style="font-size:50px; margin-bottom:15px; filter: drop-shadow(0 4px 10px rgba(255,59,48,0.4));">❌</div>
-                                    <strong style="font-size:22px; letter-spacing:-0.5px;">Siparişiniz İptal Edildi</strong><br><br>
-                                    <span style="font-size:15px; color:#A1A1AA;">Bu sipariş restoran tarafından kapatıldı veya iptal edildi.</span>
-                                </div>`;
-                    } 
-                    // NORMAL DURUM
-                    else {
-                        let durumRengi = "var(--primary)"; let bgRengi = "rgba(255,107,0,0.1)";
-                        if(durum.includes("YOLA ÇIKTI") || durum.includes("TESLİM") || durum.includes("AFİYET")) { durumRengi = "var(--success)"; bgRengi = "rgba(52, 199, 89, 0.1)"; }
-                        
-                        html = `<div class="receipt-card"><div style="text-align: center; margin-bottom: 30px;"><div style="font-weight: 900; font-size: 26px; color:#1c1c1e; letter-spacing:-1px;">BEKMEZ PİŞİRİM</div><div style="font-size: 16px; font-weight: 800; color:var(--text-muted); margin-top:4px;">PAKET SERVİS</div></div><div class="receipt-header"><span>DURUM</span><span style="color:${durumRengi}; font-weight:800; background:${bgRengi}; padding:8px 16px; border-radius:12px; text-align:right;">${escapeHTML(durum)}</span></div>`;
-                        
-                        if(benimPaketim.siparisler) {
-                            benimPaketim.siparisler.forEach(urun => { html += `<div class="receipt-item"><span>${escapeHTML(urun.itemName)}</span><span>${parseFloat(urun.itemPrice).toFixed(2)} ₺</span></div>`; });
-                        }
-                        
-                        if (benimPaketim.siparisNotu) { html += `<div style="margin-top: 25px; padding: 18px; background: rgba(0,0,0,0.03); border-radius:18px; font-size: 14px; font-weight: 600; color:#8e8e93; border: 1px dashed #d1d1d6;">ÖZEL NOT:<br>${escapeHTML(benimPaketim.siparisNotu)}</div>`; }
-                        html += `<div class="receipt-total">TOPLAM: <span style="font-size:36px; display:block; margin-top:8px;">${parseFloat(benimPaketim.toplamTutar).toFixed(2)} TL</span></div><div style="text-align: center; font-size: 12px; margin-top: 30px; color:#a1a1aa; font-weight: 600;">Bizi tercih ettiğiniz için teşekkür ederiz.</div></div>`;
-                    }
+            // ÇAKIŞMA KONTROLÜ: Mevcut aktif bir sipariş varsa yenisini engelle
+            let safeTel = tel.replace(/[^0-9]/g, '');
+            fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliPaketler/Paket_${safeTel}.json${authKeyStr}&t=${new Date().getTime()}`)
+            .then(res => res.json())
+            .then(aktifAdisyon => {
+                if(aktifAdisyon && aktifAdisyon.durum && !aktifAdisyon.durum.includes("İPTAL") && !aktifAdisyon.durum.includes("TESLİM") && !aktifAdisyon.durum.includes("AFİYET")) {
+                    OzelUyariGoster("Siparişiniz Sürüyor", "Şu anda devam eden bir siparişiniz bulunuyor. Yeni sipariş vermek için mevcut siparişinizin tamamlanmasını beklemelisiniz.", "⏳");
+                    btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde ve Onayla";
+                    return;
                 }
-                if (sonCekilenAdisyonHTML !== html) { document.getElementById("history-content").innerHTML = html; sonCekilenAdisyonHTML = html; }
-            }).catch(e => console.log(e));
+
+                // EĞER ÇAKIŞMA YOKSA SİPARİŞİ GÖNDER:
+                setTimeout(() => {
+                    btn.innerText = "İLETİLİYOR...";
+                    fetch(firebaseMenuUrl + authKeyStr + "&t=" + new Date().getTime(), { cache: "no-store" }).then(r => r.json()).then(data => {
+                        let liste = (data && data.products) ? data.products : [];
+                        if(liste.length > 0) {
+                            let stokHatasi = false; let hataMesaji = "";
+                            for(let i=0; i<sepet.length; i++) {
+                                let gercekUrun = liste.find(u => u.pName === sepet[i].rawName);
+                                if(gercekUrun) {
+                                    let maksStok = (gercekUrun.stockAmount !== undefined) ? parseFloat(gercekUrun.stockAmount) : ((gercekUrun.stock !== undefined) ? parseFloat(gercekUrun.stock) : 999);
+                                    let sepettekiToplam = 0; sepet.forEach(u => { if(u.rawName === gercekUrun.pName) sepettekiToplam += (u.baseStockAmount * u.quantity); });
+                                    if(sepettekiToplam > maksStok) { stokHatasi = true; hataMesaji = `Maalesef "${gercekUrun.pName}" ürününden sadece ${maksStok} adet/kg kaldı.`; break; }
+                                }
+                            }
+
+                            if (!stokHatasi) {
+                                let ekmekInfo = liste.find(u => u.pName.trim().toLocaleLowerCase('tr-TR') === ekmekUrunAdi.trim().toLocaleLowerCase('tr-TR'));
+                                if (ekmekInfo) {
+                                    let maksEkmekStok = (ekmekInfo.stockAmount !== undefined) ? parseFloat(ekmekInfo.stockAmount) : ((ekmekInfo.stock !== undefined) ? parseFloat(ekmekInfo.stock) : 999);
+                                    let totalBreadReq = GuncelEkmekIhtiyaci(sepet);
+                                    if (totalBreadReq > maksEkmekStok) { stokHatasi = true; hataMesaji = `Maalesef Ekmek stoğumuz yetersiz!`; }
+                                }
+                            }
+
+                            if(stokHatasi) { OzelUyariGoster("Stok Yetersiz!", hataMesaji, "⚠️"); btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde ve Onayla"; return; }
+                            
+                            let n = document.getElementById("siparis-notu").value;
+                            let siparisDetayMetni = ""; sepet.forEach(u => { siparisDetayMetni += (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName + "\n"; });
+
+                            let unityIcinSiparisDizisi = sepet.map(u => ({ itemName: (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName, itemPrice: u.basePrice * u.quantity, amount: u.baseStockAmount * u.quantity, rawName: u.rawName }));
+                            let indirimFarkiJS = hamToplamFiyat - sonOdenecekFiyat;
+                            
+                            // YENİ: DİNAMİK KUPON İSMİ
+                            if(indirimFarkiJS > 0) { 
+                                let kpnAd = aktifKuponKodu !== "" ? "Kupon [" + aktifKuponKodu + "]" : "Web İndirimi";
+                                unityIcinSiparisDizisi.push({ itemName: kpnAd, itemPrice: -indirimFarkiJS, amount: 0, rawName: "" }); 
+                            }
+
+                            const paketVerisi = { 
+                                tip: "paket", musteriAd: escapeHTML(isim), telefon: escapeHTML(tel), adres: escapeHTML(adres), odemeTuru: "Online Ödeme (Kart)",
+                                siparisDetayi: siparisDetayMetni, siparisler: unityIcinSiparisDizisi, toplam: sonOdenecekFiyat, zaman: new Date().toLocaleTimeString(), siparisNotu: escapeHTML(n) 
+                            };
+
+                            fetch(`https://bekmezpos-default-rtdb.firebaseio.com/PaketSiparisler/${safeTel}.json${authKeyStr}`, { 
+                                method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(paketVerisi) 
+                            }).then(() => {
+                                const canliAdisyonVerisi = {
+                                    durum: "SİPARİŞ ONAYLANDI", toplamTutar: sonOdenecekFiyat, siparisNotu: escapeHTML(n),
+                                    siparisler: sepet.map(u => ({ itemName: (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName, itemPrice: u.basePrice * u.quantity }))
+                                };
+                                
+                                fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliPaketler/Paket_${safeTel}.json${authKeyStr}`, { method: "PUT", body: JSON.stringify(canliAdisyonVerisi) });
+
+                                HapticTitresim(); CheckoutKapat(); BasariEkraniGoster();
+                                
+                                sepet = []; aktifKuponKodu = ""; aktifKuponIndirimTutari = 0; aktifKuponAltLimit = 0; aktifKuponHedefUrun = "Herşey"; 
+                                document.getElementById("siparis-notu").value = ""; SepetEkraniniCiz(); HesaplaVeGuncelle(); seciliEkstraIstekler = [];
+                                document.getElementById("cc-number").value = ""; document.getElementById("cc-exp").value = ""; document.getElementById("cc-cvv").value = "";
+                            }).catch(e => { OzelUyariGoster("Hata", "Sipariş mutfağa iletilemedi.", "❌"); btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde ve Onayla"; });
+
+                        }
+                    }).catch(e => { OzelUyariGoster("Bağlantı Hatası", "Sunucu ile bağlantı kurulamadı.", "📡"); btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde ve Onayla"; });
+                }, 2000); 
+
+            }).catch(e => {
+                OzelUyariGoster("Bağlantı Hatası", "Sipariş durumu kontrol edilemedi.", "📡"); 
+                btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde ve Onayla";
+            });
         }
     </script>
 </body>
