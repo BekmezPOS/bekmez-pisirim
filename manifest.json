@@ -1,11 +1,11 @@
 {
   "name": "Bekmez Paket",
   "short_name": "Bekmez",
-  "start_url": "/bekmez-pisirim/paket.html",
+  "start_url": "./paket.html",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#FF6B00",
-  "scope": "/bekmez-pisirim/",
+  "scope": "./",
   "icons": [
     {
       "src": "icon-192.png",
