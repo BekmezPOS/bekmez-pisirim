@@ -388,7 +388,6 @@
         <div class="floating-btn" id="floating-total">0.00 TL</div>
     </div>
 
-    <!-- MOBİL UYUMLU ÜRÜN SEÇİM POPUP -->
     <div id="product-popup" class="popup-overlay" onclick="if(event.target === this) PopupKapat();">
         <div class="popup-content">
             <div class="popup-drag-handle"></div>
@@ -485,7 +484,6 @@
         let canliAdisyonTimer = null; let sonCekilenAdisyonHTML = "";
         let sonKuponVerisi = "";
 
-        // GÜVENLİK: Çift tıklama ve spam saldırı kilidi
         let isProcessingOrder = false;
 
         let deferredPrompt; 
@@ -610,30 +608,42 @@
                 if (sonKuponVerisi !== veriString) {
                     sonKuponVerisi = veriString;
                     let html = "";
-                    if (!data) {
-                        html = `<div class="empty-text">Şu an aktif bir kampanya bulunmuyor 😔</div>`;
-                    } else {
+                    let uygulamayaOzelKuponSayisi = 0;
+                    
+                    if (data) {
                         let delay = 0;
                         for (let kod in data) {
                             let kupon = data[kod];
-                            let hedef = kupon.targetProduct && kupon.targetProduct !== "" ? kupon.targetProduct : "Tüm Ürünlerde";
                             
-                            html += `
-                            <div class="coupon-card" style="animation-delay: ${delay}s;">
-                                <div class="c-left">
-                                    <div class="c-discount">${kupon.discountAmount} ₺</div>
-                                    <div class="c-type">İNDİRİM</div>
-                                </div>
-                                <div class="c-right">
-                                    <div class="c-title">${hedef} Geçerli</div>
-                                    <div class="c-code">${kod}</div>
-                                    <div class="c-limit">Min. Sepet Tutarı: ${kupon.bottomLimit} TL</div>
-                                    <button class="c-btn shimmer-btn" onclick="HemenKullan('${kod}')">Hemen Sepette Uygula</button>
-                                </div>
-                            </div>`;
-                            delay += 0.05;
+                            // SADECE UYGULAMA KUPONLARINI FİLTRELE
+                            let isApp = kupon.isAppCoupon === true || kupon.uygulamaKuponu === true || String(kupon.isAppCoupon).toLowerCase() === "true" || String(kupon.uygulamaKuponu).toLowerCase() === "true";
+                            
+                            if (isApp) {
+                                uygulamayaOzelKuponSayisi++;
+                                let hedef = kupon.targetProduct && kupon.targetProduct !== "" ? kupon.targetProduct : "Tüm Ürünlerde";
+                                
+                                html += `
+                                <div class="coupon-card" style="animation-delay: ${delay}s;">
+                                    <div class="c-left">
+                                        <div class="c-discount">${kupon.discountAmount} ₺</div>
+                                        <div class="c-type">İNDİRİM</div>
+                                    </div>
+                                    <div class="c-right">
+                                        <div class="c-title">${hedef} Geçerli</div>
+                                        <div class="c-code">${kod}</div>
+                                        <div class="c-limit">Min. Sepet Tutarı: ${kupon.bottomLimit} TL</div>
+                                        <button class="c-btn shimmer-btn" onclick="HemenKullan('${kod}')">Hemen Sepette Uygula</button>
+                                    </div>
+                                </div>`;
+                                delay += 0.05;
+                            }
                         }
                     }
+                    
+                    if (uygulamayaOzelKuponSayisi === 0) {
+                        html = `<div class="empty-text">Şu an uygulamaya özel aktif bir kampanya bulunmuyor 😔</div>`;
+                    }
+                    
                     document.getElementById("firsatlar-list").innerHTML = html;
                 }
             } catch(e) { console.log(e); }
@@ -1019,7 +1029,6 @@
 
             if(ccName.length < 3 || ccNum.length < 15 || ccExp.length < 4 || ccCvv.length < 3) { OzelUyariGoster("Ödeme Hatası", "Lütfen kredi kartı bilgilerinizi eksiksiz giriniz.", "💳"); return; }
 
-            // GÜVENLİK DUVARI: Negatif sayıları ve fiyat değiştirme saldırılarını engelle
             let hackAlgilandi = false;
             let gercekHesaplama = 0;
             sepet.forEach(u => {
