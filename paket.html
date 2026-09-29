@@ -35,7 +35,7 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         html { scroll-behavior: smooth; overscroll-behavior-y: none; }
         
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-dark); background-image: var(--bg-gradient); color: var(--text-main); margin: 0; padding: 0; padding-bottom: calc(90px + env(safe-area-inset-bottom)); overflow-x: hidden; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; min-height: 100vh; position: relative; user-select: none; -webkit-user-select: none; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-dark); background-image: var(--bg-gradient); color: var(--text-main); margin: 0; padding: 0; padding-bottom: calc(110px + env(safe-area-inset-bottom)); overflow-x: hidden; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; min-height: 100vh; position: relative; user-select: none; -webkit-user-select: none; }
         input, textarea { user-select: auto; -webkit-user-select: auto; }
         ::-webkit-scrollbar { display: none; } 
 
@@ -123,7 +123,6 @@
         .legal-link { color: var(--primary); text-decoration: underline; cursor: pointer; font-weight: 700; transition: 0.2s;}
         .legal-link:active { color: white; }
 
-        /* GÜNCELLENEN FOOTER */
         .secure-footer { margin-top: 40px; padding: 20px 15px 40px 15px; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; }
         .footer-text { font-size: 11px; color: var(--text-muted); line-height: 1.8; margin-top: 15px; }
 
@@ -331,18 +330,20 @@
             <div class="skeleton-card"><div class="skel-icon"></div><div class="skel-text"></div><div class="skel-text short"></div><div class="skel-btn"></div></div>
         </div>
         
-        <!-- SANAL POS ONAYI İÇİN GEREKLİ FOOTER BİLGİLERİ VE LOGOLAR -->
-       <!-- YENİ: SANAL POS GÜVENLİK FOOTER (KIRILMAZ %100 ÇALIŞAN LOGOLAR) -->
-      <!-- YENİ: SANAL POS GÜVENLİK FOOTER (DIŞARIDAN ÇEKİLEN RESİMLER) -->
+        <!-- YENİ: SANAL POS GÜVENLİK FOOTER (KIRILMAZ %100 ÇALIŞAN KOD) -->
         <div class="secure-footer">
             <div style="margin-bottom: 15px; display: flex; justify-content: center; align-items: center; gap: 15px;">
-                <!-- VISA RESMİ (Dışarıdan Çekiliyor) -->
-                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" style="height: 18px; filter: brightness(0) invert(1); opacity: 0.9;" alt="VISA">
-                
-                <!-- MASTERCARD RESMİ (Dışarıdan Çekiliyor) -->
-                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" style="height: 24px; opacity: 0.9;" alt="MasterCard">
-                
-                <!-- TROY YAZISI (Görselinde mükemmel çalıştığı için bozulmadı) -->
+                <!-- KUSURSUZ VISA SVG -->
+                <svg viewBox="0 0 576 512" height="22px" xmlns="http://www.w3.org/2000/svg" style="opacity: 0.9;">
+                    <path fill="#ffffff" d="M470.1 231.3s7.6-37.2 9.3-45H446c-3.3 0-5.9 2-7.1 4.6l-22.9 61.6h25.4l4.3-12.2h31.2l1.9 11.2h21.4l-30.1-20.2zm-24.4-23.7l6.7 18.1h-16.1l9.4-18.1zm-84.9 14.5c-6.7-3.1-10.8-5.2-10.8-8.4 0-3 3.5-6.1 10.6-6.1 7.2 0 11.8 1.5 15.6 3.1l2.4-11.4c-3.6-1.7-9.5-3.3-16.8-3.3-19.6 0-33.5 10.4-33.6 25.3-.1 10.9 9.8 16.9 17.2 20.6 7.6 3.7 10.1 6.1 10.1 9.4 0 5.1-6.1 7.4-11.8 7.4-8 0-12.3-1.1-16.9-3.2l-2.4 11.6c4.6 2.1 12 4 19.8 4.1 21.1 0 34.8-10.4 34.9-26.6.1-8.9-5.9-15.1-18.3-21zM194.2 284h21.1l32.2-96.5h-22.5c-3.1 0-5.8 1.7-7 4.4l-27.4 67-15.3-64.8c-.8-3.5-3.9-6.6-7.5-6.6H126l21.3 96.5h22l24.9-96.5h-22.5L194.2 284zm202.9-96.5h-16.7c-3.3 0-5.9 1.9-7.1 4.7l-35.8 91.8h21.5l4.2-11.9h26.4l2.5 11.9h20.6l-15.6-96.5z"/>
+                </svg>
+                <!-- MASTERCARD SVG -->
+                <svg viewBox="0 0 36 22" height="22px" xmlns="http://www.w3.org/2000/svg" style="opacity: 0.9;">
+                    <circle cx="11" cy="11" r="11" fill="#ea001b"/>
+                    <circle cx="25" cy="11" r="11" fill="#f79e1b"/>
+                    <path d="M18 21.4a11 11 0 0 1 0-20.8 11 11 0 0 1 0 20.8z" fill="#ff5f00"/>
+                </svg>
+                <!-- TROY LOGOSU -->
                 <span style="font-family: Arial, sans-serif; font-weight: 900; font-style: italic; font-size: 22px; color: #ffffff; letter-spacing: -1px; opacity: 0.9;">TROY</span>
             </div>
             <div style="color: var(--success); font-weight: 800; font-size: 13px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 5px;">
@@ -460,7 +461,6 @@
         </div>
     </div>
 
-    <!-- YENİ GÜNCELLENEN CHECKOUT POPUP (SANAL POS ONAY TİKİ EKLENDİ) -->
     <div id="checkout-popup" class="popup-overlay" onclick="if(event.target === this) CheckoutKapat();">
         <div class="popup-content">
             <div class="popup-drag-handle"></div>
@@ -485,7 +485,6 @@
                 </div>
             </div>
             
-            <!-- YENİ: SANAL POS ONAY KUTUSU -->
             <div style="margin: 15px 0 25px 0; display: flex; align-items: flex-start; gap: 12px; padding: 0 5px;">
                 <input type="checkbox" id="legal-checkbox" onchange="TogglePayButton()" style="width: 22px; height: 22px; accent-color: var(--primary); margin-top: 2px; cursor: pointer;">
                 <label for="legal-checkbox" style="font-size: 11px; color: var(--text-muted); line-height: 1.5; cursor: pointer;">
@@ -493,12 +492,10 @@
                 </label>
             </div>
             
-            <!-- BAŞLANGIÇTA KAPALI GELECEK -->
             <button id="final-submit-btn" class="order-btn shimmer-btn neon-border" disabled style="margin-top: 5px; opacity: 0.5;" onclick="PaketSiparisiGonder()">Sözleşmeyi Onaylayın</button>
         </div>
     </div>
 
-    <!-- YENİ: YASAL SÖZLEŞMELER MODALI -->
     <div id="legal-popup" class="popup-overlay" onclick="if(event.target === this) KapatSozlesme();">
         <div class="popup-content" style="max-height: 85vh;">
             <div class="popup-drag-handle"></div>
@@ -507,7 +504,6 @@
                 <button onclick="KapatSozlesme()" style="background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); width: 36px; height: 36px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
             </div>
             <div id="legal-body" style="color: #A1A1AA; font-size: 12px; line-height: 1.7; text-align: left; overflow-y: auto; max-height: 60vh; padding-right: 5px;">
-                <!-- İçerik JS ile buraya basılacak -->
             </div>
         </div>
     </div>
@@ -548,7 +544,6 @@
     </div>
 
     <script>
-        // YASAL METİNLER (SANAL POS İÇİN ZORUNLUDUR)
         const textMesafeli = `
             <strong style="color:white; font-size:14px;">MADDE 1 - TARAFLAR</strong><br>
             <b>SATICI:</b> Bekmez Pişirim Gıda Ltd. Şti.<br>
@@ -580,7 +575,6 @@
             <b>Veri İşleme:</b> Adınız, telefon numaranız ve adresiniz yalnızca siparişinizin size güvenle ulaştırılabilmesi için cihazınızın yerel hafızasında saklanır ve teslimat anında kuryemiz ile paylaşılır. Verileriniz 3. taraf reklam veya pazarlama şirketleriyle kesinlikle paylaşılmaz.
         `;
 
-        // DÜKKAN KONUM AYARLARI
         const DUKKAN_ENLEM = 36.206278;
         const DUKKAN_BOYLAM = 36.134472;
         const MAKS_MESAFE_KM = 4; 
@@ -1091,7 +1085,7 @@
                         if (!arananVarMi) { hataMesaji = `'${arananUrun}' ürünü sepette bulunamadı.`; } else if (baskaUrunVarMi) { hataMesaji = `Bu kupon sadece '${arananUrun}' siparişlerinde geçerlidir. Başka ürün ekleyemezsiniz.`; } else { urunSartiSaglandi = true; }
                     }
 
-                    if(!urunSartiSaglandi) { KuponuIptalEt(true); OzelUyariGoster("Şartlar Sağlanmadı", hataMesaji, "🛍️"); return; }
+                    if(!urunSartiSaglandi) { KuponuIptalEt(true); OzelUyariGoster("Şartlar Sağlanmadı", hataMesaji, "🛍️️"); return; }
                     if (hamToplamFiyat < data.bottomLimit) { KuponuIptalEt(true); OzelUyariGoster("Tutar Yetersiz", `Bu kupon için sepet tutarı en az ${data.bottomLimit} TL olmalıdır.`, "🛒"); return; }
 
                     HapticTitresim(); aktifKuponKodu = girilenKod; aktifKuponIndirimTutari = data.discountAmount; aktifKuponAltLimit = data.bottomLimit; aktifKuponHedefUrun = arananUrun;
@@ -1150,7 +1144,7 @@
                     if (!arananVarMi || baskaVarMi) kuponHalaGecerliMi = false;
                 }
                 if (hamToplamFiyat < aktifKuponAltLimit) kuponHalaGecerliMi = false;
-                if (!kuponHalaGecerliMi) { KuponuIptalEt(true); OzelUyariGoster("Kupon İptal Oldu", "Sepetinizdeki ürün değişiklikleri nedeniyle kupon şartları bozuldu.", "⚠️"); }
+                if (!kuponHalaGecerliMi) { KuponuIptalEt(true); OzelUyariGoster("Kupon İptal Oldu", "Sepetinizdeki ürün değişiklikleri nedeniyle kupon şartları bozuldu.", "⚠️️"); }
             }
             
             if(aktifKuponIndirimTutari > 0 && sepet.length > 0) {
