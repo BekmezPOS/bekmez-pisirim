@@ -35,7 +35,7 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         html { scroll-behavior: smooth; overscroll-behavior-y: none; }
         
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-dark); background-image: var(--bg-gradient); color: var(--text-main); margin: 0; padding: 0; padding-bottom: calc(110px + env(safe-area-inset-bottom)); overflow-x: hidden; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; min-height: 100vh; position: relative; user-select: none; -webkit-user-select: none; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-dark); background-image: var(--bg-gradient); color: var(--text-main); margin: 0; padding: 0; padding-bottom: calc(90px + env(safe-area-inset-bottom)); overflow-x: hidden; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; min-height: 100vh; position: relative; user-select: none; -webkit-user-select: none; }
         input, textarea { user-select: auto; -webkit-user-select: auto; }
         ::-webkit-scrollbar { display: none; } 
 
@@ -123,6 +123,7 @@
         .legal-link { color: var(--primary); text-decoration: underline; cursor: pointer; font-weight: 700; transition: 0.2s;}
         .legal-link:active { color: white; }
 
+        /* YENİ: SANAL POS İÇİN ZORUNLU FOOTER ALANI (SVG GÜNCELLEMESİ) */
         .secure-footer { margin-top: 40px; padding: 20px 15px 40px 15px; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; }
         .footer-text { font-size: 11px; color: var(--text-muted); line-height: 1.8; margin-top: 15px; }
 
@@ -330,21 +331,31 @@
             <div class="skeleton-card"><div class="skel-icon"></div><div class="skel-text"></div><div class="skel-text short"></div><div class="skel-btn"></div></div>
         </div>
         
-        <!-- YENİ: SANAL POS GÜVENLİK FOOTER (KIRILMAZ SVG İKONLARI EKLENDİ) -->
+        <!-- SANAL POS ONAYI İÇİN GEREKLİ FOOTER BİLGİLERİ VE LOGOLAR -->
         <div class="secure-footer">
-            <div style="margin-bottom: 12px; display: flex; justify-content: center; align-items: center; gap: 12px;">
-                <!-- VISA SVG -->
-                <svg viewBox="0 0 32 10" height="18px" xmlns="http://www.w3.org/2000/svg" style="opacity: 0.8;"><path d="M14.6 9.8h2.8l1.8-9.5h-2.8l-1.8 9.5zm-7.6 0l-2.8-9.5h2.9l1.7 6.9 2.7-6.9h2.9l-4.2 9.5h-3.2zm14.1-9.5h-2.8l-1.8 9.5h2.8l1.8-9.5zm6.3 0h-3l-2.6 9.5h2.9l.4-1.6h3.6l.3 1.6h2.8l-4.4-9.5zm-1.8 6.4l.8-3.5.5 3.5h-1.3z" fill="#ffffff"/></svg>
-                <!-- MASTERCARD SVG -->
-                <svg viewBox="0 0 36 22" height="22px" xmlns="http://www.w3.org/2000/svg" style="opacity: 0.9;"><circle cx="11" cy="11" r="11" fill="#EB001B"/><circle cx="25" cy="11" r="11" fill="#F79E1B"/><path d="M18 21.4a11 11 0 0 1 0-20.8 11 11 0 0 1 0 20.8z" fill="#FF5F00"/></svg>
-                <!-- TROY SVG YAZISI -->
-                <svg viewBox="0 0 60 20" height="20px" xmlns="http://www.w3.org/2000/svg" style="opacity: 0.8;"><text x="0" y="16" font-family="Arial, sans-serif" font-weight="900" font-style="italic" font-size="18" fill="#ffffff" letter-spacing="-0.5">TROY</text></svg>
+            <div style="margin-bottom: 15px; display: flex; justify-content: center; align-items: center; gap: 15px;">
+                <!-- Orijinal VISA SVG -->
+                <svg viewBox="0 0 320 100" height="18px" xmlns="http://www.w3.org/2000/svg" style="opacity: 0.9;">
+                    <path fill="#ffffff" d="M141.9 26.6l-13.8 62.1h22l13.7-62.1h-21.9zM203.2 24.8c-4.3-1.6-11-3.4-19.1-3.4-21.4 0-36.5 11.4-36.6 27.7-.2 12 10.7 18.7 18.9 22.7 8.4 4.1 11.3 6.8 11.3 10.5-.1 5.7-6.8 8.3-13.1 8.3-8.8 0-13.5-1.3-19.1-3.8l-2.7-1.3-3 18.8c4.8 2.2 13.6 4.1 22.8 4.2 23 0 37.9-11.3 38.1-28.8.1-9.6-5.5-16.9-18.1-22.9-7.6-3.8-12.2-6.3-12.2-10.2 0-3.5 4.1-7.2 12.5-7.2 7 0 12 .1 16.1 1.9l2 1l2.2-17.4zM286.9 26.6l-18.4 42-5.4-28.5c-1-4.8-4.8-8.2-9.7-8.2h-31l-2.1 10c6 .1 12.8 1.9 17.5 4.5l14.7 52.3h23.2l34.4-62.1h-23.2zM98.8 26.6h-17c-5.2 0-9.2 1.5-11.5 6.8L30.6 88.7h23.3l4.6-12.8h28.5l2.7 12.8h20.5l-11.4-62.1zm-21.4 34.6l9.4-25.9 5.4 25.9h-14.8z"/>
+                </svg>
+                <!-- Orijinal MASTERCARD SVG -->
+                <svg viewBox="0 0 36 22" height="22px" xmlns="http://www.w3.org/2000/svg" style="opacity: 0.9;">
+                    <circle cx="11" cy="11" r="11" fill="#ea001b"/>
+                    <circle cx="25" cy="11" r="11" fill="#f79e1b"/>
+                    <path d="M18 21.4a11 11 0 0 1 0-20.8 11 11 0 0 1 0 20.8z" fill="#ff5f00"/>
+                </svg>
+                <!-- TROY LOGOSU -->
+                <span style="font-family: Arial, sans-serif; font-weight: 900; font-style: italic; font-size: 22px; color: #ffffff; letter-spacing: -1px; opacity: 0.9;">TROY</span>
             </div>
-            <div style="color: var(--success); font-weight: 800; font-size: 12px; margin-bottom: 10px;">🔒 256-Bit SSL Güvenli Ödeme</div>
+            <div style="color: var(--success); font-weight: 800; font-size: 13px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 5px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                256-Bit SSL Güvenli Ödeme
+            </div>
             <div class="footer-text">
                 <b>Bekmez Pişirim Gıda Ltd. Şti.</b><br>
                 Çekmece Mah. 302.Sok İstanbul Kardeşlik Çarşısı 2 No:9 Defne/Hatay<br>
-                Tel: 0532 000 00 00
+                Tel: 0532 000 00 00 | E-Posta: iletisim@bekmezpisirim.com<br>
+                Mersis No: 0123456789000001
             </div>
         </div>
     </div>
@@ -400,10 +411,12 @@
             
             <div style="margin-top:35px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 25px; text-align: center; font-size: 11px; color: var(--text-muted); line-height: 1.8;">
                 <a class="legal-link" onclick="AcSozlesme('mesafeli')">Mesafeli Satış Sözleşmesi</a> • 
-                <a class="legal-link" onclick="AcSozlesme('iptal')">İptal/İade Koşulları</a><br>
-                <a class="legal-link" onclick="AcSozlesme('kvkk')">KVKK ve Gizlilik Politikası</a>
+                <a class="legal-link" onclick="AcSozlesme('teslimat')">Teslimat Şartları</a><br>
+                <a class="legal-link" onclick="AcSozlesme('iptal')">İptal/İade Koşulları</a> • 
+                <a class="legal-link" onclick="AcSozlesme('kvkk')">Gizlilik ve KVKK</a>
                 <br><br>
-                Bekmez Pişirim<br>Çekmece Mah. 302.Sok İstanbul Kardeşlik Çarşısı 2 No:9 Defne/Hatay
+                Bekmez Pişirim<br>Çekmece Mah. 302.Sok İstanbul Kardeşlik Çarşısı 2 No:9 Defne/Hatay<br>
+                E-Posta: iletisim@bekmezpisirim.com
             </div>
 
             <button class="order-btn shimmer-btn" onclick="ManuelUygulamaIndir()" style="margin-top: 25px; background: var(--success); box-shadow: 0 8px 20px rgba(52, 199, 89, 0.3);">📱 Uygulamayı Cihazıma Kur</button>
@@ -476,7 +489,7 @@
             <div style="margin: 15px 0 25px 0; display: flex; align-items: flex-start; gap: 12px; padding: 0 5px;">
                 <input type="checkbox" id="legal-checkbox" onchange="TogglePayButton()" style="width: 22px; height: 22px; accent-color: var(--primary); margin-top: 2px; cursor: pointer;">
                 <label for="legal-checkbox" style="font-size: 11px; color: var(--text-muted); line-height: 1.5; cursor: pointer;">
-                    <a class="legal-link" onclick="AcSozlesme('mesafeli'); event.preventDefault();">Mesafeli Satış Sözleşmesi</a> ve <a class="legal-link" onclick="AcSozlesme('iptal'); event.preventDefault();">İptal/İade Koşulları</a>'nı okudum ve onaylıyorum.
+                    <a class="legal-link" onclick="AcSozlesme('mesafeli'); event.preventDefault();">Mesafeli Satış Sözleşmesi</a>, <a class="legal-link" onclick="AcSozlesme('teslimat'); event.preventDefault();">Teslimat Şartları</a> ve <a class="legal-link" onclick="AcSozlesme('iptal'); event.preventDefault();">İptal/İade Koşulları</a>'nı okudum ve onaylıyorum.
                 </label>
             </div>
             
@@ -540,6 +553,13 @@
             İşbu sözleşmenin konusu, ALICI'nın SATICI'ya ait elektronik ortamdan siparişini yaptığı gıda ürünlerinin satışı ve teslimatı ile ilgili olarak 6502 sayılı Tüketicinin Korunması Hakkında Kanun hükümleri gereğince tarafların hak ve yükümlülüklerinin saptanmasıdır.<br><br>
             <strong style="color:white; font-size:14px;">MADDE 3 - CAYMA HAKKI İSTİSNASI (ZORUNLU)</strong><br>
             <b>ÖNEMLİ:</b> Tüketici Mevzuatı ve Mesafeli Sözleşmeler Yönetmeliği madde 15/1-c bendi gereğince; <u>"Çabuk bozulabilen veya son kullanma tarihi geçebilecek malların teslimine ilişkin sözleşmelerde" Tüketicinin CAYMA HAKKI BULUNMAMAKTADIR.</u> Satışa konu olan ürünler sıcak ve tüketime hazır gıda maddeleri olduğundan, sipariş mutfağa iletildikten sonra iptal veya iade yapılamaz.
+        `;
+
+        const textTeslimat = `
+            <strong style="color:white; font-size:14px;">TESLİMAT ŞARTLARI</strong><br><br>
+            <b>1. Teslimat Bölgesi:</b> Siparişleriniz, gıda güvenliği ve sıcaklık standartlarını korumak amacıyla dükkanımızdan maksimum 4 km yarıçapındaki bölgelere teslim edilmektedir.<br><br>
+            <b>2. Teslimat Süresi:</b> Siparişleriniz onaylandıktan sonra hava ve yol durumuna bağlı olarak ortalama 30-45 dakika içerisinde adresinize teslim edilir.<br><br>
+            <b>3. Ücretlendirme:</b> Belirlenen minimum sepet tutarının üzerindeki siparişler için ekstra teslimat ücreti talep edilmemektedir.
         `;
 
         const textIptal = `
@@ -613,6 +633,7 @@
             let body = document.getElementById('legal-body');
             
             if (tip === 'mesafeli') { title.innerText = "Mesafeli Satış Sözleşmesi"; body.innerHTML = textMesafeli; }
+            else if (tip === 'teslimat') { title.innerText = "Teslimat Şartları"; body.innerHTML = textTeslimat; }
             else if (tip === 'iptal') { title.innerText = "İptal ve İade Koşulları"; body.innerHTML = textIptal; }
             else if (tip === 'kvkk') { title.innerText = "Gizlilik ve KVKK Politikası"; body.innerHTML = textKVKK; }
             
@@ -1124,7 +1145,7 @@
                     if (!arananVarMi || baskaVarMi) kuponHalaGecerliMi = false;
                 }
                 if (hamToplamFiyat < aktifKuponAltLimit) kuponHalaGecerliMi = false;
-                if (!kuponHalaGecerliMi) { KuponuIptalEt(true); OzelUyariGoster("Kupon İptal Oldu", "Sepetinizdeki ürün değişiklikleri nedeniyle kupon şartları bozuldu.", "⚠"); }
+                if (!kuponHalaGecerliMi) { KuponuIptalEt(true); OzelUyariGoster("Kupon İptal Oldu", "Sepetinizdeki ürün değişiklikleri nedeniyle kupon şartları bozuldu.", "⚠️"); }
             }
             
             if(aktifKuponIndirimTutari > 0 && sepet.length > 0) {
