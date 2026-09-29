@@ -120,6 +120,10 @@
         .security-badge .text { color: #A1A1AA; font-size: 12px; font-weight: 500; line-height: 1.5; }
         .security-badge .text strong { color: var(--success); font-size: 14px; display: block; margin-bottom: 4px; letter-spacing: -0.3px;}
 
+        /* KVKK VE SÖZLEŞME LİNKLERİ İÇİN KÜÇÜK BUTONLAR */
+        .legal-link { color: var(--primary); text-decoration: underline; cursor: pointer; }
+        .legal-link:active { color: white; }
+
         .search-container { padding: 15px 15px 5px 15px; position: relative;}
         .search-input { width: 100%; background: rgba(25, 25, 30, 0.9); border: 1px solid var(--border-highlight); color: var(--text-main); padding: 14px 15px 14px 45px; border-radius: 20px; font-size: 14px; font-weight:600; font-family: inherit; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: inset 0 2px 10px rgba(0,0,0,0.3), 0 5px 15px rgba(0,0,0,0.2);}
         .search-input:focus { outline: none; border-color: var(--primary); background: var(--surface-solid); box-shadow: inset 0 2px 5px rgba(0,0,0,0.5), 0 0 0 2px var(--primary-light), 0 10px 25px rgba(0,0,0,0.5); transform: translateY(-2px); }
@@ -181,6 +185,7 @@
         .order-btn { background: var(--success); color: white; border: none; padding: 18px; font-size: 15px; font-weight: 800; border-radius: 100px; width: 100%; cursor: pointer; box-shadow: 0 10px 20px rgba(52, 199, 89, 0.4), inset 0 2px 4px rgba(255,255,255,0.3); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); letter-spacing: 0.5px;}
         .order-btn:active { transform: scale(0.95) translateY(2px); box-shadow: 0 5px 10px rgba(52, 199, 89, 0.3), inset 0 2px 6px rgba(0,0,0,0.2); }
         .order-btn.loading { background: #52525B; cursor: not-allowed; box-shadow: none; transform: none; }
+        .order-btn:disabled { background: #52525B; cursor: not-allowed; box-shadow: none; transform: none; color: #a1a1aa; }
 
         .popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 2000; display: none; align-items: flex-end; opacity: 0; pointer-events: none; transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);}
         .popup-overlay.active { opacity: 1; pointer-events: auto; }
@@ -220,7 +225,7 @@
 
         .success-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); z-index: 999999; display: none; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
         .success-overlay.active { opacity: 1; pointer-events: auto; }
-        .success-icon-wrapper { position: relative; width: 140px; height: 140px; display: flex; align-items: center; justify-content: center; margin-bottom: 40px; }
+        .success-icon-wrapper { relative; width: 140px; height: 140px; display: flex; align-items: center; justify-content: center; margin-bottom: 40px; }
         .success-ring { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; border: 3px solid rgba(16, 185, 129, 0.3); transform: scale(0.5); opacity: 0; transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);}
         .success-overlay.active .success-ring { transform: scale(4); opacity: 0; transition-duration: 2s; }
         .success-circle { width: 90px; height: 90px; border-radius: 50%; background: linear-gradient(135deg, #34D399 0%, #059669 100%); display: flex; align-items: center; justify-content: center; box-shadow: 0 15px 40px rgba(16, 185, 129, 0.5), inset 0 2px 8px rgba(255,255,255,0.4); transform: scale(0); transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.2s; }
@@ -369,9 +374,20 @@
             <input type="tel" id="prof-telefon" class="checkout-input" placeholder="Örn: 0532 000 00 00">
             <label style="color:var(--text-muted); font-size:12px; font-weight:700; margin-bottom:8px; display:block; padding-left:12px; text-transform:uppercase; letter-spacing:1px; margin-top:16px;">Açık Adresiniz</label>
             <textarea id="prof-adres" class="checkout-input" rows="3" placeholder="Mahalle, Sokak, Kapı No, Kat, Daire..."></textarea>
+            
             <button class="order-btn shimmer-btn neon-border" onclick="ProfiliKaydet()" style="margin-top: 10px; background: var(--primary);">Bilgilerimi Kaydet</button>
             <button onclick="ProfiliSil()" style="width:100%; background:transparent; border:1px solid rgba(239, 68, 68, 0.4); color:var(--danger); padding:18px; border-radius:100px; font-weight:800; font-size:14px; margin-top:15px; cursor:pointer; transition:0.3s;">Kişisel Verilerimi Sil</button>
-            <button class="order-btn shimmer-btn" onclick="ManuelUygulamaIndir()" style="margin-top: 30px; background: var(--success); box-shadow: 0 8px 20px rgba(52, 199, 89, 0.3);">📱 Uygulamayı Cihazıma Kur</button>
+            
+            <!-- HUKUKİ LİNKLER EKLENDİ (PROFİL ALT KISMI) -->
+            <div style="margin-top:35px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 25px; text-align: center; font-size: 11px; color: var(--text-muted); line-height: 1.8;">
+                <a class="legal-link" onclick="AcSozlesme('mesafeli')">Mesafeli Satış Sözleşmesi</a> • 
+                <a class="legal-link" onclick="AcSozlesme('iptal')">İptal/İade Koşulları</a><br>
+                <a class="legal-link" onclick="AcSozlesme('kvkk')">KVKK ve Gizlilik Politikası</a>
+                <br><br>
+                Bekmez Pişirim<br>Çekmece Mah. 302.Sok İstanbul Kardeşlik Çarşısı 2 No:9 Defne/Hatay
+            </div>
+
+            <button class="order-btn shimmer-btn" onclick="ManuelUygulamaIndir()" style="margin-top: 25px; background: var(--success); box-shadow: 0 8px 20px rgba(52, 199, 89, 0.3);">📱 Uygulamayı Cihazıma Kur</button>
         </div>
     </div>
 
@@ -388,7 +404,6 @@
         <div class="floating-btn" id="floating-total">0.00 TL</div>
     </div>
 
-    <!-- MOBİL UYUMLU ÜRÜN SEÇİM POPUP -->
     <div id="product-popup" class="popup-overlay" onclick="if(event.target === this) PopupKapat();">
         <div class="popup-content">
             <div class="popup-drag-handle"></div>
@@ -415,6 +430,7 @@
         </div>
     </div>
 
+    <!-- YENİ GÜNCELLENEN CHECKOUT POPUP (SANAL POS ONAY TİKİ EKLENDİ) -->
     <div id="checkout-popup" class="popup-overlay" onclick="if(event.target === this) CheckoutKapat();">
         <div class="popup-content">
             <div class="popup-drag-handle"></div>
@@ -430,7 +446,7 @@
             </div>
 
             <div style="font-size:12px; color:var(--text-muted); font-weight:800; margin-bottom:12px; letter-spacing:1px; text-transform: uppercase;">Kart Bilgileri (Online Ödeme):</div>
-            <div class="cc-box">
+            <div class="cc-box" style="margin-bottom: 5px;">
                 <input type="text" id="cc-name" class="checkout-input" placeholder="Kart Üzerindeki İsim" style="margin-bottom:10px; padding: 14px;">
                 <input type="text" id="cc-number" class="checkout-input" placeholder="Kart Numarası (XXXX XXXX XXXX XXXX)" maxlength="19" oninput="this.value = this.value.replace(/[^0-9 ]/g, '')" style="margin-bottom:10px; padding: 14px;">
                 <div style="display:flex; gap:10px;">
@@ -439,11 +455,33 @@
                 </div>
             </div>
             
-            <button id="final-submit-btn" class="order-btn shimmer-btn neon-border" style="margin-top: 5px;" onclick="PaketSiparisiGonder()">Ödeme Yap ve Onayla</button>
+            <!-- YENİ: SANAL POS ONAY KUTUSU -->
+            <div style="margin: 15px 0 25px 0; display: flex; align-items: flex-start; gap: 12px; padding: 0 5px;">
+                <input type="checkbox" id="legal-checkbox" onchange="TogglePayButton()" style="width: 22px; height: 22px; accent-color: var(--primary); margin-top: 2px; cursor: pointer;">
+                <label for="legal-checkbox" style="font-size: 11px; color: var(--text-muted); line-height: 1.5; cursor: pointer;">
+                    <a class="legal-link" onclick="AcSozlesme('mesafeli'); event.preventDefault();">Mesafeli Satış Sözleşmesi</a> ve <a class="legal-link" onclick="AcSozlesme('iptal'); event.preventDefault();">İptal/İade Koşulları</a>'nı okudum ve onaylıyorum.
+                </label>
+            </div>
+            
+            <!-- BAŞLANGIÇTA KAPALI GELECEK -->
+            <button id="final-submit-btn" class="order-btn shimmer-btn neon-border" disabled style="margin-top: 5px; opacity: 0.5;" onclick="PaketSiparisiGonder()">Sözleşmeyi Onaylayın</button>
         </div>
     </div>
 
-    <!-- MESAFE UYARISI MODALI (YENİ: 4 KM) -->
+    <!-- YENİ: YASAL SÖZLEŞMELER MODALI -->
+    <div id="legal-popup" class="popup-overlay" onclick="if(event.target === this) KapatSozlesme();">
+        <div class="popup-content" style="max-height: 85vh;">
+            <div class="popup-drag-handle"></div>
+            <div class="popup-header">
+                <h3 id="legal-title" class="popup-title" style="font-size:18px;">Sözleşme</h3>
+                <button onclick="KapatSozlesme()" style="background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); width: 36px; height: 36px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
+            </div>
+            <div id="legal-body" style="color: #A1A1AA; font-size: 12px; line-height: 1.7; text-align: left; overflow-y: auto; max-height: 60vh; padding-right: 5px;">
+                <!-- İçerik JS ile buraya basılacak -->
+            </div>
+        </div>
+    </div>
+
     <div id="distance-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)">
         <div class="custom-alert-box" style="border:1px solid rgba(255,107,0,0.4); box-shadow: 0 30px 60px rgba(255,107,0,0.2), inset 0 2px 4px rgba(255,255,255,0.05);">
             <div class="custom-alert-glow" style="background:var(--primary);"></div>
@@ -480,6 +518,31 @@
     </div>
 
     <script>
+        // YASAL METİNLER (SANAL POS İÇİN ZORUNLUDUR)
+        const textMesafeli = `
+            <strong style="color:white; font-size:14px;">MADDE 1 - TARAFLAR</strong><br>
+            <b>SATICI:</b> Bekmez Pişirim<br>
+            <b>ADRES:</b> Çekmece Mah. 302.Sok İstanbul Kardeşlik Çarşısı 2 No:9 Defne/Hatay<br><br>
+            <strong style="color:white; font-size:14px;">MADDE 2 - KONU</strong><br>
+            İşbu sözleşmenin konusu, ALICI'nın SATICI'ya ait elektronik ortamdan siparişini yaptığı gıda ürünlerinin satışı ve teslimatı ile ilgili olarak 6502 sayılı Tüketicinin Korunması Hakkında Kanun hükümleri gereğince tarafların hak ve yükümlülüklerinin saptanmasıdır.<br><br>
+            <strong style="color:white; font-size:14px;">MADDE 3 - CAYMA HAKKI İSTİSNASI (ZORUNLU)</strong><br>
+            <b>ÖNEMLİ:</b> Tüketici Mevzuatı ve Mesafeli Sözleşmeler Yönetmeliği madde 15/1-c bendi gereğince; <u>"Çabuk bozulabilen veya son kullanma tarihi geçebilecek malların teslimine ilişkin sözleşmelerde" Tüketicinin CAYMA HAKKI BULUNMAMAKTADIR.</u> Satışa konu olan ürünler sıcak ve tüketime hazır gıda maddeleri olduğundan, sipariş mutfağa iletildikten sonra iptal veya iade yapılamaz.
+        `;
+
+        const textIptal = `
+            <strong style="color:white; font-size:14px;">İPTAL VE İADE KOŞULLARI</strong><br><br>
+            <b>1. İptal Şartları:</b> Müşteri, siparişini ancak sistem üzerinden mutfağa iletilmeden veya kuryeye teslim edilmeden önceki aşamada iptal edebilir. Hazırlık aşamasına geçen ürünler gıda güvenliği kuralları gereği iptal edilemez.<br><br>
+            <b>2. İade Süreci:</b> Eğer teslim edilen üründe işletmemizden kaynaklı açık bir kusur, dökülme veya yanlış ürün teslimatı varsa, teslimat anında kuryeye bildirilmeli veya teslimatı takip eden 15 dakika içinde işletmemiz ile iletişime geçilmelidir. Onaylanan iadelerde tutar, ödeme yapılan kredi kartına 3-7 iş günü içerisinde yansıtılacaktır.<br><br>
+            <b>3. Cayma Hakkı:</b> Tüketici kanunları gereği hızlı bozulan gıda maddelerinde keyfi cayma hakkı veya ürün iadesi söz konusu değildir.
+        `;
+
+        const textKVKK = `
+            <strong style="color:white; font-size:14px;">KVKK VE GİZLİLİK POLİTİKASI</strong><br><br>
+            Bekmez Pişirim olarak, kişisel verilerinizin güvenliği bizim için en yüksek önceliğe sahiptir.<br><br>
+            <b>Kredi Kartı Güvenliği:</b> Uygulamamız üzerinden yaptığınız işlemlerde kredi kartı bilgileriniz <u>hiçbir şekilde sunucularımızda kaydedilmez ve saklanmaz.</u> Tüm ödeme işlemleri BDDK lisanslı aracı ödeme kuruluşu tarafından sağlanmaktadır.<br><br>
+            <b>Veri İşleme:</b> Adınız, telefon numaranız ve adresiniz yalnızca siparişinizin size güvenle ulaştırılabilmesi için cihazınızın yerel hafızasında saklanır ve teslimat anında kuryemiz ile paylaşılır. Verileriniz 3. taraf reklam veya pazarlama şirketleriyle kesinlikle paylaşılmaz.
+        `;
+
         // DÜKKAN KONUM AYARLARI
         const DUKKAN_ENLEM = 36.206278;
         const DUKKAN_BOYLAM = 36.134472;
@@ -518,6 +581,37 @@
                 } else { document.getElementById("pwa-install-banner").style.display = "flex"; }
             }
         });
+
+        // YENİ: SÖZLEŞME VE CHECKBOX FONKSİYONLARI
+        function TogglePayButton() {
+            let checkbox = document.getElementById('legal-checkbox');
+            let btn = document.getElementById('final-submit-btn');
+            if (checkbox.checked) {
+                btn.disabled = false;
+                btn.style.opacity = "1";
+                btn.innerText = sonOdenecekFiyat.toFixed(2) + " TL Öde ve Onayla";
+            } else {
+                btn.disabled = true;
+                btn.style.opacity = "0.5";
+                btn.innerText = "Sözleşmeyi Onaylayın";
+            }
+        }
+
+        function AcSozlesme(tip) {
+            let title = document.getElementById('legal-title');
+            let body = document.getElementById('legal-body');
+            
+            if (tip === 'mesafeli') { title.innerText = "Mesafeli Satış Sözleşmesi"; body.innerHTML = textMesafeli; }
+            else if (tip === 'iptal') { title.innerText = "İptal ve İade Koşulları"; body.innerHTML = textIptal; }
+            else if (tip === 'kvkk') { title.innerText = "Gizlilik ve KVKK Politikası"; body.innerHTML = textKVKK; }
+            
+            let popup = document.getElementById("legal-popup");
+            popup.style.display = "flex"; setTimeout(() => { popup.classList.add("active"); }, 10);
+        }
+
+        function KapatSozlesme() {
+            let popup = document.getElementById("legal-popup"); popup.classList.remove("active"); setTimeout(() => { popup.style.display = "none"; }, 500);
+        }
 
         function ManuelUygulamaIndir() {
             HapticTitresim();
@@ -576,7 +670,7 @@
             }
         }
         
-        function BasariEkraniGoster() { let successOverlay = document.getElementById("success-overlay"); successOverlay.style.display = "flex"; setTimeout(() => { successOverlay.classList.add("active"); }, 10); setTimeout(() => { successOverlay.classList.remove("active"); setTimeout(() => { successOverlay.style.display = "none"; }, 500); SayfaGoster('gecmis'); let btn = document.getElementById("final-submit-btn"); if(btn) { btn.disabled = false; btn.innerText = "Ödeme Yap ve Onayla"; btn.classList.remove("loading"); } }, 3500); }
+        function BasariEkraniGoster() { let successOverlay = document.getElementById("success-overlay"); successOverlay.style.display = "flex"; setTimeout(() => { successOverlay.classList.add("active"); }, 10); setTimeout(() => { successOverlay.classList.remove("active"); setTimeout(() => { successOverlay.style.display = "none"; }, 500); SayfaGoster('gecmis'); let btn = document.getElementById("final-submit-btn"); if(btn) { btn.disabled = false; btn.innerText = "Sözleşmeyi Onaylayın"; btn.style.opacity = "0.5"; document.getElementById('legal-checkbox').checked = false; btn.classList.remove("loading"); } }, 3500); }
 
         function HapticTitresim() { if (navigator.vibrate) navigator.vibrate(30); }
         function escapeHTML(str) { if(!str) return ""; return str.toString().replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)); }
@@ -1043,7 +1137,15 @@
         function CheckoutPopupAc() {
             if(sepet.length === 0) return; HapticTitresim();
             let popup = document.getElementById("checkout-popup"); popup.style.display = "flex"; setTimeout(() => { popup.classList.add("active"); }, 10);
-            let btn = document.getElementById("final-submit-btn"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde ve Onayla";
+            
+            // Eğer tik işaretli değilse butonu kapalı başlat
+            let btn = document.getElementById("final-submit-btn"); 
+            let cb = document.getElementById("legal-checkbox");
+            if(cb.checked) {
+                btn.disabled = false; btn.style.opacity = "1"; btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde ve Onayla";
+            } else {
+                btn.disabled = true; btn.style.opacity = "0.5"; btn.innerHTML = "Sözleşmeyi Onaylayın";
+            }
         }
 
         function CheckoutKapat() { let popup = document.getElementById("checkout-popup"); popup.classList.remove("active"); setTimeout(() => { popup.style.display = "none"; }, 500); }
@@ -1051,6 +1153,13 @@
         function PaketSiparisiGonder() {
             if(isProcessingOrder) return;
             if(sepet.length === 0) return;
+            
+            // ZORUNLU KONTROL: Sözleşme onaylandı mı? (Her ihtimale karşı)
+            if(!document.getElementById("legal-checkbox").checked) {
+                OzelUyariGoster("Sözleşme Onayı", "Lütfen siparişi tamamlamak için Mesafeli Satış Sözleşmesi ve İade Koşullarını onaylayın.", "📝");
+                return;
+            }
+
             HapticTitresim();
             
             let isim = document.getElementById("chk-isim").value.trim().replace(/[<>]/g, '').substring(0, 50); 
@@ -1062,7 +1171,7 @@
             let ccExp = document.getElementById("cc-exp").value.trim(); 
             let ccCvv = document.getElementById("cc-cvv").value.trim();
             
-            if(isim.length < 3) { OzelUyariGoster("Eksik Bilgi", "Lütfen adınızı ve soyadınızı giriniz.", "⚠️"); return; }
+            if(isim.length < 3) { OzelUyariGoster("Eksik Bilgi", "Lütfen adınızı ve soyadınızı giriniz.", "⚠️️"); return; }
             if(tel.length < 10) { OzelUyariGoster("Eksik Bilgi", "Lütfen geçerli bir telefon numarası giriniz.", "📱"); return; }
             if(adres.length < 10) { OzelUyariGoster("Eksik Adres", "Lütfen paketin getirileceği açık adresi giriniz.", "📍"); return; }
 
@@ -1091,7 +1200,6 @@
             
             isProcessingOrder = true;
 
-            // YENİ: ÇİFT AŞAMALI HİBRİT GPS SİSTEMİ (Eski hafıza tamamen yasaklandı: maximumAge: 0)
             const checkLocation = (highAccuracy, timeout) => {
                 return new Promise((resolve, reject) => {
                     navigator.geolocation.getCurrentPosition(
@@ -1102,12 +1210,8 @@
                 });
             };
 
-            // 1. Aşama: 6 Saniye Uydu (Yüksek Hassasiyet)
             checkLocation(true, 6000)
-                .catch(() => {
-                    // 2. Aşama: Uydu bulamazsa 6 Saniye Wi-Fi/Baz İstasyonu (Düşük Hassasiyet)
-                    return checkLocation(false, 6000);
-                })
+                .catch(() => { return checkLocation(false, 6000); })
                 .then(position => {
                     let musteriLat = position.coords.latitude;
                     let musteriLon = position.coords.longitude;
@@ -1131,7 +1235,6 @@
                 });
         }
 
-        // KONUM DOĞRULANDIKTAN SONRA ÇALIŞAN ASIL SİPARİŞ KODU
         function DevamEtPaketGonder(isim, tel, adres) {
             localStorage.setItem("bekmez_isim", isim); localStorage.setItem("bekmez_tel", tel); localStorage.setItem("bekmez_adres", adres);
 
@@ -1205,6 +1308,7 @@
                                 sepet = []; aktifKuponKodu = ""; aktifKuponIndirimTutari = 0; aktifKuponAltLimit = 0; aktifKuponHedefUrun = "Herşey"; 
                                 document.getElementById("siparis-notu").value = ""; SepetEkraniniCiz(); HesaplaVeGuncelle(); seciliEkstraIstekler = [];
                                 document.getElementById("cc-number").value = ""; document.getElementById("cc-exp").value = ""; document.getElementById("cc-cvv").value = "";
+                                document.getElementById("legal-checkbox").checked = false; // TİKİ SIFIRLA
                                 isProcessingOrder = false;
                             }).catch(e => { OzelUyariGoster("Hata", "Sipariş mutfağa iletilemedi.", "❌"); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde ve Onayla"; });
 
