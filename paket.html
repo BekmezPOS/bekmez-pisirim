@@ -59,7 +59,6 @@
         .status-dot::after { content: ''; position: absolute; top: -4px; left: -4px; right: -4px; bottom: -4px; border-radius: 50%; border: 1px solid var(--primary); animation: radarPulse 2s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
         @keyframes radarPulse { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(2.5); opacity: 0; } }
         
-        /* PREMIUM SPLASH GO ANİMASYONU (Daha yavaş, zarif ve aralıklı) */
         .splash-logo { font-size: 48px; font-weight: 900; color: #fff; margin-bottom: 8px; letter-spacing: -2px; line-height: 1; opacity: 0; transform: translateY(20px); animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.3s; text-align: center; display: flex; flex-direction: column; align-items: center;}
         .splash-go-text { font-style: italic; color: var(--primary); text-shadow: 0 4px 15px var(--primary-glow); font-size: 44px; margin-bottom: 2px;}
         .splash-speed-lines { display: flex; flex-direction: column; justify-content: center; gap: 5px; margin-left: 2px;}
@@ -83,7 +82,6 @@
 
         @keyframes floatUpFade { 0% { opacity: 0; transform: translate(-50%, -20%) scale(0.8); } 20% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); } 80% { opacity: 1; transform: translate(-50%, -70%) scale(1); } 100% { opacity: 0; transform: translate(-50%, -90%) scale(0.9); } }
 
-        /* PREMIUM APP HEADER GO ANİMASYONU (Daha yavaş, zarif ve aralıklı) */
         .app-header { display: flex; align-items: center; justify-content: center; padding: 15px; position: sticky; top: 0; background: rgba(0, 0, 0, 0.85); z-index: 100; border-bottom: 1px solid var(--border-light); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
         .brand-name { font-size: 22px; font-weight: 900; color: var(--text-main); letter-spacing: -0.5px; white-space: nowrap; line-height: 1; display: flex; align-items: center; justify-content: center; }
         
@@ -163,7 +161,7 @@
         .product-card { opacity: 0; animation: cardEntrance 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; background: linear-gradient(145deg, rgba(30, 30, 35, 0.9) 0%, rgba(15, 15, 20, 0.95) 100%); border: 1px solid rgba(255,255,255,0.05); border-top: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 16px 12px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer; position: relative; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.05);}
         .product-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.05) 0%, transparent 60%); pointer-events: none; }
         .product-card:active { transform: scale(0.93) translateY(2px); background: linear-gradient(145deg, rgba(20, 20, 25, 0.95) 0%, rgba(10, 10, 15, 1) 100%); border-color: rgba(255,94,0,0.3); box-shadow: 0 4px 10px rgba(0,0,0,0.6), inset 0 2px 10px rgba(0,0,0,0.5); }
-        .popular-badge { absolute; top: 12px; right: 12px; background: var(--gradient-gold); color: #000; font-size: 8px; font-weight: 900; padding: 4px 8px; border-radius: 10px; box-shadow: 0 2px 10px rgba(250, 204, 21, 0.3); z-index: 5; letter-spacing: 0.5px; text-transform: uppercase;}
+        .popular-badge { position: absolute; top: 12px; right: 12px; background: var(--gradient-gold); color: #000; font-size: 8px; font-weight: 900; padding: 4px 8px; border-radius: 10px; box-shadow: 0 2px 10px rgba(250, 204, 21, 0.3); z-index: 5; letter-spacing: 0.5px; text-transform: uppercase;}
         .product-icon-wrapper { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(145deg, #1f1f25, #141419); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.02); position: relative; box-shadow: 6px 6px 12px #070709, -6px -6px 12px #23232b, inset 0px 2px 4px rgba(255, 94, 0, 0.1); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);}
         .product-card:active .product-icon-wrapper { transform: scale(0.9); box-shadow: inset 6px 6px 12px #070709, inset -6px -6px 12px #23232b; }
         .product-icon { font-size: 26px; z-index: 2; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6));}
@@ -198,7 +196,6 @@
         .cart-btn:active { background: var(--gradient-fire); color: white; transform: scale(0.85); border-color: transparent; box-shadow: 0 2px 10px var(--primary-glow);}
         .cart-amount { font-size: 14px; font-weight: 800; color: var(--text-main); min-width: 24px; text-align: center; }
 
-        /* GÜVENLİK YAMASI: Hatalı Input Titreme Efekti */
         .input-error { border-color: var(--danger) !important; box-shadow: 0 0 10px rgba(255,59,48,0.3) !important; animation: inputShake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }
         @keyframes inputShake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-5px); } 40%, 80% { transform: translateX(5px); } }
 
@@ -578,7 +575,6 @@
     </div>
 
     <script>
-        // GÜVENLİK YAMASI: Kriptografi (Base64) - Kullanıcı verilerini yerel hafızada şifreler
         function VeriSifrele(text) { try { return btoa(encodeURIComponent(text)); } catch(e) { return ""; } }
         function VeriCoz(hash) { try { return decodeURIComponent(atob(hash)); } catch(e) { return ""; } }
 
@@ -903,6 +899,23 @@
                     let ekmek = tumUrunler.find(u => u.pName && u.pName.trim().toLocaleLowerCase('tr-TR') === ekmekUrunAdi.trim().toLocaleLowerCase('tr-TR')); 
                     if (ekmek) { let p = parseFloat(ekmek.price1Kg.replace(',', '.')); ekmekBirimFiyati = isNaN(p) ? 0 : p; }
                     
+                    // YAPAY ZEKA GİBİ ÇALIŞAN İNDİRİM TAKİPÇİSİ (LOCAL CACHE)
+                    let history = JSON.parse(localStorage.getItem('bg_phist') || '{}');
+                    let historyUpdated = false;
+                    tumUrunler.forEach(u => {
+                        if(u.pName && u.price1Kg) {
+                            let cp = parseFloat(u.price1Kg.toString().replace(',', '.'));
+                            if(!isNaN(cp) && cp > 0) {
+                                let hk = history[u.pName];
+                                if(hk === undefined || cp > hk) {
+                                    history[u.pName] = cp;
+                                    historyUpdated = true;
+                                }
+                            }
+                        }
+                    });
+                    if(historyUpdated) localStorage.setItem('bg_phist', JSON.stringify(history));
+
                     if (ilkYukleme) { 
                         document.getElementById("kategori-sekmeleri").style.display = "flex"; 
                         document.getElementById("menu-grid").innerHTML = ""; 
@@ -940,6 +953,9 @@
         function EkranaUrunleriCiz(urunListesi) {
             const gridContainer = document.getElementById("menu-grid"); gridContainer.innerHTML = ""; document.getElementById("menu-grid").style.display = "grid";
             if(urunListesi.length === 0) { gridContainer.innerHTML = `<div class="empty-text">Ürün bulunamadı 🔍</div>`; return; }
+            
+            let history = JSON.parse(localStorage.getItem('bg_phist') || '{}');
+
             urunListesi.forEach((urun, index) => {
                 try {
                     let tur = GetKategoriAd(urun); let icon = "🥩"; if(tur === "İçecek") icon = "🥤"; else if(tur === "Ekstra") icon = "🍟";
@@ -950,9 +966,22 @@
                     else if (urun.stock !== undefined && urun.stock !== null) stok = parseFloat(urun.stock);
 
                     let stokSifirMi = stok <= 0; let clickAction = stokSifirMi ? `OzelUyariGoster('Tükendi', 'Bu ürün şu an stoklarımızda kalmamıştır.', '🚫')` : `UrunPopupAc(${orjinalIndex})`;
-                    let p1KgStr = urun.price1Kg ? escapeHTML(urun.price1Kg.toString()) : "0";
-                    let badgeStr = stokSifirMi ? `TÜKENDİ` : `${p1KgStr} ₺`; let kartOpaklik = stokSifirMi ? "opacity: 0.5; filter: grayscale(1);" : "";
                     
+                    let p1KgStr = urun.price1Kg ? escapeHTML(urun.price1Kg.toString()) : "0";
+                    let currentPrice = parseFloat(p1KgStr.replace(',', '.'));
+                    let oldP = history[urun.pName] || currentPrice;
+                    
+                    let badgeStr = "";
+                    if (stokSifirMi) {
+                        badgeStr = `TÜKENDİ`;
+                    } else if (currentPrice < oldP) {
+                        let oldPStr = oldP.toString().replace('.', ',');
+                        badgeStr = `<span style="text-decoration: line-through; opacity: 0.6; font-size: 11px; margin-right: 5px; font-weight: 600;">${oldPStr} ₺</span><span style="color: var(--success); font-weight: 900; font-size: 14px; text-shadow: 0 0 10px rgba(52, 199, 89, 0.4);">${p1KgStr} ₺</span>`;
+                    } else {
+                        badgeStr = `${p1KgStr} ₺`;
+                    }
+
+                    let kartOpaklik = stokSifirMi ? "opacity: 0.5; filter: grayscale(1);" : "";
                     let isPopular = urun.pName ? populerUrunlerListesi.includes(urun.pName) : false; 
                     let popularBadgeHTML = (isPopular && !stokSifirMi) ? `<div class="popular-badge">🔥 POPÜLER</div>` : "";
 
@@ -1067,9 +1096,31 @@
                 else if (!seciliUrun.isKg && isSpecial && seciliOzelEkmekTip === "3 Ekmek") { ekstraEkmekUcreti = seciliMiktar * ekmekBirimFiyati; }
             }
             let gosterilenFiyat = seciliFiyat + ekstraEkmekUcreti;
+
+            let history = JSON.parse(localStorage.getItem('bg_phist') || '{}');
+            let p1KgStr = seciliUrun.price1Kg ? seciliUrun.price1Kg.toString() : "0";
+            let currentBase = parseFloat(p1KgStr.replace(',', '.'));
+            let oldBase = history[seciliUrun.pName] || currentBase;
             
-            if(animasyonlu) { SmoothCounter("popup-amount", oncekiPopupMiktar, seciliMiktar, 500, false, seciliUrun.isKg); SmoothCounter("popup-price", oncekiPopupFiyat, gosterilenFiyat, 500, true); } 
-            else { document.getElementById("popup-amount").innerText = seciliMiktar > 0 ? (seciliUrun.isKg ? seciliMiktar.toFixed(2)+" KG" : seciliMiktar.toFixed(0)+" Adet") : "0"; document.getElementById("popup-price").innerHTML = gosterilenFiyat > 0 ? gosterilenFiyat.toFixed(2) + " TL" : "0 TL"; document.getElementById("popup-amount").style.color = seciliMiktar > 0 ? "var(--text-main)" : "var(--text-muted)"; }
+            let isDiscount = (currentBase < oldBase);
+            let displayHTML = "";
+            
+            if (isDiscount) {
+                let oldTotal = UnityFiyatiniHesapla({price1Kg: oldBase.toString(), price750g: "", price500g: "", isKg: seciliUrun.isKg}, seciliMiktar) + ekstraEkmekUcreti;
+                displayHTML = `<span style="text-decoration: line-through; font-size: 14px; color: #a1a1aa; margin-right:8px;">${oldTotal.toFixed(2)} TL</span><span style="color: var(--success);">${gosterilenFiyat.toFixed(2)} TL</span>`;
+            } else {
+                displayHTML = `${gosterilenFiyat.toFixed(2)} TL`;
+            }
+
+            if(animasyonlu && !isDiscount) { 
+                SmoothCounter("popup-amount", oncekiPopupMiktar, seciliMiktar, 500, false, seciliUrun.isKg); 
+                SmoothCounter("popup-price", oncekiPopupFiyat, gosterilenFiyat, 500, true); 
+            } 
+            else { 
+                document.getElementById("popup-amount").innerText = seciliMiktar > 0 ? (seciliUrun.isKg ? seciliMiktar.toFixed(2)+" KG" : seciliMiktar.toFixed(0)+" Adet") : "0"; 
+                document.getElementById("popup-price").innerHTML = displayHTML; 
+                document.getElementById("popup-amount").style.color = seciliMiktar > 0 ? "var(--text-main)" : "var(--text-muted)"; 
+            }
             oncekiPopupMiktar = seciliMiktar; oncekiPopupFiyat = gosterilenFiyat;
         }
 
