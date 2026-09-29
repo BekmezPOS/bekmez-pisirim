@@ -443,7 +443,7 @@
         </div>
     </div>
 
-    <!-- MESAFE UYARISI MODALI -->
+    <!-- MESAFE UYARISI MODALI (YENİ: 4 KM) -->
     <div id="distance-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)">
         <div class="custom-alert-box" style="border:1px solid rgba(255,107,0,0.4); box-shadow: 0 30px 60px rgba(255,107,0,0.2), inset 0 2px 4px rgba(255,255,255,0.05);">
             <div class="custom-alert-glow" style="background:var(--primary);"></div>
@@ -451,7 +451,7 @@
                 <div style="font-size: 55px; margin-bottom: 20px;">🛵</div>
                 <h3 style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Menzil Dışındasınız</h3>
                 <p style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;">
-                    Bekmez Pişirim lezzetlerini size en sıcak ve taze haliyle ulaştırabilmek için teslimat ağımızı <b>5.5 km</b> ile sınırlandırıyoruz.<br><br>İlginiz için teşekkür ederiz, maalesef şu an sıcak teslimat bölgemizin dışındasınız.
+                    Bekmez Pişirim lezzetlerini size en sıcak ve taze haliyle ulaştırabilmek için teslimat ağımızı <b>4 km</b> ile sınırlandırıyoruz.<br><br>İlginiz için teşekkür ederiz, maalesef şu an sıcak teslimat bölgemizin dışındasınız.
                 </p>
                 <button onclick="KapatUyariModal(event, true)" class="alert-btn" style="background:var(--primary); border-color:transparent; color:white;">Anladım</button>
             </div>
@@ -483,7 +483,7 @@
         // DÜKKAN KONUM AYARLARI
         const DUKKAN_ENLEM = 36.206278;
         const DUKKAN_BOYLAM = 36.134472;
-        const MAKS_MESAFE_KM = 5.5;
+        const MAKS_MESAFE_KM = 4; // 5.5'ten 4'e düşürüldü
 
         const firebaseMenuUrl = "https://bekmezpos-default-rtdb.firebaseio.com/Menu.json";
         const firebasePaketSiparisUrl = "https://bekmezpos-default-rtdb.firebaseio.com/PaketSiparisler.json";
@@ -1019,7 +1019,7 @@
                     if (!arananVarMi || baskaVarMi) kuponHalaGecerliMi = false;
                 }
                 if (hamToplamFiyat < aktifKuponAltLimit) kuponHalaGecerliMi = false;
-                if (!kuponHalaGecerliMi) { KuponuIptalEt(true); OzelUyariGoster("Kupon İptal Oldu", "Sepetinizdeki ürün değişiklikleri nedeniyle kupon şartları bozuldu.", "⚠️️"); }
+                if (!kuponHalaGecerliMi) { KuponuIptalEt(true); OzelUyariGoster("Kupon İptal Oldu", "Sepetinizdeki ürün değişiklikleri nedeniyle kupon şartları bozuldu.", "⚠️"); }
             }
             
             if(aktifKuponIndirimTutari > 0 && sepet.length > 0) {
@@ -1091,17 +1091,24 @@
             
             isProcessingOrder = true;
 
-            let locationTimeout = setTimeout(() => {
-                if(isProcessingOrder) {
-                    OzelUyariGoster("Konum Hatası", "Konumunuz alınamadı. Lütfen cihazın GPS (Konum) özelliğinin açık olduğundan emin olun.", "📍");
-                    isProcessingOrder = false;
-                    btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde ve Onayla";
-                }
-            }, 8000); 
+            // YENİ: ÇİFT AŞAMALI HİBRİT GPS SİSTEMİ (Eski hafıza tamamen yasaklandı: maximumAge: 0)
+            const checkLocation = (highAccuracy, timeout) => {
+                return new Promise((resolve, reject) => {
+                    navigator.geolocation.getCurrentPosition(
+                        pos => resolve(pos),
+                        err => reject(err),
+                        { enableHighAccuracy: highAccuracy, timeout: timeout, maximumAge: 0 } 
+                    );
+                });
+            };
 
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    clearTimeout(locationTimeout);
+            // 1. Aşama: 6 Saniye Uydu (Yüksek Hassasiyet)
+            checkLocation(true, 6000)
+                .catch(() => {
+                    // 2. Aşama: Uydu bulamazsa 6 Saniye Wi-Fi/Baz İstasyonu (Düşük Hassasiyet)
+                    return checkLocation(false, 6000);
+                })
+                .then(position => {
                     let musteriLat = position.coords.latitude;
                     let musteriLon = position.coords.longitude;
                     
@@ -1115,19 +1122,16 @@
                         return;
                     }
                     
-                    // DEĞİŞKEN HATASI DÜZELTİLDİ: Sadece isim, tel ve adres gidiyor. Not içeride okunuyor.
                     DevamEtPaketGonder(isim, tel, adres);
-                },
-                (error) => {
-                    clearTimeout(locationTimeout);
-                    OzelUyariGoster("Konum İzni Gerekli", "Sıcak teslimat kontrolü için konum iznine ihtiyacımız var. Lütfen tarayıcı ayarlarına girip konum izni verin.", "📍");
+                })
+                .catch(error => {
+                    OzelUyariGoster("Konum İzni Gerekli", "Sıcak teslimat kontrolü için cihazınızın GPS (Konum) özelliğinin açık olduğundan ve izin verdiğinizden emin olun.", "📍");
                     isProcessingOrder = false;
                     btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde ve Onayla";
-                },
-                { enableHighAccuracy: false, timeout: 7000, maximumAge: 300000 } 
-            );
+                });
         }
 
+        // KONUM DOĞRULANDIKTAN SONRA ÇALIŞAN ASIL SİPARİŞ KODU
         function DevamEtPaketGonder(isim, tel, adres) {
             localStorage.setItem("bekmez_isim", isim); localStorage.setItem("bekmez_tel", tel); localStorage.setItem("bekmez_adres", adres);
 
