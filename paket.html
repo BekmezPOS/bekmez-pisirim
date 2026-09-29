@@ -59,14 +59,15 @@
         .status-dot::after { content: ''; position: absolute; top: -4px; left: -4px; right: -4px; bottom: -4px; border-radius: 50%; border: 1px solid var(--primary); animation: radarPulse 2s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
         @keyframes radarPulse { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(2.5); opacity: 0; } }
         
-        /* DÜZELTİLEN: SPLASH EKRANI GO ANİMASYONU */
+        /* PREMIUM SPLASH GO ANİMASYONU (Daha yavaş, zarif ve aralıklı) */
         .splash-logo { font-size: 48px; font-weight: 900; color: #fff; margin-bottom: 8px; letter-spacing: -2px; line-height: 1; opacity: 0; transform: translateY(20px); animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.3s; text-align: center; display: flex; flex-direction: column; align-items: center;}
         .splash-go-text { font-style: italic; color: var(--primary); text-shadow: 0 4px 15px var(--primary-glow); font-size: 44px; margin-bottom: 2px;}
         .splash-speed-lines { display: flex; flex-direction: column; justify-content: center; gap: 5px; margin-left: 2px;}
-        .splash-line { background: var(--primary); height: 6px; border-radius: 3px; animation: speedDash 1.2s infinite linear; box-shadow: 0 0 8px var(--primary-glow);}
-        .splash-line:nth-child(1) { width: 14px; animation-duration: 0.9s; }
-        .splash-line:nth-child(2) { width: 22px; animation-duration: 1.3s; }
-        .splash-line:nth-child(3) { width: 10px; animation-duration: 1.1s; }
+        .splash-line { background: var(--primary); height: 6px; border-radius: 3px; opacity: 0; animation: premiumDashSplash 4s infinite cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 0 8px var(--primary-glow);}
+        .splash-line:nth-child(1) { width: 14px; animation-delay: 0s; }
+        .splash-line:nth-child(2) { width: 22px; animation-delay: 0.15s; }
+        .splash-line:nth-child(3) { width: 10px; animation-delay: 0.3s; }
+        @keyframes premiumDashSplash { 0% { transform: translateX(-8px); opacity: 0; } 10% { transform: translateX(0); opacity: 1; } 20% { transform: translateX(8px); opacity: 0; } 100% { transform: translateX(8px); opacity: 0; } }
         
         .splash-subtitle { font-size: 11px; color: var(--text-muted); font-weight: 600; letter-spacing: 4px; text-transform: uppercase; opacity: 0; animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.5s; margin-top: 5px;}
         @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
@@ -82,18 +83,18 @@
 
         @keyframes floatUpFade { 0% { opacity: 0; transform: translate(-50%, -20%) scale(0.8); } 20% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); } 80% { opacity: 1; transform: translate(-50%, -70%) scale(1); } 100% { opacity: 0; transform: translate(-50%, -90%) scale(0.9); } }
 
-        /* DÜZELTİLEN: APP HEADER HİZALAMASI (CENTER) */
+        /* PREMIUM APP HEADER GO ANİMASYONU (Daha yavaş, zarif ve aralıklı) */
         .app-header { display: flex; align-items: center; justify-content: center; padding: 15px; position: sticky; top: 0; background: rgba(0, 0, 0, 0.85); z-index: 100; border-bottom: 1px solid var(--border-light); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
         .brand-name { font-size: 22px; font-weight: 900; color: var(--text-main); letter-spacing: -0.5px; white-space: nowrap; line-height: 1; display: flex; align-items: center; justify-content: center; }
         
         .go-wrapper { display: flex; align-items: center; margin-left: 6px; }
         .go-text { font-style: italic; color: var(--primary); letter-spacing: -1px; text-shadow: 0 2px 10px rgba(255,107,0,0.5); font-size: 24px; line-height: 1; margin-bottom: 2px; }
         .go-speed-lines { display: flex; flex-direction: column; justify-content: center; gap: 3px; margin-left: 4px; }
-        .go-line { background: var(--primary); height: 4px; border-radius: 2px; animation: speedDash 1s infinite linear; box-shadow: 0 0 5px var(--primary-glow); }
-        .go-line:nth-child(1) { width: 10px; animation-duration: 0.8s; }
-        .go-line:nth-child(2) { width: 16px; animation-duration: 1.2s; }
-        .go-line:nth-child(3) { width: 8px; animation-duration: 0.9s; }
-        @keyframes speedDash { 0% { transform: translateX(0); opacity: 1; } 100% { transform: translateX(8px); opacity: 0; } }
+        .go-line { background: var(--primary); height: 4px; border-radius: 2px; opacity: 0; animation: premiumDash 4s infinite cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 0 5px var(--primary-glow); }
+        .go-line:nth-child(1) { width: 10px; animation-delay: 0s; }
+        .go-line:nth-child(2) { width: 16px; animation-delay: 0.15s; }
+        .go-line:nth-child(3) { width: 8px; animation-delay: 0.3s; }
+        @keyframes premiumDash { 0% { transform: translateX(-6px); opacity: 0; } 10% { transform: translateX(0); opacity: 1; } 20% { transform: translateX(6px); opacity: 0; } 100% { transform: translateX(6px); opacity: 0; } }
 
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(15, 15, 20, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-around; align-items: center; padding: 8px 10px calc(8px + env(safe-area-inset-bottom)) 10px; z-index: 2000; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); }
         .nav-item { background: transparent; border: none; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 4px; font-family: inherit; font-size: 10px; font-weight: 700; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); position: relative; flex: 1; -webkit-tap-highlight-color: transparent; }
@@ -141,7 +142,6 @@
         .legal-link { color: var(--primary); text-decoration: underline; cursor: pointer; font-weight: 700; transition: 0.2s;}
         .legal-link:active { color: white; }
 
-        /* GÜVENLİK YAMASI: Süzülerek Gelen Security Footer & SVG Yerine Image Tag */
         .secure-footer { margin-top: 40px; padding: 20px 15px 40px 15px; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; opacity: 0; transform: translateY(20px); animation: fadeUpFooter 1s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.5s; }
         @keyframes fadeUpFooter { to { opacity: 1; transform: translateY(0); } }
         .footer-text { font-size: 11px; color: var(--text-muted); line-height: 1.8; margin-top: 15px; }
@@ -374,16 +374,10 @@
             <div class="skeleton-card"><div class="skel-icon"></div><div class="skel-text"></div><div class="skel-text short"></div><div class="skel-btn"></div></div>
         </div>
         
-        <!-- YENİ: SANAL POS GÜVENLİK FOOTER (DIŞARIDAN ÇEKİLEN RESİMLER) -->
         <div class="secure-footer">
             <div style="margin-bottom: 15px; display: flex; justify-content: center; align-items: center; gap: 15px;">
-                <!-- VISA RESMİ -->
-                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" style="height: 18px; filter: brightness(0) invert(1); opacity: 0.9;" alt="VISA">
-                
-                <!-- MASTERCARD RESMİ -->
+                <img src="https://cdn.visa.com/v2/assets/images/logos/visa/blue/logo.png" style="height: 16px; filter: brightness(0) invert(1); opacity: 0.9;" alt="VISA">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" style="height: 24px; opacity: 0.9;" alt="MasterCard">
-                
-                <!-- TROY YAZISI -->
                 <span style="font-family: Arial, sans-serif; font-weight: 900; font-style: italic; font-size: 22px; color: #ffffff; letter-spacing: -1px; opacity: 0.9;">TROY</span>
             </div>
             <div style="color: var(--success); font-weight: 800; font-size: 13px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 5px;">
