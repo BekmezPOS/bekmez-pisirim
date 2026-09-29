@@ -35,7 +35,7 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         html { scroll-behavior: smooth; overscroll-behavior-y: none; }
         
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-dark); background-image: var(--bg-gradient); color: var(--text-main); margin: 0; padding: 0; padding-bottom: calc(90px + env(safe-area-inset-bottom)); overflow-x: hidden; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; min-height: 100vh; position: relative; user-select: none; -webkit-user-select: none; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-dark); background-image: var(--bg-gradient); color: var(--text-main); margin: 0; padding: 0; padding-bottom: calc(110px + env(safe-area-inset-bottom)); overflow-x: hidden; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; min-height: 100vh; position: relative; user-select: none; -webkit-user-select: none; }
         input, textarea { user-select: auto; -webkit-user-select: auto; }
         ::-webkit-scrollbar { display: none; } 
 
@@ -121,8 +121,14 @@
         .security-badge .text strong { color: var(--success); font-size: 14px; display: block; margin-bottom: 4px; letter-spacing: -0.3px;}
 
         /* KVKK VE SÖZLEŞME LİNKLERİ İÇİN KÜÇÜK BUTONLAR */
-        .legal-link { color: var(--primary); text-decoration: underline; cursor: pointer; }
+        .legal-link { color: var(--primary); text-decoration: underline; cursor: pointer; font-weight: 700; transition: 0.2s;}
         .legal-link:active { color: white; }
+
+        /* YENİ: SANAL POS İÇİN ZORUNLU FOOTER ALANI */
+        .secure-footer { margin-top: 40px; padding: 20px 15px 40px 15px; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; }
+        .secure-footer img { height: 24px; opacity: 0.7; margin: 0 5px; filter: grayscale(0.5); transition: 0.3s; }
+        .secure-footer img:hover { opacity: 1; filter: grayscale(0); }
+        .footer-text { font-size: 11px; color: var(--text-muted); line-height: 1.8; margin-top: 15px; }
 
         .search-container { padding: 15px 15px 5px 15px; position: relative;}
         .search-input { width: 100%; background: rgba(25, 25, 30, 0.9); border: 1px solid var(--border-highlight); color: var(--text-main); padding: 14px 15px 14px 45px; border-radius: 20px; font-size: 14px; font-weight:600; font-family: inherit; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: inset 0 2px 10px rgba(0,0,0,0.3), 0 5px 15px rgba(0,0,0,0.2);}
@@ -225,7 +231,7 @@
 
         .success-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); z-index: 999999; display: none; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
         .success-overlay.active { opacity: 1; pointer-events: auto; }
-        .success-icon-wrapper { relative; width: 140px; height: 140px; display: flex; align-items: center; justify-content: center; margin-bottom: 40px; }
+        .success-icon-wrapper { position: relative; width: 140px; height: 140px; display: flex; align-items: center; justify-content: center; margin-bottom: 40px; }
         .success-ring { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; border: 3px solid rgba(16, 185, 129, 0.3); transform: scale(0.5); opacity: 0; transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);}
         .success-overlay.active .success-ring { transform: scale(4); opacity: 0; transition-duration: 2s; }
         .success-circle { width: 90px; height: 90px; border-radius: 50%; background: linear-gradient(135deg, #34D399 0%, #059669 100%); display: flex; align-items: center; justify-content: center; box-shadow: 0 15px 40px rgba(16, 185, 129, 0.5), inset 0 2px 8px rgba(255,255,255,0.4); transform: scale(0); transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.2s; }
@@ -327,6 +333,21 @@
             <div class="skeleton-card"><div class="skel-icon"></div><div class="skel-text"></div><div class="skel-text short"></div><div class="skel-btn"></div></div>
             <div class="skeleton-card"><div class="skel-icon"></div><div class="skel-text"></div><div class="skel-text short"></div><div class="skel-btn"></div></div>
         </div>
+        
+        <!-- YENİ: SANAL POS GÜVENLİK FOOTER -->
+        <div class="secure-footer">
+            <div style="margin-bottom: 10px;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/100px-Visa_Inc._logo.svg.png" alt="Visa">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/100px-Mastercard-logo.svg.png" alt="MasterCard">
+                <img src="https://troyodeme.com/images/troy-logo-transparent.png" alt="Troy" style="filter: brightness(0) invert(1) opacity(0.7); height: 20px;">
+            </div>
+            <div style="color: var(--success); font-weight: 800; font-size: 12px; margin-bottom: 10px;">🔒 256-Bit SSL Güvenli Ödeme</div>
+            <div class="footer-text">
+                <b>Bekmez Pişirim Gıda Ltd. Şti.</b><br>
+                Çekmece Mah. 302.Sok İstanbul Kardeşlik Çarşısı 2 No:9 Defne/Hatay<br>
+                Tel: 0532 000 00 00
+            </div>
+        </div>
     </div>
 
     <div id="opportunities-container" style="display: none;">
@@ -404,6 +425,7 @@
         <div class="floating-btn" id="floating-total">0.00 TL</div>
     </div>
 
+    <!-- MOBİL UYUMLU ÜRÜN SEÇİM POPUP -->
     <div id="product-popup" class="popup-overlay" onclick="if(event.target === this) PopupKapat();">
         <div class="popup-content">
             <div class="popup-drag-handle"></div>
@@ -659,7 +681,7 @@
 
         function UnityFiyatiniHesapla(urun, hedefMiktar) { let safeParse = (val) => { if (!val) return 0; let parsed = parseFloat(val.replace(',', '.')); return isNaN(parsed) ? 0 : parsed; }; let p1 = safeParse(urun.price1Kg); if (!urun.isKg) return p1 * hedefMiktar; let p750 = safeParse(urun.price750g); let p500 = safeParse(urun.price500g); if (p750 <= 0) p750 = p1 * 0.75; if (p500 <= 0) p500 = p1 * 0.50; if (hedefMiktar === 1) return p1; if (hedefMiktar === 0.75) return p750; if (hedefMiktar === 0.50) return p500; return (hedefMiktar * p1);  }
 
-        function OzelUyariGoster(baslik, mesaj, ikon = "⚠️") { document.getElementById("custom-alert-title").innerText = baslik; document.getElementById("custom-alert-text").innerText = mesaj; document.getElementById("custom-alert-icon").innerText = ikon; let glow = document.getElementById("custom-alert-glow"); let isError = ikon.includes("⚠️") || ikon.includes("❌") || ikon.includes("🚫") || ikon.includes("🗑️") || ikon.includes("⏳") || ikon.includes("🌐") || ikon.includes("🚨") || ikon.includes("📍"); glow.style.background = isError ? "var(--danger)" : "var(--primary)"; let overlay = document.getElementById("custom-alert-overlay"); let box = document.getElementById("custom-alert-box"); overlay.style.display = "flex"; box.classList.remove("error-shake"); setTimeout(() => { overlay.classList.add("active"); if(isError) { setTimeout(() => { box.classList.add("error-shake"); }, 400); } }, 10); }
+        function OzelUyariGoster(baslik, mesaj, ikon = "⚠️") { document.getElementById("custom-alert-title").innerText = baslik; document.getElementById("custom-alert-text").innerText = mesaj; document.getElementById("custom-alert-icon").innerText = ikon; let glow = document.getElementById("custom-alert-glow"); let isError = ikon.includes("⚠️") || ikon.includes("❌") || ikon.includes("🚫") || ikon.includes("🗑️") || ikon.includes("⏳") || ikon.includes("🌐") || ikon.includes("🚨") || ikon.includes("📍") || ikon.includes("📝"); glow.style.background = isError ? "var(--danger)" : "var(--primary)"; let overlay = document.getElementById("custom-alert-overlay"); let box = document.getElementById("custom-alert-box"); overlay.style.display = "flex"; box.classList.remove("error-shake"); setTimeout(() => { overlay.classList.add("active"); if(isError) { setTimeout(() => { box.classList.add("error-shake"); }, 400); } }, 10); }
         
         function KapatUyariModal(event, force = false) { 
             if (force || event.target.id === 'custom-alert-overlay') { 
@@ -1138,7 +1160,6 @@
             if(sepet.length === 0) return; HapticTitresim();
             let popup = document.getElementById("checkout-popup"); popup.style.display = "flex"; setTimeout(() => { popup.classList.add("active"); }, 10);
             
-            // Eğer tik işaretli değilse butonu kapalı başlat
             let btn = document.getElementById("final-submit-btn"); 
             let cb = document.getElementById("legal-checkbox");
             if(cb.checked) {
@@ -1154,7 +1175,6 @@
             if(isProcessingOrder) return;
             if(sepet.length === 0) return;
             
-            // ZORUNLU KONTROL: Sözleşme onaylandı mı? (Her ihtimale karşı)
             if(!document.getElementById("legal-checkbox").checked) {
                 OzelUyariGoster("Sözleşme Onayı", "Lütfen siparişi tamamlamak için Mesafeli Satış Sözleşmesi ve İade Koşullarını onaylayın.", "📝");
                 return;
@@ -1171,7 +1191,7 @@
             let ccExp = document.getElementById("cc-exp").value.trim(); 
             let ccCvv = document.getElementById("cc-cvv").value.trim();
             
-            if(isim.length < 3) { OzelUyariGoster("Eksik Bilgi", "Lütfen adınızı ve soyadınızı giriniz.", "⚠️️"); return; }
+            if(isim.length < 3) { OzelUyariGoster("Eksik Bilgi", "Lütfen adınızı ve soyadınızı giriniz.", "⚠️"); return; }
             if(tel.length < 10) { OzelUyariGoster("Eksik Bilgi", "Lütfen geçerli bir telefon numarası giriniz.", "📱"); return; }
             if(adres.length < 10) { OzelUyariGoster("Eksik Adres", "Lütfen paketin getirileceği açık adresi giriniz.", "📍"); return; }
 
@@ -1308,7 +1328,7 @@
                                 sepet = []; aktifKuponKodu = ""; aktifKuponIndirimTutari = 0; aktifKuponAltLimit = 0; aktifKuponHedefUrun = "Herşey"; 
                                 document.getElementById("siparis-notu").value = ""; SepetEkraniniCiz(); HesaplaVeGuncelle(); seciliEkstraIstekler = [];
                                 document.getElementById("cc-number").value = ""; document.getElementById("cc-exp").value = ""; document.getElementById("cc-cvv").value = "";
-                                document.getElementById("legal-checkbox").checked = false; // TİKİ SIFIRLA
+                                document.getElementById("legal-checkbox").checked = false;
                                 isProcessingOrder = false;
                             }).catch(e => { OzelUyariGoster("Hata", "Sipariş mutfağa iletilemedi.", "❌"); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde ve Onayla"; });
 
