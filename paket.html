@@ -161,7 +161,7 @@
         .product-card { opacity: 0; animation: cardEntrance 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; background: linear-gradient(145deg, rgba(30, 30, 35, 0.9) 0%, rgba(15, 15, 20, 0.95) 100%); border: 1px solid rgba(255,255,255,0.05); border-top: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 16px 12px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer; position: relative; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.05);}
         .product-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.05) 0%, transparent 60%); pointer-events: none; }
         .product-card:active { transform: scale(0.93) translateY(2px); background: linear-gradient(145deg, rgba(20, 20, 25, 0.95) 0%, rgba(10, 10, 15, 1) 100%); border-color: rgba(255,94,0,0.3); box-shadow: 0 4px 10px rgba(0,0,0,0.6), inset 0 2px 10px rgba(0,0,0,0.5); }
-        .popular-badge { absolute; top: 12px; right: 12px; background: var(--gradient-gold); color: #000; font-size: 8px; font-weight: 900; padding: 4px 8px; border-radius: 10px; box-shadow: 0 2px 10px rgba(250, 204, 21, 0.3); z-index: 5; letter-spacing: 0.5px; text-transform: uppercase;}
+        .popular-badge { position: absolute; top: 12px; right: 12px; background: var(--gradient-gold); color: #000; font-size: 8px; font-weight: 900; padding: 4px 8px; border-radius: 10px; box-shadow: 0 2px 10px rgba(250, 204, 21, 0.3); z-index: 5; letter-spacing: 0.5px; text-transform: uppercase;}
         .product-icon-wrapper { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(145deg, #1f1f25, #141419); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.02); position: relative; box-shadow: 6px 6px 12px #070709, -6px -6px 12px #23232b, inset 0px 2px 4px rgba(255, 94, 0, 0.1); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);}
         .product-card:active .product-icon-wrapper { transform: scale(0.9); box-shadow: inset 6px 6px 12px #070709, inset -6px -6px 12px #23232b; }
         .product-icon { font-size: 26px; z-index: 2; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6));}
@@ -373,8 +373,17 @@
         
         <div class="secure-footer">
             <div style="margin-bottom: 15px; display: flex; justify-content: center; align-items: center; gap: 15px;">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" style="height: 18px; filter: brightness(0) invert(1); opacity: 0.9;" alt="VISA">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" style="height: 24px; opacity: 0.9;" alt="MasterCard">
+                <!-- KESİNLİKLE BOZULMAYAN RESMİ VISA LOGOSU -->
+                <img src="https://cdn.visa.com/v2/assets/images/logos/visa/blue/logo.png" style="height: 18px; filter: brightness(0) invert(1); opacity: 0.9;" alt="VISA">
+                
+                <!-- MASTERCARD SVG -->
+                <svg viewBox="0 0 36 22" height="22px" xmlns="http://www.w3.org/2000/svg" style="opacity: 0.9;">
+                    <circle cx="11" cy="11" r="11" fill="#ea001b"/>
+                    <circle cx="25" cy="11" r="11" fill="#f79e1b"/>
+                    <path d="M18 21.4a11 11 0 0 1 0-20.8 11 11 0 0 1 0 20.8z" fill="#ff5f00"/>
+                </svg>
+                
+                <!-- TROY LOGOSU -->
                 <span style="font-family: Arial, sans-serif; font-weight: 900; font-style: italic; font-size: 22px; color: #ffffff; letter-spacing: -1px; opacity: 0.9;">TROY</span>
             </div>
             <div style="color: var(--success); font-weight: 800; font-size: 13px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 5px;">
