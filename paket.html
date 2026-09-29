@@ -73,7 +73,6 @@
 
         @keyframes floatUpFade { 0% { opacity: 0; transform: translate(-50%, -20%) scale(0.8); } 20% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); } 80% { opacity: 1; transform: translate(-50%, -70%) scale(1); } 100% { opacity: 0; transform: translate(-50%, -90%) scale(0.9); } }
 
-        /* HEADER & NAV: Sadece buralarda Cam Efekti tutuyoruz, sayfayı kasmaz */
         .app-header { display: flex; align-items: center; justify-content: center; padding: 15px; position: sticky; top: 0; background: rgba(0, 0, 0, 0.85); z-index: 100; border-bottom: 1px solid var(--border-light); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
         .brand-name { font-size: 20px; font-weight: 900; color: var(--text-main); letter-spacing: -0.5px; white-space: nowrap; line-height: 1; text-align: center;}
         .brand-name span { background: var(--gradient-fire); -webkit-background-clip: text; color: transparent; margin-left: 2px; }
@@ -121,7 +120,6 @@
         .security-badge .text { color: #A1A1AA; font-size: 12px; font-weight: 500; line-height: 1.5; }
         .security-badge .text strong { color: var(--success); font-size: 14px; display: block; margin-bottom: 4px; letter-spacing: -0.3px;}
 
-        /* KASMA YAPAN BÖLÜMLERİN ARKA PLANLARI DÜZELTİLDİ (SADECE SOLİD/GRADİENT, BLUR YOK) */
         .search-container { padding: 15px 15px 5px 15px; position: relative;}
         .search-input { width: 100%; background: rgba(25, 25, 30, 0.9); border: 1px solid var(--border-highlight); color: var(--text-main); padding: 14px 15px 14px 45px; border-radius: 20px; font-size: 14px; font-weight:600; font-family: inherit; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: inset 0 2px 10px rgba(0,0,0,0.3), 0 5px 15px rgba(0,0,0,0.2);}
         .search-input:focus { outline: none; border-color: var(--primary); background: var(--surface-solid); box-shadow: inset 0 2px 5px rgba(0,0,0,0.5), 0 0 0 2px var(--primary-light), 0 10px 25px rgba(0,0,0,0.5); transform: translateY(-2px); }
@@ -174,8 +172,8 @@
         .cart-btn:active { background: var(--gradient-fire); color: white; transform: scale(0.85); border-color: transparent; box-shadow: 0 2px 10px var(--primary-glow);}
         .cart-amount { font-size: 14px; font-weight: 800; color: var(--text-main); min-width: 24px; text-align: center; }
 
-        .note-input, .checkout-input { width: calc(100% - 30px); margin: 5px 15px 20px 15px; background: rgba(25, 25, 30, 0.9); border: 1px solid var(--border-highlight); color: var(--text-main); padding: 16px; border-radius: 20px; font-family: inherit; font-size: 14px; font-weight:600; box-sizing: border-box; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: inset 0 2px 8px rgba(0,0,0,0.4), 0 5px 15px rgba(0,0,0,0.2);}
-        .note-input:focus, .checkout-input:focus { outline: none; border-color: var(--primary); background: var(--surface-solid); box-shadow: inset 0 2px 5px rgba(0,0,0,0.5), 0 0 0 2px var(--primary-light), 0 10px 25px rgba(0,0,0,0.5); transform: translateY(-2px);}
+        .note-input, .checkout-input { width: calc(100% - 30px); margin: 5px 15px 20px 15px; background: rgba(25, 25, 30, 0.9); border: 1px solid var(--border-highlight); color: var(--text-main); padding: 16px; border-radius: 20px; font-family: inherit; font-size: 14px; font-weight:600; box-sizing: border-box; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: inset 0 2px 8px rgba(0,0,0,0.4), 0 5px 20px rgba(0,0,0,0.2);}
+        .note-input:focus, .checkout-input:focus { outline: none; border-color: var(--primary); background: var(--surface-solid); box-shadow: inset 0 2px 5px rgba(0,0,0,0.5), 0 0 0 2px var(--primary-light), 0 10px 30px rgba(0,0,0,0.5); transform: translateY(-2px);}
         .note-input::placeholder, .checkout-input::placeholder { color: #52525B; }
         .checkout-input { margin: 0 0 12px 0; width: 100%; }
 
@@ -932,7 +930,7 @@
                 let sepetteToplamBuUrun = 0; sepet.forEach(u => { if (u.rawName === sepet[index].rawName) { sepetteToplamBuUrun += (u.baseStockAmount * u.quantity); } });
                 if (sepetteToplamBuUrun + (sepetUrunu.baseStockAmount * artisMiktari) > maksStok) { OzelUyariGoster("Sınır Aşıldı", "Bu ürün için maksimum stoğa ulaştınız.", "⚠️"); return; }
                 let ekmekInfo = tumUrunler.find(u => u.pName && u.pName.trim().toLocaleLowerCase('tr-TR') === ekmekUrunAdi.trim().toLocaleLowerCase('tr-TR'));
-                if (ekmekInfo) { let curBreadStock = (ekmekInfo.stockAmount !== undefined) ? parseFloat(ekmekInfo.stockAmount) : ((ekmekInfo.stock !== undefined) ? parseFloat(ekmekInfo.stock) : 999); let testSepet = JSON.parse(JSON.stringify(sepet)); testSepet[index].quantity += artisMiktari; let reqBread = GuncelEkmekIhtiyaci(testSepet); if (reqBread > curBreadStock) { OzelUyariGoster("Stok Yetersiz", `Siparişi artırmak için Ekmek stoğumuz yetersiz!`, "⚠️️"); return; } }
+                if (ekmekInfo) { let curBreadStock = (ekmekInfo.stockAmount !== undefined) ? parseFloat(ekmekInfo.stockAmount) : ((ekmekInfo.stock !== undefined) ? parseFloat(ekmekInfo.stock) : 999); let testSepet = JSON.parse(JSON.stringify(sepet)); testSepet[index].quantity += artisMiktari; let reqBread = GuncelEkmekIhtiyaci(testSepet); if (reqBread > curBreadStock) { OzelUyariGoster("Stok Yetersiz", `Siparişi artırmak için Ekmek stoğumuz yetersiz!`, "⚠️"); return; } }
             }
             sepet[index].quantity += artisMiktari;
             if(sepet[index].quantity <= 0) { sepet.splice(index, 1); SepetEkraniniCiz(); } 
@@ -1082,7 +1080,6 @@
                 return;
             }
 
-            // GÜVENLİ KONUM ALIMI (Wi-Fi & Baz İstasyonu Destekli, Kasma Yapmaz)
             let btn = document.getElementById("final-submit-btn"); 
             btn.disabled = true; btn.classList.add("loading"); btn.innerText = "Konum Kontrol Ediliyor... 📍";
 
@@ -1094,14 +1091,13 @@
             
             isProcessingOrder = true;
 
-            // KONUM TAKILMA KORUMASI (Watchdog Timer) - 12 Saniye sonra kilidi açar
             let locationTimeout = setTimeout(() => {
                 if(isProcessingOrder) {
-                    OzelUyariGoster("Konum Hatası", "Konumunuz alınamadı. Cihazınızın GPS'ini açıp sayfayı yenileyin veya HTTPS bağlantısı kullandığınızdan emin olun.", "📍");
+                    OzelUyariGoster("Konum Hatası", "Konumunuz alınamadı. Lütfen cihazın GPS (Konum) özelliğinin açık olduğundan emin olun.", "📍");
                     isProcessingOrder = false;
                     btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde ve Onayla";
                 }
-            }, 12000);
+            }, 8000); 
 
             navigator.geolocation.getCurrentPosition(
                 (position) => {
@@ -1119,19 +1115,19 @@
                         return;
                     }
                     
-                    DevamEtPaketGonder(isim, tel, adres, n);
+                    // DEĞİŞKEN HATASI DÜZELTİLDİ: Sadece isim, tel ve adres gidiyor. Not içeride okunuyor.
+                    DevamEtPaketGonder(isim, tel, adres);
                 },
                 (error) => {
                     clearTimeout(locationTimeout);
-                    OzelUyariGoster("Konum İzni Gerekli", "Sıcak teslimat kontrolü yapabilmemiz için konum iznine ihtiyacımız var. Lütfen cihaz ayarlarından konumu açın.", "📍");
+                    OzelUyariGoster("Konum İzni Gerekli", "Sıcak teslimat kontrolü için konum iznine ihtiyacımız var. Lütfen tarayıcı ayarlarına girip konum izni verin.", "📍");
                     isProcessingOrder = false;
                     btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde ve Onayla";
                 },
-                { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 } // enableHighAccuracy kapalı, anında bulur.
+                { enableHighAccuracy: false, timeout: 7000, maximumAge: 300000 } 
             );
         }
 
-        // KONUM DOĞRULANDIKTAN SONRA ÇALIŞAN ASIL SİPARİŞ KODU
         function DevamEtPaketGonder(isim, tel, adres) {
             localStorage.setItem("bekmez_isim", isim); localStorage.setItem("bekmez_tel", tel); localStorage.setItem("bekmez_adres", adres);
 
