@@ -59,9 +59,9 @@
         .status-dot::after { content: ''; position: absolute; top: -4px; left: -4px; right: -4px; bottom: -4px; border-radius: 50%; border: 1px solid var(--primary); animation: radarPulse 2s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
         @keyframes radarPulse { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(2.5); opacity: 0; } }
         
-        /* --------------------------------------------------------------------- */
-        /* YENİ NESİL "GO" VE MOTOR ANİMASYON DÖNGÜSÜ (SPLASH EKRANI)            */
-        /* --------------------------------------------------------------------- */
+        /* ========================================================================= */
+        /* PREMIUM MOTOR & TOZ BULUTU ANİMASYONU (SPLASH)                            */
+        /* ========================================================================= */
         .splash-logo { font-size: 48px; font-weight: 900; color: #fff; margin-bottom: 8px; letter-spacing: -2px; line-height: 1; opacity: 0; transform: translateY(20px); animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.3s; display: flex; align-items: center; justify-content: center;}
         
         .splash-go-container { position: relative; display: flex; align-items: center; width: 100px; height: 60px; margin-left: 8px; }
@@ -69,7 +69,19 @@
         .splash-go-text { font-style: italic; color: var(--primary); text-shadow: 0 4px 15px var(--primary-glow); font-size: 48px; margin-bottom: 4px;}
         .splash-speed-lines { display: flex; flex-direction: column; justify-content: center; gap: 5px; margin-left: 4px;}
         
-        .splash-motor-icon { position: absolute; top: 50%; margin-top: -28px; left: -10px; font-size: 50px; opacity: 0; animation: motorCycleSplash 6s infinite cubic-bezier(0.25, 1, 0.5, 1); filter: drop-shadow(0 10px 15px rgba(255,107,0,0.6)); }
+        .splash-motor-wrapper { position: absolute; top: 50%; margin-top: -30px; left: -25px; opacity: 0; display: flex; align-items: center; justify-content: center; animation: motorCycleSplash 6s infinite cubic-bezier(0.25, 1, 0.5, 1); }
+        .splash-motor-svg { width: 65px; height: auto; filter: drop-shadow(0 4px 10px rgba(255,107,0,0.6)); }
+        
+        .dust-particle { position: absolute; border-radius: 50%; background: #ffffff; opacity: 0; pointer-events: none; }
+        .splash-motor-wrapper .dust-particle { animation: splashDust 0.6s infinite cubic-bezier(0.16, 1, 0.3, 1); filter: blur(2px); }
+        .splash-motor-wrapper .dp1 { width: 12px; height: 12px; bottom: 8px; left: -5px; animation-delay: 0s; }
+        .splash-motor-wrapper .dp2 { width: 16px; height: 16px; bottom: 2px; left: -15px; animation-delay: 0.2s; }
+        .splash-motor-wrapper .dp3 { width: 8px; height: 8px; bottom: 12px; left: -20px; animation-delay: 0.4s; }
+
+        @keyframes splashDust {
+            0% { transform: translateX(0) scale(0.5); opacity: 0.8; }
+            100% { transform: translateX(-35px) scale(2); opacity: 0; }
+        }
 
         @keyframes goCycleSplash {
             0%, 66% { transform: translateY(-50%) scale(1); opacity: 1; filter: blur(0px); }
@@ -79,18 +91,29 @@
             96%, 100% { transform: translateY(-50%) scale(1); opacity: 1; filter: blur(0px); }
         }
         @keyframes motorCycleSplash {
-            0%, 66% { transform: translateX(-60px) scale(0.5) rotate(-15deg); opacity: 0; }
-            72% { transform: translateX(10px) scale(1.1) rotate(0deg); opacity: 1; }
-            78% { transform: translateX(35px) scale(1) rotate(5deg); opacity: 1; }
-            83%, 100% { transform: translateX(90px) scale(0.5) rotate(15deg); opacity: 0; }
+            0%, 66% { transform: translateX(-80px) scale(0.5) rotate(-15deg); opacity: 0; }
+            72% { transform: translateX(10px) scale(1.1) rotate(5deg); opacity: 1; }
+            78% { transform: translateX(40px) scale(1) rotate(10deg); opacity: 1; }
+            83%, 100% { transform: translateX(120px) scale(0.5) rotate(25deg); opacity: 0; }
         }
 
         .splash-subtitle { font-size: 11px; color: var(--text-muted); font-weight: 600; letter-spacing: 4px; text-transform: uppercase; opacity: 0; animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.5s; margin-top: 5px;}
         @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 
-        /* --------------------------------------------------------------------- */
-        /* YENİ NESİL "GO" VE MOTOR ANİMASYON DÖNGÜSÜ (HEADER)                   */
-        /* --------------------------------------------------------------------- */
+        .shimmer-btn { position: relative; overflow: hidden; }
+        .shimmer-btn::after { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent); transform: skewX(-25deg); animation: shimmer 5s infinite cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes shimmer { 0%, 50% { left: -100%; } 100% { left: 200%; } }
+
+        .neon-border { position: relative; }
+        .neon-border::before { content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px; background: linear-gradient(90deg, #FF6B00, #FACC15, #FF6B00, #FACC15); background-size: 300% 100%; border-radius: inherit; z-index: -1; animation: neonFlow 3s linear infinite; opacity: 0.5; filter: blur(5px); transition: opacity 0.3s; }
+        .neon-border:active::before { opacity: 0.8; filter: blur(8px); }
+        @keyframes neonFlow { 0% { background-position: 0% 0%; } 100% { background-position: 300% 0%; } }
+
+        @keyframes floatUpFade { 0% { opacity: 0; transform: translate(-50%, -20%) scale(0.8); } 20% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); } 80% { opacity: 1; transform: translate(-50%, -70%) scale(1); } 100% { opacity: 0; transform: translate(-50%, -90%) scale(0.9); } }
+
+        /* ========================================================================= */
+        /* PREMIUM MOTOR & TOZ BULUTU ANİMASYONU (HEADER)                            */
+        /* ========================================================================= */
         .app-header { display: flex; align-items: center; justify-content: center; padding: 15px; position: sticky; top: 0; background: rgba(0, 0, 0, 0.85); z-index: 100; border-bottom: 1px solid var(--border-light); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
         .brand-name { font-size: 22px; font-weight: 900; color: var(--text-main); letter-spacing: -0.5px; white-space: nowrap; line-height: 1; display: flex; align-items: center; justify-content: center; }
         
@@ -99,7 +122,18 @@
         .go-text { font-style: italic; color: var(--primary); letter-spacing: -1px; text-shadow: 0 2px 10px rgba(255,107,0,0.5); font-size: 24px; line-height: 1; margin-bottom: 2px; }
         .go-speed-lines { display: flex; flex-direction: column; justify-content: center; gap: 3px; margin-left: 4px; }
         
-        .go-motor-icon { position: absolute; top: 50%; margin-top: -14px; left: -5px; font-size: 26px; opacity: 0; animation: motorCycle 6s infinite cubic-bezier(0.25, 1, 0.5, 1); filter: drop-shadow(0 4px 6px rgba(255,107,0,0.4)); }
+        .go-motor-wrapper { position: absolute; top: 50%; margin-top: -15px; left: -15px; opacity: 0; display: flex; align-items: center; justify-content: center; animation: motorCycle 6s infinite cubic-bezier(0.25, 1, 0.5, 1); }
+        .go-motor-svg { width: 34px; height: auto; filter: drop-shadow(0 2px 5px rgba(255,107,0,0.6)); }
+
+        .go-motor-wrapper .dust-particle { animation: headerDust 0.6s infinite cubic-bezier(0.16, 1, 0.3, 1); filter: blur(1px); }
+        .go-motor-wrapper .dp1 { width: 6px; height: 6px; bottom: 4px; left: -3px; animation-delay: 0s; }
+        .go-motor-wrapper .dp2 { width: 8px; height: 8px; bottom: 1px; left: -8px; animation-delay: 0.2s; }
+        .go-motor-wrapper .dp3 { width: 4px; height: 4px; bottom: 6px; left: -12px; animation-delay: 0.4s; }
+
+        @keyframes headerDust {
+            0% { transform: translateX(0) scale(0.5); opacity: 0.8; }
+            100% { transform: translateX(-20px) scale(2); opacity: 0; }
+        }
 
         @keyframes goCycle {
             0%, 66% { transform: translateY(-50%) scale(1); opacity: 1; filter: blur(0px); }
@@ -109,10 +143,10 @@
             96%, 100% { transform: translateY(-50%) scale(1); opacity: 1; filter: blur(0px); }
         }
         @keyframes motorCycle {
-            0%, 66% { transform: translateX(-40px) scale(0.5) rotate(-15deg); opacity: 0; }
-            72% { transform: translateX(5px) scale(1.1) rotate(0deg); opacity: 1; }
-            78% { transform: translateX(25px) scale(1) rotate(5deg); opacity: 1; }
-            83%, 100% { transform: translateX(55px) scale(0.5) rotate(15deg); opacity: 0; }
+            0%, 66% { transform: translateX(-50px) scale(0.5) rotate(-15deg); opacity: 0; }
+            72% { transform: translateX(5px) scale(1.1) rotate(5deg); opacity: 1; }
+            78% { transform: translateX(25px) scale(1) rotate(10deg); opacity: 1; }
+            83%, 100% { transform: translateX(70px) scale(0.5) rotate(25deg); opacity: 0; }
         }
 
         /* ORTAK HIZ ÇİZGİSİ DÖNGÜSÜ */
@@ -123,8 +157,7 @@
         .splash-line:nth-child(2), .go-line:nth-child(2) { width: 22px; animation-duration: 1.3s; }
         .splash-line:nth-child(3), .go-line:nth-child(3) { width: 10px; animation-duration: 1.1s; }
         @keyframes speedDash { 0% { transform: translateX(-6px); opacity: 0; } 10% { transform: translateX(0); opacity: 1; } 50% { opacity: 1; } 100% { transform: translateX(12px); opacity: 0; } }
-
-        /* --------------------------------------------------------------------- */
+        /* ========================================================================= */
 
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(15, 15, 20, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-around; align-items: center; padding: 8px 10px calc(8px + env(safe-area-inset-bottom)) 10px; z-index: 2000; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); }
         .nav-item { background: transparent; border: none; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 4px; font-family: inherit; font-size: 10px; font-weight: 700; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); position: relative; flex: 1; -webkit-tap-highlight-color: transparent; }
@@ -355,6 +388,8 @@
         <div class="aura-bg"></div>
         <div id="splash-content">
             <div class="hero-greeting"><span class="status-dot"></span><span id="dinamik-karsilama">Hoş Geldiniz ✨</span></div>
+            
+            <!-- PREMIUM SPLASH MOTOR ANİMASYONU -->
             <div class="splash-logo">
                 Bekmez
                 <div class="splash-go-container">
@@ -366,7 +401,20 @@
                             <div class="splash-line"></div>
                         </div>
                     </div>
-                    <div class="splash-motor-icon">🛵</div>
+                    <div class="splash-motor-wrapper">
+                        <div class="dust-particle dp1"></div>
+                        <div class="dust-particle dp2"></div>
+                        <div class="dust-particle dp3"></div>
+                        <svg class="splash-motor-svg" viewBox="0 0 640 512" fill="url(#fireGradient)">
+                            <defs>
+                                <linearGradient id="fireGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#FF9500" />
+                                    <stop offset="100%" stop-color="#FF6B00" />
+                                </linearGradient>
+                            </defs>
+                            <path d="M280 32c-13.3 0-24 10.7-24 24s10.7 24 24 24h57.7l16.4 30.3L256 192l-45.3-45.3c-12-12-28.3-18.7-45.3-18.7H64c-13.3 0-24 10.7-24 24v32h111.5l30 30H128c-17.7 0-32 14.3-32 32v66.8C40.9 321.9 0 377.2 0 440c0 39.8 32.2 72 72 72s72-32.2 72-72c0-8.8-1.6-17.3-4.6-25.1l80.5-26.8c11-3.7 23.3-3.7 34.3 0l80.5 26.8c-3 7.8-4.6 16.3-4.6 25.1c0 39.8 32.2 72 72 72s72-32.2 72-72c0-62.8-40.9-118.1-96-127.2V224h76.1l40 100H576c13.3 0 24-10.7 24-24v-40c0-26.5-21.5-48-48-48h-32.5l-33.8-84.5c-6.8-17-23.3-27.5-41.6-27.5H352.5l-19-35.1C323.5 44 303.4 32 280 32zM72 408c17.7 0 32 14.3 32 32s-14.3 32-32 32s-32-14.3-32-32s14.3-32 32-32zm352 32c0-17.7 14.3-32 32-32s32 14.3 32 32s-14.3 32-32 32s-32-14.3-32-32z"/>
+                        </svg>
+                    </div>
                 </div>
             </div>
             <div class="splash-subtitle">Premium Paket Servis</div>
@@ -385,7 +433,14 @@
                         <div class="go-line"></div>
                     </div>
                 </div>
-                <div class="go-motor-icon">🛵</div>
+                <div class="go-motor-wrapper">
+                    <div class="dust-particle dp1"></div>
+                    <div class="dust-particle dp2"></div>
+                    <div class="dust-particle dp3"></div>
+                    <svg class="go-motor-svg" viewBox="0 0 640 512" fill="url(#fireGradient)">
+                        <path d="M280 32c-13.3 0-24 10.7-24 24s10.7 24 24 24h57.7l16.4 30.3L256 192l-45.3-45.3c-12-12-28.3-18.7-45.3-18.7H64c-13.3 0-24 10.7-24 24v32h111.5l30 30H128c-17.7 0-32 14.3-32 32v66.8C40.9 321.9 0 377.2 0 440c0 39.8 32.2 72 72 72s72-32.2 72-72c0-8.8-1.6-17.3-4.6-25.1l80.5-26.8c11-3.7 23.3-3.7 34.3 0l80.5 26.8c-3 7.8-4.6 16.3-4.6 25.1c0 39.8 32.2 72 72 72s72-32.2 72-72c0-62.8-40.9-118.1-96-127.2V224h76.1l40 100H576c13.3 0 24-10.7 24-24v-40c0-26.5-21.5-48-48-48h-32.5l-33.8-84.5c-6.8-17-23.3-27.5-41.6-27.5H352.5l-19-35.1C323.5 44 303.4 32 280 32zM72 408c17.7 0 32 14.3 32 32s-14.3 32-32 32s-32-14.3-32-32s14.3-32 32-32zm352 32c0-17.7 14.3-32 32-32s32 14.3 32 32s-14.3 32-32 32s-32-14.3-32-32z"/>
+                    </svg>
+                </div>
             </div>
         </div>
     </div>
@@ -593,7 +648,7 @@
         <div id="custom-alert-box" class="custom-alert-box">
             <div id="custom-alert-glow" class="custom-alert-glow"></div>
             <div class="custom-alert-content">
-                <div id="custom-alert-icon" style="font-size: 55px; margin-bottom: 20px;">⚠️</div>
+                <div id="custom-alert-icon" style="font-size: 55px; margin-bottom: 20px;">⚠️️</div>
                 <h3 id="custom-alert-title" style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Uyarı</h3>
                 <p id="custom-alert-text" style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;"></p>
                 <button onclick="KapatUyariModal(event, true)" class="alert-btn">Tamam, Anladım</button>
@@ -864,7 +919,6 @@
                     setTimeout(() => { 
                         splash.style.display = 'none'; 
                         
-                        // SADECE UYGULAMA İÇİNDEYSE (STANDALONE) İZİNLERİ OTOMATİK İSTE
                         const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
                         if(isStandalone) {
                             if(!localStorage.getItem('bg_perms_asked')) {
@@ -878,7 +932,7 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            let saat = new Date().getHours(); let mesaj = "Hoş Geldiniz ✨"; if (saat >= 5 && saat < 11) mesaj = "Günaydın ☀️"; else if (saat >= 11 && saat < 17) mesaj = "İyi Günler 🌤️️"; else if (saat >= 17 && saat < 22) mesaj = "İyi Akşamlar 🌙"; else mesaj = "İyi Geceler 🌌";
+            let saat = new Date().getHours(); let mesaj = "Hoş Geldiniz ✨"; if (saat >= 5 && saat < 11) mesaj = "Günaydın ☀️"; else if (saat >= 11 && saat < 17) mesaj = "İyi Günler 🌤️"; else if (saat >= 17 && saat < 22) mesaj = "İyi Akşamlar 🌙"; else mesaj = "İyi Geceler 🌌";
             let karsilamaObj = document.getElementById("dinamik-karsilama"); if(karsilamaObj) karsilamaObj.innerText = mesaj;
             setTimeout(() => { SplashKapatSinematik(); if(document.getElementById("menu-container").style.display !== "block" && document.getElementById("cart-container").style.display !== "block") { SayfaGoster('urunler'); } }, 2800);
             
@@ -1257,386 +1311,85 @@
         function ShowFloatingPlusOne() {
             let fxContainer = document.getElementById("fx-container");
             if (!fxContainer) { fxContainer = document.createElement("div"); fxContainer.id = "fx-container"; fxContainer.style.position = "fixed"; fxContainer.style.top = "0"; fxContainer.style.left = "0"; fxContainer.style.width = "100%"; fxContainer.style.height = "100%"; fxContainer.style.pointerEvents = "none"; fxContainer.style.zIndex = "2147483647"; document.body.appendChild(fxContainer); }
-            let pop = document.createElement("div"); pop.innerHTML = `<span style="font-size:18px;">✨</span> Sepete Eklendi`; pop.style.position = "absolute"; pop.style.top = "40%"; pop.style.left = "50%"; pop.style.transform = "translate(-50%, -50%)"; pop.style.background = "linear-gradient(135deg, #10B981 0%, #059669 100%)"; pop.style.color = "white"; pop.style.padding = "12px 20px"; pop.style.borderRadius = "100px"; pop.style.fontWeight = "900"; pop.style.fontSize = "14px"; pop.style.display = "flex"; pop.style.alignItems = "center"; pop.style.gap = "10px"; pop.style.boxShadow = "0 10px 25px rgba(16, 185, 129, 0.5), inset 0 2px 4px rgba(255,255,255,0.4)"; pop.style.animation = "floatUpFade 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards";
-            fxContainer.appendChild(pop); setTimeout(() => pop.remove(), 1200);
-        }
+            let pop = document.createElement("div"); pop.innerHTML = `<span style="font-size:18px;">✨</span> Sepete Eklendi`; pop.style.position = "absolute"; pop.style.top = "40%"; pop.style.left = "50%"; pop.style.transform = "translate(-50%, -50%)"; pop.style.background = "linear-gradient(135deg, #10B981 0%, #059669 100%)"; pop.style.color = "white"; pop.style.padding = "12px 20px"; pop.style.borderRadius = "100px"; pop.style.fontWeight = "900"; pop.styleSipariş takip ekranındaki kurye motorunun geri geri gitmesi ve donuk durması çok yaygın bir durumdur. Motorun hareket yönünü algılayıp yüzünü o tarafa dönmesini sağlayarak bu sorunu çözebilir ve arkasına ekleyeceğimiz bir "Particle System" (Parçacık Sistemi) ile çok daha dinamik, hoş bir toz bulutu efekti yaratabiliriz.
 
-        function TriggerCartBounce() { let cart = document.getElementById("floating-cart"); if(cart) { cart.classList.remove("bounce"); void cart.offsetWidth; cart.classList.add("bounce"); } }
+İşte motoru canlandırmak ve yön sorununu çözmek için yapman gerekenler:
 
-        function PopupSepeteEkle() {
-            if(seciliMiktar <= 0) return; HapticTitresim();
-            let tamIsim = ""; let eklenecekAdet = 1; let gercekStokMiktari = seciliMiktar; let ekstraEkmekUcreti = 0;
-            let pLower = seciliUrun.pName ? seciliUrun.pName.toString().toLocaleLowerCase('tr-TR') : ""; let isSpecial = pLower.includes("dürüm") || pLower.includes("doner") || pLower.includes("kebap");
+### 1. Toz Bulutu Efektini Hazırlama (Particle System)
+Unity'nin kendi içindeki sistemle dışarıdan animasyon aramadan harika bir toz bulutu yapabilirsin:
+1. Unity'de **Hierarchy** penceresinde Motor objene sağ tıkla.
+2. **Effects > Particle System** seçeneğini tıkla. Bu, motorun altına bir alt obje (child) olarak eklenecektir. Adını `TozBulutu` yap.
+3. Sağ taraftaki **Inspector** panelinden şu ayarları yap:
+   * **Start Lifetime:** 0.5 ile 1 arası küçük bir değer yap (toz hemen kaybolsun).
+   * **Start Speed:** 1 veya 2 yap (çok hızlı uçmasınlar).
+   * **Start Size:** 0.2 ile 0.5 arası yap.
+   * **Start Color:** Açık gri veya toprak rengi (toz rengi) seç ve biraz saydamlık (Alpha) ver.
+   * **Emission:** Rate over Time değerini 10-15 yap.
+   * **Shape:** Shape türünü *Cone* (Koni) yap ve açısını motorun arka egzozuna veya tekerleğine doğru bakacak şekilde döndür.
+   * **Color over Lifetime (Aktif Et):** Başlangıçta tam renkli, bitişte tamamen şeffaf (Alpha 0) olacak şekilde ayarla ki tozlar havaya karışıp yok oluyormuş gibi görünsün.
+   * **Size over Lifetime (Aktif Et):** Eğriyi (curve) seçerek tozların giderek büyümesini sağla (küçük çıkıp dağılarak büyüsünler).
 
-            if (seciliUrun.isKg) { tamIsim = Number(seciliMiktar.toFixed(2)) + " KG " + seciliUrun.pName; eklenecekAdet = 1; if (ekstraEkmekKg > 0 && !seciliEkstraIstekler.includes('Ekmeksiz')) { ekstraEkmekUcreti = ekstraEkmekKg * ekmekBirimFiyati; }
-            } else { tamIsim = seciliUrun.pName; eklenecekAdet = seciliMiktar; gercekStokMiktari = 1; if (isSpecial && seciliOzelEkmekTip === "3 Ekmek") ekstraEkmekUcreti = ekmekBirimFiyati; }
+### 2. Motoru Döndüren ve Toz Bulutunu Çalıştıran Kod
+Aşağıdaki kod hem motorun hareket yönünü hesaplayıp (sağa veya sola) simgeyi otomatik çevirecek, hem de motor hareket edince toz bulutunu çalıştırıp durduğunda kesecektir. 
 
-            let modlar = [...seciliEkstraIstekler];
-            if (seciliUrun.isKg) { let totalB = baseKgBread + ekstraEkmekKg; if (totalB === 0) { if (!modlar.includes("Ekmeksiz")) modlar.push("Ekmeksiz"); } else if (ekstraEkmekKg > 0) modlar.push("+" + ekstraEkmekKg + " Ek Ekmek"); else if (ekstraEkmekKg < 0) modlar.push("Sadece " + totalB + " Ekmek");
-            } else { if (isSpecial && seciliOzelEkmekTip !== "Normal") modlar.push(seciliOzelEkmekTip); }
-            modlar = [...new Set(modlar)]; if (modlar.length > 0) { tamIsim += " (" + modlar.join(", ") + ")"; }
+Bu kodu `MotorAnimasyon` adıyla oluşturup Motor objenin içine at:
 
-            let testIsim = (eklenecekAdet > 1 ? eklenecekAdet + "x " : "") + tamIsim;
-            let newBreadRequired = ExtractBreadTotal(testIsim, seciliUrun.isKg, gercekStokMiktari * eklenecekAdet);
-            let ekmekInfo = tumUrunler.find(u => u.pName && u.pName.trim().toLocaleLowerCase('tr-TR') === ekmekUrunAdi.trim().toLocaleLowerCase('tr-TR'));
-            if (ekmekInfo) { let curBreadStock = (ekmekInfo.stockAmount !== undefined) ? parseFloat(ekmekInfo.stockAmount) : ((ekmekInfo.stock !== undefined) ? parseFloat(ekmekInfo.stock) : 999); let alreadyInCartBread = GuncelEkmekIhtiyaci(sepet); if (alreadyInCartBread + newBreadRequired > curBreadStock) { OzelUyariGoster("Stok Yetersiz", `Ekstra Ekmek için stoğumuz yetersiz! Lütfen sayıyı azaltın.`, "⚠️"); return; } }
+```csharp
+using UnityEngine;
 
-            let safBirimFiyat = seciliUrun.isKg ? seciliFiyat : (seciliFiyat / seciliMiktar); let gercekBirimFiyat = safBirimFiyat + ekstraEkmekUcreti;
-            let mevcut = sepet.find(u => u.baseName === tamIsim && u.basePrice === gercekBirimFiyat);
-            if(mevcut) { mevcut.quantity += eklenecekAdet; } else { sepet.push({ baseName: tamIsim, basePrice: gercekBirimFiyat, baseStockAmount: gercekStokMiktari, quantity: eklenecekAdet, rawName: seciliUrun.pName }); }
+public class MotorAnimasyon : MonoBehaviour
+{
+    [Header("Ayarlar")]
+    public ParticleSystem tozBulutu; // Oluşturduğun TozBulutu objesini buraya sürükle
+    
+    private Vector3 sonPozisyon;
 
-            ShowFloatingPlusOne(); TriggerCartBounce(); setTimeout(() => { PopupKapat(); HesaplaVeGuncelle(); }, 300);
-        }
+    void Start()
+    {
+        sonPozisyon = transform.position;
+        
+        // Başlangıçta toz bulutunu durdur
+        if (tozBulutu != null) tozBulutu.Stop();
+    }
 
-        function SepetMiktarDegistir(index, artisMiktari) {
-            HapticTitresim(); let sepetUrunu = sepet[index]; let gercekUrun = tumUrunler.find(u => u.pName === sepetUrunu.rawName);
-            if (artisMiktari > 0) {
-                let maksStok = (gercekUrun && gercekUrun.stockAmount !== undefined) ? parseFloat(gercekUrun.stockAmount) : ((gercekUrun && gercekUrun.stock !== undefined) ? parseFloat(gercekUrun.stock) : 999);
-                let sepetteToplamBuUrun = 0; sepet.forEach(u => { if (u.rawName === sepet[index].rawName) { sepetteToplamBuUrun += (u.baseStockAmount * u.quantity); } });
-                if (sepetteToplamBuUrun + (sepetUrunu.baseStockAmount * artisMiktari) > maksStok) { OzelUyariGoster("Sınır Aşıldı", "Bu ürün için maksimum stoğa ulaştınız.", "⚠️"); return; }
-                let ekmekInfo = tumUrunler.find(u => u.pName && u.pName.trim().toLocaleLowerCase('tr-TR') === ekmekUrunAdi.trim().toLocaleLowerCase('tr-TR'));
-                if (ekmekInfo) { let curBreadStock = (ekmekInfo.stockAmount !== undefined) ? parseFloat(ekmekInfo.stockAmount) : ((ekmekInfo.stock !== undefined) ? parseFloat(ekmekInfo.stock) : 999); let testSepet = JSON.parse(JSON.stringify(sepet)); testSepet[index].quantity += artisMiktari; let reqBread = GuncelEkmekIhtiyaci(testSepet); if (reqBread > curBreadStock) { OzelUyariGoster("Stok Yetersiz", `Siparişi artırmak için Ekmek stoğumuz yetersiz!`, "⚠️"); return; } }
-            }
-            sepet[index].quantity += artisMiktari;
-            if(sepet[index].quantity <= 0) { sepet.splice(index, 1); SepetEkraniniCiz(); } 
-            else {
-                let qtyEl = document.getElementById("cart-qty-" + index); qtyEl.innerText = sepet[index].quantity;
-                document.getElementById("cart-price-" + index).innerText = (sepet[index].basePrice * sepet[index].quantity).toFixed(2) + " TL";
-                let nameEl = document.getElementById("cart-name-" + index); let gosterilenIsim = (sepet[index].quantity > 1 ? `<span style="color:var(--primary);">${sepet[index].quantity}x</span> ` : "") + escapeHTML(sepetUrunu.baseName); if(nameEl) nameEl.innerHTML = gosterilenIsim;
-            }
-            HesaplaVeGuncelle();
-        }
-
-        function KuponSorgula() {
-            let inputEl = document.getElementById("coupon-code"); let girilenKod = inputEl.value.trim().toUpperCase(); let btn = document.getElementById("coupon-apply-btn");
-            if(girilenKod === "") { OzelUyariGoster("Boş Kod", "Lütfen bir kupon kodu giriniz.", "⚠️"); return; }
-            btn.innerText = "Bekleyin..."; btn.disabled = true;
-
-            fetch(firebaseKuponUrl + girilenKod + ".json" + authKeyStr + "&t=" + new Date().getTime(), { cache: "no-store" }).then(res => res.json()).then(data => {
-                btn.disabled = false; 
-                if(data && data.discountAmount > 0) {
-                    let arananUrun = (data.targetProduct && data.targetProduct !== "") ? data.targetProduct : "Herşey";
-                    let urunSartiSaglandi = false; let hataMesaji = "";
-
-                    if(arananUrun === "Herşey") { urunSartiSaglandi = true; } 
-                    else {
-                        let arananVarMi = sepet.some(u => u.rawName.toLocaleLowerCase('tr-TR') === arananUrun.toLocaleLowerCase('tr-TR'));
-                        let baskaUrunVarMi = sepet.some(u => u.rawName.toLocaleLowerCase('tr-TR') !== arananUrun.toLocaleLowerCase('tr-TR'));
-                        if (!arananVarMi) { hataMesaji = `'${escapeHTML(arananUrun)}' ürünü sepette bulunamadı.`; } else if (baskaUrunVarMi) { hataMesaji = `Bu kupon sadece '${escapeHTML(arananUrun)}' siparişlerinde geçerlidir. Başka ürün ekleyemezsiniz.`; } else { urunSartiSaglandi = true; }
-                    }
-
-                    if(!urunSartiSaglandi) { KuponuIptalEt(true); OzelUyariGoster("Şartlar Sağlanmadı", hataMesaji, "🛍️"); return; }
-                    if (hamToplamFiyat < data.bottomLimit) { KuponuIptalEt(true); OzelUyariGoster("Tutar Yetersiz", `Bu kupon için sepet tutarı en az ${data.bottomLimit} TL olmalıdır.`, "🛒"); return; }
-
-                    HapticTitresim(); aktifKuponKodu = girilenKod; aktifKuponIndirimTutari = data.discountAmount; aktifKuponAltLimit = data.bottomLimit; aktifKuponHedefUrun = arananUrun;
-                    OzelUyariGoster("Kupon Onaylandı", `${data.discountAmount} TL indirim uygulandı!`, "✅");
-                    HesaplaVeGuncelle(); KuponArayuzunuGuncelle();
-                } else { KuponuIptalEt(true); OzelUyariGoster("Geçersiz Kod", `Girdiğiniz kupon kodu hatalı veya süresi dolmuş.`, "❌"); }
-            }).catch(e => { btn.disabled = false; btn.innerText = "Uygula"; OzelUyariGoster("Bağlantı Hatası", "Kupon sorgulanamadı. İnternetinizi kontrol edin.", "📡"); });
-        }
-
-        function KuponuIptalEt(sessizMi = false) {
-            if(!sessizMi) HapticTitresim(); aktifKuponKodu = ""; aktifKuponIndirimTutari = 0; aktifKuponAltLimit = 0; aktifKuponHedefUrun = "Herşey"; 
-            let inputEl = document.getElementById("coupon-code"); if(inputEl) { inputEl.value = ""; }
-            KuponArayuzunuGuncelle(); if(!sessizMi) HesaplaVeGuncelle();
-        }
-
-        function KuponArayuzunuGuncelle() { 
-            let btn = document.getElementById("coupon-apply-btn"); let msg = document.getElementById("coupon-message"); let inputEl = document.getElementById("coupon-code");
-
-            if(aktifKuponIndirimTutari > 0) { 
-                btn.style.background = "var(--danger)"; btn.style.color = "white"; btn.style.borderColor = "transparent"; btn.innerText = "İptal Et"; btn.onclick = () => KuponuIptalEt(false);
-                if(inputEl) { inputEl.disabled = true; inputEl.style.opacity = "0.6"; }
-                msg.innerHTML = `<span style="color: var(--success);">✓ ${aktifKuponIndirimTutari} TL İndirim Uygulandı!</span>`;
-            } else { 
-                btn.style.background = "rgba(255,255,255,0.05)"; btn.style.color = "var(--text-main)"; btn.style.borderColor = "var(--border-highlight)"; btn.innerText = "Uygula"; btn.onclick = KuponSorgula;
-                if(inputEl) { inputEl.disabled = false; inputEl.style.opacity = "1"; }
-                msg.innerHTML = "";
-            } 
-        }
-
-        function SepetEkraniniCiz() {
-            const listContainer = document.getElementById("cart-items-list"); const noteSection = document.getElementById("cart-note-section"); const altPanel = document.getElementById("alt-panel");
-            if(sepet.length === 0) { listContainer.innerHTML = `<div class="empty-text">Sepetiniz şu an boş 🛒</div>`; noteSection.style.display = "none"; altPanel.style.display = "none"; return; }
-            let html = "";
-            sepet.forEach((urun, index) => {
-                let gosterilenIsim = (urun.quantity > 1 ? `<span style="color:var(--primary);">${urun.quantity}x</span> ` : "") + escapeHTML(urun.baseName);
-                html += `<div class="cart-item"><div class="cart-item-details"><div id="cart-name-${index}" class="cart-item-name">${gosterilenIsim}</div><div id="cart-price-${index}" class="cart-item-price">${(urun.basePrice * urun.quantity).toFixed(2)} TL</div></div><div class="cart-controls"><button class="cart-btn" onclick="SepetMiktarDegistir(${index}, -1)">-</button><div id="cart-qty-${index}" class="cart-amount">${urun.quantity}</div><button class="cart-btn" onclick="SepetMiktarDegistir(${index}, 1)">+</button></div></div>`;
-            });
-            listContainer.innerHTML = html; noteSection.style.display = "block"; altPanel.style.display = "block";
-            document.getElementById("coupon-code").value = aktifKuponKodu; KuponArayuzunuGuncelle(); 
-        }
-
-        function HesaplaVeGuncelle() {
-            hamToplamFiyat = 0; let toplamAdet = 0; 
-            
-            if(sepet.length === 0) { 
-                hamToplamFiyat = 0; toplamAdet = 0; sonOdenecekFiyat = 0; 
-            } else {
-                sepet.forEach(urun => { hamToplamFiyat += (urun.basePrice * urun.quantity); toplamAdet += urun.quantity; });
-            }
-            
-            if (aktifKuponIndirimTutari > 0) {
-                let kuponHalaGecerliMi = true;
-                if (aktifKuponHedefUrun !== "Herşey") {
-                    let arananVarMi = sepet.some(u => u.rawName.toLocaleLowerCase('tr-TR') === aktifKuponHedefUrun.toLocaleLowerCase('tr-TR')); 
-                    let baskaVarMi = sepet.some(u => u.rawName.toLocaleLowerCase('tr-TR') !== aktifKuponHedefUrun.toLocaleLowerCase('tr-TR'));
-                    if (!arananVarMi || baskaVarMi) kuponHalaGecerliMi = false;
-                }
-                if (hamToplamFiyat < aktifKuponAltLimit) kuponHalaGecerliMi = false;
-                if (!kuponHalaGecerliMi) { KuponuIptalEt(true); OzelUyariGoster("Kupon İptal Oldu", "Sepetinizdeki ürün değişiklikleri nedeniyle kupon şartları bozuldu.", "⚠️"); }
-            }
-            
-            if(aktifKuponIndirimTutari > 0 && sepet.length > 0) {
-                sonOdenecekFiyat = hamToplamFiyat - aktifKuponIndirimTutari; if (sonOdenecekFiyat < 0) sonOdenecekFiyat = 0; 
-                document.getElementById("eski-fiyat-ustu-cizik").style.display = "block"; document.getElementById("eski-fiyat-ustu-cizik").innerText = hamToplamFiyat.toFixed(2) + " TL";
-            } else { 
-                sonOdenecekFiyat = hamToplamFiyat; document.getElementById("eski-fiyat-ustu-cizik").style.display = "none"; 
+    void Update()
+    {
+        // Motorun bir önceki kareye göre ne kadar yer değiştirdiğini buluyoruz
+        Vector3 hareketYonu = transform.position - sonPozisyon;
+        
+        // Eğer motor hareket ediyorsa (çok küçük bir titremeyi es geçmek için 0.001f kullandık)
+        if (hareketYonu.magnitude > 0.001f)
+        {
+            // 1. TOZ BULUTU KONTROLÜ
+            if (tozBulutu != null && !tozBulutu.isPlaying)
+            {
+                tozBulutu.Play();
             }
 
-            SmoothCounter("sepet-tutar", oncekiToplamFiyat, sonOdenecekFiyat, 600, true);
-            SmoothCounter("floating-total", oncekiToplamFiyat, sonOdenecekFiyat, 600, true);
-            oncekiToplamFiyat = sonOdenecekFiyat; 
-            
-            let fltBge = document.getElementById("nav-sepet-badge"); 
-            if(toplamAdet > 0) { fltBge.innerText = Math.ceil(toplamAdet); fltBge.classList.add("show"); } else { fltBge.classList.remove("show"); }
-            
-            if(document.getElementById("menu-container").style.display === "block") { document.getElementById("floating-cart").style.display = toplamAdet > 0 ? "flex" : "none"; } 
-            else { document.getElementById("floating-cart").style.display = "none"; }
+            // 2. YÖN (TERS GİTME) KONTROLÜ
+            // Motorun orijinal resmi SAĞA bakıyor varsayılmıştır. 
+            // Eğer senin orijinal resmin SOLA bakıyorsa 1 ve -1 değerlerinin yerini değiştir.
+            if (hareketYonu.x < 0) 
+            {
+                // Sola gidiyor, X ekseninde ters çevir (Ayna efekti)
+                transform.localScale = new Vector3(-1, 1, 1); 
+            }
+            else if (hareketYonu.x > 0)
+            {
+                // Sağa gidiyor, normale döndür
+                transform.localScale = new Vector3(1, 1, 1); 
+            }
         }
-
-        function CheckoutPopupAc() {
-            if(sepet.length === 0) return; HapticTitresim();
-            let popup = document.getElementById("checkout-popup"); popup.style.display = "flex"; setTimeout(() => { popup.classList.add("active"); }, 10);
-            
-            let btn = document.getElementById("final-submit-btn"); 
-            let cb = document.getElementById("legal-checkbox");
-            if(cb.checked) {
-                btn.disabled = false; btn.style.opacity = "1"; btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde ve Onayla";
-            } else {
-                btn.disabled = true; btn.style.opacity = "0.5"; btn.innerHTML = "Sözleşmeyi Onaylayın";
+        else
+        {
+            // Motor durduysa toz bulutunu durdur
+            if (tozBulutu != null && tozBulutu.isPlaying)
+            {
+                tozBulutu.Stop();
             }
         }
 
-        function CheckoutKapat() { let popup = document.getElementById("checkout-popup"); popup.classList.remove("active"); setTimeout(() => { popup.style.display = "none"; }, 500); }
-
-        function PaketSiparisiGonder() {
-            if(isProcessingOrder) return;
-            if(sepet.length === 0) return;
-            
-            if(!document.getElementById("legal-checkbox").checked) {
-                OzelUyariGoster("Sözleşme Onayı", "Lütfen siparişi tamamlamak için Mesafeli Satış Sözleşmesi ve İade Koşullarını onaylayın.", "📝");
-                return;
-            }
-
-            HapticTitresim();
-            
-            let isim = document.getElementById("chk-isim").value.trim().replace(/[<>]/g, '').substring(0, 50); 
-            let tel = document.getElementById("chk-telefon").value.trim().replace(/[^0-9]/g, '').substring(0, 15); 
-            let adres = document.getElementById("chk-adres").value.trim().replace(/[<>]/g, '').substring(0, 150);
-            
-            let ccName = document.getElementById("cc-name").value.trim(); 
-            let ccNum = document.getElementById("cc-number").value.trim(); 
-            let ccExp = document.getElementById("cc-exp").value.trim(); 
-            let ccCvv = document.getElementById("cc-cvv").value.trim();
-            
-            let hataVar = false;
-            if(isim.length < 3) { GosterHataInput("chk-isim"); hataVar = true; }
-            if(tel.length < 10) { GosterHataInput("chk-telefon"); hataVar = true; }
-            if(adres.length < 10) { GosterHataInput("chk-adres"); hataVar = true; }
-            if(hataVar) { OzelUyariGoster("Eksik Bilgi", "Lütfen ad, telefon ve adres bilgilerinizi kontrol edin.", "⚠️"); return; }
-
-            if(ccName.length < 3 || ccNum.length < 15 || ccExp.length < 4 || ccCvv.length < 3) { OzelUyariGoster("Ödeme Hatası", "Lütfen kredi kartı bilgilerinizi eksiksiz giriniz.", "💳"); return; }
-
-            let hackAlgilandi = false;
-            let gercekHesaplama = 0;
-            sepet.forEach(u => {
-                if(u.quantity <= 0 || u.basePrice < 0 || u.baseStockAmount <= 0) hackAlgilandi = true;
-                gercekHesaplama += (u.basePrice * u.quantity);
-            });
-
-            if (sonOdenecekFiyat < 0 || hackAlgilandi || Math.abs((gercekHesaplama - aktifKuponIndirimTutari) - sonOdenecekFiyat) > 1) {
-                OzelUyariGoster("Güvenlik İhlali", "Sepetinizde geçersiz veri algılandı. İşlem durduruldu.", "🚨");
-                return;
-            }
-
-            let btn = document.getElementById("final-submit-btn"); 
-            btn.disabled = true; btn.classList.add("loading"); btn.innerText = "Konum Kontrol Ediliyor... 📍";
-
-            if (!navigator.geolocation) {
-                OzelUyariGoster("Desteklenmiyor", "Cihazınız konum özelliğini desteklemiyor.", "🚫");
-                btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde ve Onayla";
-                return;
-            }
-            
-            isProcessingOrder = true;
-
-            const checkLocation = (highAccuracy, timeout) => {
-                return new Promise((resolve, reject) => {
-                    navigator.geolocation.getCurrentPosition(
-                        pos => resolve(pos),
-                        err => reject(err),
-                        { enableHighAccuracy: highAccuracy, timeout: timeout, maximumAge: 0 } 
-                    );
-                });
-            };
-
-            checkLocation(true, 6000)
-                .catch(() => { return checkLocation(false, 6000); })
-                .then(position => {
-                    let musteriLat = position.coords.latitude;
-                    let musteriLon = position.coords.longitude;
-                    
-                    let mesafe = GetDistanceKm(DUKKAN_ENLEM, DUKKAN_BOYLAM, musteriLat, musteriLon);
-                    
-                    if (mesafe > MAKS_MESAFE_KM) {
-                        document.getElementById("distance-alert-overlay").style.display = "flex";
-                        setTimeout(() => { document.getElementById("distance-alert-overlay").classList.add("active"); }, 10);
-                        isProcessingOrder = false;
-                        btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde ve Onayla";
-                        return;
-                    }
-                    
-                    DevamEtPaketGonder(isim, tel, adres);
-                })
-                .catch(error => {
-                    OzelUyariGoster("Konum İzni Gerekli", "Sıcak teslimat kontrolü için cihazınızın GPS (Konum) özelliğinin açık olduğundan ve izin verdiğinizden emin olun.", "📍");
-                    isProcessingOrder = false;
-                    btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde ve Onayla";
-                });
-        }
-
-        function DevamEtPaketGonder(isim, tel, adres) {
-            localStorage.setItem("bg_i", VeriSifrele(isim)); 
-            localStorage.setItem("bg_t", VeriSifrele(tel)); 
-            localStorage.setItem("bg_a", VeriSifrele(adres));
-
-            let btn = document.getElementById("final-submit-btn");
-            btn.innerText = "Ödeme Alınıyor...";
-
-            let safeTel = tel.replace(/[^0-9]/g, '');
-            fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliPaketler/Paket_${safeTel}.json${authKeyStr}&t=${new Date().getTime()}`)
-            .then(res => res.json())
-            .then(aktifAdisyon => {
-                if(aktifAdisyon && aktifAdisyon.durum && !aktifAdisyon.durum.includes("İPTAL") && !aktifAdisyon.durum.includes("TESLİM") && !aktifAdisyon.durum.includes("AFİYET")) {
-                    OzelUyariGoster("Siparişiniz Sürüyor", "Şu anda devam eden bir siparişiniz bulunuyor. Yeni sipariş vermek için mevcut siparişinizin tamamlanmasını beklemelisiniz.", "⏳");
-                    isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde ve Onayla";
-                    return;
-                }
-
-                setTimeout(() => {
-                    btn.innerText = "İLETİLİYOR...";
-                    fetch(firebaseMenuUrl + authKeyStr + "&t=" + new Date().getTime(), { cache: "no-store" }).then(r => r.json()).then(data => {
-                        let liste = (data && data.products) ? data.products : [];
-                        if(liste.length > 0) {
-                            let stokHatasi = false; let hataMesaji = "";
-                            for(let i=0; i<sepet.length; i++) {
-                                let gercekUrun = liste.find(u => u.pName === sepet[i].rawName);
-                                if(gercekUrun) {
-                                    let maksStok = (gercekUrun.stockAmount !== undefined) ? parseFloat(gercekUrun.stockAmount) : ((gercekUrun.stock !== undefined) ? parseFloat(gercekUrun.stock) : 999);
-                                    let sepettekiToplam = 0; sepet.forEach(u => { if(u.rawName === gercekUrun.pName) sepettekiToplam += (u.baseStockAmount * u.quantity); });
-                                    if(sepettekiToplam > maksStok) { stokHatasi = true; hataMesaji = `Maalesef "${gercekUrun.pName}" ürününden sadece ${maksStok} adet/kg kaldı.`; break; }
-                                } else { stokHatasi = true; hataMesaji = "Menüdeki bir ürün kaldırılmış veya güncellenmiş."; break; }
-                            }
-
-                            if (!stokHatasi) {
-                                let ekmekInfo = liste.find(u => u.pName && u.pName.trim().toLocaleLowerCase('tr-TR') === ekmekUrunAdi.trim().toLocaleLowerCase('tr-TR'));
-                                if (ekmekInfo) {
-                                    let maksEkmekStok = (ekmekInfo.stockAmount !== undefined) ? parseFloat(ekmekInfo.stockAmount) : ((ekmekInfo.stock !== undefined) ? parseFloat(ekmekInfo.stock) : 999);
-                                    let totalBreadReq = GuncelEkmekIhtiyaci(sepet);
-                                    if (totalBreadReq > maksEkmekStok) { stokHatasi = true; hataMesaji = `Maalesef Ekmek stoğumuz yetersiz!`; }
-                                }
-                            }
-
-                            if(stokHatasi) { OzelUyariGoster("Stok Yetersiz!", hataMesaji, "⚠️"); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde ve Onayla"; return; }
-                            
-                            let n = document.getElementById("siparis-notu").value.trim().replace(/[<>]/g, '').substring(0, 100);
-                            let siparisDetayMetni = ""; sepet.forEach(u => { siparisDetayMetni += (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName + "\n"; });
-
-                            let unityIcinSiparisDizisi = sepet.map(u => ({ itemName: (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName, itemPrice: u.basePrice * u.quantity, amount: u.baseStockAmount * u.quantity, rawName: u.rawName }));
-                            let indirimFarkiJS = hamToplamFiyat - sonOdenecekFiyat;
-                            
-                            if(indirimFarkiJS > 0) { 
-                                let kpnAd = aktifKuponKodu !== "" ? "Kupon [" + aktifKuponKodu + "]" : "Web İndirimi";
-                                unityIcinSiparisDizisi.push({ itemName: kpnAd, itemPrice: -indirimFarkiJS, amount: 0, rawName: "" }); 
-                            }
-
-                            const paketVerisi = { 
-                                tip: "paket", musteriAd: escapeHTML(isim), telefon: escapeHTML(tel), adres: escapeHTML(adres), odemeTuru: "Online Ödeme (Kart)",
-                                siparisDetayi: siparisDetayMetni, siparisler: unityIcinSiparisDizisi, toplam: sonOdenecekFiyat, zaman: new Date().toLocaleTimeString(), siparisNotu: escapeHTML(n) 
-                            };
-
-                            fetch(`https://bekmezpos-default-rtdb.firebaseio.com/PaketSiparisler/${safeTel}.json${authKeyStr}`, { 
-                                method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(paketVerisi) 
-                            }).then(() => {
-                                const canliAdisyonVerisi = {
-                                    durum: "SİPARİŞ ONAYLANDI", toplamTutar: sonOdenecekFiyat, siparisNotu: escapeHTML(n),
-                                    siparisler: sepet.map(u => ({ itemName: (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName, itemPrice: u.basePrice * u.quantity }))
-                                };
-                                
-                                fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliPaketler/Paket_${safeTel}.json${authKeyStr}`, { method: "PUT", body: JSON.stringify(canliAdisyonVerisi) });
-
-                                HapticTitresim(); CheckoutKapat(); BasariEkraniGoster();
-                                
-                                sepet = []; aktifKuponKodu = ""; aktifKuponIndirimTutari = 0; aktifKuponAltLimit = 0; aktifKuponHedefUrun = "Herşey"; 
-                                document.getElementById("siparis-notu").value = ""; SepetEkraniniCiz(); HesaplaVeGuncelle(); seciliEkstraIstekler = [];
-                                document.getElementById("cc-number").value = ""; document.getElementById("cc-exp").value = ""; document.getElementById("cc-cvv").value = "";
-                                document.getElementById("legal-checkbox").checked = false;
-                                isProcessingOrder = false;
-                            }).catch(e => { OzelUyariGoster("Hata", "Sipariş mutfağa iletilemedi.", "❌"); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde ve Onayla"; });
-
-                        }
-                    }).catch(e => { OzelUyariGoster("Bağlantı Hatası", "Sunucu ile bağlantı kurulamadı.", "📡"); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde ve Onayla"; });
-                }, 2000); 
-
-            }).catch(e => {
-                OzelUyariGoster("Bağlantı Hatası", "Sipariş durumu kontrol edilemedi.", "📡"); 
-                isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde ve Onayla";
-            });
-        }
-
-        async function CanliAdisyonCek() {
-            try {
-                let telRaw = VeriCoz(localStorage.getItem("bg_t"));
-                if(!telRaw || telRaw.length < 10) {
-                    document.getElementById("history-content").innerHTML = `<div class="empty-text">Henüz aktif bir siparişiniz bulunmuyor.<br><br>Sipariş verdiyseniz <strong>Profilim</strong> sekmesinden telefon numaranızın doğruluğunu kontrol edin.</div>`;
-                    return;
-                }
-                
-                let safeTel = telRaw.replace(/[^0-9]/g, '');
-
-                let res = await fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliPaketler/Paket_${safeTel}.json${authKeyStr}&t=${new Date().getTime()}`, { cache: "no-store" });
-                let benimPaketim = await res.json();
-                
-                let html = "";
-                if(!benimPaketim) {
-                    html = `<div class="empty-text">Şu anda aktif veya yolda olan bir paket siparişiniz bulunmuyor.</div>`;
-                } else {
-                    let durum = benimPaketim.durum || "SİPARİŞ ALINDI";
-                    
-                    if(durum.includes("İPTAL")) {
-                        html = `<div class="empty-text" style="color: var(--danger); border-color: rgba(255, 59, 48, 0.3); background: rgba(255, 59, 48, 0.05); padding: 40px 20px;">
-                                    <div style="font-size:40px; margin-bottom:15px; filter: drop-shadow(0 4px 10px rgba(255,59,48,0.4));">❌</div>
-                                    <strong style="font-size:18px; letter-spacing:-0.5px;">Siparişiniz İptal Edildi</strong><br><br>
-                                    <span style="font-size:14px; color:#A1A1AA;">Bu sipariş restoran tarafından kapatıldı veya iptal edildi.</span>
-                                </div>`;
-                    } else {
-                        let durumRengi = "var(--primary)"; let bgRengi = "rgba(255,107,0,0.1)";
-                        if(durum.includes("YOLA ÇIKTI") || durum.includes("TESLİM") || durum.includes("AFİYET")) { durumRengi = "var(--success)"; bgRengi = "rgba(52, 199, 89, 0.1)"; }
-                        
-                        html = `<div class="receipt-card"><div style="text-align: center; margin-bottom: 25px;"><div style="font-weight: 900; font-size: 22px; color:#1c1c1e; letter-spacing:-1px;">BEKMEZ GO</div><div style="font-size: 14px; font-weight: 800; color:var(--text-muted); margin-top:4px;">PAKET SERVİS</div></div><div class="receipt-header"><span>DURUM</span><span style="color:${durumRengi}; font-weight:800; background:${bgRengi}; padding:6px 12px; border-radius:12px; text-align:right;">${escapeHTML(durum)}</span></div>`;
-                        
-                        if(benimPaketim.siparisler) {
-                            benimPaketim.siparisler.forEach(urun => { html += `<div class="receipt-item"><span>${escapeHTML(urun.itemName)}</span><span>${parseFloat(urun.itemPrice).toFixed(2)} ₺</span></div>`; });
-                        }
-                        
-                        if (benimPaketim.siparisNotu) { html += `<div style="margin-top: 20px; padding: 16px; background: rgba(0,0,0,0.03); border-radius:16px; font-size: 13px; font-weight: 600; color:#8e8e93; border: 1px dashed #d1d1d6;">ÖZEL NOT:<br>${escapeHTML(benimPaketim.siparisNotu)}</div>`; }
-                        html += `<div class="receipt-total">TOPLAM: <span style="font-size:28px; display:block; margin-top:8px;">${parseFloat(benimPaketim.toplamTutar).toFixed(2)} TL</span></div><div style="text-align: center; font-size: 11px; margin-top: 25px; color:#a1a1aa; font-weight: 600;">Bizi tercih ettiğiniz için teşekkür ederiz.</div></div>`;
-                    }
-                }
-                if (sonCekilenAdisyonHTML !== html) { document.getElementById("history-content").innerHTML = html; sonCekilenAdisyonHTML = html; }
-            } catch(e) { console.log(e); }
-        }
-    </script>
-</body>
-</html>
+        // Bir sonraki hesaplama için şu anki pozisyonu kaydediyoruz
+        sonPozisyon = transform.position;
+    }
+}
