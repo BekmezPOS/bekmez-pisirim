@@ -669,6 +669,22 @@
         </div>
     </div>
 
+    <!-- AKILLI İPTAL / EK SİPARİŞ ONAY PENCERESİ -->
+    <div id="confirm-overlay" class="custom-alert-overlay" onclick="KapatConfirmModal(event)">
+        <div class="custom-alert-box" id="confirm-box" style="border-color: var(--danger);">
+            <div class="custom-alert-glow" id="confirm-glow" style="background: var(--danger);"></div>
+            <div class="custom-alert-content">
+                <div id="confirm-icon" style="font-size: 55px; margin-bottom: 20px;">❓</div>
+                <h3 id="confirm-title" style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Emin misiniz?</h3>
+                <p id="confirm-text" style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;"></p>
+                <div style="display:flex; gap:10px;">
+                    <button onclick="KapatConfirmModal(event, true)" class="alert-btn" style="background: rgba(255,255,255,0.05); color:white; flex:1;">Vazgeç</button>
+                    <button id="confirm-yes-btn" class="alert-btn" style="background: var(--danger); border-color:transparent; color:white; flex:1;">Evet</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="legal-popup" class="popup-overlay" onclick="if(event.target === this) KapatSozlesme();">
         <div class="popup-content" style="max-height: 85vh;">
             <div class="popup-drag-handle"></div>
@@ -717,7 +733,7 @@
         // GLOBALLER
         const textMesafeli = `<strong style="color:white; font-size:14px;">MADDE 1 - TARAFLAR</strong><br><b>SATICI:</b> Bekmez Pişirim Gıda Ltd. Şti.<br><br><strong style="color:white; font-size:14px;">MADDE 2 - CAYMA HAKKI İSTİSNASI</strong><br>Tüketici Mevzuatı gereğince; çabuk bozulabilen malların teslimine ilişkin sözleşmelerde Tüketicinin CAYMA HAKKI BULUNMAMAKTADIR.`;
         const textTeslimat = `<strong style="color:white; font-size:14px;">TESLİMAT ŞARTLARI</strong><br><br><b>1. Teslimat Bölgesi:</b> Maksimum 4 km yarıçapındaki bölgelere teslim edilmektedir.<br><b>2. Süre:</b> Ortalama 30-45 dakika içerisinde adresinize teslim edilir.`;
-        const textIptal = `<strong style="color:white; font-size:14px;">İPTAL KOŞULLARI</strong><br><br><b>1. Şartlar:</b> Sipariş ancak mutfağa iletilmeden önce iptal edebilir.<br><b>2. İade:</b> Onaylanan iadelerde tutar, 3-7 iş günü içerisinde karta yansıtılır.`;
+        const textIptal = `<strong style="color:white; font-size:14px;">İPTAL KOŞULLARI</strong><br><br><b>1. Şartlar:</b> Sipariş ancak mutfağa iletilmeden önce iptal edilebilir.<br><b>2. İade:</b> Onaylanan iadelerde tutar, 3-7 iş günü içerisinde karta yansıtılır.`;
         const textKVKK = `<strong style="color:white; font-size:14px;">KVKK VE GİZLİLİK POLİTİKASI</strong><br><br><b>Kredi Kartı Güvenliği:</b> Kart bilgileriniz hiçbir şekilde sunucularımızda kaydedilmez.<br><b>Veri İşleme:</b> Bilgileriniz cihazınızda şifrelenir ve 3. şahıslarla paylaşılmaz.`;
 
         const DUKKAN_ENLEM = 36.206278; 
@@ -738,6 +754,7 @@
         
         let deferredPrompt; 
         let installPromptDismissed = localStorage.getItem('pwa_prompt_dismissed') === 'true';
+        let currentConfirmAction = null;
 
         // ==========================================
         // YARDIMCI VE BİLDİRİM FONKSİYONLARI (YENİ SİSTEM)
@@ -747,36 +764,17 @@
             if(navigator.vibrate) navigator.vibrate(15); 
         }
 
-        // BİLDİRİM MOTORU: Tüm engelleri aşmak için 3 farklı yöntemi dener
         function BildirimGonder(baslik, mesaj) {
             if (!("Notification" in window) || Notification.permission !== "granted") return;
-            
-            let ayarlar = { 
-                body: mesaj, 
-                icon: "icon-192.png", 
-                badge: "icon-192.png",
-                vibrate: [200, 100, 200] 
-            };
-
+            let ayarlar = { body: mesaj, icon: "icon-192.png", badge: "icon-192.png", vibrate: [200, 100, 200] };
             try {
                 if (navigator.serviceWorker && navigator.serviceWorker.ready) {
                     navigator.serviceWorker.ready.then(reg => {
-                        if (reg && reg.showNotification) {
-                            reg.showNotification(baslik, ayarlar).catch(() => {
-                                try { new Notification(baslik, ayarlar); } catch(e) {}
-                            });
-                        } else {
-                            try { new Notification(baslik, ayarlar); } catch(e) {}
-                        }
-                    }).catch(() => {
-                        try { new Notification(baslik, ayarlar); } catch(e) {}
-                    });
-                } else {
-                    try { new Notification(baslik, ayarlar); } catch(e) {}
-                }
-            } catch (err) {
-                try { new Notification(baslik, ayarlar); } catch(e) {}
-            }
+                        if (reg && reg.showNotification) { reg.showNotification(baslik, ayarlar).catch(() => { try { new Notification(baslik, ayarlar); } catch(e) {} });
+                        } else { try { new Notification(baslik, ayarlar); } catch(e) {} }
+                    }).catch(() => { try { new Notification(baslik, ayarlar); } catch(e) {} });
+                } else { try { new Notification(baslik, ayarlar); } catch(e) {} }
+            } catch (err) { try { new Notification(baslik, ayarlar); } catch(e) {} }
         }
 
         function SessizIzinIste() {
@@ -809,6 +807,47 @@
                 setTimeout(() => { p.style.display = "none"; d.style.display = "none"; }, 400);
             }
         }
+
+        // AKILLI ONAY PENCERESİ (İptal ve Ek Sipariş İçin)
+        function SoruSor(baslik, metin, ikon, evetCallback, isDanger=false) {
+            document.getElementById("confirm-title").innerText = baslik;
+            document.getElementById("confirm-text").innerHTML = metin;
+            document.getElementById("confirm-icon").innerText = ikon;
+            let btn = document.getElementById("confirm-yes-btn");
+            let box = document.getElementById("confirm-box");
+            let glow = document.getElementById("confirm-glow");
+            
+            if(isDanger) {
+                btn.style.background = "var(--danger)";
+                btn.innerText = "İptal Et";
+                box.style.borderColor = "var(--danger)";
+                glow.style.background = "var(--danger)";
+            } else {
+                btn.style.background = "var(--success)";
+                btn.innerText = "Siparişe Ekle";
+                box.style.borderColor = "var(--success)";
+                glow.style.background = "var(--success)";
+            }
+
+            currentConfirmAction = evetCallback;
+            let p = document.getElementById("confirm-overlay");
+            p.style.display = "flex";
+            setTimeout(() => p.classList.add("active"), 10);
+        }
+
+        function KapatConfirmModal(e, force=false) {
+            if(force || e.target === document.getElementById("confirm-overlay")) {
+                let p = document.getElementById("confirm-overlay");
+                p.classList.remove("active");
+                setTimeout(() => p.style.display = "none", 400);
+            }
+        }
+
+        document.getElementById("confirm-yes-btn").addEventListener("click", () => {
+            KapatConfirmModal(null, true);
+            if(currentConfirmAction) currentConfirmAction();
+        });
+
 
         function UnityFiyatiniHesapla(urun, miktar) {
             if (!urun || miktar <= 0) return 0;
@@ -1108,8 +1147,24 @@
                     setTimeout(() => { 
                         splash.style.display = 'none'; 
                         
-                        if (document.getElementById("menu-container").style.display !== "block" && document.getElementById("cart-container").style.display !== "block") {
-                            SayfaGoster('urunler');
+                        // YENİ: SİPARİŞ HAFIZASI
+                        // Uygulama açıldığında kayıtlı sipariş varsa direkt adisyona yönlendir
+                        let kt = VeriCoz(localStorage.getItem("bg_t")); 
+                        if (kt && kt.length >= 10) {
+                            let sT = kt.replace(/[^0-9]/g, ''); 
+                            fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliPaketler/Paket_${sT}.json${authKeyStr}`)
+                            .then(r => r.json())
+                            .then(d => {
+                                if(d && d.durum && !d.durum.includes("İPTAL") && !d.durum.includes("TESLİM") && !d.durum.includes("AFİYET")) {
+                                    SayfaGoster('gecmis');
+                                } else {
+                                    SayfaGoster('urunler');
+                                }
+                            }).catch(() => SayfaGoster('urunler'));
+                        } else {
+                            if (document.getElementById("menu-container").style.display !== "block" && document.getElementById("cart-container").style.display !== "block") {
+                                SayfaGoster('urunler');
+                            }
                         }
                     }, 800); 
                 }, 400); 
@@ -1126,7 +1181,7 @@
 
         function SayfaGoster(s) {
             HapticTitresim(); 
-            SessizIzinIste(); // Müşteri sekmeye dokunduğunda sessizce izin kuralını aş
+            SessizIzinIste(); 
             
             if(canliAdisyonTimer) { clearInterval(canliAdisyonTimer); canliAdisyonTimer = null; }
             
@@ -1243,8 +1298,7 @@
                     if (ilkYukleme) { 
                         document.getElementById("kategori-sekmeleri").style.display = "flex"; 
                         document.getElementById("menu-grid").innerHTML = ""; 
-                        SayfaGoster('urunler'); 
-                        KategoriSec('Ana Yemek'); 
+                        // Menü renderi Splash'te yönetildiği için buradan kaldırdım
                     } else { 
                         if (document.getElementById("menu-container").style.display === "block") { 
                             if (document.getElementById('tab-Arama').style.display === "flex") {
@@ -1258,7 +1312,6 @@
             } catch(error) { 
                 if (ilkYukleme) {
                     document.getElementById("menu-grid").innerHTML = `<div class="empty-text" style="color:var(--danger)">Bağlantı Hatası! Sayfayı yenileyin.</div>`; 
-                    SayfaGoster('urunler'); 
                 }
             }
         }
@@ -1680,7 +1733,7 @@
         function PopupSepeteEkle() { 
             if(seciliMiktar <= 0) return; 
             HapticTitresim(); 
-            SessizIzinIste(); // Müşteri ürünü sepete eklediğinde sessizce tarayıcıdan bildirim iznini kap
+            SessizIzinIste(); 
             
             let tamIsim = ""; 
             let eklenecekAdet = 1; 
@@ -1798,7 +1851,7 @@
         }
 
         // ==========================================
-        // KUPON VE ÖDEME İŞLEMLERİ
+        // KUPON VE ÖDEME İŞLEMLERİ 
         // ==========================================
 
         async function KuponlariCek() {
@@ -1820,7 +1873,6 @@
                 let hasKupon = false;
                 for (let key in data) {
                     let k = data[key];
-                    
                     if (k.discountAmount && k.isAppCoupon === true) {
                         hasKupon = true;
                         list.innerHTML += `
@@ -1863,68 +1915,37 @@
             fetch("https://bekmezpos-default-rtdb.firebaseio.com/Kuponlar/" + gK + ".json" + authKeyStr + "&t=" + new Date().getTime(), { cache: "no-store" }).then(res => res.json()).then(d => { 
                 b.disabled = false; 
                 if(d && d.discountAmount > 0) { 
-                    
                     if (d.isAppCoupon !== true) {
                         KuponuIptalEt(true);
                         OzelUyariGoster("Sadece Mağazada", "Bu kupon sadece restoran içi siparişlerde geçerlidir, uygulamada kullanılamaz.", "🚫");
                         return;
                     }
-
                     let aU = (d.targetProduct && d.targetProduct !== "") ? d.targetProduct : "Herşey"; 
-                    let uS = false; 
-                    let hM = ""; 
-                    
-                    if(aU === "Herşey") { 
-                        uS = true; 
-                    } else { 
+                    let uS = false; let hM = ""; 
+                    if(aU === "Herşey") { uS = true; } else { 
                         let aV = sepet.some(u => u.rawName.toLocaleLowerCase('tr-TR') === aU.toLocaleLowerCase('tr-TR')); 
                         let bV = sepet.some(u => u.rawName.toLocaleLowerCase('tr-TR') !== aU.toLocaleLowerCase('tr-TR')); 
-                        if (!aV) { 
-                            hM = `'${escapeHTML(aU)}' sepette yok.`; 
-                        } else if (bV) { 
-                            hM = `Sadece '${escapeHTML(aU)}' almalısınız.`; 
-                        } else { 
-                            uS = true; 
-                        } 
+                        if (!aV) { hM = `'${escapeHTML(aU)}' sepette yok.`; } else if (bV) { hM = `Sadece '${escapeHTML(aU)}' almalısınız.`; } else { uS = true; } 
                     } 
-                    
-                    if(!uS) { 
-                        KuponuIptalEt(true); 
-                        OzelUyariGoster("Şart Sağlanmadı", hM, "🛍️"); 
-                        return; 
-                    } 
-                    
-                    if (hamToplamFiyat < d.bottomLimit) { 
-                        KuponuIptalEt(true); 
-                        OzelUyariGoster("Tutar Yetersiz", `Alt limit ${d.bottomLimit} TL.`, "🛒"); 
-                        return; 
-                    } 
+                    if(!uS) { KuponuIptalEt(true); OzelUyariGoster("Şart Sağlanmadı", hM, "🛍️"); return; } 
+                    if (hamToplamFiyat < d.bottomLimit) { KuponuIptalEt(true); OzelUyariGoster("Tutar Yetersiz", `Alt limit ${d.bottomLimit} TL.`, "🛒"); return; } 
                     
                     HapticTitresim(); 
-                    aktifKuponKodu = gK; 
-                    aktifKuponIndirimTutari = d.discountAmount; 
-                    aktifKuponAltLimit = d.bottomLimit; 
-                    aktifKuponHedefUrun = aU; 
+                    aktifKuponKodu = gK; aktifKuponIndirimTutari = d.discountAmount; 
+                    aktifKuponAltLimit = d.bottomLimit; aktifKuponHedefUrun = aU; 
                     OzelUyariGoster("Onaylandı", `${d.discountAmount} TL indirim uygulandı!`, "✅"); 
-                    HesaplaVeGuncelle(); 
-                    KuponArayuzunuGuncelle(); 
+                    HesaplaVeGuncelle(); KuponArayuzunuGuncelle(); 
                 } else { 
-                    KuponuIptalEt(true); 
-                    OzelUyariGoster("Geçersiz", `Hatalı veya süresi dolmuş bir kod.`, "❌"); 
+                    KuponuIptalEt(true); OzelUyariGoster("Geçersiz", `Hatalı veya süresi dolmuş bir kod.`, "❌"); 
                 } 
             }).catch(e => { 
-                b.disabled = false; 
-                b.innerText = "Uygula"; 
-                OzelUyariGoster("Hata", "Sorgulanamadı.", "📡"); 
+                b.disabled = false; b.innerText = "Uygula"; OzelUyariGoster("Hata", "Sorgulanamadı.", "📡"); 
             }); 
         }
         
         function KuponuIptalEt(sM = false) { 
             if(!sM) HapticTitresim(); 
-            aktifKuponKodu = ""; 
-            aktifKuponIndirimTutari = 0; 
-            aktifKuponAltLimit = 0; 
-            aktifKuponHedefUrun = "Herşey"; 
+            aktifKuponKodu = ""; aktifKuponIndirimTutari = 0; aktifKuponAltLimit = 0; aktifKuponHedefUrun = "Herşey"; 
             let iE = document.getElementById("coupon-code"); 
             if(iE) iE.value = ""; 
             KuponArayuzunuGuncelle(); 
@@ -1936,16 +1957,12 @@
             let m = document.getElementById("coupon-message"); 
             let iE = document.getElementById("coupon-code"); 
             if(aktifKuponIndirimTutari > 0) { 
-                b.style.background = "var(--danger)"; 
-                b.style.color = "white"; 
-                b.innerText = "İptal Et"; 
+                b.style.background = "var(--danger)"; b.style.color = "white"; b.innerText = "İptal Et"; 
                 b.onclick = () => KuponuIptalEt(false); 
                 if(iE) { iE.disabled = true; iE.style.opacity = "0.6"; } 
                 m.innerHTML = `<span style="color: var(--success);">✓ ${aktifKuponIndirimTutari} TL İndirim!</span>`; 
             } else { 
-                b.style.background = "rgba(255,255,255,0.05)"; 
-                b.style.color = "var(--text-main)"; 
-                b.innerText = "Uygula"; 
+                b.style.background = "rgba(255,255,255,0.05)"; b.style.color = "var(--text-main)"; b.innerText = "Uygula"; 
                 b.onclick = KuponSorgula; 
                 if(iE) { iE.disabled = false; iE.style.opacity = "1"; } 
                 m.innerHTML = ""; 
@@ -1956,8 +1973,7 @@
             let el = document.getElementById(id); 
             if(el) { 
                 el.classList.remove("input-error"); 
-                void el.offsetWidth; 
-                el.classList.add("input-error"); 
+                void el.offsetWidth; el.classList.add("input-error"); 
                 setTimeout(() => el.classList.remove("input-error"), 500); 
             } 
         }
@@ -1977,17 +1993,17 @@
             setTimeout(() => { p.style.display = "none"; }, 500); 
         }
 
+        // ==========================================
+        // SİPARİŞ GÖNDERME VE BİRLEŞTİRME (YENİ SİSTEM)
+        // ==========================================
+
         function PaketSiparisiGonder() {
             if(isProcessingOrder || sepet.length === 0) return;
             if(!document.getElementById("legal-checkbox").checked) { 
-                OzelUyariGoster("Sözleşme Onayı", "Sözleşmeleri onaylamanız gerek.", "📝"); 
-                return; 
+                OzelUyariGoster("Sözleşme Onayı", "Sözleşmeleri onaylamanız gerek.", "📝"); return; 
             }
-
-            // GÜVENLİK KONTROLÜ: HTTPS veya Localhost kontrolü (GPS için şarttır)
-            if (!window.isSecureContext) {
-                OzelUyariGoster("Güvenlik Uyarısı", "GPS (Konum) sistemi sadece güvenli bağlantılarda (HTTPS) çalışır. Cihaz ayarlarınızı kontrol edin.", "🔒");
-                return;
+            if (!window.isSecureContext && window.location.hostname !== 'localhost') {
+                OzelUyariGoster("Güvenlik Uyarısı", "GPS (Konum) sistemi sadece güvenli bağlantılarda (HTTPS) çalışır.", "🔒"); return;
             }
             
             HapticTitresim();
@@ -1995,7 +2011,6 @@
             let is = document.getElementById("chk-isim").value.trim().replace(/[<>]/g, '').substring(0, 50); 
             let tl = document.getElementById("chk-telefon").value.trim().replace(/[^0-9]/g, '').substring(0, 15); 
             let ad = document.getElementById("chk-adres").value.trim().replace(/[<>]/g, '').substring(0, 150);
-            
             let cN = document.getElementById("cc-name").value.trim(); 
             let cNu = document.getElementById("cc-number").value.trim(); 
             let cE = document.getElementById("cc-exp").value.trim(); 
@@ -2005,39 +2020,28 @@
             if(is.length < 3) { GosterHataInput("chk-isim"); hV = true; } 
             if(tl.length < 10) { GosterHataInput("chk-telefon"); hV = true; } 
             if(ad.length < 10) { GosterHataInput("chk-adres"); hV = true; }
-            if(hV) { 
-                OzelUyariGoster("Eksik", "Ad, telefon veya adres hatalı.", "⚠"); 
-                return; 
-            }
+            if(hV) { OzelUyariGoster("Eksik", "Ad, telefon veya adres hatalı.", "⚠"); return; }
             
             if(cN.length < 3 || cNu.length < 15 || cE.length < 4 || cC.length < 3) { 
-                OzelUyariGoster("Ödeme", "Kart bilgileri eksik.", "💳"); 
-                return; 
+                OzelUyariGoster("Ödeme", "Kart bilgileri eksik.", "💳"); return; 
             }
             
-            let hA = false; 
-            let gH = 0; 
+            let hA = false; let gH = 0; 
             sepet.forEach(u => { 
                 if(u.quantity <= 0 || u.basePrice < 0 || u.baseStockAmount <= 0) hA = true; 
                 gH += (u.basePrice * u.quantity); 
             });
             
             if (sonOdenecekFiyat < 0 || hA || Math.abs((gH - aktifKuponIndirimTutari) - sonOdenecekFiyat) > 1) { 
-                OzelUyariGoster("İhlal", "Geçersiz işlem.", "🚨"); 
-                return; 
+                OzelUyariGoster("İhlal", "Geçersiz işlem.", "🚨"); return; 
             }
             
             let btn = document.getElementById("final-submit-btn"); 
-            btn.disabled = true; 
-            btn.classList.add("loading"); 
-            btn.innerText = "Konum Bulunuyor...📍";
+            btn.disabled = true; btn.classList.add("loading"); btn.innerText = "Konum Bulunuyor...📍";
             
             if (!navigator.geolocation) { 
                 OzelUyariGoster("Hata", "Tarayıcınız GPS sistemini desteklemiyor.", "🚫"); 
-                isProcessingOrder = false; 
-                btn.disabled = false; 
-                btn.classList.remove("loading"); 
-                btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
+                isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
                 return; 
             }
             
@@ -2053,12 +2057,8 @@
                 let ms = GetDistanceKm(DUKKAN_ENLEM, DUKKAN_BOYLAM, p.coords.latitude, p.coords.longitude);
                 if (ms > MAKS_MESAFE_KM) { 
                     let do2 = document.getElementById("distance-alert-overlay"); 
-                    do2.style.display = "flex"; 
-                    setTimeout(() => do2.classList.add("active"), 10); 
-                    isProcessingOrder = false; 
-                    btn.disabled = false; 
-                    btn.classList.remove("loading"); 
-                    btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
+                    do2.style.display = "flex"; setTimeout(() => do2.classList.add("active"), 10); 
+                    isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
                     return; 
                 }
                 DevamEtPaketGonder(is, tl, ad);
@@ -2066,10 +2066,7 @@
                 let errorMessage = "Konum alınamadı. Telefonunuzun GPS ayarları kapalı olabilir veya izin vermediniz.";
                 if(e && e.code === 3) errorMessage = "Konum sinyali çok zayıf. Lütfen açık alana geçin.";
                 OzelUyariGoster("İzin Gerekli", errorMessage, "📍"); 
-                isProcessingOrder = false; 
-                btn.disabled = false; 
-                btn.classList.remove("loading"); 
-                btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
+                isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
             });
         }
 
@@ -2079,35 +2076,39 @@
             localStorage.setItem("bg_a", VeriSifrele(adres));
             
             let btn = document.getElementById("final-submit-btn"); 
-            btn.innerText = "Ödeniyor..."; 
+            btn.innerText = "Sipariş Kontrol Ediliyor..."; 
             let sT = tel.replace(/[^0-9]/g, '');
             
             fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliPaketler/Paket_${sT}.json${authKeyStr}&t=${new Date().getTime()}`)
             .then(r => r.json())
             .then(aA => {
+                
+                // YENİ: AKILLI İLAVE (BİRLEŞTİRME) SİSTEMİ
                 if(aA && aA.durum && !aA.durum.includes("İPTAL") && !aA.durum.includes("TESLİM") && !aA.durum.includes("AFİYET")) { 
-                    OzelUyariGoster("Sürüyor", "Devam eden siparişiniz var.", "⏳"); 
                     isProcessingOrder = false; 
                     btn.disabled = false; 
                     btn.classList.remove("loading"); 
                     btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
+                    
+                    SoruSor("Devam Eden Siparişiniz Var", "Şu an hazırlanan aktif bir siparişiniz bulunuyor. Bu sepetteki ürünleri önceki siparişinize <b>İLAVE ETMEK</b> ister misiniz?", "➕", () => {
+                        SiparisiBirlestir(isim, tel, adres, sT, aA);
+                    });
                     return; 
                 }
                 
+                // Normal Yeni Sipariş Süreci
                 setTimeout(() => {
                     btn.innerText = "İletiliyor...";
                     fetch(firebaseMenuUrl + authKeyStr + "&t=" + new Date().getTime(), { cache: "no-store" }).then(r => r.json()).then(d => {
                         let l = (d && d.products) ? d.products : [];
                         if(l.length > 0) {
-                            let sH = false; 
-                            let hM = "";
+                            let sH = false; let hM = "";
                             
                             for(let i=0; i<sepet.length; i++) {
                                 let gU = l.find(u => u.pName === sepet[i].rawName);
                                 if(gU) { 
                                     let mS = (gU.stockAmount !== undefined) ? parseFloat(gU.stockAmount) : ((gU.stock !== undefined) ? parseFloat(gU.stock) : 999); 
-                                    let sT2 = 0; 
-                                    sepet.forEach(u => { if(u.rawName === gU.pName) sT2 += (u.baseStockAmount * u.quantity); }); 
+                                    let sT2 = 0; sepet.forEach(u => { if(u.rawName === gU.pName) sT2 += (u.baseStockAmount * u.quantity); }); 
                                     if(sT2 > mS) { sH = true; hM = `"${gU.pName}" tükendi.`; break; } 
                                 } else { 
                                     sH = true; hM = "Ürün kaldırılmış."; break; 
@@ -2125,10 +2126,7 @@
                             
                             if(sH) { 
                                 OzelUyariGoster("Hata", hM, "⚠️"); 
-                                isProcessingOrder = false; 
-                                btn.disabled = false; 
-                                btn.classList.remove("loading"); 
-                                btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
+                                isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
                                 return; 
                             }
                             
@@ -2149,77 +2147,129 @@
                                 uD.push({ itemName: kA, itemPrice: -iF, amount: 0, rawName: "" }); 
                             }
                             
+                            let sipZamani = Date.now(); // İPTAL SÜRESİ İÇİN KİLİT NOKTA
                             const pV = { 
-                                tip: "paket", 
-                                musteriAd: escapeHTML(isim), 
-                                telefon: escapeHTML(tel), 
-                                adres: escapeHTML(adres), 
-                                odemeTuru: "Online Ödeme (Kart)", 
-                                siparisDetayi: sD, 
-                                siparisler: uD, 
-                                toplam: sonOdenecekFiyat, 
-                                zaman: new Date().toLocaleTimeString(), 
-                                siparisNotu: escapeHTML(n) 
+                                tip: "paket", musteriAd: escapeHTML(isim), telefon: escapeHTML(tel), adres: escapeHTML(adres), 
+                                odemeTuru: "Online Ödeme (Kart)", siparisDetayi: sD, siparisler: uD, toplam: sonOdenecekFiyat, 
+                                zaman: new Date().toLocaleTimeString(), siparisNotu: escapeHTML(n), timestamp: sipZamani 
                             };
                             
                             fetch(`https://bekmezpos-default-rtdb.firebaseio.com/PaketSiparisler/${sT}.json${authKeyStr}`, { 
-                                method: "PUT", 
-                                headers: { "Content-Type": "application/json" }, 
-                                body: JSON.stringify(pV) 
+                                method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(pV) 
                             }).then(() => {
                                 const cV = { 
-                                    durum: "SİPARİŞ ONAYLANDI", 
-                                    toplamTutar: sonOdenecekFiyat, 
-                                    siparisNotu: escapeHTML(n), 
-                                    siparisler: sepet.map(u => ({ 
-                                        itemName: (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName, 
-                                        itemPrice: u.basePrice * u.quantity 
-                                    })) 
+                                    durum: "SİPARİŞ ONAYLANDI", toplamTutar: sonOdenecekFiyat, siparisNotu: escapeHTML(n), timestamp: sipZamani,
+                                    siparisler: sepet.map(u => ({ itemName: (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName, itemPrice: u.basePrice * u.quantity })) 
                                 };
                                 
                                 fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliPaketler/Paket_${sT}.json${authKeyStr}`, { method: "PUT", body: JSON.stringify(cV) });
                                 
-                                HapticTitresim(); 
-                                CheckoutKapat(); 
-                                BasariEkraniGoster();
+                                HapticTitresim(); CheckoutKapat(); BasariEkraniGoster();
                                 
-                                sepet = []; 
-                                aktifKuponKodu = ""; 
-                                aktifKuponIndirimTutari = 0; 
-                                aktifKuponAltLimit = 0; 
-                                aktifKuponHedefUrun = "Herşey"; 
-                                document.getElementById("siparis-notu").value = ""; 
-                                SepetEkraniniCiz(); 
-                                HesaplaVeGuncelle(); 
-                                seciliEkstraIstekler = []; 
-                                document.getElementById("cc-number").value = ""; 
-                                document.getElementById("cc-exp").value = ""; 
-                                document.getElementById("cc-cvv").value = ""; 
+                                sepet = []; aktifKuponKodu = ""; aktifKuponIndirimTutari = 0; aktifKuponAltLimit = 0; aktifKuponHedefUrun = "Herşey"; 
+                                document.getElementById("siparis-notu").value = ""; SepetEkraniniCiz(); HesaplaVeGuncelle(); seciliEkstraIstekler = []; 
+                                document.getElementById("cc-number").value = ""; document.getElementById("cc-exp").value = ""; document.getElementById("cc-cvv").value = ""; 
                                 isProcessingOrder = false;
                             }).catch(e => { 
                                 OzelUyariGoster("Hata", "Sipariş gitmedi.", "❌"); 
-                                isProcessingOrder = false; 
-                                btn.disabled = false; 
-                                btn.classList.remove("loading"); 
-                                btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
+                                isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
                             });
 
                         }
                     }).catch(e => { 
                         OzelUyariGoster("Hata", "Bağlantı koptu.", "📡"); 
-                        isProcessingOrder = false; 
-                        btn.disabled = false; 
-                        btn.classList.remove("loading"); 
-                        btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
+                        isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
                     });
-                }, 2000); 
+                }, 1000); 
             }).catch(e => { 
                 OzelUyariGoster("Hata", "Ağ sorunu.", "📡"); 
-                isProcessingOrder = false; 
-                btn.disabled = false; 
-                btn.classList.remove("loading"); 
-                btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
+                isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
             });
+        }
+
+        // AKILLI İLAVE (SİPARİŞ BİRLEŞTİRME) SİSTEMİ
+        function SiparisiBirlestir(isim, tel, adres, sT, mevcutCanli) {
+            let btn = document.getElementById("final-submit-btn");
+            btn.innerText = "İlave Ediliyor...";
+            btn.classList.add("loading");
+            btn.disabled = true;
+            isProcessingOrder = true;
+
+            fetch(`https://bekmezpos-default-rtdb.firebaseio.com/PaketSiparisler/${sT}.json${authKeyStr}`)
+            .then(r => r.json())
+            .then(eskiSiparis => {
+                if(!eskiSiparis) {
+                    OzelUyariGoster("Hata", "Ana sipariş bulunamadı, baştan deneyin.", "❌");
+                    isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde";
+                    return;
+                }
+
+                let yeniNot = document.getElementById("siparis-notu").value.trim().replace(/[<>]/g, '').substring(0, 100);
+                let eklenecekSiparisDetayi = "\n\n--- [EK İLAVE] ---\n";
+                sepet.forEach(u => { eklenecekSiparisDetayi += (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName + "\n"; });
+
+                let yeniUrunler = sepet.map(u => ({
+                    itemName: "[EK] " + (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName,
+                    itemPrice: u.basePrice * u.quantity,
+                    amount: u.baseStockAmount * u.quantity,
+                    rawName: u.rawName
+                }));
+
+                let iF = hamToplamFiyat - sonOdenecekFiyat;
+                if(iF > 0) {
+                    let kA = aktifKuponKodu !== "" ? "Kupon [" + aktifKuponKodu + "]" : "Web İndirimi";
+                    yeniUrunler.push({ itemName: "[EK] " + kA, itemPrice: -iF, amount: 0, rawName: "" });
+                }
+
+                eskiSiparis.siparisler = (eskiSiparis.siparisler || []).concat(yeniUrunler);
+                eskiSiparis.siparisDetayi = (eskiSiparis.siparisDetayi || "") + eklenecekSiparisDetayi;
+                eskiSiparis.toplam = (eskiSiparis.toplam || 0) + sonOdenecekFiyat;
+                if(yeniNot !== "") eskiSiparis.siparisNotu = (eskiSiparis.siparisNotu || "") + " | Ek Not: " + yeniNot;
+
+                fetch(`https://bekmezpos-default-rtdb.firebaseio.com/PaketSiparisler/${sT}.json${authKeyStr}`, {
+                    method: "PUT", body: JSON.stringify(eskiSiparis)
+                }).then(() => {
+                    mevcutCanli.siparisler = (mevcutCanli.siparisler || []).concat(yeniUrunler.map(u => ({itemName: u.itemName, itemPrice: u.itemPrice})));
+                    mevcutCanli.toplamTutar = (mevcutCanli.toplamTutar || 0) + sonOdenecekFiyat;
+                    if(yeniNot !== "") mevcutCanli.siparisNotu = (mevcutCanli.siparisNotu || "") + " | Ek Not: " + yeniNot;
+
+                    fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliPaketler/Paket_${sT}.json${authKeyStr}`, {
+                        method: "PUT", body: JSON.stringify(mevcutCanli)
+                    }).then(() => {
+                        BasariEkraniGoster();
+                        sepet = []; KuponuIptalEt(true); document.getElementById("siparis-notu").value = ""; SepetEkraniniCiz(); CheckoutKapat();
+                        document.getElementById("cc-number").value = ""; document.getElementById("cc-exp").value = ""; document.getElementById("cc-cvv").value = ""; 
+                        isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde";
+                    });
+                });
+            });
+        }
+
+        // ==========================================
+        // ADİSYON TAKİBİ VE AKILLI İPTAL SİSTEMİ
+        // ==========================================
+
+        function IptalOnaySor() {
+            HapticTitresim();
+            SoruSor("Siparişi İptal Et", "Siparişinizi iptal etmek istediğinize emin misiniz? İşlem geri alınamaz.", "⚠️", () => {
+                SiparişiGercektenIptalEt();
+            }, true);
+        }
+
+        function SiparişiGercektenIptalEt() {
+            let tR = VeriCoz(localStorage.getItem("bg_t")); 
+            if(!tR) return; 
+            let sT = tR.replace(/[^0-9]/g, ''); 
+            
+            fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliPaketler/Paket_${sT}.json${authKeyStr}`, {
+                method: "PATCH", body: JSON.stringify({ durum: "MÜŞTERİ İPTAL ETTİ" })
+            });
+            fetch(`https://bekmezpos-default-rtdb.firebaseio.com/PaketSiparisler/${sT}.json${authKeyStr}`, {
+                method: "PATCH", body: JSON.stringify({ iptalEdildi: true, siparisNotu: "DİKKAT: MÜŞTERİ SİPARİŞİ İPTAL ETTİ!" })
+            });
+
+            OzelUyariGoster("İptal Edildi", "Siparişiniz başarıyla iptal edildi.", "✅");
+            CanliAdisyonCek();
         }
 
         async function CanliAdisyonCek() {
@@ -2237,33 +2287,49 @@
                 let h = "";
                 if(!bP) { 
                     h = `<div class="empty-text">Aktif bir siparişiniz bulunmuyor.</div>`; 
+                    sonCekilenAdisyonHTML = "";
                 } else {
                     let dR = bP.durum || "SİPARİŞ ALINDI";
+                    
                     if(dR.includes("İPTAL")) { 
-                        h = `<div class="empty-text" style="color: var(--danger); border-color: rgba(255, 59, 48, 0.3); background: rgba(255, 59, 48, 0.05); padding: 40px 20px;"><div style="font-size:40px; margin-bottom:15px;">❌</div><strong style="font-size:18px;">İptal Edildi</strong><br><br><span style="font-size:14px; color:#A1A1AA;">Restoran iptal etti.</span></div>`; 
+                        h = `<div class="empty-text" style="color: var(--danger); border-color: rgba(255, 59, 48, 0.3); background: rgba(255, 59, 48, 0.05); padding: 40px 20px;"><div style="font-size:40px; margin-bottom:15px;">❌</div><strong style="font-size:18px;">İptal Edildi</strong><br><br><span style="font-size:14px; color:#A1A1AA;">Sipariş iptal durumundadır.</span></div>`; 
+                        sonCekilenAdisyonHTML = "";
                     } else {
-                        let c = "var(--primary)"; 
-                        let bg = "rgba(255,107,0,0.1)"; 
+                        let c = "var(--primary)"; let bg = "rgba(255,107,0,0.1)"; 
                         if(dR.includes("YOLA ÇIKTI") || dR.includes("TESLİM") || dR.includes("AFİYET")) { 
-                            c = "var(--success)"; 
-                            bg = "rgba(52, 199, 89, 0.1)"; 
+                            c = "var(--success)"; bg = "rgba(52, 199, 89, 0.1)"; 
                         }
                         
+                        // 3 DAKİKA İPTAL SÜRESİ KONTROLÜ
+                        let iptalButonuHTML = "";
+                        let gerisayimSuruyor = false;
+                        if (bP.timestamp && (dR === "SİPARİŞ ONAYLANDI" || dR === "SİPARİŞ ALINDI")) {
+                            let gecenSaniye = Math.floor((Date.now() - bP.timestamp) / 1000);
+                            let kalanSaniye = 180 - gecenSaniye; // 3 Dakika = 180 saniye
+                            if (kalanSaniye > 0) {
+                                gerisayimSuruyor = true;
+                                let dk = Math.floor(kalanSaniye / 60);
+                                let sn = kalanSaniye % 60;
+                                let zamanMetni = `${dk}:${sn < 10 ? '0':''}${sn}`;
+                                iptalButonuHTML = `<button onclick="IptalOnaySor()" style="margin-top:20px; width:100%; background:rgba(255,59,48,0.1); border:1px solid rgba(255, 59, 48, 0.5); color:var(--danger); padding:14px; border-radius:100px; font-weight:800; font-size:14px; cursor:pointer;">Siparişi İptal Et (${zamanMetni})</button>`;
+                            }
+                        }
+
                         h = `<div class="receipt-card"><div style="text-align: center; margin-bottom: 25px;"><div style="font-weight: 900; font-size: 22px; color:#1c1c1e;">BEKMEZ GO</div><div style="font-size: 14px; font-weight: 800; color:var(--text-muted); margin-top:4px;">PAKET SERVİS</div></div><div class="receipt-header"><span>DURUM</span><span style="color:${c}; font-weight:800; background:${bg}; padding:6px 12px; border-radius:12px; text-align:right;">${escapeHTML(dR)}</span></div>`;
                         if(bP.siparisler) { 
-                            bP.siparisler.forEach(u => { 
-                                h += `<div class="receipt-item"><span>${escapeHTML(u.itemName)}</span><span>${parseFloat(u.itemPrice).toFixed(2)} ₺</span></div>`; 
-                            }); 
+                            bP.siparisler.forEach(u => { h += `<div class="receipt-item"><span>${escapeHTML(u.itemName)}</span><span>${parseFloat(u.itemPrice).toFixed(2)} ₺</span></div>`; }); 
                         }
                         if (bP.siparisNotu) { 
                             h += `<div style="margin-top: 20px; padding: 16px; background: rgba(0,0,0,0.03); border-radius:16px; font-size: 13px; font-weight: 600; color:#8e8e93; border: 1px dashed #d1d1d6;">NOT:<br>${escapeHTML(bP.siparisNotu)}</div>`; 
                         }
-                        h += `<div class="receipt-total">TOPLAM: <span style="font-size:28px; display:block; margin-top:8px;">${parseFloat(bP.toplamTutar).toFixed(2)} TL</span></div><div style="text-align: center; font-size: 11px; margin-top: 25px; color:#a1a1aa; font-weight: 600;">Bizi tercih ettiğiniz için teşekkür ederiz.</div></div>`;
+                        h += `<div class="receipt-total">TOPLAM: <span style="font-size:28px; display:block; margin-top:8px;">${parseFloat(bP.toplamTutar).toFixed(2)} TL</span></div>${iptalButonuHTML}<div style="text-align: center; font-size: 11px; margin-top: 25px; color:#a1a1aa; font-weight: 600;">Bizi tercih ettiğiniz için teşekkür ederiz.</div></div>`;
+                        
+                        if (!gerisayimSuruyor) sonCekilenAdisyonHTML = h; // Geri sayım varsa her saniye güncellenmesi için cachelemeyi durduruyoruz.
                     }
                 }
-                if (sonCekilenAdisyonHTML !== h) { 
+                
+                if (document.getElementById("history-content").innerHTML !== h) { 
                     document.getElementById("history-content").innerHTML = h; 
-                    sonCekilenAdisyonHTML = h; 
                 }
             } catch(e) {}
         }
