@@ -1,9 +1,25 @@
-self.addEventListener('install', (event) => {
-    console.log('Service Worker Yüklendi.');
+self.addEventListener('install', (e) => {
     self.skipWaiting();
 });
 
-// Chrome'un PWA onayı vermesi için bu boş dinleyici şarttır.
-self.addEventListener('fetch', (event) => {
-    // Şimdilik boş bırakıyoruz, sadece PWA kurallarını geçmek için burada.
+self.addEventListener('activate', (e) => {
+    return self.clients.claim();
+});
+
+// Bildirime tıklandığında uygulamayı açma kodu
+self.addEventListener('notificationclick', function(event) {
+    event.notification.close();
+    event.waitUntil(
+        clients.matchAll({type: 'window'}).then( windowClients => {
+            for (var i = 0; i < windowClients.length; i++) {
+                var client = windowClients[i];
+                if (client.url === '/' && 'focus' in client) {
+                    return client.focus();
+                }
+            }
+            if (clients.openWindow) {
+                return clients.openWindow('/');
+            }
+        })
+    );
 });
