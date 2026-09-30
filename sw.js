@@ -1,16 +1,20 @@
-const CACHE_NAME = "bekmez-go-v2";
+const CACHE_NAME = "bekmez-go-v3";
+// Dosya yolları GitHub Pages için bağımsız hale getirildi (Başına nokta eklendi)
 const ASSETS_TO_CACHE = [
-    "/bekmez-pisirim/paket.html",
-    "/bekmez-pisirim/manifest.json",
-    "/bekmez-pisirim/icon-192.png",
-    "/bekmez-pisirim/icon-512.png"
+    "./paket.html",
+    "./manifest.json",
+    "./icon-192.png",
+    "./icon-512.png"
 ];
 
 self.addEventListener("install", function(event) {
     self.skipWaiting();
     event.waitUntil(
         caches.open(CACHE_NAME).then(function(cache) {
-            return cache.addAll(ASSETS_TO_CACHE);
+            // HATA YOKSAYICI: Dosyalardan biri sunucuda yoksa bile çökmeyi engeller!
+            return Promise.allSettled(
+                ASSETS_TO_CACHE.map(url => cache.add(url).catch(err => console.log("Eksik dosya atlandı:", url)))
+            );
         })
     );
 });
@@ -41,7 +45,7 @@ self.addEventListener("fetch", function(event) {
         caches.match(event.request).then(function(response) {
             return response || fetch(event.request).catch(function() {
                 if (event.request.headers.get("accept") && event.request.headers.get("accept").includes("text/html")) {
-                    return caches.match("/bekmez-pisirim/paket.html");
+                    return caches.match("./paket.html");
                 }
             });
         })
@@ -59,7 +63,7 @@ self.addEventListener("notificationclick", function(event) {
                 }
                 return client.focus();
             }
-            return self.clients.openWindow("/bekmez-pisirim/paket.html");
+            return self.clients.openWindow("./paket.html");
         })
     );
 });
