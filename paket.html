@@ -59,17 +59,14 @@
         .status-dot::after { content: ''; position: absolute; top: -4px; left: -4px; right: -4px; bottom: -4px; border-radius: 50%; border: 1px solid var(--primary); animation: radarPulse 2s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
         @keyframes radarPulse { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(2.5); opacity: 0; } }
         
-        /* DÜZELTİLEN: SPLASH EKRANI HIZLI GO ANİMASYONU */
         .splash-logo { font-size: 48px; font-weight: 900; color: #fff; margin-bottom: 8px; letter-spacing: -2px; line-height: 1; opacity: 0; transform: translateY(20px); animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.3s; text-align: center; display: flex; flex-direction: column; align-items: center;}
         .splash-go-text { font-style: italic; color: var(--primary); text-shadow: 0 4px 15px var(--primary-glow); font-size: 44px; margin-bottom: 2px;}
         .splash-speed-lines { display: flex; flex-direction: column; justify-content: center; gap: 5px; margin-left: 2px;}
-        
-        .splash-line { background: var(--primary); height: 6px; border-radius: 3px; animation: splashFastDash 1s infinite linear; box-shadow: 0 0 8px var(--primary-glow);}
-        .splash-line:nth-child(1) { width: 14px; animation-duration: 0.6s; }
-        .splash-line:nth-child(2) { width: 22px; animation-duration: 0.8s; }
-        .splash-line:nth-child(3) { width: 10px; animation-duration: 0.7s; }
-        
-        @keyframes splashFastDash { 0% { transform: translateX(-10px); opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { transform: translateX(10px); opacity: 0; } }
+        .splash-line { background: var(--primary); height: 6px; border-radius: 3px; opacity: 0; animation: premiumDashSplash 4s infinite cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 0 8px var(--primary-glow);}
+        .splash-line:nth-child(1) { width: 14px; animation-delay: 0s; }
+        .splash-line:nth-child(2) { width: 22px; animation-delay: 0.15s; }
+        .splash-line:nth-child(3) { width: 10px; animation-delay: 0.3s; }
+        @keyframes premiumDashSplash { 0% { transform: translateX(-8px); opacity: 0; } 10% { transform: translateX(0); opacity: 1; } 20% { transform: translateX(8px); opacity: 0; } 100% { transform: translateX(8px); opacity: 0; } }
         
         .splash-subtitle { font-size: 11px; color: var(--text-muted); font-weight: 600; letter-spacing: 4px; text-transform: uppercase; opacity: 0; animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.5s; margin-top: 5px;}
         @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
@@ -451,8 +448,6 @@
                 Bekmez Pişirim Gıda Ltd. Şti.<br>Çekmece Mah. 302.Sok İstanbul Kardeşlik Çarşısı 2 No:9 Defne/Hatay<br>
                 E-Posta: iletisim@bekmezpisirim.com
             </div>
-
-            <button class="order-btn shimmer-btn" onclick="ManuelUygulamaIndir()" style="margin-top: 25px; background: var(--success); box-shadow: 0 8px 20px rgba(52, 199, 89, 0.3);">📱 Uygulamayı Cihazıma Kur</button>
         </div>
     </div>
 
@@ -578,6 +573,12 @@
     </div>
 
     <script>
+        window.addEventListener('appinstalled', (evt) => {
+            document.getElementById('pwa-fullscreen-prompt').style.display = 'none';
+            document.getElementById('pwa-install-banner').style.display = 'none';
+            OzelUyariGoster("Kurulum Tamamlandı! 🎉", "Bekmez GO telefonunuza yüklendi. Lütfen tarayıcıyı kapatıp ana ekranınızdaki uygulamadan giriş yapın.", "✅");
+        });
+
         function VeriSifrele(text) { try { return btoa(encodeURIComponent(text)); } catch(e) { return ""; } }
         function VeriCoz(hash) { try { return decodeURIComponent(atob(hash)); } catch(e) { return ""; } }
 
@@ -643,14 +644,14 @@
 
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault(); deferredPrompt = e;
-            if (!window.matchMedia('(display-mode: standalone)').matches) {
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+            if (!isStandalone) {
                 if (!installPromptDismissed) {
                     let promptOverlay = document.getElementById('pwa-fullscreen-prompt'); promptOverlay.style.display = 'flex'; setTimeout(() => { promptOverlay.classList.add('active'); }, 10);
                 } else { document.getElementById("pwa-install-banner").style.display = "flex"; }
             }
         });
 
-        // GÜNCELLEME: TERK EDİLEN SEPET HATIRLATICISI (15 SANİYE İÇİNDE DÜŞER)
         let cartReminderTimer = null;
         document.addEventListener("visibilitychange", function() {
             if (document.visibilityState === 'hidden') {
@@ -658,10 +659,10 @@
                     cartReminderTimer = setTimeout(() => {
                         if ("Notification" in window && Notification.permission === "granted") {
                             navigator.serviceWorker.ready.then(reg => {
-                                reg.showNotification("Sepetini Unuttun! 🛒", {
-                                    body: "Siparişini tamamla, Bekmez lezzeti hemen kapına gelsin! 🏃‍♂️💨",
+                                reg.showNotification("Eyvah, sepetin soğuyor! 🥶🥩", {
+                                    body: "Sepetindeki lezzetler seni bekliyor. Siparişini tamamla, Bekmez GO hızıyla hemen kapına getirelim! 🛵💨",
                                     icon: "icon-192.png",
-                                    vibrate: [200, 100, 200]
+                                    vibrate: [200, 100, 200, 100, 200]
                                 });
                             });
                         }
@@ -672,7 +673,6 @@
             }
         });
 
-        // GÜNCELLEME: İZİNLERİ KENDİLİĞİNDEN ZİNCİRLEME İSTEYEN SİSTEM
         function SiraylaIzinIste() {
             if ("Notification" in window && Notification.permission === "default") {
                 Notification.requestPermission().then(permission => {
@@ -727,13 +727,24 @@
             if (isInApp()) { OzelUyariGoster("Tarayıcı Desteklenmiyor", "Lütfen sağ üstteki 3 noktaya basıp 'Tarayıcıda Aç' (Chrome/Safari) seçeneğini seçin.", "🌐"); return; }
             if (isIos()) { OzelUyariGoster("iOS Kurulumu", "iPhone'unuza kurmak için alt menüdeki [Paylaş] ikonuna basıp 'Ana Ekrana Ekle' seçeneğini seçiniz.", "🍏"); return; }
 
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+            if (isStandalone) {
+                OzelUyariGoster("Zaten Uygulamadasınız", "Şu an zaten Bekmez GO uygulamasını kullanıyorsunuz. Keyifli siparişler!", "🚀");
+                return;
+            }
+
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') { document.getElementById("pwa-fullscreen-prompt").style.display = "none"; document.getElementById("pwa-install-banner").style.display = "none"; }
+                    if (choiceResult.outcome === 'accepted') {
+                        document.getElementById("pwa-fullscreen-prompt").style.display = "none";
+                        document.getElementById("pwa-install-banner").style.display = "none";
+                    }
                     deferredPrompt = null;
                 });
-            } else { OzelUyariGoster("Zaten Yüklü", "Uygulama cihazınıza zaten yüklü veya tarayıcınız bu özelliği desteklemiyor.", "✅"); }
+            } else {
+                OzelUyariGoster("Uygulama Yüklü", "Uygulama zaten telefonunuzda yüklü. Lütfen ana ekranınızdan Bekmez GO ikonuna tıklayarak açın.", "📲");
+            }
         }
 
         function CloseFullscreenPrompt() { HapticTitresim(); let prompt = document.getElementById('pwa-fullscreen-prompt'); prompt.classList.remove('active'); setTimeout(() => { prompt.style.display = 'none'; }, 500); localStorage.setItem('pwa_prompt_dismissed', 'true'); if (deferredPrompt) document.getElementById('pwa-install-banner').style.display = 'flex'; }
@@ -820,7 +831,15 @@
                     splash.style.opacity = '0'; 
                     setTimeout(() => { 
                         splash.style.display = 'none'; 
-                        SiraylaIzinIste(); 
+                        
+                        // SADECE UYGULAMA İÇİNDEYSE (STANDALONE) İZİNLERİ OTOMATİK İSTE
+                        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+                        if(isStandalone) {
+                            if(!localStorage.getItem('bg_perms_asked')) {
+                                SiraylaIzinIste();
+                                localStorage.setItem('bg_perms_asked', 'true');
+                            }
+                        }
                     }, 800); 
                 }, 400); 
             } 
@@ -972,7 +991,6 @@
                             if(!isNaN(cp) && cp > 0) {
                                 let hk = history[u.pName];
                                 
-                                // GÜNCELLEME: UYGULAMA AÇIK OLSA BİLE BİLDİRİM DÜŞER
                                 if (hk !== undefined && cp < hk) {
                                     if ("Notification" in window && Notification.permission === "granted") {
                                         navigator.serviceWorker.ready.then(function(registration) {
