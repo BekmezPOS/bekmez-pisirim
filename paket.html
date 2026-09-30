@@ -561,7 +561,7 @@
         <h2 class="page-title">Profilim</h2>
         
         <div class="security-badge">
-            <div class="icon">🛡️️</div>
+            <div class="icon">🛡️</div>
             <div class="text">
                 <span class="badge-title">Uçtan Uca Güvenlik</span>
                 Kişisel verileriniz hiçbir uzak sunucuya kaydedilmez. Tamamen <strong>kendi telefonunuzun şifreli hafızasında</strong> saklanır.
@@ -745,6 +745,13 @@
 
         function HapticTitresim() { 
             if(navigator.vibrate) navigator.vibrate(15); 
+        }
+
+        // OTOMATİK SESSİZ İZİN SİSTEMİ (BUTONSUZ)
+        function SessizIzinIste() {
+            if ("Notification" in window && Notification.permission === "default") {
+                Notification.requestPermission();
+            }
         }
 
         function escapeHTML(str) {
@@ -1000,22 +1007,6 @@
             }
         });
 
-        function SiraylaIzinIste() {
-            if ("Notification" in window && Notification.permission === "default") {
-                Notification.requestPermission().then(p => { 
-                    setTimeout(KonumIzniIste, 1000); 
-                });
-            } else { 
-                setTimeout(KonumIzniIste, 1000); 
-            }
-        }
-
-        function KonumIzniIste() { 
-            if (navigator.geolocation) { 
-                navigator.geolocation.getCurrentPosition(()=>{}, ()=>{}, {timeout: 5000}); 
-            } 
-        }
-
         function ManuelUygulamaIndir() {
             HapticTitresim();
             const isIos = () => { const ua = window.navigator.userAgent.toLowerCase(); return /iphone|ipad|ipod/.test(ua); }
@@ -1096,12 +1087,6 @@
                         if (document.getElementById("menu-container").style.display !== "block" && document.getElementById("cart-container").style.display !== "block") {
                             SayfaGoster('urunler');
                         }
-                        
-                        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-                        if (isStandalone && !localStorage.getItem('bg_perms_asked')) { 
-                            SiraylaIzinIste(); 
-                            localStorage.setItem('bg_perms_asked', 'true'); 
-                        }
                     }, 800); 
                 }, 400); 
             } 
@@ -1117,6 +1102,8 @@
 
         function SayfaGoster(s) {
             HapticTitresim(); 
+            SessizIzinIste(); // Müşteri sekmeye dokunduğunda sessizce izin kuralını aş
+            
             if(canliAdisyonTimer) { clearInterval(canliAdisyonTimer); canliAdisyonTimer = null; }
             
             document.getElementById("menu-container").style.display = "none"; 
@@ -1227,7 +1214,7 @@
                                                 }
                                             });
                                         }
-                                    } catch(notifyErr) { console.log("Bildirim gönderilemedi:", notifyErr); }
+                                    } catch(notifyErr) {}
                                 }
                                 
                                 if(hk === undefined || cp > hk) { 
@@ -1682,6 +1669,7 @@
         function PopupSepeteEkle() { 
             if(seciliMiktar <= 0) return; 
             HapticTitresim(); 
+            SessizIzinIste(); // Müşteri ürünü sepete eklediğinde sessizce tarayıcıdan bildirim iznini kap
             
             let tamIsim = ""; 
             let eklenecekAdet = 1; 
@@ -1822,7 +1810,6 @@
                 for (let key in data) {
                     let k = data[key];
                     
-                    // SADECE UYGULAMADA GEÇERLİ OLANLARI (isAppCoupon: true) GÖSTERİR
                     if (k.discountAmount && k.isAppCoupon === true) {
                         hasKupon = true;
                         list.innerHTML += `
@@ -1867,7 +1854,6 @@
                 b.disabled = false; 
                 if(d && d.discountAmount > 0) { 
                     
-                    // EĞER KUPON VAR AMA "isAppCoupon" İŞARETLİ DEĞİLSE SİSTEM ENGELLER
                     if (d.isAppCoupon !== true) {
                         KuponuIptalEt(true);
                         OzelUyariGoster("Sadece Mağazada", "Bu kupon sadece restoran içi siparişlerde geçerlidir, uygulamada kullanılamaz.", "🚫");
