@@ -1,6 +1,6 @@
 {
-  "name": "Bekmez Paket",
-  "short_name": "Bekmez",
+  "name": "BekmezGO",
+  "short_name": "BekmezGO",
   "start_url": "./paket.html",
   "display": "standalone",
   "background_color": "#000000",
