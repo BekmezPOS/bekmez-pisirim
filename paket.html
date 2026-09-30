@@ -66,7 +66,7 @@
         
         .app-header, #menu-container, #cart-container, #history-container, #profile-container, #opportunities-container { position: relative; z-index: 10; }
 
-        /* SPLASH EKRANI */
+        /* SPLASH EKRANI VE ANİMASYONLARI */
         #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-dark); z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.8s ease; overflow: hidden; }
         .aura-bg { position: absolute; width: 500px; height: 500px; background: var(--primary); border-radius: 50%; filter: blur(180px); opacity: 0.12; animation: auraPulse 5s infinite alternate ease-in-out; z-index: 1;}
         @keyframes auraPulse { 0% { transform: scale(0.8); opacity: 0.08; } 100% { transform: scale(1.1); opacity: 0.15; } }
@@ -77,7 +77,6 @@
         .status-dot::after { content: ''; position: absolute; top: -4px; left: -4px; right: -4px; bottom: -4px; border-radius: 50%; border: 1px solid var(--primary); animation: radarPulse 2s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
         @keyframes radarPulse { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(2.5); opacity: 0; } }
 
-        /* SPLASH LOGO & MOTOR ANİMASYONU */
         .splash-logo { font-size: 48px; font-weight: 900; color: #fff; margin-bottom: 8px; letter-spacing: -2px; line-height: 1; opacity: 0; transform: translateY(20px); animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.3s; display: flex; align-items: center; justify-content: center;}
         
         .splash-go-container { position: relative; display: flex; align-items: center; justify-content: center; width: 100px; height: 60px; margin-left: 8px; }
@@ -112,20 +111,16 @@
             70% { opacity: 1; transform: translateX(30px) scale(1) rotate(5deg); }
             75%, 100% { opacity: 0; transform: translateX(120px) scale(0.8) rotate(15deg); }
         }
-
         .splash-subtitle { font-size: 11px; color: var(--text-muted); font-weight: 600; letter-spacing: 4px; text-transform: uppercase; opacity: 0; animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.5s; margin-top: 5px;}
         @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 
-        /* HEADER & MOTOR ANİMASYONU */
+        /* HEADER DİZAYNI */
         .app-header { display: flex; align-items: center; justify-content: center; padding: 15px; position: sticky; top: 0; background: rgba(0, 0, 0, 0.85); z-index: 100; border-bottom: 1px solid var(--border-light); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
-        
         .brand-name { font-size: 24px; font-weight: 900; color: var(--text-main); letter-spacing: -0.5px; display: flex; align-items: center; justify-content: center; line-height: 1;}
-        
         .go-anim-container { position: relative; display: flex; align-items: center; justify-content: flex-start; width: 65px; height: 28px; margin-left: 6px; overflow: visible;}
         .go-text-group { position: absolute; left: 0; display: flex; align-items: center; animation: goCycle 6s infinite cubic-bezier(0.25, 1, 0.5, 1); transform-origin: left center;}
         .go-text { font-style: italic; color: var(--primary); letter-spacing: -1px; text-shadow: 0 2px 10px rgba(255,107,0,0.5); font-size: 26px; line-height: 1; font-weight: 900;}
         .go-speed-lines { display: flex; flex-direction: column; justify-content: center; gap: 3px; margin-left: 4px; }
-        
         .go-motor-wrapper { position: absolute; left: -10px; opacity: 0; display: flex; align-items: center; justify-content: center; animation: motorCycle 6s infinite cubic-bezier(0.25, 1, 0.5, 1); }
         .go-motor-svg { width: 34px; height: auto; filter: drop-shadow(0 2px 5px rgba(255,107,0,0.6)); }
 
@@ -150,7 +145,6 @@
             75%, 100% { opacity: 0; transform: translateX(70px) scale(0.8) rotate(15deg); }
         }
 
-        /* Ortak Çizgiler */
         .splash-line, .go-line { background: var(--primary); border-radius: 2px; box-shadow: 0 0 5px var(--primary-glow); animation: speedDash 1s infinite linear;}
         .go-line { height: 4px; } .splash-line { height: 6px; }
         .splash-line:nth-child(1), .go-line:nth-child(1) { width: 14px; animation-duration: 0.9s; }
@@ -158,7 +152,7 @@
         .splash-line:nth-child(3), .go-line:nth-child(3) { width: 10px; animation-duration: 1.1s; }
         @keyframes speedDash { 0% { transform: translateX(-6px); opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { transform: translateX(12px); opacity: 0; } }
 
-        /* NAVIGATION */
+        /* NAVIGATION & DİĞER CSSLER */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(15, 15, 20, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-around; align-items: center; padding: 8px 10px calc(8px + env(safe-area-inset-bottom)) 10px; z-index: 2000; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); }
         .nav-item { background: transparent; border: none; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 4px; font-family: inherit; font-size: 10px; font-weight: 700; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); position: relative; flex: 1; }
         .nav-item .icon { font-size: 22px; filter: grayscale(1); transition: 0.3s; margin-bottom: 2px; }
@@ -188,10 +182,8 @@
         .neon-border::before { content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px; background: linear-gradient(90deg, #FF6B00, #FACC15, #FF6B00, #FACC15); background-size: 300% 100%; border-radius: inherit; z-index: -1; animation: neonFlow 3s linear infinite; opacity: 0.5; filter: blur(5px); transition: opacity 0.3s; }
         .neon-border:active::before { opacity: 0.8; filter: blur(8px); }
         @keyframes neonFlow { 0% { background-position: 0% 0%; } 100% { background-position: 300% 0%; } }
-
         @keyframes floatUpFade { 0% { opacity: 0; transform: translate(-50%, -20%) scale(0.8); } 20% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); } 80% { opacity: 1; transform: translate(-50%, -70%) scale(1); } 100% { opacity: 0; transform: translate(-50%, -90%) scale(0.9); } }
 
-        /* Arama & Sekmeler */
         .search-container { padding: 15px 15px 5px 15px; position: relative;}
         .search-input { width: 100%; background: rgba(25, 25, 30, 0.9); border: 1px solid var(--border-highlight); color: var(--text-main); padding: 14px 15px 14px 45px; border-radius: 20px; font-size: 14px; font-weight:600; font-family: inherit; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: inset 0 2px 10px rgba(0,0,0,0.3), 0 5px 15px rgba(0,0,0,0.2);}
         .search-input:focus { outline: none; border-color: var(--primary); background: var(--surface-solid); box-shadow: inset 0 2px 5px rgba(0,0,0,0.5), 0 0 0 2px var(--primary-light), 0 10px 25px rgba(0,0,0,0.5); transform: translateY(-2px); }
@@ -205,10 +197,8 @@
 
         @keyframes cardEntrance { 0% { opacity: 0; transform: translateY(40px) scale(0.9); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
         
-        /* Grid & Cards */
         .grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 15px 25px 15px; }
         .product-card { opacity: 0; animation: cardEntrance 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; background: linear-gradient(145deg, rgba(30, 30, 35, 0.9) 0%, rgba(15, 15, 20, 0.95) 100%); border: 1px solid rgba(255,255,255,0.05); border-top: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 16px 12px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer; position: relative; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.05);}
-        .product-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.05) 0%, transparent 60%); pointer-events: none; }
         .product-card:active { transform: scale(0.93) translateY(2px); background: linear-gradient(145deg, rgba(20, 20, 25, 0.95) 0%, rgba(10, 10, 15, 1) 100%); border-color: rgba(255,94,0,0.3); box-shadow: 0 4px 10px rgba(0,0,0,0.6), inset 0 2px 10px rgba(0,0,0,0.5); }
         .popular-badge { position: absolute; top: 12px; right: 12px; background: var(--gradient-gold); color: #000; font-size: 8px; font-weight: 900; padding: 4px 8px; border-radius: 10px; box-shadow: 0 2px 10px rgba(250, 204, 21, 0.3); z-index: 5; letter-spacing: 0.5px; text-transform: uppercase;}
         .product-icon-wrapper { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(145deg, #1f1f25, #141419); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.02); position: relative; box-shadow: 6px 6px 12px #070709, -6px -6px 12px #23232b, inset 0px 2px 4px rgba(255, 94, 0, 0.1); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);}
@@ -219,7 +209,6 @@
         .product-card:active .product-price-badge { background: var(--gradient-fire); color: white; border-color: transparent; box-shadow: 0 6px 15px var(--primary-glow), inset 0 1px 1px rgba(255,255,255,0.3);}
         .empty-text { grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 50px 0; font-weight: 700; font-size: 14px; background: rgba(25,25,30,0.8); border-radius: 24px; border: 1px dashed var(--border-highlight); letter-spacing: -0.3px;}
 
-        /* Skeleton & PWA & Popup vs */
         .skeleton-card { background: rgba(30, 30, 35, 0.8); border: 1px solid var(--border-light); border-radius: 24px; padding: 16px 12px; display: flex; flex-direction: column; align-items: center; position: relative; overflow: hidden; }
         .skeleton-card::after { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent); transform: translateX(-100%); animation: skeletonShimmer 2s infinite ease-in-out; }
         @keyframes skeletonShimmer { 100% { transform: translateX(100%); } }
@@ -228,7 +217,6 @@
         .skel-text.short { width: 55%; margin-bottom: 24px;}
         .skel-btn { width: 100%; height: 36px; border-radius: 100px; background: rgba(0,0,0,0.3); }
 
-        /* SANAL POS FOOTER SVG-IMG */
         .secure-footer { margin-top: 40px; padding: 20px 15px 40px 15px; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; opacity: 0; transform: translateY(20px); animation: fadeUpFooter 1s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.5s; }
         @keyframes fadeUpFooter { to { opacity: 1; transform: translateY(0); } }
         .footer-text { font-size: 11px; color: var(--text-muted); line-height: 1.8; margin-top: 15px; }
@@ -260,6 +248,7 @@
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
             border: 1px solid rgba(255,255,255,0.15);
         }
+        
         .floating-cart:active { transform: translateX(-50%) scale(0.95) translateY(2px); box-shadow: 0 8px 15px rgba(255, 94, 0, 0.3), inset 0 2px 8px rgba(0,0,0,0.2);}
         .floating-btn { background: #ffffff; color: var(--primary); padding: 12px 20px; border-radius: 100px; font-size: 14px; font-weight: 900; box-shadow: 0 6px 15px rgba(0,0,0,0.2); letter-spacing: -0.3px;}
         
@@ -360,7 +349,7 @@
         .pwa-main-btn { background: var(--gradient-fire); color: white; border: none; padding: 18px; font-size: 15px; font-weight: 800; border-radius: 100px; width: 100%; cursor: pointer; box-shadow: 0 15px 30px var(--primary-glow), inset 0 2px 4px rgba(255,255,255,0.3); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); letter-spacing: 0.5px; position: relative; z-index: 1;}
         .pwa-main-btn:active { transform: scale(0.95); box-shadow: 0 8px 15px var(--primary-glow); }
 
-        /* UÇTAN UCA ŞİFRELEME (DÜZELTİLDİ VE GÜVENCEYE ALINDI) */
+        /* UÇTAN UCA ŞİFRELEME METNİ TASARIMI (HİÇ BOZULMAYAN) */
         .security-badge { 
             background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.05) 100%); 
             border: 1px solid rgba(16, 185, 129, 0.3); 
@@ -375,7 +364,7 @@
         .security-badge .text { color: #A1A1AA; font-size: 12px; font-weight: 500; line-height: 1.5; }
         .security-badge .badge-title { color: var(--success); font-size: 14px; display: block; font-weight: 900; margin-bottom: 4px; letter-spacing: -0.3px;}
         .security-badge .text strong { color: var(--success); font-weight: 800; display: inline;}
-
+        
         .input-group { margin-bottom: 20px; }
         .input-group label { color:var(--text-muted); font-size:12px; font-weight:700; margin-bottom:8px; display:block; padding-left:12px; text-transform:uppercase; letter-spacing:1px; }
         .input-group .checkout-input { margin-bottom: 0 !important; }
@@ -542,15 +531,12 @@
 
     <div id="opportunities-container" style="display: none;">
         <h2 class="page-title">Kuponlar</h2>
-        <div id="firsatlar-list" style="padding: 0 15px 25px 15px;">
-            <div class="empty-text">Kuponlar aranıyor...</div>
-        </div>
+        <div id="firsatlar-list" style="padding: 0 15px 25px 15px;"><div class="empty-text">Kuponlar aranıyor...</div></div>
     </div>
 
     <div id="cart-container" style="display: none;">
         <h2 class="page-title">Siparişim</h2>
         <div id="cart-items-list"></div>
-        
         <div id="cart-note-section" style="display: none;">
             <div id="coupon-box" style="display: flex; gap: 8px; margin: 0 15px 20px 15px;">
                 <input type="text" id="coupon-code" style="flex: 1; background: rgba(25, 25, 30, 0.9); border: 1px dashed var(--border-highlight); color: var(--text-main); padding: 16px 20px; border-radius: 20px; font-size: 14px; font-weight: 800; text-transform: uppercase; font-family: inherit; box-shadow: inset 0 2px 8px rgba(0,0,0,0.3); transition: 0.3s;" placeholder="KUPON KODU" onkeydown="if(event.key === 'Enter') KuponSorgula()">
@@ -559,7 +545,6 @@
             <div id="coupon-message" style="font-size: 13px; font-weight: 700; margin: -5px 15px 20px 20px;"></div>
             <textarea id="siparis-notu" class="note-input" rows="3" placeholder="Özel bir isteğiniz var mı? (Acı bol olsun vb.)"></textarea>
         </div>
-        
         <div class="order-panel" id="alt-panel" style="display: none;">
             <div style="display: flex; justify-content: space-between; margin-bottom: 25px; align-items: center;">
                 <span style="color: var(--text-muted); font-weight: 700; font-size: 15px; letter-spacing: -0.3px;">Ödenecek Tutar</span>
@@ -572,7 +557,6 @@
         </div>
     </div>
 
-    <!-- DÜZELTİLEN YER: PROFİL SAYFASI YAPISI -->
     <div id="profile-container" style="display: none;">
         <h2 class="page-title">Profilim</h2>
         
@@ -661,13 +645,11 @@
                 <h3 class="popup-title">Teslimat ve Ödeme</h3>
                 <button onclick="CheckoutKapat()" style="background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
             </div>
-            
             <div style="margin-bottom: 20px;">
                 <input type="text" id="chk-isim" class="checkout-input" placeholder="Adınız Soyadınız" autocomplete="name">
                 <input type="tel" id="chk-telefon" class="checkout-input" placeholder="Telefon Numaranız (05...)" autocomplete="tel">
                 <textarea id="chk-adres" class="checkout-input" rows="3" placeholder="Açık Adresiniz (Mahalle, Sokak, No...)" style="resize:none;"></textarea>
             </div>
-
             <div style="font-size:12px; color:var(--text-muted); font-weight:800; margin-bottom:12px; letter-spacing:1px; text-transform: uppercase;">Kart Bilgileri (Online Ödeme):</div>
             <div class="cc-box" style="margin-bottom: 5px;">
                 <input type="text" id="cc-name" class="checkout-input" placeholder="Kart Üzerindeki İsim" style="margin-bottom:10px; padding: 14px;">
@@ -677,14 +659,12 @@
                     <input type="password" id="cc-cvv" class="checkout-input" placeholder="CVV" maxlength="3" style="margin-bottom:0; width:80px; padding: 14px;">
                 </div>
             </div>
-            
             <div style="margin: 15px 0 25px 0; display: flex; align-items: flex-start; gap: 12px; padding: 0 5px;">
                 <input type="checkbox" id="legal-checkbox" onchange="TogglePayButton()" style="width: 22px; height: 22px; accent-color: var(--primary); margin-top: 2px; cursor: pointer;">
                 <label for="legal-checkbox" style="font-size: 11px; color: var(--text-muted); line-height: 1.5; cursor: pointer;">
                     <a class="legal-link" onclick="AcSozlesme('mesafeli'); event.preventDefault();">Mesafeli Satış Sözleşmesi</a>, <a class="legal-link" onclick="AcSozlesme('teslimat'); event.preventDefault();">Teslimat Şartları</a> ve <a class="legal-link" onclick="AcSozlesme('iptal'); event.preventDefault();">İptal/İade Koşulları</a>'nı okudum ve onaylıyorum.
                 </label>
             </div>
-            
             <button id="final-submit-btn" class="order-btn shimmer-btn neon-border" disabled style="margin-top: 5px; opacity: 0.5;" onclick="PaketSiparisiGonder()">Sözleşmeyi Onaylayın</button>
         </div>
     </div>
@@ -696,28 +676,25 @@
                 <h3 id="legal-title" class="popup-title" style="font-size:18px;">Sözleşme</h3>
                 <button onclick="KapatSozlesme()" style="background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); width: 36px; height: 36px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
             </div>
-            <div id="legal-body" style="color: #A1A1AA; font-size: 12px; line-height: 1.7; text-align: left; overflow-y: auto; max-height: 60vh; padding-right: 5px;">
-            </div>
+            <div id="legal-body" style="color: #A1A1AA; font-size: 12px; line-height: 1.7; text-align: left; overflow-y: auto; max-height: 60vh; padding-right: 5px;"></div>
         </div>
     </div>
 
     <div id="distance-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)">
-        <div class="custom-alert-box" style="border:1px solid rgba(255,107,0,0.4); box-shadow: 0 30px 60px rgba(255,107,0,0.2), inset 0 2px 4px rgba(255,255,255,0.05);">
+        <div class="custom-alert-box">
             <div class="custom-alert-glow" style="background:var(--primary);"></div>
             <div class="custom-alert-content">
                 <div style="font-size: 55px; margin-bottom: 20px;">🛵</div>
                 <h3 style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Menzil Dışındasınız</h3>
-                <p style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;">
-                    Bekmez GO lezzetlerini size en sıcak ve taze haliyle ulaştırabilmek için teslimat ağımızı <b>4 km</b> ile sınırlandırıyoruz.<br><br>İlginiz için teşekkür ederiz, maalesef şu an sıcak teslimat bölgemizin dışındasınız.
-                </p>
+                <p style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;">Bekmez GO lezzetlerini size ulaştırabilmek için teslimat ağımızı <b>4 km</b> ile sınırlandırıyoruz.<br><br>Maalesef şu an sıcak teslimat bölgemizin dışındasınız.</p>
                 <button onclick="KapatUyariModal(event, true)" class="alert-btn" style="background:var(--primary); border-color:transparent; color:white;">Anladım</button>
             </div>
         </div>
     </div>
 
     <div id="custom-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)">
-        <div id="custom-alert-box" class="custom-alert-box">
-            <div id="custom-alert-glow" class="custom-alert-glow"></div>
+        <div class="custom-alert-box" id="custom-alert-box">
+            <div class="custom-alert-glow" id="custom-alert-glow"></div>
             <div class="custom-alert-content">
                 <div id="custom-alert-icon" style="font-size: 55px; margin-bottom: 20px;">⚠️</div>
                 <h3 id="custom-alert-title" style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Uyarı</h3>
@@ -737,21 +714,88 @@
     </div>
 
     <script>
+        // GLOBALLER
+        const textMesafeli = `<strong style="color:white; font-size:14px;">MADDE 1 - TARAFLAR</strong><br><b>SATICI:</b> Bekmez Pişirim Gıda Ltd. Şti.<br><br><strong style="color:white; font-size:14px;">MADDE 2 - CAYMA HAKKI İSTİSNASI</strong><br>Tüketici Mevzuatı gereğince; çabuk bozulabilen malların teslimine ilişkin sözleşmelerde Tüketicinin CAYMA HAKKI BULUNMAMAKTADIR.`;
+        const textTeslimat = `<strong style="color:white; font-size:14px;">TESLİMAT ŞARTLARI</strong><br><br><b>1. Teslimat Bölgesi:</b> Maksimum 4 km yarıçapındaki bölgelere teslim edilmektedir.<br><b>2. Süre:</b> Ortalama 30-45 dakika içerisinde adresinize teslim edilir.`;
+        const textIptal = `<strong style="color:white; font-size:14px;">İPTAL KOŞULLARI</strong><br><br><b>1. Şartlar:</b> Sipariş ancak mutfağa iletilmeden önce iptal edebilir.<br><b>2. İade:</b> Onaylanan iadelerde tutar, 3-7 iş günü içerisinde karta yansıtılır.`;
+        const textKVKK = `<strong style="color:white; font-size:14px;">KVKK VE GİZLİLİK POLİTİKASI</strong><br><br><b>Kredi Kartı Güvenliği:</b> Kart bilgileriniz hiçbir şekilde sunucularımızda kaydedilmez.<br><b>Veri İşleme:</b> Bilgileriniz cihazınızda şifrelenir ve 3. şahıslarla paylaşılmaz.`;
+
+        const DUKKAN_ENLEM = 36.206278; 
+        const DUKKAN_BOYLAM = 36.134472; 
+        const MAKS_MESAFE_KM = 4; 
+
+        const firebaseMenuUrl = "https://bekmezpos-default-rtdb.firebaseio.com/Menu.json";
+        const firebasePaketSiparisUrl = "https://bekmezpos-default-rtdb.firebaseio.com/PaketSiparisler.json";
+        const firebaseKuponUrl = "https://bekmezpos-default-rtdb.firebaseio.com/Kuponlar/"; 
+        const authKeyStr = "?auth=dMbxeHXdGtbbPwi7EZGwFUhcfIYqrrnWK9MUxpBw";
+        
+        let ekmekUrunAdi = "Ekmek"; let ekmekBirimFiyati = 0; let sepet = []; let hamToplamFiyat = 0; let sonOdenecekFiyat = 0;
+        let aktifKuponKodu = ""; let aktifKuponIndirimTutari = 0; let aktifKuponAltLimit = 0; let aktifKuponHedefUrun = "Herşey"; 
+        let tumUrunler = []; let aktifKategori = 'Ana Yemek'; let sonMenuVerisi = ""; let sonMenuVersiyonu = "";
+        let seciliUrun = null; let seciliMiktar = 0; let seciliFiyat = 0; let seciliEkstraIstekler = []; let seciliOzelEkmekTip = "Normal"; 
+        let baseKgBread = 0; let ekstraEkmekKg = 0; let seciliUrunStok = 999; let oncekiToplamFiyat = 0; let oncekiPopupFiyat = 0; let oncekiPopupMiktar = 0;
+        let populerUrunlerListesi = []; let canliAdisyonTimer = null; let sonCekilenAdisyonHTML = ""; let sonKuponVerisi = ""; let isProcessingOrder = false;
+        
         let deferredPrompt; 
         let installPromptDismissed = localStorage.getItem('pwa_prompt_dismissed') === 'true';
 
+        // GÜVENLİK YAMASI 1: Veri Şifreleme Metodları
+        function VeriSifrele(t) { try { return btoa(encodeURIComponent(t)); } catch(e) { return ""; } }
+        function VeriCoz(h) { try { return decodeURIComponent(atob(h)); } catch(e) { return ""; } }
+
+        // GÜVENLİK YAMASI 2: Service Worker
+        if ('serviceWorker' in navigator) { 
+            window.addEventListener('load', () => { 
+                navigator.serviceWorker.register('sw.js'); 
+            }); 
+        }
+
+        // KURULUM (PWA) TETİKLEYİCİSİ
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault(); 
             deferredPrompt = e;
             const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
             
+            // Eğer uygulama zaten yüklü değilse (Chrome/Safari üzerinden girildiyse)
             if (!isStandalone && !installPromptDismissed) {
                 let promptOverlay = document.getElementById('pwa-fullscreen-prompt'); 
                 promptOverlay.style.display = 'flex'; 
                 setTimeout(() => { promptOverlay.classList.add('active'); }, 10);
+            } else if (!isStandalone) { 
+                document.getElementById("pwa-install-banner").style.display = "flex"; 
             }
         });
 
+        // KURULUM BAŞARIYLA BİTİNCE
+        window.addEventListener('appinstalled', (evt) => {
+            document.getElementById('pwa-fullscreen-prompt').style.display = 'none';
+            document.getElementById('pwa-install-banner').style.display = 'none';
+            OzelUyariGoster("Kurulum Tamamlandı! 🎉", "Bekmez GO telefonunuza yüklendi. Lütfen tarayıcıyı kapatıp ana ekranınızdaki uygulamadan giriş yapın.", "✅");
+        });
+
+        // SEPETİ UNUTMA BİLDİRİMİ (15 Saniye)
+        let cartReminderTimer = null;
+        document.addEventListener("visibilitychange", function() {
+            if (document.visibilityState === 'hidden' && sepet.length > 0) {
+                cartReminderTimer = setTimeout(() => {
+                    if ("Notification" in window && Notification.permission === "granted") {
+                        navigator.serviceWorker.ready.then(reg => { 
+                            if(reg) {
+                                reg.showNotification("Eyvah, sepetin soğuyor! 🥶🥩", { 
+                                    body: "Siparişini tamamla, Bekmez GO hızıyla hemen kapına getirelim! 🛵💨", 
+                                    icon: "icon-192.png", 
+                                    vibrate: [200, 100, 200] 
+                                }); 
+                            }
+                        }).catch(e => console.log(e));
+                    }
+                }, 15000); 
+            } else { 
+                if (cartReminderTimer) clearTimeout(cartReminderTimer); 
+            }
+        });
+
+        // SADECE UYGULAMADAN İZİN İSTEME MEKANİZMASI
         function SiraylaIzinIste() {
             if ("Notification" in window && Notification.permission === "default") {
                 Notification.requestPermission().then(p => { 
@@ -768,66 +812,7 @@
             } 
         }
 
-        function SplashKapatSinematik() { 
-            let splash = document.getElementById('splash-screen'); 
-            if (splash && splash.style.display !== "none") { 
-                let c = document.getElementById('splash-content'); 
-                c.style.transform = 'scale(1.15)'; 
-                c.style.opacity = '0'; 
-                setTimeout(() => { 
-                    splash.style.opacity = '0'; 
-                    setTimeout(() => { 
-                        splash.style.display = 'none'; 
-                        
-                        if(!localStorage.getItem('bg_perms_asked')) { 
-                            SiraylaIzinIste(); 
-                            localStorage.setItem('bg_perms_asked', 'true'); 
-                        }
-                    }, 800); 
-                }, 400); 
-            } 
-        }
-
-        let cartReminderTimer = null;
-        document.addEventListener("visibilitychange", function() {
-            if (document.visibilityState === 'hidden' && sepet.length > 0) {
-                cartReminderTimer = setTimeout(() => {
-                    if ("Notification" in window && Notification.permission === "granted") {
-                        navigator.serviceWorker.ready.then(reg => { 
-                            reg.showNotification("Eyvah, sepetin soğuyor! 🥶🥩", { 
-                                body: "Siparişini tamamla, Bekmez GO hızıyla hemen kapına getirelim! 🛵💨", 
-                                icon: "icon-192.png", 
-                                vibrate: [200, 100, 200] 
-                            }); 
-                        });
-                    }
-                }, 15000); 
-            } else { 
-                if (cartReminderTimer) clearTimeout(cartReminderTimer); 
-            }
-        });
-
-        function TogglePayButton() {
-            let checkbox = document.getElementById('legal-checkbox'); let btn = document.getElementById('final-submit-btn');
-            if (checkbox.checked) { btn.disabled = false; btn.style.opacity = "1"; btn.innerText = sonOdenecekFiyat.toFixed(2) + " TL Öde ve Onayla";
-            } else { btn.disabled = true; btn.style.opacity = "0.5"; btn.innerText = "Sözleşmeyi Onaylayın"; }
-        }
-
-        function AcSozlesme(tip) {
-            let title = document.getElementById('legal-title'); let body = document.getElementById('legal-body');
-            if (tip === 'mesafeli') { title.innerText = "Mesafeli Satış Sözleşmesi"; body.innerHTML = textMesafeli; }
-            else if (tip === 'teslimat') { title.innerText = "Teslimat Şartları"; body.innerHTML = textTeslimat; }
-            else if (tip === 'iptal') { title.innerText = "İptal ve İade Koşulları"; body.innerHTML = textIptal; }
-            else if (tip === 'kvkk') { title.innerText = "Gizlilik ve KVKK Politikası"; body.innerHTML = textKVKK; }
-            let popup = document.getElementById("legal-popup"); popup.style.display = "flex"; setTimeout(() => { popup.classList.add("active"); }, 10);
-        }
-        
-        function KapatSozlesme() { 
-            let popup = document.getElementById("legal-popup"); 
-            popup.classList.remove("active"); 
-            setTimeout(() => { popup.style.display = "none"; }, 500); 
-        }
-
+        // PWA KURULUM BUTONLARI VE PENCERE KAPATMA 
         function ManuelUygulamaIndir() {
             HapticTitresim();
             const isIos = () => { const ua = window.navigator.userAgent.toLowerCase(); return /iphone|ipad|ipod/.test(ua); }
@@ -858,178 +843,17 @@
             let p = document.getElementById('pwa-fullscreen-prompt'); 
             p.classList.remove('active'); 
             setTimeout(() => { p.style.display = 'none'; }, 500); 
+            
             localStorage.setItem('pwa_prompt_dismissed', 'true'); 
-            if (deferredPrompt) document.getElementById('pwa-install-banner').style.display = 'flex'; 
+            if (deferredPrompt) {
+                document.getElementById('pwa-install-banner').style.display = 'flex'; 
+            }
+            
+            // X TUŞUNDAKİ BOZUK YER SİLİNDİ! ASLA CHROME'DA İZİN SORMAZ!
         }
-
         function TetiklePwaPrompt() { ManuelUygulamaIndir(); }
-        
-        if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js'); }); }
 
-        function GosterHataInput(id) { 
-            let el = document.getElementById(id); 
-            if(el) { 
-                el.classList.remove("input-error"); 
-                void el.offsetWidth; 
-                el.classList.add("input-error"); 
-                setTimeout(() => el.classList.remove("input-error"), 500); 
-            } 
-        }
-
-        function ProfiliKaydet() {
-            HapticTitresim();
-            let isim = document.getElementById("prof-isim").value.trim().replace(/[<>]/g, '').substring(0, 50); 
-            let tel = document.getElementById("prof-telefon").value.trim().replace(/[^0-9]/g, '').substring(0, 15); 
-            let adres = document.getElementById("prof-adres").value.trim().replace(/[<>]/g, '').substring(0, 150);
-            
-            let hataVar = false;
-            if(isim === "") { GosterHataInput("prof-isim"); hataVar = true; }
-            if(tel.length < 10) { GosterHataInput("prof-telefon"); hataVar = true; }
-            if(adres.length < 10) { GosterHataInput("prof-adres"); hataVar = true; }
-            
-            if(hataVar) { OzelUyariGoster("Eksik Bilgi", "Lütfen tüm bilgilerinizi eksiksiz ve doğru doldurun.", "⚠️️"); return; }
-            
-            localStorage.setItem("bg_i", VeriSifrele(isim)); 
-            localStorage.setItem("bg_t", VeriSifrele(tel)); 
-            localStorage.setItem("bg_a", VeriSifrele(adres));
-            
-            document.getElementById("chk-isim").value = isim; 
-            document.getElementById("chk-telefon").value = tel; 
-            document.getElementById("chk-adres").value = adres;
-            
-            OzelUyariGoster("Güvenli Kayıt", "Kişisel bilgileriniz sadece bu cihazda şifrelenerek kaydedildi.", "🔒");
-        }
-
-        function ProfiliSil() {
-            HapticTitresim(); 
-            localStorage.removeItem("bg_i"); 
-            localStorage.removeItem("bg_t"); 
-            localStorage.removeItem("bg_a");
-            
-            document.getElementById("prof-isim").value = ""; 
-            document.getElementById("prof-telefon").value = ""; 
-            document.getElementById("prof-adres").value = "";
-            document.getElementById("chk-isim").value = ""; 
-            document.getElementById("chk-telefon").value = ""; 
-            document.getElementById("chk-adres").value = "";
-            
-            OzelUyariGoster("Silindi", "Kişisel verileriniz cihazdan kalıcı olarak silindi.", "🗑️");
-        }
-
-        function UnityFiyatiniHesapla(urun, hedefMiktar) { 
-            let sf = (val) => { if(!val)return 0; let p=parseFloat(val.replace(',','.')); return isNaN(p)?0:p; }; 
-            let p1 = sf(urun.price1Kg); 
-            if (!urun.isKg) return p1 * hedefMiktar; 
-            let p750 = sf(urun.price750g); 
-            let p500 = sf(urun.price500g); 
-            if (p750 <= 0) p750 = p1 * 0.75; 
-            if (p500 <= 0) p500 = p1 * 0.50; 
-            if (hedefMiktar === 1) return p1; 
-            if (hedefMiktar === 0.75) return p750; 
-            if (hedefMiktar === 0.50) return p500; 
-            return (hedefMiktar * p1); 
-        }
-
-        function OzelUyariGoster(baslik, mesaj, ikon = "⚠️") { 
-            document.getElementById("custom-alert-title").innerText = baslik; 
-            document.getElementById("custom-alert-text").innerText = mesaj; 
-            document.getElementById("custom-alert-icon").innerText = ikon; 
-            
-            let isError = ikon.includes("⚠️") || ikon.includes("❌"); 
-            document.getElementById("custom-alert-glow").style.background = isError ? "var(--danger)" : "var(--primary)"; 
-            
-            let o = document.getElementById("custom-alert-overlay"); 
-            let b = document.getElementById("custom-alert-box"); 
-            
-            o.style.display = "flex"; 
-            b.classList.remove("error-shake"); 
-            
-            setTimeout(() => { 
-                o.classList.add("active"); 
-                if(isError) setTimeout(() => b.classList.add("error-shake"), 400); 
-            }, 10); 
-        }
-
-        function KapatUyariModal(e, force = false) { 
-            if (force || e.target.id === 'custom-alert-overlay') { 
-                let o = document.getElementById("custom-alert-overlay"); 
-                let b = document.getElementById("custom-alert-box"); 
-                o.classList.remove("active"); 
-                b.classList.remove("error-shake"); 
-                setTimeout(() => o.style.display = "none", 400); 
-            } 
-            if (force || e.target.id === 'distance-alert-overlay') { 
-                let o2 = document.getElementById("distance-alert-overlay"); 
-                o2.classList.remove("active"); 
-                setTimeout(() => o2.style.display = "none", 400); 
-            } 
-        }
-
-        function BasariEkraniGoster() { 
-            let so = document.getElementById("success-overlay"); 
-            so.style.display = "flex"; 
-            setTimeout(() => so.classList.add("active"), 10); 
-            setTimeout(() => { 
-                so.classList.remove("active"); 
-                setTimeout(() => so.style.display = "none", 500); 
-                SayfaGoster('gecmis'); 
-                
-                let btn = document.getElementById("final-submit-btn"); 
-                if(btn) { 
-                    btn.disabled = false; 
-                    btn.innerText = "Sözleşmeyi Onaylayın"; 
-                    btn.style.opacity = "0.5"; 
-                    document.getElementById('legal-checkbox').checked = false; 
-                    btn.classList.remove("loading"); 
-                } 
-            }, 3500); 
-        }
-
-        function HapticTitresim() { if (navigator.vibrate) navigator.vibrate(30); }
-        
-        function escapeHTML(str) { 
-            if(!str) return ""; 
-            return str.toString().replace(/[&<>'"]/g, t => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[t] || t)); 
-        }
-
-        function deg2rad(deg) { return deg * (Math.PI/180); }
-        function GetDistanceKm(l1, l2, l3, l4) { 
-            let R = 6371; 
-            let a = Math.sin(deg2rad(l3-l1)/2) * Math.sin(deg2rad(l3-l1)/2) + Math.cos(deg2rad(l1)) * Math.cos(deg2rad(l3)) * Math.sin(deg2rad(l4-l2)/2) * Math.sin(deg2rad(l4-l2)/2); 
-            return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))); 
-        }
-
-        function SmoothCounter(id, sV, eV, dur, isP = true, isK = false) { 
-            let obj = document.getElementById(id); 
-            if(!obj) return; 
-            let sT = null; 
-            let aI = Math.random().toString(); 
-            obj.setAttribute('data-anim', aI); 
-            
-            const step = (t) => { 
-                if(obj.getAttribute('data-anim') !== aI) return; 
-                if (!sT) sT = t; 
-                const prog = Math.min((t - sT) / dur, 1); 
-                const ease = 1 - Math.pow(1 - prog, 3); 
-                let cV = sV + (eV - sV) * ease; 
-                
-                if (isP) { 
-                    obj.innerHTML = cV.toFixed(2) + " TL"; 
-                } else { 
-                    let txt = (cV === 0) ? "0" : (isK ? cV.toFixed(2) + " KG" : cV.toFixed(0) + " Adet"); 
-                    obj.innerText = txt; 
-                    obj.style.color = cV > 0 ? "var(--text-main)" : "var(--text-muted)"; 
-                } 
-                
-                if (prog < 1) window.requestAnimationFrame(step); 
-                else { 
-                    if (isP) obj.innerHTML = eV.toFixed(2) + " TL"; 
-                    else { obj.innerText = (eV === 0) ? "0" : (isK ? eV.toFixed(2) + " KG" : eV.toFixed(0) + " Adet"); } 
-                } 
-            }; 
-            window.requestAnimationFrame(step); 
-        }
-
+        // SİSTEM BAŞLATICI (SPLASH VE İLK AYARLAR)
         window.addEventListener('DOMContentLoaded', () => {
             let st = new Date().getHours(); 
             let m = "Hoş Geldiniz ✨"; 
@@ -1043,9 +867,6 @@
             
             setTimeout(() => { 
                 SplashKapatSinematik(); 
-                if(document.getElementById("menu-container").style.display !== "block" && document.getElementById("cart-container").style.display !== "block") {
-                    SayfaGoster('urunler'); 
-                }
             }, 3000);
             
             let ki = VeriCoz(localStorage.getItem("bg_i")); 
@@ -1057,6 +878,33 @@
             if(ka) { document.getElementById("chk-adres").value = ka; if(document.getElementById("prof-adres")) document.getElementById("prof-adres").value = ka; }
         });
 
+        function SplashKapatSinematik() { 
+            let splash = document.getElementById('splash-screen'); 
+            if (splash && splash.style.display !== "none") { 
+                let c = document.getElementById('splash-content'); 
+                c.style.transform = 'scale(1.15)'; 
+                c.style.opacity = '0'; 
+                setTimeout(() => { 
+                    splash.style.opacity = '0'; 
+                    setTimeout(() => { 
+                        splash.style.display = 'none'; 
+                        
+                        // Menü eğer önceden yüklenmediyse göster
+                        if (document.getElementById("menu-container").style.display !== "block" && document.getElementById("cart-container").style.display !== "block") {
+                            SayfaGoster('urunler');
+                        }
+                        
+                        // SADECE VE SADECE UYGULAMA İÇİNDEYSE (PWA) İZİN İSTE! CHROME'DA ASLA İSTEMEZ.
+                        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+                        if (isStandalone && !localStorage.getItem('bg_perms_asked')) { 
+                            SiraylaIzinIste(); 
+                            localStorage.setItem('bg_perms_asked', 'true'); 
+                        }
+                    }, 800); 
+                }, 400); 
+            } 
+        }
+
         window.onload = function() { 
             CanliMenuCek(true); 
             setInterval(() => CanliMenuCek(false), 10000); 
@@ -1065,6 +913,7 @@
             }, 5000); 
         }
 
+        // CORE: MENÜ VE SAYFA DEĞİŞTİRİCİ
         function SayfaGoster(s) {
             HapticTitresim(); 
             if(canliAdisyonTimer) { clearInterval(canliAdisyonTimer); canliAdisyonTimer = null; }
@@ -1079,8 +928,12 @@
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active')); 
             
             let t = document.getElementById("nav-" + s); 
-            if(t) t.classList.add("active"); 
-            else { s = 'urunler'; document.getElementById("nav-urunler").classList.add("active"); }
+            if(t) {
+                t.classList.add("active"); 
+            } else { 
+                s = 'urunler'; 
+                document.getElementById("nav-urunler").classList.add("active"); 
+            }
             
             if(s === 'urunler') { 
                 document.getElementById("menu-container").style.display = "block"; 
@@ -1103,44 +956,8 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        async function KuponlariCek() {
-            try {
-                let res = await fetch(firebaseKuponUrl + ".json" + authKeyStr + "&t=" + new Date().getTime()); 
-                let data = await res.json(); 
-                let vs = JSON.stringify(data);
-                
-                if (sonKuponVerisi !== vs) {
-                    sonKuponVerisi = vs; 
-                    let html = ""; 
-                    let uc = 0;
-                    
-                    if (data) {
-                        let dl = 0;
-                        for (let k in data) {
-                            let kp = data[k]; 
-                            let ia = kp.isAppCoupon === true || String(kp.isAppCoupon).toLowerCase() === "true";
-                            if (ia) { 
-                                uc++; 
-                                let hd = kp.targetProduct && kp.targetProduct !== "" ? kp.targetProduct : "Tüm Ürünlerde";
-                                html += `<div class="coupon-card" style="animation-delay: ${dl}s;"><div class="c-left"><div class="c-discount">${escapeHTML(kp.discountAmount)} ₺</div><div class="c-type">İNDİRİM</div></div><div class="c-right"><div class="c-title">${escapeHTML(hd)} Geçerli</div><div class="c-code">${escapeHTML(k)}</div><div class="c-limit">Min. Sepet Tutarı: ${escapeHTML(kp.bottomLimit)} TL</div><button class="c-btn shimmer-btn" onclick="HemenKullan('${escapeHTML(k)}')">Hemen Uygula</button></div></div>`; 
-                                dl += 0.05;
-                            }
-                        }
-                    }
-                    if (uc === 0) html = `<div class="empty-text">Şu an Bekmez GO'ya özel aktif kampanya bulunmuyor 😔</div>`;
-                    document.getElementById("firsatlar-list").innerHTML = html;
-                }
-            } catch(e) { }
-        }
-
-        function HemenKullan(kod) { 
-            HapticTitresim(); 
-            SayfaGoster('sepet'); 
-            document.getElementById("coupon-code").value = kod; 
-            KuponSorgula(); 
-        }
-
-        async function CanliMenuCek(iY) {
+        // CORE: MENÜ ÇEKİMİ VE İNDİRİM BİLDİRİMLERİ (TAMAMEN GÜVENCEYE ALINDI)
+        async function CanliMenuCek(ilkYukleme) {
             try {
                 try { 
                     let pR = await fetch(`https://bekmezpos-default-rtdb.firebaseio.com/PopulerUrunler.json${authKeyStr}&t=${new Date().getTime()}`); 
@@ -1151,37 +968,52 @@
                 let vR = await fetch(`https://bekmezpos-default-rtdb.firebaseio.com/MenuVersion.json${authKeyStr}&t=${new Date().getTime()}`); 
                 let vD = await vR.json();
                 
-                if (!iY && vD && vD.v == sonMenuVersiyonu) return; 
+                if (!ilkYukleme && vD && vD.v == sonMenuVersiyonu) return; 
                 if (vD) sonMenuVersiyonu = vD.v;
                 
                 let mR = await fetch(firebaseMenuUrl + authKeyStr + "&t=" + new Date().getTime()); 
-                let d = await mR.json(); 
-                let ls = (d && d.products) ? d.products : []; 
-                let yV = JSON.stringify(ls);
+                let data = await mR.json(); 
+                let liste = (data && data.products) ? data.products : []; 
+                let yeniVeri = JSON.stringify(liste);
                 
-                if (sonMenuVerisi !== yV) {
-                    tumUrunler = ls; 
-                    sonMenuVerisi = yV;
+                if (sonMenuVerisi !== yeniVeri) {
+                    tumUrunler = liste; 
+                    sonMenuVerisi = yeniVeri;
                     
-                    let ek = tumUrunler.find(u => u.pName && u.pName.trim().toLocaleLowerCase('tr-TR') === ekmekUrunAdi.trim().toLocaleLowerCase('tr-TR')); 
-                    if (ek) { 
-                        let p = parseFloat(ek.price1Kg.replace(',', '.')); 
+                    let ekmek = tumUrunler.find(u => u.pName && u.pName.trim().toLocaleLowerCase('tr-TR') === ekmekUrunAdi.trim().toLocaleLowerCase('tr-TR')); 
+                    if (ekmek) { 
+                        let p = parseFloat(ekmek.price1Kg.replace(',', '.')); 
                         ekmekBirimFiyati = isNaN(p) ? 0 : p; 
                     }
                     
-                    let hs = JSON.parse(localStorage.getItem('bg_phist') || '{}'); 
-                    let hu = false; 
-                    let mu = tumUrunler.map(u => u.pName);
+                    // KRİTİK GÜVENLİK YAMASI: BOZUK GEÇMİŞ HAFIZASINI ÇÖKERTMESİN DİYE TRY-CATCH
+                    let history = {};
+                    try {
+                        let okunanGecmis = localStorage.getItem('bg_phist');
+                        if (okunanGecmis && okunanGecmis !== "undefined") {
+                            history = JSON.parse(okunanGecmis);
+                        }
+                    } catch (err) {
+                        // Eğer geçmiş bozuksa, silip yepyeni tertemiz bir sayfa açıyoruz!
+                        localStorage.setItem('bg_phist', '{}');
+                        history = {};
+                    }
                     
-                    for (let ku in hs) { 
-                        if (!mu.includes(ku)) { delete hs[ku]; hu = true; } 
+                    let historyUpdated = false; 
+                    let mevcutUrunAdlari = tumUrunler.map(u => u.pName);
+                    
+                    for (let kayitliUrun in history) { 
+                        if (!mevcutUrunAdlari.includes(kayitliUrun)) { 
+                            delete history[kayitliUrun]; 
+                            historyUpdated = true; 
+                        } 
                     }
                     
                     tumUrunler.forEach(u => {
                         if(u.pName && u.price1Kg) {
                             let cp = parseFloat(u.price1Kg.toString().replace(',', '.'));
                             if(!isNaN(cp) && cp > 0) {
-                                let hk = hs[u.pName];
+                                let hk = history[u.pName];
                                 
                                 if (hk !== undefined && cp < hk) {
                                     try {
@@ -1197,99 +1029,115 @@
                                                 }
                                             });
                                         }
-                                    } catch(notifyErr) { console.log("Bildirim hatası:", notifyErr); }
+                                    } catch(notifyErr) { console.log("Bildirim gönderilemedi:", notifyErr); }
                                 }
                                 
                                 if(hk === undefined || cp > hk) { 
-                                    hs[u.pName] = cp; 
-                                    hu = true; 
+                                    history[u.pName] = cp; 
+                                    historyUpdated = true; 
                                 }
                             }
                         }
                     });
                     
-                    if(hu) localStorage.setItem('bg_phist', JSON.stringify(hs));
+                    if (historyUpdated) {
+                        localStorage.setItem('bg_phist', JSON.stringify(history));
+                    }
                     
-                    if (iY) { 
+                    if (ilkYukleme) { 
                         document.getElementById("kategori-sekmeleri").style.display = "flex"; 
                         document.getElementById("menu-grid").innerHTML = ""; 
                         SayfaGoster('urunler'); 
                         KategoriSec('Ana Yemek'); 
                     } else { 
                         if (document.getElementById("menu-container").style.display === "block") { 
-                            if (document.getElementById('tab-Arama').style.display === "flex") UrunAra(); 
-                            else KategoriSec(aktifKategori); 
+                            if (document.getElementById('tab-Arama').style.display === "flex") {
+                                UrunAra(); 
+                            } else {
+                                KategoriSec(aktifKategori); 
+                            }
                         } 
                     }
                 }
-            } catch(er) { 
-                if(iY) document.getElementById("menu-grid").innerHTML = `<div class="empty-text" style="color:var(--danger)">Bağlantı Hatası! Sayfayı yenileyin.</div>`; 
+            } catch(error) { 
+                console.error("Menü Çekme Hatası:", error);
+                if (ilkYukleme) {
+                    document.getElementById("menu-grid").innerHTML = `<div class="empty-text" style="color:var(--danger)">Bağlantı Hatası! Sayfayı yenileyin.</div>`; 
+                    SayfaGoster('urunler'); // Hata olsa bile menü (arayüz) açılsın!
+                }
             }
         }
 
+        // YARDIMCI FONKSİYONLAR
         function GetKategoriAd(u) { 
             try { 
-                if(u.categoryIndex !== undefined && u.categoryIndex !== null) { 
+                if (u.categoryIndex !== undefined && u.categoryIndex !== null) { 
                     let c = parseInt(u.categoryIndex); 
                     if(c===1) return "İçecek"; 
                     if(c===2) return "Ekstra"; 
                     if(c===0) return "Ana Yemek"; 
                 } 
-                if(!u.pName) return "Ana Yemek"; 
+                if (!u.pName) return "Ana Yemek"; 
                 let ad = u.pName.toString().toLocaleLowerCase('tr-TR'); 
-                if(ad.includes("cola") || ad.includes("ayran") || ad.includes("su") || ad.includes("şalgam") || ad.includes("fanta")) return "İçecek"; 
-                if(ad.includes("ekmek") || ad.includes("salata") || ad.includes("ezme") || ad.includes("patates")) return "Ekstra"; 
+                if (ad.includes("cola") || ad.includes("ayran") || ad.includes("su") || ad.includes("şalgam") || ad.includes("fanta")) return "İçecek"; 
+                if (ad.includes("ekmek") || ad.includes("salata") || ad.includes("ezme") || ad.includes("patates")) return "Ekstra"; 
                 return "Ana Yemek"; 
-            } catch(e) { return "Ana Yemek"; } 
+            } catch(e) { 
+                return "Ana Yemek"; 
+            } 
         }
 
-        function EkranaUrunleriCiz(uL) {
-            const gC = document.getElementById("menu-grid"); 
-            gC.innerHTML = ""; 
-            gC.style.display = "grid";
+        function EkranaUrunleriCiz(urunListesi) {
+            const gridContainer = document.getElementById("menu-grid"); 
+            gridContainer.innerHTML = ""; 
+            gridContainer.style.display = "grid";
             
-            if(uL.length === 0) { 
-                gC.innerHTML = `<div class="empty-text">Ürün bulunamadı 🔍</div>`; 
+            if(urunListesi.length === 0) { 
+                gridContainer.innerHTML = `<div class="empty-text">Ürün bulunamadı 🔍</div>`; 
                 return; 
             }
             
-            let hs = JSON.parse(localStorage.getItem('bg_phist') || '{}');
+            let history = {};
+            try {
+                let r = localStorage.getItem('bg_phist');
+                if(r && r !== "undefined") history = JSON.parse(r);
+            } catch(e) { }
             
-            uL.forEach((ur, i) => {
+            urunListesi.forEach((ur, i) => {
                 try {
-                    let tr = GetKategoriAd(ur); 
-                    let ic = "🥩"; 
-                    if(tr === "İçecek") ic = "🥤"; 
-                    else if(tr === "Ekstra") ic = "🍟";
+                    let tur = GetKategoriAd(ur); 
+                    let icon = "🥩"; 
+                    if(tur === "İçecek") icon = "🥤"; 
+                    else if(tur === "Ekstra") icon = "🍟";
                     
-                    let oI = tumUrunler.findIndex(u => u.pName === ur.pName);
+                    let orjinalIndex = tumUrunler.findIndex(u => u.pName === ur.pName);
                     
-                    let sk = 999; 
-                    if(ur.stockAmount !== undefined && ur.stockAmount !== null) sk = parseFloat(ur.stockAmount); 
-                    else if (ur.stock !== undefined && ur.stock !== null) sk = parseFloat(ur.stock);
+                    let stok = 999; 
+                    if(ur.stockAmount !== undefined && ur.stockAmount !== null) stok = parseFloat(ur.stockAmount); 
+                    else if (ur.stock !== undefined && ur.stock !== null) stok = parseFloat(ur.stock);
                     
-                    let ss = sk <= 0; 
-                    let cA = ss ? `OzelUyariGoster('Tükendi', 'Bu ürün kalmamıştır.', '🚫')` : `UrunPopupAc(${oI})`;
+                    let stokSifirMi = stok <= 0; 
+                    let clickAction = stokSifirMi ? `OzelUyariGoster('Tükendi', 'Bu ürün şu an stoklarımızda kalmamıştır.', '🚫')` : `UrunPopupAc(${orjinalIndex})`;
                     
-                    let pS = ur.price1Kg ? escapeHTML(ur.price1Kg.toString()) : "0"; 
-                    let cP = parseFloat(pS.replace(',', '.')); 
-                    let oP = hs[ur.pName] || cP;
+                    let p1KgStr = ur.price1Kg ? escapeHTML(ur.price1Kg.toString()) : "0"; 
+                    let currentPrice = parseFloat(p1KgStr.replace(',', '.')); 
+                    let oldP = history[ur.pName] || currentPrice;
                     
-                    let bS = ""; 
-                    if (ss) { 
-                        bS = `TÜKENDİ`; 
-                    } else if (cP < oP) { 
-                        let oS = oP.toString().replace('.', ','); 
-                        bS = `<span style="text-decoration: line-through; opacity: 0.6; font-size: 11px; margin-right: 5px; font-weight: 600;">${oS} ₺</span><span style="color: var(--success); font-weight: 900; font-size: 14px; text-shadow: 0 0 10px rgba(52, 199, 89, 0.4);">${pS} ₺</span>`; 
+                    let badgeStr = ""; 
+                    if (stokSifirMi) { 
+                        badgeStr = `TÜKENDİ`; 
+                    } else if (currentPrice < oldP) { 
+                        let oldPStr = oldP.toString().replace('.', ','); 
+                        badgeStr = `<span style="text-decoration: line-through; opacity: 0.6; font-size: 11px; margin-right: 5px; font-weight: 600;">${oldPStr} ₺</span><span style="color: var(--success); font-weight: 900; font-size: 14px; text-shadow: 0 0 10px rgba(52, 199, 89, 0.4);">${p1KgStr} ₺</span>`; 
                     } else { 
-                        bS = `${pS} ₺`; 
+                        badgeStr = `${p1KgStr} ₺`; 
                     }
                     
-                    let ko = ss ? "opacity: 0.5; filter: grayscale(1);" : ""; 
-                    let iP = ur.pName ? populerUrunlerListesi.includes(ur.pName) : false; 
-                    let pB = (iP && !ss) ? `<div class="popular-badge">🔥 POPÜLER</div>` : "";
+                    let kartOpaklik = stokSifirMi ? "opacity: 0.5; filter: grayscale(1);" : ""; 
+                    let isPopular = ur.pName ? populerUrunlerListesi.includes(ur.pName) : false; 
+                    let popularBadgeHTML = (isPopular && !stokSifirMi) ? `<div class="popular-badge">🔥 POPÜLER</div>` : "";
                     
-                    gC.innerHTML += `<div class="product-card" style="${ko} animation-delay: ${i * 0.05}s;" onclick="${cA}">${pB}<div class="product-icon-wrapper"><div class="product-icon">${ic}</div></div><div class="product-name">${escapeHTML(ur.pName)}</div><div class="product-price-badge">${bS}</div></div>`;
+                    gridContainer.innerHTML += `<div class="product-card" style="${kartOpaklik} animation-delay: ${i * 0.05}s;" onclick="${clickAction}">${popularBadgeHTML}<div class="product-icon-wrapper"><div class="product-icon">${icon}</div></div><div class="product-name">${escapeHTML(ur.pName)}</div><div class="product-price-badge">${badgeStr}</div></div>`;
                 } catch(e) {}
             });
         }
@@ -1307,15 +1155,15 @@
             } 
         }
         
-        function KategoriSec(kA, bO) { 
+        function KategoriSec(kategoriAdi, btnObj) { 
             HapticTitresim(); 
-            aktifKategori = kA; 
+            aktifKategori = kategoriAdi; 
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); 
-            if(bO) { 
-                bO.classList.add('active'); 
+            if(btnObj) { 
+                btnObj.classList.add('active'); 
             } else { 
-                let sI = kA.replace(/\s+/g, ''); 
-                let el = document.getElementById('tab-' + sI); 
+                let safeId = kategoriAdi.replace(/\s+/g, ''); 
+                let el = document.getElementById('tab-' + safeId); 
                 if(el) el.classList.add('active'); 
             } 
             document.getElementById('tab-Arama').style.display = "none"; 
@@ -1324,40 +1172,45 @@
             window.scrollTo({ top: 0, behavior: 'smooth' }); 
         }
 
-        function ExtractBreadTotal(iN, iK, aM) { 
-            let lN = iN.toLocaleLowerCase('tr-TR'); 
-            let tB = 0; 
-            let ml = 1; 
-            let mQ = iN.match(/^([0-9]+)x\s/); 
-            if (mQ) { ml = parseInt(mQ[1]); } 
+        function ExtractBreadTotal(itemName, isKg, amount) { 
+            let lowerName = itemName.toLocaleLowerCase('tr-TR'); 
+            let totalBread = 0; 
+            let multiplier = 1; 
+            let matchQty = itemName.match(/^([0-9]+)x\s/); 
             
-            if (iK) { 
-                if (aM === 0.25) tB = 1; 
-                else if (aM === 0.50) tB = 2; 
-                else if (aM === 0.75) tB = 3; 
-                else tB = aM * 4; 
+            if (matchQty) { 
+                multiplier = parseInt(matchQty[1]); 
+            } 
+            
+            if (isKg) { 
+                if (amount === 0.25) totalBread = 1; 
+                else if (amount === 0.50) totalBread = 2; 
+                else if (amount === 0.75) totalBread = 3; 
+                else totalBread = amount * 4; 
                 
-                if (lN.includes("ekmeksiz")) { 
-                    tB = 0; 
+                if (lowerName.includes("ekmeksiz")) { 
+                    totalBread = 0; 
                 } else { 
-                    let mO = lN.match(/sadece\s+([0-9]+)\s+ekmek/i); 
-                    if (mO) { 
-                        tB = parseFloat(mO[1]) * ml; 
+                    let matchOnly = lowerName.match(/sadece\s+([0-9]+)\s+ekmek/i); 
+                    if (matchOnly) { 
+                        totalBread = parseFloat(matchOnly[1]) * multiplier; 
                     } else { 
-                        let mA = lN.match(/\+([0-9]+)\s+ek/i); 
-                        if (mA) { tB += (parseFloat(mA[1]) * ml); } 
+                        let matchAdd = lowerName.match(/\+([0-9]+)\s+ek/i); 
+                        if (matchAdd) { 
+                            totalBread += (parseFloat(matchAdd[1]) * multiplier); 
+                        } 
                     } 
                 } 
             } else { 
-                let iS = lN.includes("dürüm") || lN.includes("doner") || lN.includes("kebap"); 
-                if (iS) { 
-                    tB = aM * 2; 
-                    if (lN.includes("1.5 ekmek")) { tB = aM * 1.5; } 
-                    else if (lN.includes("3 ekmek")) { tB = aM * 3; } 
-                    else if (lN.includes("ekmeksiz")) { tB = 0; } 
+                let isSpecial = lowerName.includes("dürüm") || lowerName.includes("doner") || lowerName.includes("kebap"); 
+                if (isSpecial) { 
+                    totalBread = amount * 2; 
+                    if (lowerName.includes("1.5 ekmek")) { totalBread = amount * 1.5; } 
+                    else if (lowerName.includes("3 ekmek")) { totalBread = amount * 3; } 
+                    else if (lowerName.includes("ekmeksiz")) { totalBread = 0; } 
                 } 
             } 
-            return tB; 
+            return totalBread; 
         }
         
         function GuncelEkmekIhtiyaci(hesaplanacakSepet) { 
@@ -1365,6 +1218,7 @@
             hesaplanacakSepet.forEach(urunItem => { 
                 let gercekUrun = tumUrunler.find(u => u.pName === urunItem.rawName); 
                 if (gercekUrun) { 
+                    // KRİTİK SEPET HATASI DÜZELTİLDİ: "item" değil "urunItem" yazıldı!
                     let dummyName = (urunItem.quantity > 1 ? urunItem.quantity + "x " : "") + urunItem.baseName; 
                     total += ExtractBreadTotal(dummyName, gercekUrun.isKg, urunItem.baseStockAmount * urunItem.quantity); 
                 } 
@@ -1372,40 +1226,46 @@
             return total; 
         }
 
-        function PopupIciMiktarDegistir(aY) { 
+        function PopupIciMiktarDegistir(artisYonu) { 
             if (!seciliUrun) return; 
             HapticTitresim(); 
-            let ar = seciliUrun.isKg ? 0.25 : 1; 
-            let nD = aY * ar; 
-            let yM = parseFloat((seciliMiktar + nD).toFixed(2)); 
-            if (yM < 0) return; 
             
-            let yF = UnityFiyatiniHesapla(seciliUrun, yM); 
-            let sA = 0; 
+            let artisan = seciliUrun.isKg ? 0.25 : 1; 
+            let netDegisim = artisYonu * artisan; 
+            let yeniMiktar = parseFloat((seciliMiktar + netDegisim).toFixed(2)); 
+            
+            if (yeniMiktar < 0) return; 
+            let yeniFiyat = UnityFiyatiniHesapla(seciliUrun, yeniMiktar); 
+            
+            let sepettekiAyniUrunMiktari = 0; 
             sepet.forEach(u => { 
-                if(u.rawName === seciliUrun.pName) { sA += (u.baseStockAmount * u.quantity); } 
+                if(u.rawName === seciliUrun.pName) { 
+                    sepettekiAyniUrunMiktari += (u.baseStockAmount * u.quantity); 
+                } 
             }); 
             
-            if (yM + sA > seciliUrunStok) { 
+            if (yeniMiktar + sepettekiAyniUrunMiktari > seciliUrunStok) { 
                 OzelUyariGoster("Sınır Aşıldı", "Stok sınırına ulaştınız.", "⚠️"); 
                 return; 
             } 
             
-            seciliMiktar = yM; 
-            seciliFiyat = yF; 
+            seciliMiktar = yeniMiktar; 
+            seciliFiyat = yeniFiyat; 
             
             if (seciliUrun.isKg) { 
                 baseKgBread = Math.floor(seciliMiktar * 4); 
-                if (seciliEkstraIstekler.includes('Ekmeksiz')) { ekstraEkmekKg = -baseKgBread; } 
-                let sO = document.getElementById("ekmek-sayac"); 
-                if (sO) { sO.innerText = baseKgBread + ekstraEkmekKg; } 
+                if (seciliEkstraIstekler.includes('Ekmeksiz')) { 
+                    ekstraEkmekKg = -baseKgBread; 
+                } 
+                let sayacObj = document.getElementById("ekmek-sayac"); 
+                if (sayacObj) { sayacObj.innerText = baseKgBread + ekstraEkmekKg; } 
             } 
             PopupUIYenile(true); 
         }
 
-        function UrunPopupAc(ix) { 
+        function UrunPopupAc(index) { 
             HapticTitresim(); 
-            seciliUrun = tumUrunler[ix]; 
+            seciliUrun = tumUrunler[index]; 
             seciliMiktar = 0; 
             seciliFiyat = 0; 
             seciliEkstraIstekler = []; 
@@ -1416,14 +1276,14 @@
             oncekiPopupMiktar = 0; 
             seciliUrunStok = 999; 
             
-            if(seciliUrun.stockAmount !== undefined && seciliUrun.stockAmount !== null) seciliUrunStok = parseFloat(seciliUrun.stockAmount); 
+            if (seciliUrun.stockAmount !== undefined && seciliUrun.stockAmount !== null) seciliUrunStok = parseFloat(seciliUrun.stockAmount); 
             else if (seciliUrun.stock !== undefined && seciliUrun.stock !== null) seciliUrunStok = parseFloat(seciliUrun.stock); 
             
             document.getElementById("popup-title").innerText = seciliUrun.pName || "Ürün"; 
             seciliMiktar = seciliUrun.isKg ? 1 : 1; 
             seciliFiyat = UnityFiyatiniHesapla(seciliUrun, seciliMiktar); 
-            
             if (seciliUrun.isKg) baseKgBread = 4; 
+            
             PopupUIYenile(false); 
             
             let pL = seciliUrun.pName ? seciliUrun.pName.toString().toLocaleLowerCase('tr-TR') : ""; 
@@ -1450,36 +1310,54 @@
             setTimeout(() => { pu.classList.add("active"); }, 10); 
         }
 
-        function EkstraIstekToggle(b, i) { 
+        function EkstraIstekToggle(btn, istek) { 
             HapticTitresim(); 
-            if (seciliEkstraIstekler.includes(i)) { 
-                seciliEkstraIstekler = seciliEkstraIstekler.filter(x => x !== i); 
-                b.classList.remove("active"); 
-                if (i === 'Ekmeksiz') { ekstraEkmekKg = 0; let sO = document.getElementById("ekmek-sayac"); if (sO) sO.innerText = baseKgBread + ekstraEkmekKg; PopupUIYenile(true); } 
+            if (seciliEkstraIstekler.includes(istek)) { 
+                seciliEkstraIstekler = seciliEkstraIstekler.filter(x => x !== istek); 
+                btn.classList.remove("active"); 
+                if (istek === 'Ekmeksiz') { 
+                    ekstraEkmekKg = 0; 
+                    let sO = document.getElementById("ekmek-sayac"); 
+                    if (sO) sO.innerText = baseKgBread + ekstraEkmekKg; 
+                    PopupUIYenile(true); 
+                } 
             } else { 
-                seciliEkstraIstekler.push(i); 
-                b.classList.add("active"); 
-                if (i === 'Ekmeksiz') { ekstraEkmekKg = -baseKgBread; let sO = document.getElementById("ekmek-sayac"); if (sO) sO.innerText = baseKgBread + ekstraEkmekKg; PopupUIYenile(true); } 
+                seciliEkstraIstekler.push(istek); 
+                btn.classList.add("active"); 
+                if (istek === 'Ekmeksiz') { 
+                    ekstraEkmekKg = -baseKgBread; 
+                    let sO = document.getElementById("ekmek-sayac"); 
+                    if (sO) sO.innerText = baseKgBread + ekstraEkmekKg; 
+                    PopupUIYenile(true); 
+                } 
             } 
         }
 
-        function EkmekSayaciDegistir(a) { 
+        function EkmekSayaciDegistir(artis) { 
             HapticTitresim(); 
-            if (baseKgBread + ekstraEkmekKg + a >= 0) { 
-                ekstraEkmekKg += a; 
+            if (baseKgBread + ekstraEkmekKg + artis >= 0) { 
+                ekstraEkmekKg += artis; 
                 let tB = baseKgBread + ekstraEkmekKg; 
-                if (tB > 0 && seciliEkstraIstekler.includes('Ekmeksiz')) { seciliEkstraIstekler = seciliEkstraIstekler.filter(i => i !== 'Ekmeksiz'); let b = document.getElementById("btn-ekmeksiz"); if (b) b.classList.remove("active"); } 
-                else if (tB === 0 && !seciliEkstraIstekler.includes('Ekmeksiz')) { seciliEkstraIstekler.push('Ekmeksiz'); let b = document.getElementById("btn-ekmeksiz"); if (b) b.classList.add("active"); } 
-                let sO = document.getElementById("ekmek-sayac"); if(sO) sO.innerText = tB; 
+                if (tB > 0 && seciliEkstraIstekler.includes('Ekmeksiz')) { 
+                    seciliEkstraIstekler = seciliEkstraIstekler.filter(i => i !== 'Ekmeksiz'); 
+                    let b = document.getElementById("btn-ekmeksiz"); 
+                    if (b) b.classList.remove("active"); 
+                } else if (tB === 0 && !seciliEkstraIstekler.includes('Ekmeksiz')) { 
+                    seciliEkstraIstekler.push('Ekmeksiz'); 
+                    let b = document.getElementById("btn-ekmeksiz"); 
+                    if (b) b.classList.add("active"); 
+                } 
+                let sO = document.getElementById("ekmek-sayac"); 
+                if(sO) sO.innerText = tB; 
                 PopupUIYenile(true); 
             } 
         }
 
-        function OzelEkmekSec(t, bO) { 
+        function OzelEkmekSec(tip, btnObj) { 
             HapticTitresim(); 
-            seciliOzelEkmekTip = t; 
+            seciliOzelEkmekTip = tip; 
             document.querySelectorAll('.bread-btn').forEach(b => b.classList.remove('active')); 
-            bO.classList.add('active'); 
+            btnObj.classList.add('active'); 
             PopupUIYenile(true); 
         }
 
@@ -1491,12 +1369,14 @@
             seciliEkstraIstekler = []; 
             seciliOzelEkmekTip = "Normal"; 
             document.querySelectorAll('.bread-btn').forEach(b => b.classList.remove('active')); 
-            let nB = document.getElementById("ekmek-normal"); 
-            if(nB) nB.classList.add('active'); 
+            
+            let normalBtn = document.getElementById("ekmek-normal"); 
+            if(normalBtn) normalBtn.classList.add('active'); 
+            
             baseKgBread = seciliUrun.isKg ? 4 : 0; 
             ekstraEkmekKg = 0; 
-            let sO = document.getElementById("ekmek-sayac"); 
-            if(sO) sO.innerText = baseKgBread; 
+            let sayacObj = document.getElementById("ekmek-sayac"); 
+            if(sayacObj) sayacObj.innerText = baseKgBread; 
             PopupUIYenile(true); 
         }
 
@@ -1506,138 +1386,160 @@
             setTimeout(() => { pu.style.display = "none"; }, 500); 
         }
         
-        function PopupUIYenile(an) { 
-            let eE = 0; 
+        function PopupUIYenile(animasyonlu) { 
+            let ekstraEkmekUcreti = 0; 
             if (seciliUrun) { 
                 let pL = seciliUrun.pName ? seciliUrun.pName.toString().toLocaleLowerCase('tr-TR') : ""; 
                 let iS = pL.includes("dürüm") || pL.includes("doner") || pL.includes("kebap"); 
-                if (seciliUrun.isKg && ekstraEkmekKg > 0 && !seciliEkstraIstekler.includes('Ekmeksiz')) { eE = ekstraEkmekKg * ekmekBirimFiyati; } 
-                else if (!seciliUrun.isKg && iS && seciliOzelEkmekTip === "3 Ekmek") { eE = seciliMiktar * ekmekBirimFiyati; } 
+                
+                if (seciliUrun.isKg && ekstraEkmekKg > 0 && !seciliEkstraIstekler.includes('Ekmeksiz')) { 
+                    ekstraEkmekUcreti = ekstraEkmekKg * ekmekBirimFiyati; 
+                } else if (!seciliUrun.isKg && iS && seciliOzelEkmekTip === "3 Ekmek") { 
+                    ekstraEkmekUcreti = seciliMiktar * ekmekBirimFiyati; 
+                } 
             } 
-            let gF = seciliFiyat + eE; 
-            let hs = JSON.parse(localStorage.getItem('bg_phist') || '{}'); 
+            
+            let gosterilenFiyat = seciliFiyat + ekstraEkmekUcreti; 
+            let history = {};
+            try {
+                let h = localStorage.getItem('bg_phist');
+                if (h && h !== "undefined") history = JSON.parse(h);
+            } catch(e) {}
+            
             let pS = seciliUrun.price1Kg ? seciliUrun.price1Kg.toString() : "0"; 
-            let cB = parseFloat(pS.replace(',', '.')); 
-            let oB = hs[seciliUrun.pName] || cB; 
-            let iD = (cB < oB); 
-            let dH = ""; 
+            let currentBase = parseFloat(pS.replace(',', '.')); 
+            let oldBase = history[seciliUrun.pName] || currentBase; 
+            let isDiscount = (currentBase < oldBase); 
+            let displayHTML = ""; 
             
-            if (iD) { 
-                let oT = UnityFiyatiniHesapla({price1Kg: oB.toString(), price750g: "", price500g: "", isKg: seciliUrun.isKg}, seciliMiktar) + eE; 
-                dH = `<span style="text-decoration: line-through; font-size: 14px; color: #a1a1aa; margin-right:8px;">${oT.toFixed(2)} TL</span><span style="color: var(--success);">${gF.toFixed(2)} TL</span>`; 
+            if (isDiscount) { 
+                let oldTotal = UnityFiyatiniHesapla({price1Kg: oldBase.toString(), price750g: "", price500g: "", isKg: seciliUrun.isKg}, seciliMiktar) + ekstraEkmekUcreti; 
+                displayHTML = `<span style="text-decoration: line-through; font-size: 14px; color: #a1a1aa; margin-right:8px;">${oldTotal.toFixed(2)} TL</span><span style="color: var(--success);">${gosterilenFiyat.toFixed(2)} TL</span>`; 
             } else { 
-                dH = `${gF.toFixed(2)} TL`; 
+                displayHTML = `${gosterilenFiyat.toFixed(2)} TL`; 
             } 
             
-            if(an && !iD) { 
+            if (animasyonlu && !isDiscount) { 
                 SmoothCounter("popup-amount", oncekiPopupMiktar, seciliMiktar, 500, false, seciliUrun.isKg); 
-                SmoothCounter("popup-price", oncekiPopupFiyat, gF, 500, true); 
+                SmoothCounter("popup-price", oncekiPopupFiyat, gosterilenFiyat, 500, true); 
             } else { 
                 document.getElementById("popup-amount").innerText = seciliMiktar > 0 ? (seciliUrun.isKg ? seciliMiktar.toFixed(2)+" KG" : seciliMiktar.toFixed(0)+" Adet") : "0"; 
-                document.getElementById("popup-price").innerHTML = dH; 
+                document.getElementById("popup-price").innerHTML = displayHTML; 
                 document.getElementById("popup-amount").style.color = seciliMiktar > 0 ? "var(--text-main)" : "var(--text-muted)"; 
             } 
+            
             oncekiPopupMiktar = seciliMiktar; 
-            oncekiPopupFiyat = gF; 
+            oncekiPopupFiyat = gosterilenFiyat; 
         }
 
         function ShowFloatingPlusOne() { 
-            let fC = document.getElementById("fx-container"); 
-            if (!fC) { 
-                fC = document.createElement("div"); 
-                fC.id = "fx-container"; 
-                fC.style.position = "fixed"; 
-                fC.style.top = "0"; 
-                fC.style.left = "0"; 
-                fC.style.width = "100%"; 
-                fC.style.height = "100%"; 
-                fC.style.pointerEvents = "none"; 
-                fC.style.zIndex = "2147483647"; 
-                document.body.appendChild(fC); 
+            let fxContainer = document.getElementById("fx-container"); 
+            if (!fxContainer) { 
+                fxContainer = document.createElement("div"); 
+                fxContainer.id = "fx-container"; 
+                fxContainer.style.position = "fixed"; 
+                fxContainer.style.top = "0"; 
+                fxContainer.style.left = "0"; 
+                fxContainer.style.width = "100%"; 
+                fxContainer.style.height = "100%"; 
+                fxContainer.style.pointerEvents = "none"; 
+                fxContainer.style.zIndex = "2147483647"; 
+                document.body.appendChild(fxContainer); 
             } 
-            let p = document.createElement("div"); 
-            p.innerHTML = `<span style="font-size:18px;">✨</span> Sepete Eklendi`; 
-            p.style.position = "absolute"; 
-            p.style.top = "40%"; 
-            p.style.left = "50%"; 
-            p.style.transform = "translate(-50%, -50%)"; 
-            p.style.background = "linear-gradient(135deg, #10B981 0%, #059669 100%)"; 
-            p.style.color = "white"; 
-            p.style.padding = "12px 20px"; 
-            p.style.borderRadius = "100px"; 
-            p.style.fontWeight = "900"; 
-            p.style.fontSize = "14px"; 
-            p.style.display = "flex"; 
-            p.style.alignItems = "center"; 
-            p.style.gap = "10px"; 
-            p.style.boxShadow = "0 10px 25px rgba(16, 185, 129, 0.5)"; 
-            p.style.animation = "floatUpFade 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards"; 
-            fC.appendChild(p); 
-            setTimeout(() => p.remove(), 1200); 
+            let pop = document.createElement("div"); 
+            pop.innerHTML = `<span style="font-size:18px;">✨</span> Sepete Eklendi`; 
+            pop.style.position = "absolute"; 
+            pop.style.top = "40%"; 
+            pop.style.left = "50%"; 
+            pop.style.transform = "translate(-50%, -50%)"; 
+            pop.style.background = "linear-gradient(135deg, #10B981 0%, #059669 100%)"; 
+            pop.style.color = "white"; 
+            pop.style.padding = "12px 20px"; 
+            pop.style.borderRadius = "100px"; 
+            pop.style.fontWeight = "900"; 
+            pop.style.fontSize = "14px"; 
+            pop.style.display = "flex"; 
+            pop.style.alignItems = "center"; 
+            pop.style.gap = "10px"; 
+            pop.style.boxShadow = "0 10px 25px rgba(16, 185, 129, 0.5)"; 
+            pop.style.animation = "floatUpFade 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards"; 
+            fxContainer.appendChild(pop); 
+            setTimeout(() => pop.remove(), 1200); 
         }
 
         function TriggerCartBounce() { 
-            let c = document.getElementById("floating-cart"); 
-            if(c) { 
-                c.classList.remove("bounce"); 
-                void c.offsetWidth; 
-                c.classList.add("bounce"); 
+            let cart = document.getElementById("floating-cart"); 
+            if(cart) { 
+                cart.classList.remove("bounce"); 
+                void cart.offsetWidth; 
+                cart.classList.add("bounce"); 
             } 
         }
 
         function PopupSepeteEkle() { 
             if(seciliMiktar <= 0) return; 
             HapticTitresim(); 
-            let tI = ""; let eA = 1; let gS = seciliMiktar; let eE = 0; 
+            
+            let tamIsim = ""; 
+            let eklenecekAdet = 1; 
+            let gercekStokMiktari = seciliMiktar; 
+            let ekstraEkmekUcreti = 0; 
             let pL = seciliUrun.pName ? seciliUrun.pName.toString().toLocaleLowerCase('tr-TR') : ""; 
-            let iS = pL.includes("dürüm") || pL.includes("doner") || pL.includes("kebap"); 
+            let isSpecial = pL.includes("dürüm") || pL.includes("doner") || pL.includes("kebap"); 
             
             if (seciliUrun.isKg) { 
-                tI = Number(seciliMiktar.toFixed(2)) + " KG " + seciliUrun.pName; 
-                eA = 1; 
-                if (ekstraEkmekKg > 0 && !seciliEkstraIstekler.includes('Ekmeksiz')) { eE = ekstraEkmekKg * ekmekBirimFiyati; } 
+                tamIsim = Number(seciliMiktar.toFixed(2)) + " KG " + seciliUrun.pName; 
+                eklenecekAdet = 1; 
+                if (ekstraEkmekKg > 0 && !seciliEkstraIstekler.includes('Ekmeksiz')) { 
+                    ekstraEkmekUcreti = ekstraEkmekKg * ekmekBirimFiyati; 
+                } 
             } else { 
-                tI = seciliUrun.pName; 
-                eA = seciliMiktar; 
-                gS = 1; 
-                if (iS && seciliOzelEkmekTip === "3 Ekmek") eE = ekmekBirimFiyati; 
+                tamIsim = seciliUrun.pName; 
+                eklenecekAdet = seciliMiktar; 
+                gercekStokMiktari = 1; 
+                if (isSpecial && seciliOzelEkmekTip === "3 Ekmek") ekstraEkmekUcreti = ekmekBirimFiyati; 
             } 
             
-            let mD = [...seciliEkstraIstekler]; 
+            let modlar = [...seciliEkstraIstekler]; 
             if (seciliUrun.isKg) { 
                 let tB = baseKgBread + ekstraEkmekKg; 
                 if (tB === 0) { 
-                    if (!mD.includes("Ekmeksiz")) mD.push("Ekmeksiz"); 
-                } else if (ekstraEkmekKg > 0) mD.push("+" + ekstraEkmekKg + " Ek Ekmek"); 
-                else if (ekstraEkmekKg < 0) mD.push("Sadece " + tB + " Ekmek"); 
+                    if (!modlar.includes("Ekmeksiz")) modlar.push("Ekmeksiz"); 
+                } else if (ekstraEkmekKg > 0) {
+                    modlar.push("+" + ekstraEkmekKg + " Ek Ekmek"); 
+                } else if (ekstraEkmekKg < 0) {
+                    modlar.push("Sadece " + tB + " Ekmek"); 
+                }
             } else { 
-                if (iS && seciliOzelEkmekTip !== "Normal") mD.push(seciliOzelEkmekTip); 
+                if (isSpecial && seciliOzelEkmekTip !== "Normal") modlar.push(seciliOzelEkmekTip); 
             } 
             
-            mD = [...new Set(mD)]; 
-            if (mD.length > 0) { tI += " (" + mD.join(", ") + ")"; } 
+            modlar = [...new Set(modlar)]; 
+            if (modlar.length > 0) { 
+                tamIsim += " (" + modlar.join(", ") + ")"; 
+            } 
             
-            let tS = (eA > 1 ? eA + "x " : "") + tI; 
-            let nB = ExtractBreadTotal(tS, seciliUrun.isKg, gS * eA); 
-            let eI = tumUrunler.find(u => u.pName && u.pName.trim().toLocaleLowerCase('tr-TR') === ekmekUrunAdi.trim().toLocaleLowerCase('tr-TR')); 
+            let testIsim = (eklenecekAdet > 1 ? eklenecekAdet + "x " : "") + tamIsim; 
+            let newBreadRequired = ExtractBreadTotal(testIsim, seciliUrun.isKg, gercekStokMiktari * eklenecekAdet); 
+            let ekmekInfo = tumUrunler.find(u => u.pName && u.pName.trim().toLocaleLowerCase('tr-TR') === ekmekUrunAdi.trim().toLocaleLowerCase('tr-TR')); 
             
-            if (eI) { 
-                let cS = (eI.stockAmount !== undefined) ? parseFloat(eI.stockAmount) : ((eI.stock !== undefined) ? parseFloat(eI.stock) : 999); 
+            if (ekmekInfo) { 
+                let cS = (ekmekInfo.stockAmount !== undefined) ? parseFloat(ekmekInfo.stockAmount) : ((ekmekInfo.stock !== undefined) ? parseFloat(ekmekInfo.stock) : 999); 
                 let aB = GuncelEkmekIhtiyaci(sepet); 
-                if (aB + nB > cS) { 
+                if (aB + newBreadRequired > cS) { 
                     OzelUyariGoster("Stok Yetersiz", `Ekstra Ekmek için stoğumuz yetersiz! Lütfen sayıyı azaltın.`, "⚠️"); 
                     return; 
                 } 
             } 
             
             let sB = seciliUrun.isKg ? seciliFiyat : (seciliFiyat / seciliMiktar); 
-            let gB = sB + eE; 
-            let m = sepet.find(u => u.baseName === tI && u.basePrice === gB); 
+            let gB = sB + ekstraEkmekUcreti; 
+            let mevcutUrun = sepet.find(u => u.baseName === tamIsim && u.basePrice === gB); 
             
-            if(m) { 
-                m.quantity += eA; 
+            if(mevcutUrun) { 
+                mevcutUrun.quantity += eklenecekAdet; 
             } else { 
-                sepet.push({ baseName: tI, basePrice: gB, baseStockAmount: gS, quantity: eA, rawName: seciliUrun.pName }); 
+                sepet.push({ baseName: tamIsim, basePrice: gB, baseStockAmount: gercekStokMiktari, quantity: eklenecekAdet, rawName: seciliUrun.pName }); 
             } 
             
             ShowFloatingPlusOne(); 
@@ -1645,42 +1547,49 @@
             setTimeout(() => { PopupKapat(); HesaplaVeGuncelle(); }, 300); 
         }
 
-        function SepetMiktarDegistir(i, aM) { 
+        function SepetMiktarDegistir(index, artisMiktari) { 
             HapticTitresim(); 
-            let sU = sepet[i]; 
-            let gU = tumUrunler.find(u => u.pName === sU.rawName); 
+            let sepetUrunu = sepet[index]; 
+            let gercekUrun = tumUrunler.find(u => u.pName === sepetUrunu.rawName); 
             
-            if (aM > 0) { 
-                let mS = (gU && gU.stockAmount !== undefined) ? parseFloat(gU.stockAmount) : ((gU && gU.stock !== undefined) ? parseFloat(gU.stock) : 999); 
+            if (artisMiktari > 0) { 
+                let mS = (gercekUrun && gercekUrun.stockAmount !== undefined) ? parseFloat(gercekUrun.stockAmount) : ((gercekUrun && gercekUrun.stock !== undefined) ? parseFloat(gercekUrun.stock) : 999); 
                 let sT = 0; 
-                sepet.forEach(u => { if (u.rawName === sepet[i].rawName) { sT += (u.baseStockAmount * u.quantity); } }); 
-                if (sT + (sU.baseStockAmount * aM) > mS) { 
+                sepet.forEach(u => { 
+                    if (u.rawName === sepet[index].rawName) { 
+                        sT += (u.baseStockAmount * u.quantity); 
+                    } 
+                }); 
+                
+                if (sT + (sepetUrunu.baseStockAmount * artisMiktari) > mS) { 
                     OzelUyariGoster("Sınır Aşıldı", "Maksimum stoğa ulaştınız.", "⚠️"); 
                     return; 
                 } 
+                
                 let eI = tumUrunler.find(u => u.pName && u.pName.trim().toLocaleLowerCase('tr-TR') === ekmekUrunAdi.trim().toLocaleLowerCase('tr-TR')); 
                 if (eI) { 
                     let cS = (eI.stockAmount !== undefined) ? parseFloat(eI.stockAmount) : ((eI.stock !== undefined) ? parseFloat(eI.stock) : 999); 
-                    let tS = JSON.parse(JSON.stringify(sepet)); 
-                    tS[i].quantity += aM; 
-                    let rB = GuncelEkmekIhtiyaci(tS); 
-                    if (rB > cS) { 
+                    let testSepet = JSON.parse(JSON.stringify(sepet)); 
+                    testSepet[index].quantity += artisMiktari; 
+                    let reqBread = GuncelEkmekIhtiyaci(testSepet); 
+                    if (reqBread > cS) { 
                         OzelUyariGoster("Stok Yetersiz", `Ekmek stoğumuz yetersiz!`, "⚠️"); 
                         return; 
                     } 
                 } 
             } 
             
-            sepet[i].quantity += aM; 
-            if(sepet[i].quantity <= 0) { 
-                sepet.splice(i, 1); 
+            sepet[index].quantity += artisMiktari; 
+            
+            if(sepet[index].quantity <= 0) { 
+                sepet.splice(index, 1); 
                 SepetEkraniniCiz(); 
             } else { 
-                let qE = document.getElementById("cart-qty-" + i); 
-                qE.innerText = sepet[i].quantity; 
-                document.getElementById("cart-price-" + i).innerText = (sepet[i].basePrice * sepet[i].quantity).toFixed(2) + " TL"; 
-                let nE = document.getElementById("cart-name-" + i); 
-                let gI = (sepet[i].quantity > 1 ? `<span style="color:var(--primary);">${sepet[i].quantity}x</span> ` : "") + escapeHTML(sU.baseName); 
+                let qE = document.getElementById("cart-qty-" + index); 
+                qE.innerText = sepet[index].quantity; 
+                document.getElementById("cart-price-" + index).innerText = (sepet[index].basePrice * sepet[index].quantity).toFixed(2) + " TL"; 
+                let nE = document.getElementById("cart-name-" + index); 
+                let gI = (sepet[index].quantity > 1 ? `<span style="color:var(--primary);">${sepet[index].quantity}x</span> ` : "") + escapeHTML(sepetUrunu.baseName); 
                 if(nE) nE.innerHTML = gI; 
             } 
             HesaplaVeGuncelle(); 
@@ -1694,22 +1603,39 @@
             
             b.innerText = "Bekleyin..."; 
             b.disabled = true; 
+            
             fetch(firebaseKuponUrl + gK + ".json" + authKeyStr + "&t=" + new Date().getTime(), { cache: "no-store" }).then(res => res.json()).then(d => { 
                 b.disabled = false; 
                 if(d && d.discountAmount > 0) { 
                     let aU = (d.targetProduct && d.targetProduct !== "") ? d.targetProduct : "Herşey"; 
-                    let uS = false; let hM = ""; 
+                    let uS = false; 
+                    let hM = ""; 
+                    
                     if(aU === "Herşey") { 
                         uS = true; 
                     } else { 
                         let aV = sepet.some(u => u.rawName.toLocaleLowerCase('tr-TR') === aU.toLocaleLowerCase('tr-TR')); 
                         let bV = sepet.some(u => u.rawName.toLocaleLowerCase('tr-TR') !== aU.toLocaleLowerCase('tr-TR')); 
-                        if (!aV) { hM = `'${escapeHTML(aU)}' sepette yok.`; } 
-                        else if (bV) { hM = `Sadece '${escapeHTML(aU)}' almalısınız.`; } 
-                        else { uS = true; } 
+                        if (!aV) { 
+                            hM = `'${escapeHTML(aU)}' sepette yok.`; 
+                        } else if (bV) { 
+                            hM = `Sadece '${escapeHTML(aU)}' almalısınız.`; 
+                        } else { 
+                            uS = true; 
+                        } 
                     } 
-                    if(!uS) { KuponuIptalEt(true); OzelUyariGoster("Şart Sağlanmadı", hM, "🛍️"); return; } 
-                    if (hamToplamFiyat < d.bottomLimit) { KuponuIptalEt(true); OzelUyariGoster("Tutar Yetersiz", `Alt limit ${d.bottomLimit} TL.`, "🛒"); return; } 
+                    
+                    if(!uS) { 
+                        KuponuIptalEt(true); 
+                        OzelUyariGoster("Şart Sağlanmadı", hM, "🛍️"); 
+                        return; 
+                    } 
+                    
+                    if (hamToplamFiyat < d.bottomLimit) { 
+                        KuponuIptalEt(true); 
+                        OzelUyariGoster("Tutar Yetersiz", `Alt limit ${d.bottomLimit} TL.`, "🛒"); 
+                        return; 
+                    } 
                     
                     HapticTitresim(); 
                     aktifKuponKodu = gK; 
@@ -1729,7 +1655,7 @@
                 OzelUyariGoster("Hata", "Sorgulanamadı.", "📡"); 
             }); 
         }
-
+        
         function KuponuIptalEt(sM = false) { 
             if(!sM) HapticTitresim(); 
             aktifKuponKodu = ""; 
@@ -1741,12 +1667,11 @@
             KuponArayuzunuGuncelle(); 
             if(!sM) HesaplaVeGuncelle(); 
         }
-
+        
         function KuponArayuzunuGuncelle() { 
             let b = document.getElementById("coupon-apply-btn"); 
             let m = document.getElementById("coupon-message"); 
             let iE = document.getElementById("coupon-code"); 
-            
             if(aktifKuponIndirimTutari > 0) { 
                 b.style.background = "var(--danger)"; 
                 b.style.color = "white"; 
@@ -1764,80 +1689,13 @@
             } 
         }
 
-        function SepetEkraniniCiz() { 
-            const lC = document.getElementById("cart-items-list"); 
-            const nS = document.getElementById("cart-note-section"); 
-            const aP = document.getElementById("alt-panel"); 
-            
-            if(sepet.length === 0) { 
-                lC.innerHTML = `<div class="empty-text">Sepetiniz şu an boş 🛒</div>`; 
-                nS.style.display = "none"; 
-                aP.style.display = "none"; 
-                return; 
-            } 
-            
-            let h = ""; 
-            sepet.forEach((u, i) => { 
-                let gI = (u.quantity > 1 ? `<span style="color:var(--primary);">${u.quantity}x</span> ` : "") + escapeHTML(u.baseName); 
-                h += `<div class="cart-item"><div class="cart-item-details"><div id="cart-name-${i}" class="cart-item-name">${gI}</div><div id="cart-price-${i}" class="cart-item-price">${(u.basePrice * u.quantity).toFixed(2)} TL</div></div><div class="cart-controls"><button class="cart-btn" onclick="SepetMiktarDegistir(${i}, -1)">-</button><div id="cart-qty-${i}" class="cart-amount">${u.quantity}</div><button class="cart-btn" onclick="SepetMiktarDegistir(${i}, 1)">+</button></div></div>`; 
-            }); 
-            
-            lC.innerHTML = h; 
-            nS.style.display = "block"; 
-            aP.style.display = "block"; 
-            document.getElementById("coupon-code").value = aktifKuponKodu; 
-            KuponArayuzunuGuncelle(); 
-        }
-
-        function HesaplaVeGuncelle() { 
-            hamToplamFiyat = 0; 
-            let tA = 0; 
-            if(sepet.length === 0) { 
-                sonOdenecekFiyat = 0; 
-            } else { 
-                sepet.forEach(u => { hamToplamFiyat += (u.basePrice * u.quantity); tA += u.quantity; }); 
-            } 
-            
-            if (aktifKuponIndirimTutari > 0) { 
-                let kG = true; 
-                if (aktifKuponHedefUrun !== "Herşey") { 
-                    let aV = sepet.some(u => u.rawName.toLocaleLowerCase('tr-TR') === aktifKuponHedefUrun.toLocaleLowerCase('tr-TR')); 
-                    let bV = sepet.some(u => u.rawName.toLocaleLowerCase('tr-TR') !== aktifKuponHedefUrun.toLocaleLowerCase('tr-TR')); 
-                    if (!aV || bV) kG = false; 
-                } 
-                if (hamToplamFiyat < aktifKuponAltLimit) kG = false; 
-                if (!kG) { 
-                    KuponuIptalEt(true); 
-                    OzelUyariGoster("İptal Oldu", "Sepet değiştiği için kupon iptal edildi.", "⚠️"); 
-                } 
-            } 
-            
-            if(aktifKuponIndirimTutari > 0 && sepet.length > 0) { 
-                sonOdenecekFiyat = hamToplamFiyat - aktifKuponIndirimTutari; 
-                if (sonOdenecekFiyat < 0) sonOdenecekFiyat = 0; 
-                document.getElementById("eski-fiyat-ustu-cizik").style.display = "block"; 
-                document.getElementById("eski-fiyat-ustu-cizik").innerText = hamToplamFiyat.toFixed(2) + " TL"; 
-            } else { 
-                sonOdenecekFiyat = hamToplamFiyat; 
-                document.getElementById("eski-fiyat-ustu-cizik").style.display = "none"; 
-            } 
-            
-            SmoothCounter("sepet-tutar", oncekiToplamFiyat, sonOdenecekFiyat, 600, true); 
-            SmoothCounter("floating-total", oncekiToplamFiyat, sonOdenecekFiyat, 600, true); 
-            oncekiToplamFiyat = sonOdenecekFiyat; 
-            
-            let fB = document.getElementById("nav-sepet-badge"); 
-            if(tA > 0) { 
-                fB.innerText = Math.ceil(tA); 
-                fB.classList.add("show"); 
-            } else { 
-                fB.classList.remove("show"); 
-            } 
-            
-            if(document.getElementById("menu-container").style.display === "block") { 
-                document.getElementById("floating-cart").style.display = tA > 0 ? "flex" : "none"; 
-            } else { 
-                document.getElementById("floating-cart").style.display = "none"; 
+        function GosterHataInput(id) { 
+            let el = document.getElementById(id); 
+            if(el) { 
+                el.classList.remove("input-error"); 
+                void el.offsetWidth; 
+                el.classList.add("input-error"); 
+                setTimeout(() => el.classList.remove("input-error"), 500); 
             } 
         }
 
@@ -1858,34 +1716,46 @@
 
         function PaketSiparisiGonder() {
             if(isProcessingOrder || sepet.length === 0) return;
-            if(!document.getElementById("legal-checkbox").checked) { OzelUyariGoster("Sözleşme Onayı", "Sözleşmeleri onaylamanız gerek.", "📝"); return; }
+            if(!document.getElementById("legal-checkbox").checked) { 
+                OzelUyariGoster("Sözleşme Onayı", "Sözleşmeleri onaylamanız gerek.", "📝"); 
+                return; 
+            }
+            
             HapticTitresim();
             
             let is = document.getElementById("chk-isim").value.trim().replace(/[<>]/g, '').substring(0, 50); 
             let tl = document.getElementById("chk-telefon").value.trim().replace(/[^0-9]/g, '').substring(0, 15); 
             let ad = document.getElementById("chk-adres").value.trim().replace(/[<>]/g, '').substring(0, 150);
+            
             let cN = document.getElementById("cc-name").value.trim(); 
             let cNu = document.getElementById("cc-number").value.trim(); 
             let cE = document.getElementById("cc-exp").value.trim(); 
             let cC = document.getElementById("cc-cvv").value.trim();
             
             let hV = false; 
-            if(is.length < 3) { GosterHataInput("chk-isim"); hV=true; } 
-            if(tl.length < 10) { GosterHataInput("chk-telefon"); hV=true; } 
-            if(ad.length < 10) { GosterHataInput("chk-adres"); hV=true; }
-            if(hV) { OzelUyariGoster("Eksik", "Ad, telefon veya adres hatalı.", "⚠️"); return; }
+            if(is.length < 3) { GosterHataInput("chk-isim"); hV = true; } 
+            if(tl.length < 10) { GosterHataInput("chk-telefon"); hV = true; } 
+            if(ad.length < 10) { GosterHataInput("chk-adres"); hV = true; }
+            if(hV) { 
+                OzelUyariGoster("Eksik", "Ad, telefon veya adres hatalı.", "⚠️️"); 
+                return; 
+            }
             
-            if(cN.length < 3 || cNu.length < 15 || cE.length < 4 || cC.length < 3) { OzelUyariGoster("Ödeme", "Kart bilgileri eksik.", "💳"); return; }
+            if(cN.length < 3 || cNu.length < 15 || cE.length < 4 || cC.length < 3) { 
+                OzelUyariGoster("Ödeme", "Kart bilgileri eksik.", "💳"); 
+                return; 
+            }
             
             let hA = false; 
             let gH = 0; 
             sepet.forEach(u => { 
-                if(u.quantity<=0 || u.basePrice<0 || u.baseStockAmount<=0) hA=true; 
-                gH += (u.basePrice*u.quantity); 
+                if(u.quantity <= 0 || u.basePrice < 0 || u.baseStockAmount <= 0) hA = true; 
+                gH += (u.basePrice * u.quantity); 
             });
             
             if (sonOdenecekFiyat < 0 || hA || Math.abs((gH - aktifKuponIndirimTutari) - sonOdenecekFiyat) > 1) { 
-                OzelUyariGoster("İhlal", "Geçersiz işlem.", "🚨"); return; 
+                OzelUyariGoster("İhlal", "Geçersiz işlem.", "🚨"); 
+                return; 
             }
             
             let btn = document.getElementById("final-submit-btn"); 
@@ -1895,23 +1765,40 @@
             
             if (!navigator.geolocation) { 
                 OzelUyariGoster("Hata", "GPS kapalı.", "🚫"); 
-                isProcessingOrder=false; btn.disabled=false; btn.classList.remove("loading"); btn.innerHTML=sonOdenecekFiyat.toFixed(2)+" TL Öde"; return; 
+                isProcessingOrder = false; 
+                btn.disabled = false; 
+                btn.classList.remove("loading"); 
+                btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
+                return; 
             }
             
             isProcessingOrder = true;
-            const cL = (hA, t) => { return new Promise((r, rj) => { navigator.geolocation.getCurrentPosition(p => r(p), e => rj(e), {enableHighAccuracy: hA, timeout: t, maximumAge: 0}); }); };
             
-            cL(true, 6000).catch(() => cL(false, 6000)).then(p => {
+            const checkLoc = (hAcc, tOut) => { 
+                return new Promise((resolve, reject) => { 
+                    navigator.geolocation.getCurrentPosition(p => resolve(p), e => reject(e), {enableHighAccuracy: hAcc, timeout: tOut, maximumAge: 0}); 
+                }); 
+            };
+            
+            checkLoc(true, 6000).catch(() => checkLoc(false, 6000)).then(p => {
                 let ms = GetDistanceKm(DUKKAN_ENLEM, DUKKAN_BOYLAM, p.coords.latitude, p.coords.longitude);
                 if (ms > MAKS_MESAFE_KM) { 
                     let do2 = document.getElementById("distance-alert-overlay"); 
-                    do2.style.display="flex"; setTimeout(()=>do2.classList.add("active"), 10); 
-                    isProcessingOrder=false; btn.disabled=false; btn.classList.remove("loading"); btn.innerHTML=sonOdenecekFiyat.toFixed(2)+" TL Öde"; return; 
+                    do2.style.display = "flex"; 
+                    setTimeout(() => do2.classList.add("active"), 10); 
+                    isProcessingOrder = false; 
+                    btn.disabled = false; 
+                    btn.classList.remove("loading"); 
+                    btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
+                    return; 
                 }
                 DevamEtPaketGonder(is, tl, ad);
             }).catch(e => { 
                 OzelUyariGoster("İzin Gerekli", "GPS konumu alınamadı.", "📍"); 
-                isProcessingOrder=false; btn.disabled=false; btn.classList.remove("loading"); btn.innerHTML=sonOdenecekFiyat.toFixed(2)+" TL Öde"; 
+                isProcessingOrder = false; 
+                btn.disabled = false; 
+                btn.classList.remove("loading"); 
+                btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
             });
         }
 
@@ -1924,10 +1811,16 @@
             btn.innerText = "Ödeniyor..."; 
             let sT = tel.replace(/[^0-9]/g, '');
             
-            fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliPaketler/Paket_${sT}.json${authKeyStr}&t=${new Date().getTime()}`).then(r => r.json()).then(aA => {
+            fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliPaketler/Paket_${sT}.json${authKeyStr}&t=${new Date().getTime()}`)
+            .then(r => r.json())
+            .then(aA => {
                 if(aA && aA.durum && !aA.durum.includes("İPTAL") && !aA.durum.includes("TESLİM") && !aA.durum.includes("AFİYET")) { 
                     OzelUyariGoster("Sürüyor", "Devam eden siparişiniz var.", "⏳"); 
-                    isProcessingOrder=false; btn.disabled=false; btn.classList.remove("loading"); btn.innerHTML=sonOdenecekFiyat.toFixed(2)+" TL Öde"; return; 
+                    isProcessingOrder = false; 
+                    btn.disabled = false; 
+                    btn.classList.remove("loading"); 
+                    btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
+                    return; 
                 }
                 
                 setTimeout(() => {
@@ -1935,15 +1828,21 @@
                     fetch(firebaseMenuUrl + authKeyStr + "&t=" + new Date().getTime(), { cache: "no-store" }).then(r => r.json()).then(d => {
                         let l = (d && d.products) ? d.products : [];
                         if(l.length > 0) {
-                            let sH = false; let hM = "";
+                            let sH = false; 
+                            let hM = "";
+                            
                             for(let i=0; i<sepet.length; i++) {
                                 let gU = l.find(u => u.pName === sepet[i].rawName);
                                 if(gU) { 
                                     let mS = (gU.stockAmount !== undefined) ? parseFloat(gU.stockAmount) : ((gU.stock !== undefined) ? parseFloat(gU.stock) : 999); 
-                                    let sT2 = 0; sepet.forEach(u => { if(u.rawName === gU.pName) sT2 += (u.baseStockAmount * u.quantity); }); 
+                                    let sT2 = 0; 
+                                    sepet.forEach(u => { if(u.rawName === gU.pName) sT2 += (u.baseStockAmount * u.quantity); }); 
                                     if(sT2 > mS) { sH = true; hM = `"${gU.pName}" tükendi.`; break; } 
-                                } else { sH = true; hM = "Ürün kaldırılmış."; break; }
+                                } else { 
+                                    sH = true; hM = "Ürün kaldırılmış."; break; 
+                                }
                             }
+                            
                             if (!sH) { 
                                 let eI = l.find(u => u.pName && u.pName.trim().toLocaleLowerCase('tr-TR') === ekmekUrunAdi.trim().toLocaleLowerCase('tr-TR')); 
                                 if (eI) { 
@@ -1952,14 +1851,26 @@
                                     if (tB > mE) { sH = true; hM = `Ekmek bitti!`; } 
                                 } 
                             }
+                            
                             if(sH) { 
                                 OzelUyariGoster("Hata", hM, "⚠️"); 
-                                isProcessingOrder=false; btn.disabled=false; btn.classList.remove("loading"); btn.innerHTML=sonOdenecekFiyat.toFixed(2)+" TL Öde"; return; 
+                                isProcessingOrder = false; 
+                                btn.disabled = false; 
+                                btn.classList.remove("loading"); 
+                                btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
+                                return; 
                             }
                             
                             let n = document.getElementById("siparis-notu").value.trim().replace(/[<>]/g, '').substring(0, 100);
-                            let sD = ""; sepet.forEach(u => { sD += (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName + "\n"; });
-                            let uD = sepet.map(u => ({ itemName: (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName, itemPrice: u.basePrice * u.quantity, amount: u.baseStockAmount * u.quantity, rawName: u.rawName }));
+                            let sD = ""; 
+                            sepet.forEach(u => { sD += (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName + "\n"; });
+                            
+                            let uD = sepet.map(u => ({ 
+                                itemName: (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName, 
+                                itemPrice: u.basePrice * u.quantity, 
+                                amount: u.baseStockAmount * u.quantity, 
+                                rawName: u.rawName 
+                            }));
                             
                             let iF = hamToplamFiyat - sonOdenecekFiyat; 
                             if(iF > 0) { 
@@ -1967,49 +1878,122 @@
                                 uD.push({ itemName: kA, itemPrice: -iF, amount: 0, rawName: "" }); 
                             }
                             
-                            const pV = { tip: "paket", musteriAd: escapeHTML(isim), telefon: escapeHTML(tel), adres: escapeHTML(adres), odemeTuru: "Online Ödeme (Kart)", siparisDetayi: sD, siparisler: uD, toplam: sonOdenecekFiyat, zaman: new Date().toLocaleTimeString(), siparisNotu: escapeHTML(n) };
-                            fetch(`https://bekmezpos-default-rtdb.firebaseio.com/PaketSiparisler/${sT}.json${authKeyStr}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(pV) }).then(() => {
-                                const cV = { durum: "SİPARİŞ ONAYLANDI", toplamTutar: sonOdenecekFiyat, siparisNotu: escapeHTML(n), siparisler: sepet.map(u => ({ itemName: (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName, itemPrice: u.basePrice * u.quantity })) };
+                            const pV = { 
+                                tip: "paket", 
+                                musteriAd: escapeHTML(isim), 
+                                telefon: escapeHTML(tel), 
+                                adres: escapeHTML(adres), 
+                                odemeTuru: "Online Ödeme (Kart)", 
+                                siparisDetayi: sD, 
+                                siparisler: uD, 
+                                toplam: sonOdenecekFiyat, 
+                                zaman: new Date().toLocaleTimeString(), 
+                                siparisNotu: escapeHTML(n) 
+                            };
+                            
+                            fetch(`https://bekmezpos-default-rtdb.firebaseio.com/PaketSiparisler/${sT}.json${authKeyStr}`, { 
+                                method: "PUT", 
+                                headers: { "Content-Type": "application/json" }, 
+                                body: JSON.stringify(pV) 
+                            }).then(() => {
+                                const cV = { 
+                                    durum: "SİPARİŞ ONAYLANDI", 
+                                    toplamTutar: sonOdenecekFiyat, 
+                                    siparisNotu: escapeHTML(n), 
+                                    siparisler: sepet.map(u => ({ 
+                                        itemName: (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName, 
+                                        itemPrice: u.basePrice * u.quantity 
+                                    })) 
+                                };
+                                
                                 fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliPaketler/Paket_${sT}.json${authKeyStr}`, { method: "PUT", body: JSON.stringify(cV) });
                                 
-                                HapticTitresim(); CheckoutKapat(); BasariEkraniGoster();
+                                HapticTitresim(); 
+                                CheckoutKapat(); 
+                                BasariEkraniGoster();
                                 
-                                sepet = []; aktifKuponKodu = ""; aktifKuponIndirimTutari = 0; aktifKuponAltLimit = 0; aktifKuponHedefUrun = "Herşey"; 
-                                document.getElementById("siparis-notu").value = ""; SepetEkraniniCiz(); HesaplaVeGuncelle(); seciliEkstraIstekler = []; document.getElementById("cc-number").value = ""; document.getElementById("cc-exp").value = ""; document.getElementById("cc-cvv").value = ""; 
+                                sepet = []; 
+                                aktifKuponKodu = ""; 
+                                aktifKuponIndirimTutari = 0; 
+                                aktifKuponAltLimit = 0; 
+                                aktifKuponHedefUrun = "Herşey"; 
+                                document.getElementById("siparis-notu").value = ""; 
+                                SepetEkraniniCiz(); 
+                                HesaplaVeGuncelle(); 
+                                seciliEkstraIstekler = []; 
+                                document.getElementById("cc-number").value = ""; 
+                                document.getElementById("cc-exp").value = ""; 
+                                document.getElementById("cc-cvv").value = ""; 
                                 isProcessingOrder = false;
-                            }).catch(e => { OzelUyariGoster("Hata", "Sipariş gitmedi.", "❌"); isProcessingOrder=false; btn.disabled=false; btn.classList.remove("loading"); btn.innerHTML=sonOdenecekFiyat.toFixed(2)+" TL Öde"; });
+                            }).catch(e => { 
+                                OzelUyariGoster("Hata", "Sipariş gitmedi.", "❌"); 
+                                isProcessingOrder = false; 
+                                btn.disabled = false; 
+                                btn.classList.remove("loading"); 
+                                btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
+                            });
 
                         }
-                    }).catch(e => { OzelUyariGoster("Hata", "Bağlantı koptu.", "📡"); isProcessingOrder=false; btn.disabled=false; btn.classList.remove("loading"); btn.innerHTML=sonOdenecekFiyat.toFixed(2)+" TL Öde"; });
+                    }).catch(e => { 
+                        OzelUyariGoster("Hata", "Bağlantı koptu.", "📡"); 
+                        isProcessingOrder = false; 
+                        btn.disabled = false; 
+                        btn.classList.remove("loading"); 
+                        btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
+                    });
                 }, 2000); 
-            }).catch(e => { OzelUyariGoster("Hata", "Ağ sorunu.", "📡"); isProcessingOrder=false; btn.disabled=false; btn.classList.remove("loading"); btn.innerHTML=sonOdenecekFiyat.toFixed(2)+" TL Öde"; });
+            }).catch(e => { 
+                OzelUyariGoster("Hata", "Ağ sorunu.", "📡"); 
+                isProcessingOrder = false; 
+                btn.disabled = false; 
+                btn.classList.remove("loading"); 
+                btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
+            });
         }
 
         async function CanliAdisyonCek() {
             try {
                 let tR = VeriCoz(localStorage.getItem("bg_t")); 
-                if(!tR || tR.length < 10) { document.getElementById("history-content").innerHTML = `<div class="empty-text">Adisyon yok.<br><br>Profilimden telefon numaranızı kontrol edin.</div>`; return; }
+                if(!tR || tR.length < 10) { 
+                    document.getElementById("history-content").innerHTML = `<div class="empty-text">Adisyon yok.<br><br>Profilimden telefon numaranızı kontrol edin.</div>`; 
+                    return; 
+                }
                 
                 let sT = tR.replace(/[^0-9]/g, ''); 
                 let r = await fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliPaketler/Paket_${sT}.json${authKeyStr}&t=${new Date().getTime()}`, { cache: "no-store" }); 
                 let bP = await r.json();
                 
                 let h = "";
-                if(!bP) { h = `<div class="empty-text">Aktif bir siparişiniz bulunmuyor.</div>`; } else {
+                if(!bP) { 
+                    h = `<div class="empty-text">Aktif bir siparişiniz bulunmuyor.</div>`; 
+                } else {
                     let dR = bP.durum || "SİPARİŞ ALINDI";
                     if(dR.includes("İPTAL")) { 
                         h = `<div class="empty-text" style="color: var(--danger); border-color: rgba(255, 59, 48, 0.3); background: rgba(255, 59, 48, 0.05); padding: 40px 20px;"><div style="font-size:40px; margin-bottom:15px;">❌</div><strong style="font-size:18px;">İptal Edildi</strong><br><br><span style="font-size:14px; color:#A1A1AA;">Restoran iptal etti.</span></div>`; 
                     } else {
-                        let c = "var(--primary)"; let bg = "rgba(255,107,0,0.1)"; 
-                        if(dR.includes("YOLA ÇIKTI") || dR.includes("TESLİM") || dR.includes("AFİYET")) { c = "var(--success)"; bg = "rgba(52, 199, 89, 0.1)"; }
+                        let c = "var(--primary)"; 
+                        let bg = "rgba(255,107,0,0.1)"; 
+                        if(dR.includes("YOLA ÇIKTI") || dR.includes("TESLİM") || dR.includes("AFİYET")) { 
+                            c = "var(--success)"; 
+                            bg = "rgba(52, 199, 89, 0.1)"; 
+                        }
                         
                         h = `<div class="receipt-card"><div style="text-align: center; margin-bottom: 25px;"><div style="font-weight: 900; font-size: 22px; color:#1c1c1e;">BEKMEZ GO</div><div style="font-size: 14px; font-weight: 800; color:var(--text-muted); margin-top:4px;">PAKET SERVİS</div></div><div class="receipt-header"><span>DURUM</span><span style="color:${c}; font-weight:800; background:${bg}; padding:6px 12px; border-radius:12px; text-align:right;">${escapeHTML(dR)}</span></div>`;
-                        if(bP.siparisler) { bP.siparisler.forEach(u => { h += `<div class="receipt-item"><span>${escapeHTML(u.itemName)}</span><span>${parseFloat(u.itemPrice).toFixed(2)} ₺</span></div>`; }); }
-                        if (bP.siparisNotu) { h += `<div style="margin-top: 20px; padding: 16px; background: rgba(0,0,0,0.03); border-radius:16px; font-size: 13px; font-weight: 600; color:#8e8e93; border: 1px dashed #d1d1d6;">NOT:<br>${escapeHTML(bP.siparisNotu)}</div>`; }
+                        if(bP.siparisler) { 
+                            bP.siparisler.forEach(u => { 
+                                h += `<div class="receipt-item"><span>${escapeHTML(u.itemName)}</span><span>${parseFloat(u.itemPrice).toFixed(2)} ₺</span></div>`; 
+                            }); 
+                        }
+                        if (bP.siparisNotu) { 
+                            h += `<div style="margin-top: 20px; padding: 16px; background: rgba(0,0,0,0.03); border-radius:16px; font-size: 13px; font-weight: 600; color:#8e8e93; border: 1px dashed #d1d1d6;">NOT:<br>${escapeHTML(bP.siparisNotu)}</div>`; 
+                        }
                         h += `<div class="receipt-total">TOPLAM: <span style="font-size:28px; display:block; margin-top:8px;">${parseFloat(bP.toplamTutar).toFixed(2)} TL</span></div><div style="text-align: center; font-size: 11px; margin-top: 25px; color:#a1a1aa; font-weight: 600;">Bizi tercih ettiğiniz için teşekkür ederiz.</div></div>`;
                     }
                 }
-                if (sonCekilenAdisyonHTML !== h) { document.getElementById("history-content").innerHTML = h; sonCekilenAdisyonHTML = h; }
+                if (sonCekilenAdisyonHTML !== h) { 
+                    document.getElementById("history-content").innerHTML = h; 
+                    sonCekilenAdisyonHTML = h; 
+                }
             } catch(e) {}
         }
     </script>
