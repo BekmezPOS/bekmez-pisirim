@@ -7,9 +7,10 @@ self.addEventListener("activate", function(event) {
 });
 
 self.addEventListener("fetch", function(event) {
+    // Uygulamanın indirilebilir (PWA) olması için bu kodun olması şarttır.
     event.respondWith(
         fetch(event.request).catch(function() {
-            return new Response("Çevrimdışı mod, ancak uygulama çalışıyor.");
+            return new Response("İnternet bağlantısı koptu, ancak uygulama çalışıyor.");
         })
     );
 });
