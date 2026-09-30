@@ -561,7 +561,7 @@
         <h2 class="page-title">Profilim</h2>
         
         <div class="security-badge">
-            <div class="icon">🛡️</div>
+            <div class="icon">🛡️️</div>
             <div class="text">
                 <span class="badge-title">Uçtan Uca Güvenlik</span>
                 Kişisel verileriniz hiçbir uzak sunucuya kaydedilmez. Tamamen <strong>kendi telefonunuzun şifreli hafızasında</strong> saklanır.
@@ -1799,7 +1799,7 @@
         }
 
         // ==========================================
-        // KUPON VE ÖDEME İŞLEMLERİ
+        // KUPON VE ÖDEME İŞLEMLERİ (YENİLENMİŞ)
         // ==========================================
 
         async function KuponlariCek() {
@@ -1821,7 +1821,9 @@
                 let hasKupon = false;
                 for (let key in data) {
                     let k = data[key];
-                    if (k.discountAmount) {
+                    
+                    // SADECE UYGULAMADA GEÇERLİ OLANLARI (isAppCoupon: true) GÖSTERİR
+                    if (k.discountAmount && k.isAppCoupon === true) {
                         hasKupon = true;
                         list.innerHTML += `
                         <div class="coupon-card">
@@ -1864,6 +1866,14 @@
             fetch("https://bekmezpos-default-rtdb.firebaseio.com/Kuponlar/" + gK + ".json" + authKeyStr + "&t=" + new Date().getTime(), { cache: "no-store" }).then(res => res.json()).then(d => { 
                 b.disabled = false; 
                 if(d && d.discountAmount > 0) { 
+                    
+                    // EĞER KUPON VAR AMA "isAppCoupon" İŞARETLİ DEĞİLSE SİSTEM ENGELLER
+                    if (d.isAppCoupon !== true) {
+                        KuponuIptalEt(true);
+                        OzelUyariGoster("Sadece Mağazada", "Bu kupon sadece restoran içi siparişlerde geçerlidir, uygulamada kullanılamaz.", "🚫");
+                        return;
+                    }
+
                     let aU = (d.targetProduct && d.targetProduct !== "") ? d.targetProduct : "Herşey"; 
                     let uS = false; 
                     let hM = ""; 
@@ -1904,7 +1914,7 @@
                     KuponArayuzunuGuncelle(); 
                 } else { 
                     KuponuIptalEt(true); 
-                    OzelUyariGoster("Geçersiz", `Hatalı veya süresi dolmuş.`, "❌"); 
+                    OzelUyariGoster("Geçersiz", `Hatalı veya süresi dolmuş bir kod.`, "❌"); 
                 } 
             }).catch(e => { 
                 b.disabled = false; 
