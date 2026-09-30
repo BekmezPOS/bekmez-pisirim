@@ -669,7 +669,7 @@
         </div>
     </div>
 
-    <!-- AKILLI İPTAL / EK SİPARİŞ ONAY PENCERESİ -->
+    <!-- AKILLI İPTAL / DÜZENLEME ONAY PENCERESİ -->
     <div id="confirm-overlay" class="custom-alert-overlay" onclick="KapatConfirmModal(event)">
         <div class="custom-alert-box" id="confirm-box" style="border-color: var(--danger);">
             <div class="custom-alert-glow" id="confirm-glow" style="background: var(--danger);"></div>
@@ -808,7 +808,7 @@
             }
         }
 
-        // AKILLI ONAY PENCERESİ (İptal ve Ek Sipariş İçin)
+        // AKILLI ONAY PENCERESİ
         function SoruSor(baslik, metin, ikon, evetCallback, isDanger=false) {
             document.getElementById("confirm-title").innerText = baslik;
             document.getElementById("confirm-text").innerHTML = metin;
@@ -823,10 +823,10 @@
                 box.style.borderColor = "var(--danger)";
                 glow.style.background = "var(--danger)";
             } else {
-                btn.style.background = "var(--success)";
-                btn.innerText = "Siparişe Ekle";
-                box.style.borderColor = "var(--success)";
-                glow.style.background = "var(--success)";
+                btn.style.background = "var(--primary)";
+                btn.innerText = "Siparişi Düzenle";
+                box.style.borderColor = "var(--primary)";
+                glow.style.background = "var(--primary)";
             }
 
             currentConfirmAction = evetCallback;
@@ -847,7 +847,6 @@
             KapatConfirmModal(null, true);
             if(currentConfirmAction) currentConfirmAction();
         });
-
 
         function UnityFiyatiniHesapla(urun, miktar) {
             if (!urun || miktar <= 0) return 0;
@@ -1147,15 +1146,14 @@
                     setTimeout(() => { 
                         splash.style.display = 'none'; 
                         
-                        // YENİ: SİPARİŞ HAFIZASI
-                        // Uygulama açıldığında kayıtlı sipariş varsa direkt adisyona yönlendir
+                        // SİPARİŞ HAFIZASI
                         let kt = VeriCoz(localStorage.getItem("bg_t")); 
                         if (kt && kt.length >= 10) {
                             let sT = kt.replace(/[^0-9]/g, ''); 
                             fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliPaketler/Paket_${sT}.json${authKeyStr}`)
                             .then(r => r.json())
                             .then(d => {
-                                if(d && d.durum && !d.durum.includes("İPTAL") && !d.durum.includes("TESLİM") && !d.durum.includes("AFİYET")) {
+                                if(d && d.durum && !d.durum.includes("İPTAL") && !d.durum.includes("RED") && !d.durum.includes("TESLİM") && !d.durum.includes("AFİYET")) {
                                     SayfaGoster('gecmis');
                                 } else {
                                     SayfaGoster('urunler');
@@ -1298,7 +1296,6 @@
                     if (ilkYukleme) { 
                         document.getElementById("kategori-sekmeleri").style.display = "flex"; 
                         document.getElementById("menu-grid").innerHTML = ""; 
-                        // Menü renderi Splash'te yönetildiği için buradan kaldırdım
                     } else { 
                         if (document.getElementById("menu-container").style.display === "block") { 
                             if (document.getElementById('tab-Arama').style.display === "flex") {
@@ -1851,7 +1848,7 @@
         }
 
         // ==========================================
-        // KUPON VE ÖDEME İŞLEMLERİ 
+        // KUPON VE ÖDEME İŞLEMLERİ
         // ==========================================
 
         async function KuponlariCek() {
@@ -1994,7 +1991,7 @@
         }
 
         // ==========================================
-        // SİPARİŞ GÖNDERME VE BİRLEŞTİRME (YENİ SİSTEM)
+        // SİPARİŞ GÖNDERME VE SEPET HAFIZASI
         // ==========================================
 
         function PaketSiparisiGonder() {
@@ -2083,36 +2080,28 @@
             .then(r => r.json())
             .then(aA => {
                 
-                // YENİ: AKILLI İLAVE (BİRLEŞTİRME) SİSTEMİ
-                if(aA && aA.durum && !aA.durum.includes("İPTAL") && !aA.durum.includes("TESLİM") && !aA.durum.includes("AFİYET")) { 
+                if(aA && aA.durum && !aA.durum.includes("İPTAL") && !aA.durum.includes("RED") && !aA.durum.includes("TESLİM") && !aA.durum.includes("AFİYET")) { 
+                    OzelUyariGoster("Sürüyor", "Şu an aktif bir siparişiniz bulunuyor. Lütfen önce o siparişin teslim edilmesini bekleyin.", "⏳"); 
                     isProcessingOrder = false; 
                     btn.disabled = false; 
                     btn.classList.remove("loading"); 
                     btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
-                    
-                    SoruSor("Devam Eden Siparişiniz Var", "Şu an hazırlanan aktif bir siparişiniz bulunuyor. Bu sepetteki ürünleri önceki siparişinize <b>İLAVE ETMEK</b> ister misiniz?", "➕", () => {
-                        SiparisiBirlestir(isim, tel, adres, sT, aA);
-                    });
                     return; 
                 }
                 
-                // Normal Yeni Sipariş Süreci
                 setTimeout(() => {
                     btn.innerText = "İletiliyor...";
                     fetch(firebaseMenuUrl + authKeyStr + "&t=" + new Date().getTime(), { cache: "no-store" }).then(r => r.json()).then(d => {
                         let l = (d && d.products) ? d.products : [];
                         if(l.length > 0) {
                             let sH = false; let hM = "";
-                            
                             for(let i=0; i<sepet.length; i++) {
                                 let gU = l.find(u => u.pName === sepet[i].rawName);
                                 if(gU) { 
                                     let mS = (gU.stockAmount !== undefined) ? parseFloat(gU.stockAmount) : ((gU.stock !== undefined) ? parseFloat(gU.stock) : 999); 
                                     let sT2 = 0; sepet.forEach(u => { if(u.rawName === gU.pName) sT2 += (u.baseStockAmount * u.quantity); }); 
                                     if(sT2 > mS) { sH = true; hM = `"${gU.pName}" tükendi.`; break; } 
-                                } else { 
-                                    sH = true; hM = "Ürün kaldırılmış."; break; 
-                                }
+                                } else { sH = true; hM = "Ürün kaldırılmış."; break; }
                             }
                             
                             if (!sH) { 
@@ -2147,7 +2136,7 @@
                                 uD.push({ itemName: kA, itemPrice: -iF, amount: 0, rawName: "" }); 
                             }
                             
-                            let sipZamani = Date.now(); // İPTAL SÜRESİ İÇİN KİLİT NOKTA
+                            let sipZamani = Date.now();
                             const pV = { 
                                 tip: "paket", musteriAd: escapeHTML(isim), telefon: escapeHTML(tel), adres: escapeHTML(adres), 
                                 odemeTuru: "Online Ödeme (Kart)", siparisDetayi: sD, siparisler: uD, toplam: sonOdenecekFiyat, 
@@ -2158,12 +2147,15 @@
                                 method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(pV) 
                             }).then(() => {
                                 const cV = { 
-                                    durum: "SİPARİŞ ONAYLANDI", toplamTutar: sonOdenecekFiyat, siparisNotu: escapeHTML(n), timestamp: sipZamani,
+                                    durum: "SİPARİŞ ALINDI 🔔", toplamTutar: sonOdenecekFiyat, siparisNotu: escapeHTML(n), timestamp: sipZamani,
                                     siparisler: sepet.map(u => ({ itemName: (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName, itemPrice: u.basePrice * u.quantity })) 
                                 };
                                 
                                 fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliPaketler/Paket_${sT}.json${authKeyStr}`, { method: "PUT", body: JSON.stringify(cV) });
                                 
+                                // DÜZENLEME İÇİN SEPETİ HAFIZAYA AL
+                                localStorage.setItem("bg_last_cart", JSON.stringify(sepet));
+
                                 HapticTitresim(); CheckoutKapat(); BasariEkraniGoster();
                                 
                                 sepet = []; aktifKuponKodu = ""; aktifKuponIndirimTutari = 0; aktifKuponAltLimit = 0; aktifKuponHedefUrun = "Herşey"; 
@@ -2174,7 +2166,6 @@
                                 OzelUyariGoster("Hata", "Sipariş gitmedi.", "❌"); 
                                 isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
                             });
-
                         }
                     }).catch(e => { 
                         OzelUyariGoster("Hata", "Bağlantı koptu.", "📡"); 
@@ -2187,66 +2178,8 @@
             });
         }
 
-        // AKILLI İLAVE (SİPARİŞ BİRLEŞTİRME) SİSTEMİ
-        function SiparisiBirlestir(isim, tel, adres, sT, mevcutCanli) {
-            let btn = document.getElementById("final-submit-btn");
-            btn.innerText = "İlave Ediliyor...";
-            btn.classList.add("loading");
-            btn.disabled = true;
-            isProcessingOrder = true;
-
-            fetch(`https://bekmezpos-default-rtdb.firebaseio.com/PaketSiparisler/${sT}.json${authKeyStr}`)
-            .then(r => r.json())
-            .then(eskiSiparis => {
-                if(!eskiSiparis) {
-                    OzelUyariGoster("Hata", "Ana sipariş bulunamadı, baştan deneyin.", "❌");
-                    isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde";
-                    return;
-                }
-
-                let yeniNot = document.getElementById("siparis-notu").value.trim().replace(/[<>]/g, '').substring(0, 100);
-                let eklenecekSiparisDetayi = "\n\n--- [EK İLAVE] ---\n";
-                sepet.forEach(u => { eklenecekSiparisDetayi += (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName + "\n"; });
-
-                let yeniUrunler = sepet.map(u => ({
-                    itemName: "[EK] " + (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName,
-                    itemPrice: u.basePrice * u.quantity,
-                    amount: u.baseStockAmount * u.quantity,
-                    rawName: u.rawName
-                }));
-
-                let iF = hamToplamFiyat - sonOdenecekFiyat;
-                if(iF > 0) {
-                    let kA = aktifKuponKodu !== "" ? "Kupon [" + aktifKuponKodu + "]" : "Web İndirimi";
-                    yeniUrunler.push({ itemName: "[EK] " + kA, itemPrice: -iF, amount: 0, rawName: "" });
-                }
-
-                eskiSiparis.siparisler = (eskiSiparis.siparisler || []).concat(yeniUrunler);
-                eskiSiparis.siparisDetayi = (eskiSiparis.siparisDetayi || "") + eklenecekSiparisDetayi;
-                eskiSiparis.toplam = (eskiSiparis.toplam || 0) + sonOdenecekFiyat;
-                if(yeniNot !== "") eskiSiparis.siparisNotu = (eskiSiparis.siparisNotu || "") + " | Ek Not: " + yeniNot;
-
-                fetch(`https://bekmezpos-default-rtdb.firebaseio.com/PaketSiparisler/${sT}.json${authKeyStr}`, {
-                    method: "PUT", body: JSON.stringify(eskiSiparis)
-                }).then(() => {
-                    mevcutCanli.siparisler = (mevcutCanli.siparisler || []).concat(yeniUrunler.map(u => ({itemName: u.itemName, itemPrice: u.itemPrice})));
-                    mevcutCanli.toplamTutar = (mevcutCanli.toplamTutar || 0) + sonOdenecekFiyat;
-                    if(yeniNot !== "") mevcutCanli.siparisNotu = (mevcutCanli.siparisNotu || "") + " | Ek Not: " + yeniNot;
-
-                    fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliPaketler/Paket_${sT}.json${authKeyStr}`, {
-                        method: "PUT", body: JSON.stringify(mevcutCanli)
-                    }).then(() => {
-                        BasariEkraniGoster();
-                        sepet = []; KuponuIptalEt(true); document.getElementById("siparis-notu").value = ""; SepetEkraniniCiz(); CheckoutKapat();
-                        document.getElementById("cc-number").value = ""; document.getElementById("cc-exp").value = ""; document.getElementById("cc-cvv").value = ""; 
-                        isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde";
-                    });
-                });
-            });
-        }
-
         // ==========================================
-        // ADİSYON TAKİBİ VE AKILLI İPTAL SİSTEMİ
+        // ADİSYON TAKİBİ, İPTAL VE DÜZENLEME SİSTEMİ
         // ==========================================
 
         function IptalOnaySor() {
@@ -2256,13 +2189,20 @@
             }, true);
         }
 
+        function SiparisiDuzenleSor() {
+            HapticTitresim();
+            SoruSor("Siparişi Düzenle", "Mevcut siparişiniz mutfaktan iptal edilecek ve ürünler sepetinize geri yüklenecektir. Sepetinizi düzenleyip yeniden yollayabilirsiniz. Onaylıyor musunuz?", "✏️", () => {
+                SiparişiGercektenDuzenle();
+            }, false);
+        }
+
         function SiparişiGercektenIptalEt() {
             let tR = VeriCoz(localStorage.getItem("bg_t")); 
             if(!tR) return; 
             let sT = tR.replace(/[^0-9]/g, ''); 
             
             fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliPaketler/Paket_${sT}.json${authKeyStr}`, {
-                method: "PATCH", body: JSON.stringify({ durum: "MÜŞTERİ İPTAL ETTİ" })
+                method: "PATCH", body: JSON.stringify({ durum: "İPTAL EDİLDİ (MÜŞTERİ)" })
             });
             fetch(`https://bekmezpos-default-rtdb.firebaseio.com/PaketSiparisler/${sT}.json${authKeyStr}`, {
                 method: "PATCH", body: JSON.stringify({ iptalEdildi: true, siparisNotu: "DİKKAT: MÜŞTERİ SİPARİŞİ İPTAL ETTİ!" })
@@ -2270,6 +2210,34 @@
 
             OzelUyariGoster("İptal Edildi", "Siparişiniz başarıyla iptal edildi.", "✅");
             CanliAdisyonCek();
+        }
+
+        function SiparişiGercektenDuzenle() {
+            let tR = VeriCoz(localStorage.getItem("bg_t")); 
+            if(!tR) return; 
+            let sT = tR.replace(/[^0-9]/g, ''); 
+            
+            // 1. Firebase'de iptal et ve mutfağa bilgi yolla
+            fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliPaketler/Paket_${sT}.json${authKeyStr}`, {
+                method: "PATCH", body: JSON.stringify({ durum: "İPTAL (MÜŞTERİ DÜZENLİYOR)" })
+            });
+            fetch(`https://bekmezpos-default-rtdb.firebaseio.com/PaketSiparisler/${sT}.json${authKeyStr}`, {
+                method: "PATCH", body: JSON.stringify({ iptalEdildi: true, siparisNotu: "MÜŞTERİ DÜZENLEME YAPMAK İÇİN SİPARİŞİ GERİ ÇEKTİ." })
+            });
+
+            // 2. Sepeti geri yükle
+            try {
+                let sonSepet = JSON.parse(localStorage.getItem("bg_last_cart"));
+                if (sonSepet && sonSepet.length > 0) {
+                    sepet = sonSepet;
+                }
+            } catch(e) {}
+            
+            // 3. Ekrana dön
+            SayfaGoster('sepet');
+            setTimeout(() => {
+                OzelUyariGoster("Sepetiniz Yüklendi", "Siparişiniz geri çekildi. Sepetinizi düzenleyip yeniden onaylayabilirsiniz.", "✏️");
+            }, 500);
         }
 
         async function CanliAdisyonCek() {
@@ -2289,21 +2257,36 @@
                     h = `<div class="empty-text">Aktif bir siparişiniz bulunmuyor.</div>`; 
                     sonCekilenAdisyonHTML = "";
                 } else {
-                    let dR = bP.durum || "SİPARİŞ ALINDI";
+                    let dR = bP.durum ? bP.durum.toUpperCase() : "SİPARİŞ ALINDI 🔔";
+                    let durumRenk = "var(--primary)";
+                    let durumBg = "rgba(255,107,0,0.1)";
+                    let durumIkon = "⏳";
+                    let iptalEdilebilir = false;
+
+                    // UNITY'DEN GELEN KOMUTLARI ANLAMA MOTORU
+                    if (dR.includes("İPTAL") || dR.includes("RED") || dR.includes("DÜZENLİYOR")) {
+                        durumRenk = "var(--danger)"; durumBg = "rgba(255, 59, 48, 0.1)"; durumIkon = "❌";
+                    } else if (dR.includes("HAZIR") || dR.includes("MUTFAK")) {
+                        durumRenk = "var(--warning)"; durumBg = "rgba(255, 204, 0, 0.1)"; durumIkon = "👨‍🍳";
+                    } else if (dR.includes("YOLA") || dR.includes("KURYE") || dR.includes("PAKET")) {
+                        durumRenk = "#0A84FF"; durumBg = "rgba(10, 132, 255, 0.1)"; durumIkon = "🛵";
+                    } else if (dR.includes("TESLİM") || dR.includes("AFİYET") || dR.includes("TAMAM")) {
+                        durumRenk = "var(--success)"; durumBg = "rgba(52, 199, 89, 0.1)"; durumIkon = "✅";
+                    } else {
+                        // Hala Onay Aşamasında Veya Yeni
+                        iptalEdilebilir = true; 
+                        durumIkon = "🔔";
+                    }
                     
-                    if(dR.includes("İPTAL")) { 
-                        h = `<div class="empty-text" style="color: var(--danger); border-color: rgba(255, 59, 48, 0.3); background: rgba(255, 59, 48, 0.05); padding: 40px 20px;"><div style="font-size:40px; margin-bottom:15px;">❌</div><strong style="font-size:18px;">İptal Edildi</strong><br><br><span style="font-size:14px; color:#A1A1AA;">Sipariş iptal durumundadır.</span></div>`; 
+                    if(dR.includes("İPTAL") || dR.includes("RED") || dR.includes("DÜZENLİYOR")) { 
+                        h = `<div class="empty-text" style="color: var(--danger); border-color: rgba(255, 59, 48, 0.3); background: rgba(255, 59, 48, 0.05); padding: 40px 20px;"><div style="font-size:40px; margin-bottom:15px;">❌</div><strong style="font-size:18px;">İptal Edildi</strong><br><br><span style="font-size:14px; color:#A1A1AA;">${escapeHTML(dR)}</span></div>`; 
                         sonCekilenAdisyonHTML = "";
                     } else {
-                        let c = "var(--primary)"; let bg = "rgba(255,107,0,0.1)"; 
-                        if(dR.includes("YOLA ÇIKTI") || dR.includes("TESLİM") || dR.includes("AFİYET")) { 
-                            c = "var(--success)"; bg = "rgba(52, 199, 89, 0.1)"; 
-                        }
-                        
-                        // 3 DAKİKA İPTAL SÜRESİ KONTROLÜ
                         let iptalButonuHTML = "";
                         let gerisayimSuruyor = false;
-                        if (bP.timestamp && (dR === "SİPARİŞ ONAYLANDI" || dR === "SİPARİŞ ALINDI")) {
+                        
+                        // 3 DAKİKA KONTROLÜ (Sadece Unity'den "Hazırlanıyor" komutu GELMEDİYSE çalışır)
+                        if (iptalEdilebilir && bP.timestamp) {
                             let gecenSaniye = Math.floor((Date.now() - bP.timestamp) / 1000);
                             let kalanSaniye = 180 - gecenSaniye; // 3 Dakika = 180 saniye
                             if (kalanSaniye > 0) {
@@ -2311,11 +2294,20 @@
                                 let dk = Math.floor(kalanSaniye / 60);
                                 let sn = kalanSaniye % 60;
                                 let zamanMetni = `${dk}:${sn < 10 ? '0':''}${sn}`;
-                                iptalButonuHTML = `<button onclick="IptalOnaySor()" style="margin-top:20px; width:100%; background:rgba(255,59,48,0.1); border:1px solid rgba(255, 59, 48, 0.5); color:var(--danger); padding:14px; border-radius:100px; font-weight:800; font-size:14px; cursor:pointer;">Siparişi İptal Et (${zamanMetni})</button>`;
+                                
+                                iptalButonuHTML = `
+                                <div style="display:flex; gap:10px; margin-top:20px;">
+                                    <button onclick="IptalOnaySor()" style="flex:1; background:rgba(255,59,48,0.1); border:1px solid rgba(255, 59, 48, 0.5); color:var(--danger); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">İptal Et</button>
+                                    <button onclick="SiparisiDuzenleSor()" style="flex:1; background:rgba(255,107,0,0.1); border:1px solid rgba(255, 107, 0, 0.5); color:var(--primary); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">Siparişi Düzenle</button>
+                                </div>
+                                <div style="text-align:center; font-size:11px; color:#A1A1AA; margin-top:8px;">Mutfak onaylamadan önce değişiklik yapabilirsiniz (${zamanMetni})</div>`;
                             }
                         }
 
-                        h = `<div class="receipt-card"><div style="text-align: center; margin-bottom: 25px;"><div style="font-weight: 900; font-size: 22px; color:#1c1c1e;">BEKMEZ GO</div><div style="font-size: 14px; font-weight: 800; color:var(--text-muted); margin-top:4px;">PAKET SERVİS</div></div><div class="receipt-header"><span>DURUM</span><span style="color:${c}; font-weight:800; background:${bg}; padding:6px 12px; border-radius:12px; text-align:right;">${escapeHTML(dR)}</span></div>`;
+                        h = `<div class="receipt-card">
+                            <div style="text-align: center; margin-bottom: 25px;"><div style="font-size:30px; margin-bottom:5px;">${durumIkon}</div><div style="font-weight: 900; font-size: 22px; color:#1c1c1e;">BEKMEZ GO</div><div style="font-size: 14px; font-weight: 800; color:var(--text-muted); margin-top:4px;">PAKET SERVİS</div></div>
+                            <div class="receipt-header"><span>DURUM</span><span style="color:${durumRenk}; font-weight:900; background:${durumBg}; padding:8px 14px; border-radius:12px; text-align:right;">${escapeHTML(dR)}</span></div>`;
+                        
                         if(bP.siparisler) { 
                             bP.siparisler.forEach(u => { h += `<div class="receipt-item"><span>${escapeHTML(u.itemName)}</span><span>${parseFloat(u.itemPrice).toFixed(2)} ₺</span></div>`; }); 
                         }
@@ -2324,7 +2316,7 @@
                         }
                         h += `<div class="receipt-total">TOPLAM: <span style="font-size:28px; display:block; margin-top:8px;">${parseFloat(bP.toplamTutar).toFixed(2)} TL</span></div>${iptalButonuHTML}<div style="text-align: center; font-size: 11px; margin-top: 25px; color:#a1a1aa; font-weight: 600;">Bizi tercih ettiğiniz için teşekkür ederiz.</div></div>`;
                         
-                        if (!gerisayimSuruyor) sonCekilenAdisyonHTML = h; // Geri sayım varsa her saniye güncellenmesi için cachelemeyi durduruyoruz.
+                        if (!gerisayimSuruyor) sonCekilenAdisyonHTML = h; 
                     }
                 }
                 
