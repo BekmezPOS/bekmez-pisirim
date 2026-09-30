@@ -740,14 +740,45 @@
         let installPromptDismissed = localStorage.getItem('pwa_prompt_dismissed') === 'true';
 
         // ==========================================
-        // YARDIMCI (UTILITY) FONKSİYONLAR
+        // YARDIMCI VE BİLDİRİM FONKSİYONLARI (YENİ SİSTEM)
         // ==========================================
 
         function HapticTitresim() { 
             if(navigator.vibrate) navigator.vibrate(15); 
         }
 
-        // OTOMATİK SESSİZ İZİN SİSTEMİ (BUTONSUZ)
+        // BİLDİRİM MOTORU: Tüm engelleri aşmak için 3 farklı yöntemi dener
+        function BildirimGonder(baslik, mesaj) {
+            if (!("Notification" in window) || Notification.permission !== "granted") return;
+            
+            let ayarlar = { 
+                body: mesaj, 
+                icon: "icon-192.png", 
+                badge: "icon-192.png",
+                vibrate: [200, 100, 200] 
+            };
+
+            try {
+                if (navigator.serviceWorker && navigator.serviceWorker.ready) {
+                    navigator.serviceWorker.ready.then(reg => {
+                        if (reg && reg.showNotification) {
+                            reg.showNotification(baslik, ayarlar).catch(() => {
+                                try { new Notification(baslik, ayarlar); } catch(e) {}
+                            });
+                        } else {
+                            try { new Notification(baslik, ayarlar); } catch(e) {}
+                        }
+                    }).catch(() => {
+                        try { new Notification(baslik, ayarlar); } catch(e) {}
+                    });
+                } else {
+                    try { new Notification(baslik, ayarlar); } catch(e) {}
+                }
+            } catch (err) {
+                try { new Notification(baslik, ayarlar); } catch(e) {}
+            }
+        }
+
         function SessizIzinIste() {
             if ("Notification" in window && Notification.permission === "default") {
                 Notification.requestPermission();
@@ -945,18 +976,7 @@
             o.style.display = "flex";
             setTimeout(() => o.classList.add("active"), 10);
             
-            // SİPARİŞ BAŞARILI BİLDİRİMİ TETİKLEYİCİSİ (Sessiz İzin çalışmışsa)
-            if ("Notification" in window && Notification.permission === "granted") {
-                navigator.serviceWorker.ready.then(reg => { 
-                    if(reg) {
-                        reg.showNotification("Siparişiniz Alındı! ✅", { 
-                            body: "Bekmez GO: Paketiniz en kısa sürede yola çıkacaktır. Bizi tercih ettiğiniz için teşekkür ederiz.", 
-                            icon: "icon-192.png",
-                            vibrate: [200, 100, 200]
-                        }); 
-                    }
-                });
-            }
+            BildirimGonder("Siparişiniz Alındı! ✅", "Bekmez GO: Paketiniz en kısa sürede yola çıkacaktır. Bizi tercih ettiğiniz için teşekkür ederiz.");
             
             setTimeout(() => {
                 o.classList.remove("active");
@@ -976,7 +996,7 @@
 
         if ('serviceWorker' in navigator) { 
             window.addEventListener('load', () => { 
-                navigator.serviceWorker.register('sw.js'); 
+                navigator.serviceWorker.register('./sw.js'); 
             }); 
         }
 
@@ -1004,17 +1024,7 @@
         document.addEventListener("visibilitychange", function() {
             if (document.visibilityState === 'hidden' && sepet.length > 0) {
                 cartReminderTimer = setTimeout(() => {
-                    if ("Notification" in window && Notification.permission === "granted") {
-                        navigator.serviceWorker.ready.then(reg => { 
-                            if(reg) {
-                                reg.showNotification("Sepetin seni bekliyor! 🥶🥩", { 
-                                    body: "Siparişini tamamla, Bekmez GO hızıyla hemen kapına getirelim! 🛵💨", 
-                                    icon: "icon-192.png", 
-                                    vibrate: [200, 100, 200] 
-                                }); 
-                            }
-                        });
-                    }
+                    BildirimGonder("Sepetin seni bekliyor! 🥶🥩", "Siparişini tamamla, Bekmez GO hızıyla hemen kapına getirelim! 🛵💨");
                 }, 2000); 
             } else { 
                 if (cartReminderTimer) clearTimeout(cartReminderTimer); 
@@ -1215,20 +1225,7 @@
                                 let hk = history[u.pName];
                                 
                                 if (hk !== undefined && cp < hk) {
-                                    try {
-                                        if ("Notification" in window && Notification.permission === "granted") {
-                                            navigator.serviceWorker.ready.then(reg => { 
-                                                if(reg) {
-                                                    reg.showNotification("🔥 Fiyat Düştü!", { 
-                                                        body: `${escapeHTML(u.pName)} sadece ${cp} TL oldu! Hemen sipariş ver.`, 
-                                                        icon: "icon-192.png", 
-                                                        vibrate: [200, 100, 200], 
-                                                        tag: "indirim-" + escapeHTML(u.pName) 
-                                                    }); 
-                                                }
-                                            });
-                                        }
-                                    } catch(notifyErr) {}
+                                    BildirimGonder("🔥 Fiyat Düştü!", `${escapeHTML(u.pName)} sadece ${cp} TL oldu! Hemen sipariş ver.`);
                                 }
                                 
                                 if(hk === undefined || cp > hk) { 
@@ -1801,7 +1798,7 @@
         }
 
         // ==========================================
-        // KUPON VE ÖDEME İŞLEMLERİ (YENİLENMİŞ)
+        // KUPON VE ÖDEME İŞLEMLERİ
         // ==========================================
 
         async function KuponlariCek() {
@@ -1824,7 +1821,6 @@
                 for (let key in data) {
                     let k = data[key];
                     
-                    // SADECE UYGULAMADA GEÇERLİ OLANLARI (isAppCoupon: true) GÖSTERİR
                     if (k.discountAmount && k.isAppCoupon === true) {
                         hasKupon = true;
                         list.innerHTML += `
@@ -1844,7 +1840,6 @@
                 }
                 if (!hasKupon) list.innerHTML = `<div class="empty-text">Şu an aktif bir kampanya bulunmuyor 😔</div>`;
             } catch (e) {
-                console.error("Kupon hatası:", e);
                 document.getElementById("firsatlar-list").innerHTML = `<div class="empty-text">Kuponlar yüklenemedi. Ağ bağlantınızı kontrol edin.</div>`;
             }
         }
@@ -1869,7 +1864,6 @@
                 b.disabled = false; 
                 if(d && d.discountAmount > 0) { 
                     
-                    // EĞER KUPON VAR AMA "isAppCoupon" İŞARETLİ DEĞİLSE SİSTEM ENGELLER
                     if (d.isAppCoupon !== true) {
                         KuponuIptalEt(true);
                         OzelUyariGoster("Sadece Mağazada", "Bu kupon sadece restoran içi siparişlerde geçerlidir, uygulamada kullanılamaz.", "🚫");
@@ -1992,7 +1986,7 @@
 
             // GÜVENLİK KONTROLÜ: HTTPS veya Localhost kontrolü (GPS için şarttır)
             if (!window.isSecureContext) {
-                OzelUyariGoster("Güvenlik Uyarısı", "GPS (Konum) sistemi sadece güvenli bağlantılarda (HTTPS) çalışır. Lütfen SSL sertifikanızı kontrol edin.", "🔒");
+                OzelUyariGoster("Güvenlik Uyarısı", "GPS (Konum) sistemi sadece güvenli bağlantılarda (HTTPS) çalışır. Cihaz ayarlarınızı kontrol edin.", "🔒");
                 return;
             }
             
@@ -2049,7 +2043,6 @@
             
             isProcessingOrder = true;
             
-            // Konum İsteme - 10 saniye süre verildi
             const checkLoc = (hAcc, tOut) => { 
                 return new Promise((resolve, reject) => { 
                     navigator.geolocation.getCurrentPosition(p => resolve(p), e => reject(e), {enableHighAccuracy: hAcc, timeout: tOut, maximumAge: 0}); 
@@ -2071,7 +2064,7 @@
                 DevamEtPaketGonder(is, tl, ad);
             }).catch(e => { 
                 let errorMessage = "Konum alınamadı. Telefonunuzun GPS ayarları kapalı olabilir veya izin vermediniz.";
-                if(e.code === 3) errorMessage = "Konum sinyali çok zayıf. Lütfen açık alana geçin.";
+                if(e && e.code === 3) errorMessage = "Konum sinyali çok zayıf. Lütfen açık alana geçin.";
                 OzelUyariGoster("İzin Gerekli", errorMessage, "📍"); 
                 isProcessingOrder = false; 
                 btn.disabled = false; 
