@@ -561,7 +561,7 @@
         <h2 class="page-title">Profilim</h2>
         
         <div class="security-badge">
-            <div class="icon">🛡️️</div>
+            <div class="icon">🛡️</div>
             <div class="text">
                 <span class="badge-title">Uçtan Uca Güvenlik</span>
                 Kişisel verileriniz hiçbir uzak sunucuya kaydedilmez. Tamamen <strong>kendi telefonunuzun şifreli hafızasında</strong> saklanır.
@@ -730,7 +730,6 @@
     </div>
 
     <script>
-        // GLOBALLER
         const textMesafeli = `<strong style="color:white; font-size:14px;">MADDE 1 - TARAFLAR</strong><br><b>SATICI:</b> Bekmez Pişirim Gıda Ltd. Şti.<br><br><strong style="color:white; font-size:14px;">MADDE 2 - CAYMA HAKKI İSTİSNASI</strong><br>Tüketici Mevzuatı gereğince; çabuk bozulabilen malların teslimine ilişkin sözleşmelerde Tüketicinin CAYMA HAKKI BULUNMAMAKTADIR.`;
         const textTeslimat = `<strong style="color:white; font-size:14px;">TESLİMAT ŞARTLARI</strong><br><br><b>1. Teslimat Bölgesi:</b> Maksimum 4 km yarıçapındaki bölgelere teslim edilmektedir.<br><b>2. Süre:</b> Ortalama 30-45 dakika içerisinde adresinize teslim edilir.`;
         const textIptal = `<strong style="color:white; font-size:14px;">İPTAL KOŞULLARI</strong><br><br><b>1. Şartlar:</b> Sipariş ancak mutfağa iletilmeden önce iptal edilebilir.<br><b>2. İade:</b> Onaylanan iadelerde tutar, 3-7 iş günü içerisinde karta yansıtılır.`;
@@ -757,15 +756,7 @@
         let installPromptDismissed = localStorage.getItem('pwa_prompt_dismissed') === 'true';
         let currentConfirmAction = null;
 
-        window.isAwaitingUnityEditSync = false;
-
-        // ==========================================
-        // YARDIMCI VE BİLDİRİM FONKSİYONLARI 
-        // ==========================================
-
-        function HapticTitresim() { 
-            if(navigator.vibrate) navigator.vibrate(15); 
-        }
+        function HapticTitresim() { if(navigator.vibrate) navigator.vibrate(15); }
 
         function BildirimGonder(baslik, mesaj) {
             if (!("Notification" in window) || Notification.permission !== "granted") return;
@@ -780,17 +771,9 @@
             } catch (err) { try { new Notification(baslik, ayarlar); } catch(e) {} }
         }
 
-        function SessizIzinIste() {
-            if ("Notification" in window && Notification.permission === "default") {
-                Notification.requestPermission();
-            }
-        }
+        function SessizIzinIste() { if ("Notification" in window && Notification.permission === "default") { Notification.requestPermission(); } }
 
-        function escapeHTML(str) {
-            return str ? str.toString().replace(/[&<>'"]/g, function(tag){
-                return {'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[tag];
-            }) : "";
-        }
+        function escapeHTML(str) { return str ? str.toString().replace(/[&<>'"]/g, function(tag){ return {'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[tag]; }) : ""; }
 
         function OzelUyariGoster(baslik, metin, ikon) {
             document.getElementById("custom-alert-title").innerText = baslik;
@@ -820,15 +803,11 @@
             let glow = document.getElementById("confirm-glow");
             
             if(isDanger) {
-                btn.style.background = "var(--danger)";
-                btn.innerText = "İptal Et";
-                box.style.borderColor = "var(--danger)";
-                glow.style.background = "var(--danger)";
+                btn.style.background = "var(--danger)"; btn.innerText = "İptal Et";
+                box.style.borderColor = "var(--danger)"; glow.style.background = "var(--danger)";
             } else {
-                btn.style.background = "var(--primary)";
-                btn.innerText = "Siparişi Düzenle";
-                box.style.borderColor = "var(--primary)";
-                glow.style.background = "var(--primary)";
+                btn.style.background = "var(--primary)"; btn.innerText = "Onayla";
+                box.style.borderColor = "var(--primary)"; glow.style.background = "var(--primary)";
             }
 
             currentConfirmAction = evetCallback;
@@ -851,7 +830,7 @@
         });
 
         // ==========================================
-        // İPTAL VE DÜZENLEME ONAY FONKSİYONLARI (EKLENDİ)
+        // YEMEK SEPETİ TARZI (SADECE İPTAL) SİSTEMİ
         // ==========================================
 
         function IptalOnaySor() {
@@ -860,24 +839,6 @@
                 SiparişiGercektenIptalEt();
             }, true);
         }
-
-        function SiparisiDuzenleSor() {
-            HapticTitresim();
-            SoruSor("Siparişi Düzenle", "Siparişiniz mutfaktan geçici olarak çekilecek ve sepetinize geri yüklenecektir. Sepetinizi düzenleyip yeniden yollayabilirsiniz. Onaylıyor musunuz?", "✏️", () => {
-                SiparişiGercektenDuzenle(false);
-            }, false);
-        }
-
-        function SiparisiDuzenleSorPisiyor() {
-            HapticTitresim();
-            SoruSor("Siparişe Ekleme Yap", "Mevcut siparişiniz pişmeye başladı. Ürün çıkaramaz veya iptal edemezsiniz ancak sepetinize yeni ürünler ekleyebilirsiniz. Onaylıyor musunuz?", "➕", () => {
-                SiparişiGercektenDuzenle(true);
-            }, false);
-        }
-
-        // ==========================================
-        // İPTAL VE DÜZENLEME (UNITY SİNYAL SİSTEMİ)
-        // ==========================================
 
         function SiparişiGercektenIptalEt() {
             let tR = VeriCoz(localStorage.getItem("bg_t")); 
@@ -893,46 +854,7 @@
                 method: "PATCH", body: JSON.stringify({ durum: "İPTAL EDİLİYOR..." })
             });
 
-            OzelUyariGoster("İptal Talebi Alındı", "İptal işleminiz kasaya iletildi. Birkaç saniye içinde onaylanacaktır.", "✅");
-        }
-
-        function SiparişiGercektenDuzenle(isCookingEdit = false) {
-            let tR = VeriCoz(localStorage.getItem("bg_t")); 
-            if(!tR) return; 
-            let sT = tR.replace(/[^0-9]/g, ''); 
-            
-            let komutData = { islemTuru: "DUZENLE", zaman: new Date().toLocaleTimeString() };
-            fetch(`https://bekmezpos-default-rtdb.firebaseio.com/PaketSiparisler/${sT}.json${authKeyStr}`, {
-                method: "PUT", body: JSON.stringify(komutData)
-            });
-
-            fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliPaketler/Paket_${sT}.json${authKeyStr}`, {
-                method: "PATCH", body: JSON.stringify({ durum: "DÜZENLENİYOR..." })
-            });
-
-            window.isAwaitingUnityEditSync = true;
-
-            try {
-                let sonSepet = JSON.parse(localStorage.getItem("bg_last_cart"));
-                if (sonSepet && sonSepet.length > 0) {
-                    sepet = sonSepet;
-                    // Pişiyor modunda düzenleme yapılıyorsa ürünlerin azaltılmasını engelle
-                    if (isCookingEdit) {
-                        sepet.forEach(item => { item.minQty = item.quantity; });
-                    } else {
-                        sepet.forEach(item => { item.minQty = 0; });
-                    }
-                }
-            } catch(e) {}
-            
-            SayfaGoster('sepet');
-            setTimeout(() => {
-                if (isCookingEdit) {
-                    OzelUyariGoster("Sepetiniz Yüklendi", "Siparişiniz geri çekildi. Mevcut ürünleri çıkaramazsınız ancak yeni ürün ekleyip onaylayabilirsiniz.", "✏️");
-                } else {
-                    OzelUyariGoster("Sepetiniz Yüklendi", "Siparişiniz geri çekildi. Sepetinize ekleme/çıkarma yapıp yeniden onaylayabilirsiniz.", "✏️");
-                }
-            }, 500);
+            OzelUyariGoster("İptal Talebi Alındı", "İptal işleminiz kasaya iletildi. Stok ve varsa kupon iadeniz gerçekleşecektir.", "✅");
         }
 
         function UnityFiyatiniHesapla(urun, miktar) {
@@ -962,7 +884,6 @@
             document.getElementById("floating-cart").style.display = "flex";
 
             sepet.forEach((item, index) => {
-                let isMinusDisabled = (item.minQty !== undefined && item.quantity <= item.minQty) ? "opacity:0.5;" : "";
                 let html = `
                 <div class="cart-item">
                     <div class="cart-item-details">
@@ -970,7 +891,7 @@
                         <div class="cart-item-price" id="cart-price-${index}">${(item.basePrice * item.quantity).toFixed(2)} TL</div>
                     </div>
                     <div class="cart-controls">
-                        <button class="cart-btn" style="${isMinusDisabled}" onclick="SepetMiktarDegistir(${index}, -1)">-</button>
+                        <button class="cart-btn" onclick="SepetMiktarDegistir(${index}, -1)">-</button>
                         <span class="cart-amount" id="cart-qty-${index}">${item.quantity}</span>
                         <button class="cart-btn" onclick="SepetMiktarDegistir(${index}, 1)">+</button>
                     </div>
@@ -1113,10 +1034,6 @@
             }, 3000);
         }
 
-        // ==========================================
-        // GÜVENLİK VE PWA İŞLEMLERİ
-        // ==========================================
-
         function VeriSifrele(t) { try { return btoa(encodeURIComponent(t)); } catch(e) { return ""; } }
         function VeriCoz(h) { try { return decodeURIComponent(atob(h)); } catch(e) { return ""; } }
 
@@ -1184,10 +1101,6 @@
             if (deferredPrompt) { document.getElementById('pwa-install-banner').style.display = 'flex'; }
         }
         function TetiklePwaPrompt() { ManuelUygulamaIndir(); }
-
-        // ==========================================
-        // BAŞLATMA VE MENÜ ÇEKME İŞLEMLERİ 
-        // ==========================================
 
         window.addEventListener('DOMContentLoaded', () => {
             let st = new Date().getHours(); 
@@ -1371,10 +1284,6 @@
             }
         }
 
-        // ==========================================
-        // KATEGORİ, ÜRÜN ARAMA VE RENDER İŞLEMLERİ
-        // ==========================================
-
         function GetKategoriAd(u) { 
             try { 
                 if (u.categoryIndex !== undefined && u.categoryIndex !== null) { 
@@ -1467,10 +1376,6 @@
             document.getElementById('tab-Arama').style.display = "none"; document.getElementById("search-input").value = ""; 
             EkranaUrunleriCiz(tumUrunler.filter(u => GetKategoriAd(u) === aktifKategori)); window.scrollTo({ top: 0, behavior: 'smooth' }); 
         }
-
-        // ==========================================
-        // SİPARİŞ, EKMEK HESABI VE POPUP İŞLEMLERİ
-        // ==========================================
 
         function ExtractBreadTotal(itemName, isKg, amount) { 
             let lowerName = itemName.toLocaleLowerCase('tr-TR'); 
@@ -1724,16 +1629,9 @@
             setTimeout(() => { PopupKapat(); HesaplaVeGuncelle(); }, 300); 
         }
 
-        // PİŞİYOR KİLİDİ: Miktar azaltma engeli eklendi
         function SepetMiktarDegistir(index, artisMiktari) { 
             HapticTitresim(); 
             let sepetUrunu = sepet[index]; 
-
-            if (artisMiktari < 0 && sepetUrunu.minQty !== undefined && sepetUrunu.quantity <= sepetUrunu.minQty) {
-                OzelUyariGoster("Uyarı", "Siparişiniz pişmeye başladığı için mevcut ürünleri çıkaramazsınız. Sadece yeni ürün ekleyebilirsiniz.", "⚠️");
-                return;
-            }
-            
             let gercekUrun = tumUrunler.find(u => u.pName === sepetUrunu.rawName); 
             
             if (artisMiktari > 0) { 
@@ -1917,12 +1815,6 @@
             fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliPaketler/Paket_${sT}.json${authKeyStr}&t=${new Date().getTime()}`)
             .then(r => r.json())
             .then(aA => {
-                if(aA && window.isAwaitingUnityEditSync) {
-                    OzelUyariGoster("Lütfen Bekleyin", "Kasa şu anda düzenleme işleminizi onaylıyor ve stokları ayarlıyor. Lütfen 3-5 saniye sonra tekrar deneyin.", "⏳");
-                    isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde";
-                    return;
-                }
-
                 let sipZamani = (aA && aA.timestamp) ? aA.timestamp : null;
                 let isGhost = sipZamani ? ((Date.now() - sipZamani) > GHOST_TIMEOUT_MS) : false;
 
@@ -1930,8 +1822,6 @@
                     OzelUyariGoster("Sürüyor", "Şu an aktif bir siparişiniz bulunuyor. Lütfen önce o siparişin teslim edilmesini bekleyin.", "⏳"); 
                     isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; return; 
                 }
-                
-                window.isAwaitingUnityEditSync = false;
 
                 setTimeout(() => {
                     btn.innerText = "İletiliyor...";
@@ -1976,7 +1866,6 @@
                                 const cV = { durum: "SİPARİŞ ALINDI 🔔", toplamTutar: sonOdenecekFiyat, siparisNotu: escapeHTML(n), timestamp: sipZamani, siparisler: sepet.map(u => ({ itemName: (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName, itemPrice: u.basePrice * u.quantity })) };
                                 
                                 fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliPaketler/Paket_${sT}.json${authKeyStr}`, { method: "PUT", body: JSON.stringify(cV) });
-                                localStorage.setItem("bg_last_cart", JSON.stringify(sepet));
 
                                 HapticTitresim(); CheckoutKapat(); BasariEkraniGoster();
                                 sepet = []; aktifKuponKodu = ""; aktifKuponIndirimTutari = 0; aktifKuponAltLimit = 0; aktifKuponHedefUrun = "Herşey"; 
@@ -1991,7 +1880,7 @@
         }
 
         // ==========================================
-        // ADİSYON TAKİBİ VE PİŞİYOR KORUMASI
+        // ADİSYON TAKİBİ VE DURUM (YEMEK SEPETİ STİLİ)
         // ==========================================
 
         async function CanliAdisyonCek() {
@@ -2013,7 +1902,7 @@
                 } else {
                     let dR = bP.durum ? bP.durum.toUpperCase() : "SİPARİŞ ALINDI 🔔";
                     let durumRenk = "var(--primary)"; let durumBg = "rgba(255,107,0,0.1)"; let durumIkon = "⏳";
-                    let iptalButonuHTML = ""; let gerisayimSuruyor = false;
+                    let iptalButonuHTML = "";
 
                     let oncekiDurum = localStorage.getItem("bg_last_status") || "";
                     if (dR !== oncekiDurum) {
@@ -2022,59 +1911,36 @@
                         else if (dR.includes("YOLDA") || dR.includes("KURYE")) { BildirimGonder("Kurye Yola Çıktı! 🛵", "Siparişiniz yola çıktı, gelmek üzere!"); }
                     }
 
+                    // YEMEK SEPETİ MANTIĞI: SADECE HAZIRLANIYOR AŞAMASINDA İPTAL EDİLEBİLİR
                     if (dR.includes("HAZIRLANIYOR") || dR.includes("SİPARİŞ ALINDI")) {
                         durumRenk = "var(--primary)"; durumBg = "rgba(255,107,0,0.1)"; durumIkon = "👨‍🍳";
                         iptalButonuHTML = `
                         <div style="display:flex; gap:10px; margin-top:20px;">
-                            <button onclick="IptalOnaySor()" style="flex:1; background:rgba(255,59,48,0.1); border:1px solid rgba(255, 59, 48, 0.5); color:var(--danger); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">İptal Et</button>
-                            <button onclick="SiparisiDuzenleSor()" style="flex:1; background:rgba(255,107,0,0.1); border:1px solid rgba(255, 107, 0, 0.5); color:var(--primary); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">Siparişi Düzenle</button>
+                            <button onclick="IptalOnaySor()" style="flex:1; background:rgba(255,59,48,0.1); border:1px solid rgba(255, 59, 48, 0.5); color:var(--danger); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">Siparişi İptal Et</button>
                         </div>
-                        <div style="text-align:center; font-size:11px; color:#A1A1AA; margin-top:8px;">Mutfak hazırlığa başlamadan değişiklik yapabilirsiniz.</div>`;
+                        <div style="text-align:center; font-size:11px; color:#A1A1AA; margin-top:8px;">Mutfak hazırlığa başlamadan iptal edebilirsiniz.</div>`;
                     }
                     else if (dR.includes("PİŞİYOR") || dR.includes("MUTFAK")) {
                         durumRenk = "var(--warning)"; durumBg = "rgba(255, 204, 0, 0.1)"; durumIkon = "🔥";
-                        
-                        let pZ = bP.pisiyorZamani || bP.timestamp || Date.now();
-                        let gecenMs = Date.now() - pZ;
-                        let kilitMs = 2 * 60 * 1000; 
-                        
-                        if (gecenMs < kilitMs) {
-                            gerisayimSuruyor = true; 
-                            let kalanSn = Math.floor((kilitMs - gecenMs) / 1000);
-                            let dk = Math.floor(kalanSn / 60); let sn = kalanSn % 60; let zM = `${dk}:${sn < 10 ? '0':''}${sn}`;
-                            
-                            iptalButonuHTML = `
-                            <div style="display:flex; gap:10px; margin-top:20px;">
-                                <button onclick="SiparisiDuzenleSorPisiyor()" style="flex:1; background:rgba(255,107,0,0.1); border:1px solid rgba(255, 107, 0, 0.5); color:var(--primary); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">Siparişi Düzenle (Ekleme Yap)</button>
-                            </div>
-                            <div style="text-align:center; font-size:11px; color:var(--warning); margin-top:8px;">Ürünleriniz pişiyor. İptal edilemez. Ekleme yapmak için son <b>${zM}</b></div>`;
-                        } else {
-                            iptalButonuHTML = `<div style="text-align:center; font-size:11px; color:var(--warning); margin-top:15px; font-weight:700;">Ürünleriniz ocakta pişiyor. Artık değişiklik yapılamaz.</div>`;
-                        }
+                        iptalButonuHTML = `<div style="text-align:center; font-size:11px; color:var(--warning); margin-top:15px; font-weight:700;">Ürünleriniz ocakta pişiyor. Artık değişiklik veya iptal yapılamaz.</div>`;
                     }
                     else if (dR.includes("YOLDA") || dR.includes("KURYE") || dR.includes("PAKET")) { durumRenk = "#0A84FF"; durumBg = "rgba(10, 132, 255, 0.1)"; durumIkon = "🛵"; iptalButonuHTML = `<div style="text-align:center; font-size:11px; color:#0A84FF; margin-top:15px; font-weight:700;">Kuryemiz yola çıktı, afiyet olsun!</div>`; }
                     else if (dR.includes("İPTAL") || dR.includes("RED")) { durumRenk = "var(--danger)"; durumBg = "rgba(255, 59, 48, 0.1)"; durumIkon = "❌"; }
                     else if (dR.includes("TESLİM") || dR.includes("AFİYET") || dR.includes("TAMAM")) { durumRenk = "var(--success)"; durumBg = "rgba(52, 199, 89, 0.1)"; durumIkon = "✅"; }
-                    else if (dR.includes("DÜZENLENİYOR") || dR.includes("DÜZENLİYOR") || dR.includes("EDİLİYOR")) { durumRenk = "var(--warning)"; durumBg = "rgba(255, 204, 0, 0.1)"; durumIkon = "⏳"; iptalButonuHTML = `<div style="text-align:center; font-size:11px; color:var(--warning); margin-top:15px; font-weight:700;">Müşteri talebi işleniyor... Kasa bekleniyor.</div>`; }
 
-                    if(dR.includes("İPTAL") || dR.includes("RED") || dR.includes("DÜZENLİYOR")) { 
+                    if(dR.includes("İPTAL") || dR.includes("RED")) { 
                         h = `<div class="empty-text" style="color: var(--danger); border-color: rgba(255, 59, 48, 0.3); background: rgba(255, 59, 48, 0.05); padding: 40px 20px;"><div style="font-size:40px; margin-bottom:15px;">❌</div><strong style="font-size:18px;">İptal Edildi</strong><br><br><span style="font-size:14px; color:#A1A1AA;">${escapeHTML(dR)}</span></div>`; 
                         sonCekilenAdisyonHTML = "";
                     } else {
-                        let isMinusDisabledHTML = "";
                         h = `<div class="receipt-card"><div style="text-align: center; margin-bottom: 25px;"><div style="font-size:30px; margin-bottom:5px;">${durumIkon}</div><div style="font-weight: 900; font-size: 22px; color:#1c1c1e;">BEKMEZ GO</div><div style="font-size: 14px; font-weight: 800; color:var(--text-muted); margin-top:4px;">PAKET SERVİS</div></div><div class="receipt-header"><span>DURUM</span><span style="color:${durumRenk}; font-weight:900; background:${durumBg}; padding:8px 14px; border-radius:12px; text-align:right;">${escapeHTML(dR)}</span></div>`;
                         if(bP.siparisler) { bP.siparisler.forEach(u => { h += `<div class="receipt-item"><span>${escapeHTML(u.itemName)}</span><span>${parseFloat(u.itemPrice).toFixed(2)} ₺</span></div>`; }); }
                         if (bP.siparisNotu) { h += `<div style="margin-top: 20px; padding: 16px; background: rgba(0,0,0,0.03); border-radius:16px; font-size: 13px; font-weight: 600; color:#8e8e93; border: 1px dashed #d1d1d6;">NOT:<br>${escapeHTML(bP.siparisNotu)}</div>`; }
                         h += `<div class="receipt-total">TOPLAM: <span style="font-size:28px; display:block; margin-top:8px;">${parseFloat(bP.toplamTutar).toFixed(2)} TL</span></div>${iptalButonuHTML}<div style="text-align: center; font-size: 11px; margin-top: 25px; color:#a1a1aa; font-weight: 600;">Bizi tercih ettiğiniz için teşekkür ederiz.</div></div>`;
                         
-                        if (!gerisayimSuruyor) sonCekilenAdisyonHTML = h; 
+                        sonCekilenAdisyonHTML = h; 
                     }
                 }
-                
-                // Unity'nin sildiği siparişle çakışmamak veya geri sayımı canlı göstermek için anlık render et
-                if (document.getElementById("history-content").innerHTML !== h) { 
-                    document.getElementById("history-content").innerHTML = h; 
-                }
+                if (document.getElementById("history-content").innerHTML !== h) { document.getElementById("history-content").innerHTML = h; }
             } catch(e) {}
         }
     </script>
