@@ -756,6 +756,9 @@
         let installPromptDismissed = localStorage.getItem('pwa_prompt_dismissed') === 'true';
         let currentConfirmAction = null;
 
+        // ÇİFT SİPARİŞİ ENGELLEME KİLİDİ
+        window.isAwaitingUnityEditSync = false;
+
         // ==========================================
         // YARDIMCI VE BİLDİRİM FONKSİYONLARI (YENİ SİSTEM)
         // ==========================================
@@ -847,6 +850,62 @@
             KapatConfirmModal(null, true);
             if(currentConfirmAction) currentConfirmAction();
         });
+
+        // ==========================================
+        // İPTAL VE DÜZENLEME (UNITY SİNYAL SİSTEMİ)
+        // ==========================================
+
+        function SiparişiGercektenIptalEt() {
+            let tR = VeriCoz(localStorage.getItem("bg_t")); 
+            if(!tR) return; 
+            let sT = tR.replace(/[^0-9]/g, ''); 
+            
+            // 1. Unity'nin okuması ve kartı/stokları silmesi için KOMUT yolla
+            let komutData = { islemTuru: "IPTAL", zaman: new Date().toLocaleTimeString() };
+            fetch(`https://bekmezpos-default-rtdb.firebaseio.com/PaketSiparisler/${sT}.json${authKeyStr}`, {
+                method: "PUT", body: JSON.stringify(komutData)
+            });
+
+            // 2. Müşteriye anlık "İptal Ediliyor" bilgisini göster
+            fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliPaketler/Paket_${sT}.json${authKeyStr}`, {
+                method: "PATCH", body: JSON.stringify({ durum: "İPTAL EDİLİYOR..." })
+            });
+
+            OzelUyariGoster("İptal Talebi Alındı", "İptal işleminiz kasaya iletildi. Birkaç saniye içinde onaylanacaktır.", "✅");
+        }
+
+        function SiparişiGercektenDuzenle() {
+            let tR = VeriCoz(localStorage.getItem("bg_t")); 
+            if(!tR) return; 
+            let sT = tR.replace(/[^0-9]/g, ''); 
+            
+            // 1. Unity'nin eski kartı ve stokları silmesi için KOMUT yolla
+            let komutData = { islemTuru: "DUZENLE", zaman: new Date().toLocaleTimeString() };
+            fetch(`https://bekmezpos-default-rtdb.firebaseio.com/PaketSiparisler/${sT}.json${authKeyStr}`, {
+                method: "PUT", body: JSON.stringify(komutData)
+            });
+
+            // 2. Arayüzü beklemeye al
+            fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliPaketler/Paket_${sT}.json${authKeyStr}`, {
+                method: "PATCH", body: JSON.stringify({ durum: "DÜZENLENİYOR..." })
+            });
+
+            // 3. Güvenlik Kilidini Aktifleştir!
+            window.isAwaitingUnityEditSync = true;
+
+            // 4. Sepeti eski haline getir ve yönlendir
+            try {
+                let sonSepet = JSON.parse(localStorage.getItem("bg_last_cart"));
+                if (sonSepet && sonSepet.length > 0) {
+                    sepet = sonSepet;
+                }
+            } catch(e) {}
+            
+            SayfaGoster('sepet');
+            setTimeout(() => {
+                OzelUyariGoster("Sepetiniz Yüklendi", "Siparişiniz geri çekildi. Sepetinize ekleme/çıkarma yapıp yeniden onaylayabilirsiniz.", "✏️");
+            }, 500);
+        }
 
         function UnityFiyatiniHesapla(urun, miktar) {
             if (!urun || miktar <= 0) return 0;
@@ -1146,7 +1205,6 @@
                     setTimeout(() => { 
                         splash.style.display = 'none'; 
                         
-                        // SİPARİŞ HAFIZASI
                         let kt = VeriCoz(localStorage.getItem("bg_t")); 
                         if (kt && kt.length >= 10) {
                             let sT = kt.replace(/[^0-9]/g, ''); 
@@ -2017,7 +2075,7 @@
             if(is.length < 3) { GosterHataInput("chk-isim"); hV = true; } 
             if(tl.length < 10) { GosterHataInput("chk-telefon"); hV = true; } 
             if(ad.length < 10) { GosterHataInput("chk-adres"); hV = true; }
-            if(hV) { OzelUyariGoster("Eksik", "Ad, telefon veya adres hatalı.", "⚠"); return; }
+            if(hV) { OzelUyariGoster("Eksik", "Ad, telefon veya adres hatalı.", "⚠️"); return; }
             
             if(cN.length < 3 || cNu.length < 15 || cE.length < 4 || cC.length < 3) { 
                 OzelUyariGoster("Ödeme", "Kart bilgileri eksik.", "💳"); return; 
@@ -2080,15 +2138,22 @@
             .then(r => r.json())
             .then(aA => {
                 
+                // ÇİFT SİPARİŞ KORUMASI (Düzenle dedikten hemen sonra basarsa engelle, Unity'nin silmesini bekle)
+                if(aA && window.isAwaitingUnityEditSync) {
+                    OzelUyariGoster("Lütfen Bekleyin", "Kasa şu anda düzenleme işleminizi onaylıyor ve stokları ayarlıyor. Lütfen 3-5 saniye sonra tekrar deneyin.", "⏳");
+                    isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde";
+                    return;
+                }
+
                 if(aA && aA.durum && !aA.durum.includes("İPTAL") && !aA.durum.includes("RED") && !aA.durum.includes("TESLİM") && !aA.durum.includes("AFİYET")) { 
                     OzelUyariGoster("Sürüyor", "Şu an aktif bir siparişiniz bulunuyor. Lütfen önce o siparişin teslim edilmesini bekleyin.", "⏳"); 
-                    isProcessingOrder = false; 
-                    btn.disabled = false; 
-                    btn.classList.remove("loading"); 
-                    btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
+                    isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
                     return; 
                 }
                 
+                // Güvenlik kilidini kaldır (Çünkü veritabanı artık temiz)
+                window.isAwaitingUnityEditSync = false;
+
                 setTimeout(() => {
                     btn.innerText = "İletiliyor...";
                     fetch(firebaseMenuUrl + authKeyStr + "&t=" + new Date().getTime(), { cache: "no-store" }).then(r => r.json()).then(d => {
@@ -2182,64 +2247,6 @@
         // ADİSYON TAKİBİ, İPTAL VE DÜZENLEME SİSTEMİ
         // ==========================================
 
-        function IptalOnaySor() {
-            HapticTitresim();
-            SoruSor("Siparişi İptal Et", "Siparişinizi iptal etmek istediğinize emin misiniz? İşlem geri alınamaz.", "⚠️", () => {
-                SiparişiGercektenIptalEt();
-            }, true);
-        }
-
-        function SiparisiDuzenleSor() {
-            HapticTitresim();
-            SoruSor("Siparişi Düzenle", "Mevcut siparişiniz mutfaktan iptal edilecek ve ürünler sepetinize geri yüklenecektir. Sepetinizi düzenleyip yeniden yollayabilirsiniz. Onaylıyor musunuz?", "✏️", () => {
-                SiparişiGercektenDuzenle();
-            }, false);
-        }
-
-        function SiparişiGercektenIptalEt() {
-            let tR = VeriCoz(localStorage.getItem("bg_t")); 
-            if(!tR) return; 
-            let sT = tR.replace(/[^0-9]/g, ''); 
-            
-            fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliPaketler/Paket_${sT}.json${authKeyStr}`, {
-                method: "PATCH", body: JSON.stringify({ durum: "İPTAL EDİLDİ (MÜŞTERİ)" })
-            });
-            fetch(`https://bekmezpos-default-rtdb.firebaseio.com/PaketSiparisler/${sT}.json${authKeyStr}`, {
-                method: "PATCH", body: JSON.stringify({ iptalEdildi: true, siparisNotu: "DİKKAT: MÜŞTERİ SİPARİŞİ İPTAL ETTİ!" })
-            });
-
-            OzelUyariGoster("İptal Edildi", "Siparişiniz başarıyla iptal edildi.", "✅");
-            CanliAdisyonCek();
-        }
-
-        function SiparişiGercektenDuzenle() {
-            let tR = VeriCoz(localStorage.getItem("bg_t")); 
-            if(!tR) return; 
-            let sT = tR.replace(/[^0-9]/g, ''); 
-            
-            // 1. Firebase'de iptal et ve mutfağa bilgi yolla
-            fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliPaketler/Paket_${sT}.json${authKeyStr}`, {
-                method: "PATCH", body: JSON.stringify({ durum: "İPTAL (MÜŞTERİ DÜZENLİYOR)" })
-            });
-            fetch(`https://bekmezpos-default-rtdb.firebaseio.com/PaketSiparisler/${sT}.json${authKeyStr}`, {
-                method: "PATCH", body: JSON.stringify({ iptalEdildi: true, siparisNotu: "MÜŞTERİ DÜZENLEME YAPMAK İÇİN SİPARİŞİ GERİ ÇEKTİ." })
-            });
-
-            // 2. Sepeti geri yükle
-            try {
-                let sonSepet = JSON.parse(localStorage.getItem("bg_last_cart"));
-                if (sonSepet && sonSepet.length > 0) {
-                    sepet = sonSepet;
-                }
-            } catch(e) {}
-            
-            // 3. Ekrana dön
-            SayfaGoster('sepet');
-            setTimeout(() => {
-                OzelUyariGoster("Sepetiniz Yüklendi", "Siparişiniz geri çekildi. Sepetinizi düzenleyip yeniden onaylayabilirsiniz.", "✏️");
-            }, 500);
-        }
-
         async function CanliAdisyonCek() {
             try {
                 let tR = VeriCoz(localStorage.getItem("bg_t")); 
@@ -2261,49 +2268,46 @@
                     let durumRenk = "var(--primary)";
                     let durumBg = "rgba(255,107,0,0.1)";
                     let durumIkon = "⏳";
-                    let iptalEdilebilir = false;
+                    let iptalButonuHTML = "";
+                    let gerisayimSuruyor = false;
 
-                    // UNITY'DEN GELEN KOMUTLARI ANLAMA MOTORU
-                    if (dR.includes("İPTAL") || dR.includes("RED") || dR.includes("DÜZENLİYOR")) {
-                        durumRenk = "var(--danger)"; durumBg = "rgba(255, 59, 48, 0.1)"; durumIkon = "❌";
-                    } else if (dR.includes("HAZIR") || dR.includes("MUTFAK")) {
-                        durumRenk = "var(--warning)"; durumBg = "rgba(255, 204, 0, 0.1)"; durumIkon = "👨‍🍳";
-                    } else if (dR.includes("YOLA") || dR.includes("KURYE") || dR.includes("PAKET")) {
-                        durumRenk = "#0A84FF"; durumBg = "rgba(10, 132, 255, 0.1)"; durumIkon = "🛵";
-                    } else if (dR.includes("TESLİM") || dR.includes("AFİYET") || dR.includes("TAMAM")) {
-                        durumRenk = "var(--success)"; durumBg = "rgba(52, 199, 89, 0.1)"; durumIkon = "✅";
-                    } else {
-                        // Hala Onay Aşamasında Veya Yeni
-                        iptalEdilebilir = true; 
-                        durumIkon = "🔔";
+                    // UNITY'DEN GELEN KOMUTLARI ANLAMA MOTORU (KALKANLAR)
+                    if (dR.includes("HAZIRLANIYOR") || dR.includes("SİPARİŞ ALINDI")) {
+                        durumRenk = "var(--primary)"; durumBg = "rgba(255,107,0,0.1)"; durumIkon = "👨‍🍳";
+                        iptalButonuHTML = `
+                        <div style="display:flex; gap:10px; margin-top:20px;">
+                            <button onclick="IptalOnaySor()" style="flex:1; background:rgba(255,59,48,0.1); border:1px solid rgba(255, 59, 48, 0.5); color:var(--danger); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">İptal Et</button>
+                            <button onclick="SiparisiDuzenleSor()" style="flex:1; background:rgba(255,107,0,0.1); border:1px solid rgba(255, 107, 0, 0.5); color:var(--primary); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">Siparişi Düzenle</button>
+                        </div>
+                        <div style="text-align:center; font-size:11px; color:#A1A1AA; margin-top:8px;">Mutfak hazırlığa başlamadan değişiklik yapabilirsiniz.</div>`;
                     }
-                    
+                    else if (dR.includes("PİŞİYOR") || dR.includes("MUTFAK")) {
+                        durumRenk = "var(--warning)"; durumBg = "rgba(255, 204, 0, 0.1)"; durumIkon = "🔥";
+                        iptalButonuHTML = `
+                        <div style="display:flex; gap:10px; margin-top:20px;">
+                            <button onclick="SiparisiDuzenleSor()" style="flex:1; background:rgba(255,107,0,0.1); border:1px solid rgba(255, 107, 0, 0.5); color:var(--primary); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">Siparişi Düzenle (Ekleme Yap)</button>
+                        </div>
+                        <div style="text-align:center; font-size:11px; color:var(--warning); margin-top:8px;">Ürünleriniz pişiyor. İptal edilemez ancak siparişe ekleme yapabilirsiniz.</div>`;
+                    }
+                    else if (dR.includes("YOLDA") || dR.includes("KURYE") || dR.includes("PAKET")) {
+                        durumRenk = "#0A84FF"; durumBg = "rgba(10, 132, 255, 0.1)"; durumIkon = "🛵";
+                        iptalButonuHTML = `<div style="text-align:center; font-size:11px; color:#0A84FF; margin-top:15px; font-weight:700;">Kuryemiz yola çıktı, afiyet olsun!</div>`;
+                    }
+                    else if (dR.includes("İPTAL") || dR.includes("RED")) {
+                        durumRenk = "var(--danger)"; durumBg = "rgba(255, 59, 48, 0.1)"; durumIkon = "❌";
+                    }
+                    else if (dR.includes("TESLİM") || dR.includes("AFİYET") || dR.includes("TAMAM")) {
+                        durumRenk = "var(--success)"; durumBg = "rgba(52, 199, 89, 0.1)"; durumIkon = "✅";
+                    }
+                    else if (dR.includes("DÜZENLENİYOR") || dR.includes("DÜZENLİYOR") || dR.includes("EDİLİYOR")) {
+                        durumRenk = "var(--warning)"; durumBg = "rgba(255, 204, 0, 0.1)"; durumIkon = "⏳";
+                        iptalButonuHTML = `<div style="text-align:center; font-size:11px; color:var(--warning); margin-top:15px; font-weight:700;">Müşteri talebi işleniyor... Kasa bekleniyor.</div>`;
+                    }
+
                     if(dR.includes("İPTAL") || dR.includes("RED") || dR.includes("DÜZENLİYOR")) { 
                         h = `<div class="empty-text" style="color: var(--danger); border-color: rgba(255, 59, 48, 0.3); background: rgba(255, 59, 48, 0.05); padding: 40px 20px;"><div style="font-size:40px; margin-bottom:15px;">❌</div><strong style="font-size:18px;">İptal Edildi</strong><br><br><span style="font-size:14px; color:#A1A1AA;">${escapeHTML(dR)}</span></div>`; 
                         sonCekilenAdisyonHTML = "";
                     } else {
-                        let iptalButonuHTML = "";
-                        let gerisayimSuruyor = false;
-                        
-                        // 3 DAKİKA KONTROLÜ (Sadece Unity'den "Hazırlanıyor" komutu GELMEDİYSE çalışır)
-                        if (iptalEdilebilir && bP.timestamp) {
-                            let gecenSaniye = Math.floor((Date.now() - bP.timestamp) / 1000);
-                            let kalanSaniye = 180 - gecenSaniye; // 3 Dakika = 180 saniye
-                            if (kalanSaniye > 0) {
-                                gerisayimSuruyor = true;
-                                let dk = Math.floor(kalanSaniye / 60);
-                                let sn = kalanSaniye % 60;
-                                let zamanMetni = `${dk}:${sn < 10 ? '0':''}${sn}`;
-                                
-                                iptalButonuHTML = `
-                                <div style="display:flex; gap:10px; margin-top:20px;">
-                                    <button onclick="IptalOnaySor()" style="flex:1; background:rgba(255,59,48,0.1); border:1px solid rgba(255, 59, 48, 0.5); color:var(--danger); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">İptal Et</button>
-                                    <button onclick="SiparisiDuzenleSor()" style="flex:1; background:rgba(255,107,0,0.1); border:1px solid rgba(255, 107, 0, 0.5); color:var(--primary); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">Siparişi Düzenle</button>
-                                </div>
-                                <div style="text-align:center; font-size:11px; color:#A1A1AA; margin-top:8px;">Mutfak onaylamadan önce değişiklik yapabilirsiniz (${zamanMetni})</div>`;
-                            }
-                        }
-
                         h = `<div class="receipt-card">
                             <div style="text-align: center; margin-bottom: 25px;"><div style="font-size:30px; margin-bottom:5px;">${durumIkon}</div><div style="font-weight: 900; font-size: 22px; color:#1c1c1e;">BEKMEZ GO</div><div style="font-size: 14px; font-weight: 800; color:var(--text-muted); margin-top:4px;">PAKET SERVİS</div></div>
                             <div class="receipt-header"><span>DURUM</span><span style="color:${durumRenk}; font-weight:900; background:${durumBg}; padding:8px 14px; border-radius:12px; text-align:right;">${escapeHTML(dR)}</span></div>`;
@@ -2316,7 +2320,7 @@
                         }
                         h += `<div class="receipt-total">TOPLAM: <span style="font-size:28px; display:block; margin-top:8px;">${parseFloat(bP.toplamTutar).toFixed(2)} TL</span></div>${iptalButonuHTML}<div style="text-align: center; font-size: 11px; margin-top: 25px; color:#a1a1aa; font-weight: 600;">Bizi tercih ettiğiniz için teşekkür ederiz.</div></div>`;
                         
-                        if (!gerisayimSuruyor) sonCekilenAdisyonHTML = h; 
+                        sonCekilenAdisyonHTML = h; 
                     }
                 }
                 
