@@ -1,40 +1,33 @@
-self.addEventListener('install', (e) => {
+self.addEventListener("install", function(event) {
     self.skipWaiting();
 });
 
-self.addEventListener('activate', (e) => {
-    return self.clients.claim();
+self.addEventListener("activate", function(event) {
+    event.waitUntil(self.clients.claim());
 });
 
-// EKSİK OLAN VE İNDİRMEYİ ENGELLEYEN HAYATİ KOD BURASI:
-// Tarayıcı bu fetch kodunu görmeden uygulamanın inmesine asla izin vermez!
-self.addEventListener('fetch', (event) => {
+self.addEventListener("fetch", function(event) {
     event.respondWith(
-        fetch(event.request).catch(() => {
-            return new Response('İnternet bağlantınız koptu, ancak Bekmez GO çalışmaya devam ediyor.');
+        fetch(event.request).catch(function() {
+            return new Response("Çevrimdışı mod, ancak uygulama çalışıyor.");
         })
     );
 });
 
-// Bildirime tıklanınca uygulamayı bulup açan kod
-self.addEventListener('notificationclick', function(event) {
+self.addEventListener("notificationclick", function(event) {
     event.notification.close();
+    var targetUrl = "/bekmez-pisirim/paket.html";
     
-    // Sizin GitHub projenizdeki tam yolunuz
-    const targetUrl = '/bekmez-pisirim/paket.html';
-
     event.waitUntil(
-        clients.matchAll({type: 'window', includeUncontrolled: true}).then(windowClients => {
-            for (var i = 0; i < windowClients.length; i++) {
-                var client = windowClients[i];
-                // Uygulama açık ama arka plandaysa öne getir (focus)
-                if (client.url.includes('paket.html') && 'focus' in client) { 
-                    return client.focus(); 
+        self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(function(clientList) {
+            for (var i = 0; i < clientList.length; i++) {
+                var client = clientList[i];
+                if (client.url.indexOf("paket.html") !== -1 && "focus" in client) {
+                    return client.focus();
                 }
             }
-            // Uygulama tamamen kapalıysa sıfırdan aç
-            if (clients.openWindow) { 
-                return clients.openWindow(targetUrl); 
+            if (self.clients.openWindow) {
+                return self.clients.openWindow(targetUrl);
             }
         })
     );
