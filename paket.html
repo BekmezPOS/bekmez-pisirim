@@ -739,6 +739,262 @@
         let deferredPrompt; 
         let installPromptDismissed = localStorage.getItem('pwa_prompt_dismissed') === 'true';
 
+        // ==========================================
+        // EKSİK OLAN YARDIMCI (UTILITY) FONKSİYONLAR
+        // ==========================================
+
+        function HapticTitresim() { 
+            if(navigator.vibrate) navigator.vibrate(15); 
+        }
+
+        function escapeHTML(str) {
+            return str ? str.toString().replace(/[&<>'"]/g, function(tag){
+                return {'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[tag];
+            }) : "";
+        }
+
+        function OzelUyariGoster(baslik, metin, ikon) {
+            document.getElementById("custom-alert-title").innerText = baslik;
+            document.getElementById("custom-alert-text").innerHTML = metin;
+            document.getElementById("custom-alert-icon").innerText = ikon;
+            let p = document.getElementById("custom-alert-overlay");
+            p.style.display = "flex";
+            setTimeout(() => p.classList.add("active"), 10);
+        }
+
+        function KapatUyariModal(e, force=false) {
+            if(force || e.target === document.getElementById("custom-alert-overlay") || e.target === document.getElementById("distance-alert-overlay")) {
+                let p = document.getElementById("custom-alert-overlay");
+                let d = document.getElementById("distance-alert-overlay");
+                p.classList.remove("active");
+                d.classList.remove("active");
+                setTimeout(() => { p.style.display = "none"; d.style.display = "none"; }, 400);
+            }
+        }
+
+        function UnityFiyatiniHesapla(urun, miktar) {
+            if (!urun || miktar <= 0) return 0;
+            let fiyatStr = urun.price1Kg ? urun.price1Kg.toString() : "0";
+            let fiyat = parseFloat(fiyatStr.replace(',', '.'));
+            if (isNaN(fiyat)) return 0;
+            return fiyat * miktar; 
+        }
+
+        function SepetEkraniniCiz() {
+            let container = document.getElementById("cart-items-list");
+            let panel = document.getElementById("alt-panel");
+            let notSection = document.getElementById("cart-note-section");
+            container.innerHTML = "";
+
+            if (sepet.length === 0) {
+                container.innerHTML = `<div class="empty-text">Sepetiniz şu an boş 🛒</div>`;
+                panel.style.display = "none";
+                notSection.style.display = "none";
+                document.getElementById("floating-cart").style.display = "none";
+                return;
+            }
+
+            panel.style.display = "block";
+            notSection.style.display = "block";
+            document.getElementById("floating-cart").style.display = "flex";
+
+            sepet.forEach((item, index) => {
+                let html = `
+                <div class="cart-item">
+                    <div class="cart-item-details">
+                        <div class="cart-item-name" id="cart-name-${index}">${item.quantity > 1 ? '<span style="color:var(--primary);">' + item.quantity + 'x</span> ' : ''}${escapeHTML(item.baseName)}</div>
+                        <div class="cart-item-price" id="cart-price-${index}">${(item.basePrice * item.quantity).toFixed(2)} TL</div>
+                    </div>
+                    <div class="cart-controls">
+                        <button class="cart-btn" onclick="SepetMiktarDegistir(${index}, -1)">-</button>
+                        <span class="cart-amount" id="cart-qty-${index}">${item.quantity}</span>
+                        <button class="cart-btn" onclick="SepetMiktarDegistir(${index}, 1)">+</button>
+                    </div>
+                </div>`;
+                container.innerHTML += html;
+            });
+            HesaplaVeGuncelle();
+        }
+
+        function HesaplaVeGuncelle() {
+            hamToplamFiyat = 0;
+            sepet.forEach(item => { hamToplamFiyat += (item.basePrice * item.quantity); });
+
+            sonOdenecekFiyat = hamToplamFiyat - aktifKuponIndirimTutari;
+            if (sonOdenecekFiyat < 0) sonOdenecekFiyat = 0;
+
+            document.getElementById("sepet-tutar").innerText = sonOdenecekFiyat.toFixed(2) + " TL";
+            document.getElementById("floating-total").innerText = sonOdenecekFiyat.toFixed(2) + " TL";
+
+            let eskiFiyatEl = document.getElementById("eski-fiyat-ustu-cizik");
+            if (aktifKuponIndirimTutari > 0) {
+                eskiFiyatEl.style.display = "block";
+                eskiFiyatEl.innerText = hamToplamFiyat.toFixed(2) + " TL";
+            } else {
+                eskiFiyatEl.style.display = "none";
+            }
+
+            let badge = document.getElementById("nav-sepet-badge");
+            let totalQty = 0;
+            sepet.forEach(item => totalQty += item.quantity);
+            
+            if (totalQty > 0) {
+                badge.innerText = totalQty;
+                badge.classList.add("show");
+            } else {
+                badge.classList.remove("show");
+            }
+        }
+
+        function SmoothCounter(id, start, end, duration, isCurrency, isKg=false) {
+            let el = document.getElementById(id);
+            if(!el) return;
+            let startTime = null;
+            const step = (timestamp) => {
+                if (!startTime) startTime = timestamp;
+                const progress = Math.min((timestamp - startTime) / duration, 1);
+                const current = progress * (end - start) + start;
+                if (isCurrency) {
+                    el.innerText = current.toFixed(2) + " TL";
+                } else {
+                    el.innerText = isKg ? current.toFixed(2) + " KG" : Math.floor(current) + " Adet";
+                }
+                if (progress < 1) window.requestAnimationFrame(step);
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        function ProfiliKaydet() {
+            HapticTitresim();
+            let i = document.getElementById("prof-isim").value;
+            let t = document.getElementById("prof-telefon").value;
+            let a = document.getElementById("prof-adres").value;
+            localStorage.setItem("bg_i", VeriSifrele(i));
+            localStorage.setItem("bg_t", VeriSifrele(t));
+            localStorage.setItem("bg_a", VeriSifrele(a));
+            OzelUyariGoster("Başarılı", "Profil bilgileriniz cihazınıza şifrelenerek kaydedildi.", "✅");
+        }
+
+        function ProfiliSil() {
+            HapticTitresim();
+            localStorage.removeItem("bg_i");
+            localStorage.removeItem("bg_t");
+            localStorage.removeItem("bg_a");
+            document.getElementById("prof-isim").value = "";
+            document.getElementById("prof-telefon").value = "";
+            document.getElementById("prof-adres").value = "";
+            OzelUyariGoster("Silindi", "Verileriniz cihazdan kalıcı olarak silindi.", "🗑️");
+        }
+
+        function AcSozlesme(tip) {
+            HapticTitresim();
+            let baslik = "", icerik = "";
+            if (tip === "mesafeli") { baslik = "Mesafeli Satış Sözleşmesi"; icerik = textMesafeli; }
+            else if (tip === "teslimat") { baslik = "Teslimat Şartları"; icerik = textTeslimat; }
+            else if (tip === "iptal") { baslik = "İptal/İade Koşulları"; icerik = textIptal; }
+            else if (tip === "kvkk") { baslik = "KVKK ve Gizlilik Politikası"; icerik = textKVKK; }
+            
+            document.getElementById("legal-title").innerText = baslik;
+            document.getElementById("legal-body").innerHTML = icerik;
+            
+            let p = document.getElementById("legal-popup");
+            p.style.display = "flex";
+            setTimeout(() => p.classList.add("active"), 10);
+        }
+
+        function KapatSozlesme() {
+            let p = document.getElementById("legal-popup");
+            p.classList.remove("active");
+            setTimeout(() => p.style.display = "none", 500);
+        }
+
+        function TogglePayButton() {
+            let btn = document.getElementById("final-submit-btn");
+            let chk = document.getElementById("legal-checkbox");
+            if(chk && btn) {
+                if(chk.checked) {
+                    btn.disabled = false;
+                    btn.style.opacity = "1";
+                    btn.innerText = sonOdenecekFiyat.toFixed(2) + " TL Öde";
+                } else {
+                    btn.disabled = true;
+                    btn.style.opacity = "0.5";
+                    btn.innerText = "Sözleşmeyi Onaylayın";
+                }
+            }
+        }
+
+        function GetDistanceKm(lat1, lon1, lat2, lon2) {
+            var R = 6371; 
+            var dLat = (lat2 - lat1) * Math.PI / 180;
+            var dLon = (lon2 - lon1) * Math.PI / 180;
+            var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c; 
+        }
+
+        function BasariEkraniGoster() {
+            let o = document.getElementById("success-overlay");
+            o.style.display = "flex";
+            setTimeout(() => o.classList.add("active"), 10);
+            setTimeout(() => {
+                o.classList.remove("active");
+                setTimeout(() => {
+                    o.style.display = "none";
+                    SayfaGoster('gecmis');
+                }, 500);
+            }, 3000);
+        }
+
+        async function KuponlariCek() {
+            try {
+                let mR = await fetch(firebaseKuponUrl + authKeyStr + "&t=" + new Date().getTime());
+                let data = await mR.json();
+                let list = document.getElementById("firsatlar-list");
+                if (!data) {
+                    list.innerHTML = `<div class="empty-text">Şu an aktif bir kampanya bulunmuyor 😔</div>`;
+                    return;
+                }
+                
+                let yeniVeri = JSON.stringify(data);
+                if (sonKuponVerisi === yeniVeri) return;
+                sonKuponVerisi = yeniVeri;
+                
+                list.innerHTML = "";
+                let hasKupon = false;
+                for (let key in data) {
+                    let k = data[key];
+                    if (k.discountAmount) {
+                        hasKupon = true;
+                        list.innerHTML += `
+                        <div class="coupon-card">
+                            <div class="c-left">
+                                <span class="c-discount">${k.discountAmount}₺</span>
+                                <span class="c-type">İNDİRİM</span>
+                            </div>
+                            <div class="c-right">
+                                <div class="c-title">${k.targetProduct !== "" ? escapeHTML(k.targetProduct) + " için geçerli!" : "Tüm menüde geçerli!"}</div>
+                                <div class="c-code">${escapeHTML(key)}</div>
+                                <div class="c-limit">Alt Limit: ${k.bottomLimit} TL</div>
+                                <div class="c-btn" onclick="KuponKopyala('${escapeHTML(key)}')">Kodu Kopyala</div>
+                            </div>
+                        </div>`;
+                    }
+                }
+                if (!hasKupon) list.innerHTML = `<div class="empty-text">Şu an aktif bir kampanya bulunmuyor 😔</div>`;
+            } catch (e) {
+                document.getElementById("firsatlar-list").innerHTML = `<div class="empty-text">Kuponlar yüklenemedi.</div>`;
+            }
+        }
+        
+        function KuponKopyala(kod) {
+            HapticTitresim();
+            navigator.clipboard.writeText(kod).then(() => {
+                OzelUyariGoster("Kopyalandı", `Kupon kodu (${kod}) kopyalandı! Sepetinizde kullanabilirsiniz.`, "📋");
+            });
+        }
+
+
         // GÜVENLİK YAMASI 1: Veri Şifreleme Metodları
         function VeriSifrele(t) { try { return btoa(encodeURIComponent(t)); } catch(e) { return ""; } }
         function VeriCoz(h) { try { return decodeURIComponent(atob(h)); } catch(e) { return ""; } }
@@ -848,8 +1104,6 @@
             if (deferredPrompt) {
                 document.getElementById('pwa-install-banner').style.display = 'flex'; 
             }
-            
-            // X TUŞUNDAKİ BOZUK YER SİLİNDİ! ASLA CHROME'DA İZİN SORMAZ!
         }
         function TetiklePwaPrompt() { ManuelUygulamaIndir(); }
 
@@ -986,7 +1240,6 @@
                         ekmekBirimFiyati = isNaN(p) ? 0 : p; 
                     }
                     
-                    // KRİTİK GÜVENLİK YAMASI: BOZUK GEÇMİŞ HAFIZASINI ÇÖKERTMESİN DİYE TRY-CATCH
                     let history = {};
                     try {
                         let okunanGecmis = localStorage.getItem('bg_phist');
@@ -994,7 +1247,6 @@
                             history = JSON.parse(okunanGecmis);
                         }
                     } catch (err) {
-                        // Eğer geçmiş bozuksa, silip yepyeni tertemiz bir sayfa açıyoruz!
                         localStorage.setItem('bg_phist', '{}');
                         history = {};
                     }
@@ -1218,7 +1470,6 @@
             hesaplanacakSepet.forEach(urunItem => { 
                 let gercekUrun = tumUrunler.find(u => u.pName === urunItem.rawName); 
                 if (gercekUrun) { 
-                    // KRİTİK SEPET HATASI DÜZELTİLDİ: "item" değil "urunItem" yazıldı!
                     let dummyName = (urunItem.quantity > 1 ? urunItem.quantity + "x " : "") + urunItem.baseName; 
                     total += ExtractBreadTotal(dummyName, gercekUrun.isKg, urunItem.baseStockAmount * urunItem.quantity); 
                 } 
@@ -1737,7 +1988,7 @@
             if(tl.length < 10) { GosterHataInput("chk-telefon"); hV = true; } 
             if(ad.length < 10) { GosterHataInput("chk-adres"); hV = true; }
             if(hV) { 
-                OzelUyariGoster("Eksik", "Ad, telefon veya adres hatalı.", "⚠️️"); 
+                OzelUyariGoster("Eksik", "Ad, telefon veya adres hatalı.", "⚠"); 
                 return; 
             }
             
@@ -1998,4 +2249,4 @@
         }
     </script>
 </body>
-</html>
+</html> 
