@@ -740,7 +740,7 @@
         let installPromptDismissed = localStorage.getItem('pwa_prompt_dismissed') === 'true';
 
         // ==========================================
-        // EKSİK OLAN YARDIMCI (UTILITY) FONKSİYONLAR
+        // YARDIMCI (UTILITY) FONKSİYONLAR
         // ==========================================
 
         function HapticTitresim() { 
@@ -946,73 +946,24 @@
             }, 3000);
         }
 
-        async function KuponlariCek() {
-            try {
-                let mR = await fetch(firebaseKuponUrl + authKeyStr + "&t=" + new Date().getTime());
-                let data = await mR.json();
-                let list = document.getElementById("firsatlar-list");
-                if (!data) {
-                    list.innerHTML = `<div class="empty-text">Şu an aktif bir kampanya bulunmuyor 😔</div>`;
-                    return;
-                }
-                
-                let yeniVeri = JSON.stringify(data);
-                if (sonKuponVerisi === yeniVeri) return;
-                sonKuponVerisi = yeniVeri;
-                
-                list.innerHTML = "";
-                let hasKupon = false;
-                for (let key in data) {
-                    let k = data[key];
-                    if (k.discountAmount) {
-                        hasKupon = true;
-                        list.innerHTML += `
-                        <div class="coupon-card">
-                            <div class="c-left">
-                                <span class="c-discount">${k.discountAmount}₺</span>
-                                <span class="c-type">İNDİRİM</span>
-                            </div>
-                            <div class="c-right">
-                                <div class="c-title">${k.targetProduct !== "" ? escapeHTML(k.targetProduct) + " için geçerli!" : "Tüm menüde geçerli!"}</div>
-                                <div class="c-code">${escapeHTML(key)}</div>
-                                <div class="c-limit">Alt Limit: ${k.bottomLimit} TL</div>
-                                <div class="c-btn" onclick="KuponKopyala('${escapeHTML(key)}')">Kodu Kopyala</div>
-                            </div>
-                        </div>`;
-                    }
-                }
-                if (!hasKupon) list.innerHTML = `<div class="empty-text">Şu an aktif bir kampanya bulunmuyor 😔</div>`;
-            } catch (e) {
-                document.getElementById("firsatlar-list").innerHTML = `<div class="empty-text">Kuponlar yüklenemedi.</div>`;
-            }
-        }
-        
-        function KuponKopyala(kod) {
-            HapticTitresim();
-            navigator.clipboard.writeText(kod).then(() => {
-                OzelUyariGoster("Kopyalandı", `Kupon kodu (${kod}) kopyalandı! Sepetinizde kullanabilirsiniz.`, "📋");
-            });
-        }
+        // ==========================================
+        // GÜVENLİK VE PWA İŞLEMLERİ
+        // ==========================================
 
-
-        // GÜVENLİK YAMASI 1: Veri Şifreleme Metodları
         function VeriSifrele(t) { try { return btoa(encodeURIComponent(t)); } catch(e) { return ""; } }
         function VeriCoz(h) { try { return decodeURIComponent(atob(h)); } catch(e) { return ""; } }
 
-        // GÜVENLİK YAMASI 2: Service Worker
         if ('serviceWorker' in navigator) { 
             window.addEventListener('load', () => { 
                 navigator.serviceWorker.register('sw.js'); 
             }); 
         }
 
-        // KURULUM (PWA) TETİKLEYİCİSİ
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault(); 
             deferredPrompt = e;
             const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
             
-            // Eğer uygulama zaten yüklü değilse (Chrome/Safari üzerinden girildiyse)
             if (!isStandalone && !installPromptDismissed) {
                 let promptOverlay = document.getElementById('pwa-fullscreen-prompt'); 
                 promptOverlay.style.display = 'flex'; 
@@ -1022,14 +973,12 @@
             }
         });
 
-        // KURULUM BAŞARIYLA BİTİNCE
         window.addEventListener('appinstalled', (evt) => {
             document.getElementById('pwa-fullscreen-prompt').style.display = 'none';
             document.getElementById('pwa-install-banner').style.display = 'none';
             OzelUyariGoster("Kurulum Tamamlandı! 🎉", "Bekmez GO telefonunuza yüklendi. Lütfen tarayıcıyı kapatıp ana ekranınızdaki uygulamadan giriş yapın.", "✅");
         });
 
-        // SEPETİ UNUTMA BİLDİRİMİ (15 Saniye)
         let cartReminderTimer = null;
         document.addEventListener("visibilitychange", function() {
             if (document.visibilityState === 'hidden' && sepet.length > 0) {
@@ -1051,7 +1000,6 @@
             }
         });
 
-        // SADECE UYGULAMADAN İZİN İSTEME MEKANİZMASI
         function SiraylaIzinIste() {
             if ("Notification" in window && Notification.permission === "default") {
                 Notification.requestPermission().then(p => { 
@@ -1068,7 +1016,6 @@
             } 
         }
 
-        // PWA KURULUM BUTONLARI VE PENCERE KAPATMA 
         function ManuelUygulamaIndir() {
             HapticTitresim();
             const isIos = () => { const ua = window.navigator.userAgent.toLowerCase(); return /iphone|ipad|ipod/.test(ua); }
@@ -1107,7 +1054,10 @@
         }
         function TetiklePwaPrompt() { ManuelUygulamaIndir(); }
 
-        // SİSTEM BAŞLATICI (SPLASH VE İLK AYARLAR)
+        // ==========================================
+        // BAŞLATMA VE MENÜ ÇEKME İŞLEMLERİ
+        // ==========================================
+
         window.addEventListener('DOMContentLoaded', () => {
             let st = new Date().getHours(); 
             let m = "Hoş Geldiniz ✨"; 
@@ -1143,12 +1093,10 @@
                     setTimeout(() => { 
                         splash.style.display = 'none'; 
                         
-                        // Menü eğer önceden yüklenmediyse göster
                         if (document.getElementById("menu-container").style.display !== "block" && document.getElementById("cart-container").style.display !== "block") {
                             SayfaGoster('urunler');
                         }
                         
-                        // SADECE VE SADECE UYGULAMA İÇİNDEYSE (PWA) İZİN İSTE! CHROME'DA ASLA İSTEMEZ.
                         const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
                         if (isStandalone && !localStorage.getItem('bg_perms_asked')) { 
                             SiraylaIzinIste(); 
@@ -1167,7 +1115,6 @@
             }, 5000); 
         }
 
-        // CORE: MENÜ VE SAYFA DEĞİŞTİRİCİ
         function SayfaGoster(s) {
             HapticTitresim(); 
             if(canliAdisyonTimer) { clearInterval(canliAdisyonTimer); canliAdisyonTimer = null; }
@@ -1210,7 +1157,6 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // CORE: MENÜ ÇEKİMİ VE İNDİRİM BİLDİRİMLERİ (TAMAMEN GÜVENCEYE ALINDI)
         async function CanliMenuCek(ilkYukleme) {
             try {
                 try { 
@@ -1312,15 +1258,17 @@
                     }
                 }
             } catch(error) { 
-                console.error("Menü Çekme Hatası:", error);
                 if (ilkYukleme) {
                     document.getElementById("menu-grid").innerHTML = `<div class="empty-text" style="color:var(--danger)">Bağlantı Hatası! Sayfayı yenileyin.</div>`; 
-                    SayfaGoster('urunler'); // Hata olsa bile menü (arayüz) açılsın!
+                    SayfaGoster('urunler'); 
                 }
             }
         }
 
-        // YARDIMCI FONKSİYONLAR
+        // ==========================================
+        // KATEGORİ, ÜRÜN ARAMA VE RENDER İŞLEMLERİ
+        // ==========================================
+
         function GetKategoriAd(u) { 
             try { 
                 if (u.categoryIndex !== undefined && u.categoryIndex !== null) { 
@@ -1423,6 +1371,10 @@
             EkranaUrunleriCiz(tumUrunler.filter(u => GetKategoriAd(u) === aktifKategori)); 
             window.scrollTo({ top: 0, behavior: 'smooth' }); 
         }
+
+        // ==========================================
+        // SİPARİŞ, EKMEK HESABI VE POPUP İŞLEMLERİ
+        // ==========================================
 
         function ExtractBreadTotal(itemName, isKg, amount) { 
             let lowerName = itemName.toLocaleLowerCase('tr-TR'); 
@@ -1846,6 +1798,60 @@
             HesaplaVeGuncelle(); 
         }
 
+        // ==========================================
+        // KUPON VE ÖDEME İŞLEMLERİ
+        // ==========================================
+
+        async function KuponlariCek() {
+            try {
+                let mR = await fetch("https://bekmezpos-default-rtdb.firebaseio.com/Kuponlar.json" + authKeyStr + "&t=" + new Date().getTime(), { cache: "no-store" });
+                let data = await mR.json();
+                let list = document.getElementById("firsatlar-list");
+                
+                if (!data) {
+                    list.innerHTML = `<div class="empty-text">Şu an aktif bir kampanya bulunmuyor 😔</div>`;
+                    return;
+                }
+                
+                let yeniVeri = JSON.stringify(data);
+                if (sonKuponVerisi === yeniVeri) return;
+                sonKuponVerisi = yeniVeri;
+                
+                list.innerHTML = "";
+                let hasKupon = false;
+                for (let key in data) {
+                    let k = data[key];
+                    if (k.discountAmount) {
+                        hasKupon = true;
+                        list.innerHTML += `
+                        <div class="coupon-card">
+                            <div class="c-left">
+                                <span class="c-discount">${k.discountAmount}₺</span>
+                                <span class="c-type">İNDİRİM</span>
+                            </div>
+                            <div class="c-right">
+                                <div class="c-title">${k.targetProduct && k.targetProduct !== "Herşey" ? escapeHTML(k.targetProduct) + " için geçerli!" : "Tüm menüde geçerli!"}</div>
+                                <div class="c-code">${escapeHTML(key)}</div>
+                                <div class="c-limit">Alt Limit: ${k.bottomLimit} TL</div>
+                                <div class="c-btn" onclick="KuponKopyala('${escapeHTML(key)}')">Kodu Kopyala</div>
+                            </div>
+                        </div>`;
+                    }
+                }
+                if (!hasKupon) list.innerHTML = `<div class="empty-text">Şu an aktif bir kampanya bulunmuyor 😔</div>`;
+            } catch (e) {
+                console.error("Kupon hatası:", e);
+                document.getElementById("firsatlar-list").innerHTML = `<div class="empty-text">Kuponlar yüklenemedi. Ağ bağlantınızı kontrol edin.</div>`;
+            }
+        }
+        
+        function KuponKopyala(kod) {
+            HapticTitresim();
+            navigator.clipboard.writeText(kod).then(() => {
+                OzelUyariGoster("Kopyalandı", `Kupon kodu (${kod}) kopyalandı! Sepetinizde kullanabilirsiniz.`, "📋");
+            });
+        }
+
         function KuponSorgula() { 
             let iE = document.getElementById("coupon-code"); 
             let gK = iE.value.trim().toUpperCase(); 
@@ -1855,7 +1861,7 @@
             b.innerText = "Bekleyin..."; 
             b.disabled = true; 
             
-            fetch(firebaseKuponUrl + gK + ".json" + authKeyStr + "&t=" + new Date().getTime(), { cache: "no-store" }).then(res => res.json()).then(d => { 
+            fetch("https://bekmezpos-default-rtdb.firebaseio.com/Kuponlar/" + gK + ".json" + authKeyStr + "&t=" + new Date().getTime(), { cache: "no-store" }).then(res => res.json()).then(d => { 
                 b.disabled = false; 
                 if(d && d.discountAmount > 0) { 
                     let aU = (d.targetProduct && d.targetProduct !== "") ? d.targetProduct : "Herşey"; 
