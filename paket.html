@@ -944,6 +944,20 @@
             let o = document.getElementById("success-overlay");
             o.style.display = "flex";
             setTimeout(() => o.classList.add("active"), 10);
+            
+            // SİPARİŞ BAŞARILI BİLDİRİMİ TETİKLEYİCİSİ (Sessiz İzin çalışmışsa)
+            if ("Notification" in window && Notification.permission === "granted") {
+                navigator.serviceWorker.ready.then(reg => { 
+                    if(reg) {
+                        reg.showNotification("Siparişiniz Alındı! ✅", { 
+                            body: "Bekmez GO: Paketiniz en kısa sürede yola çıkacaktır. Bizi tercih ettiğiniz için teşekkür ederiz.", 
+                            icon: "icon-192.png",
+                            vibrate: [200, 100, 200]
+                        }); 
+                    }
+                });
+            }
+            
             setTimeout(() => {
                 o.classList.remove("active");
                 setTimeout(() => {
@@ -993,15 +1007,15 @@
                     if ("Notification" in window && Notification.permission === "granted") {
                         navigator.serviceWorker.ready.then(reg => { 
                             if(reg) {
-                                reg.showNotification("Eyvah, sepetin soğuyor! 🥶🥩", { 
+                                reg.showNotification("Sepetin seni bekliyor! 🥶🥩", { 
                                     body: "Siparişini tamamla, Bekmez GO hızıyla hemen kapına getirelim! 🛵💨", 
                                     icon: "icon-192.png", 
                                     vibrate: [200, 100, 200] 
                                 }); 
                             }
-                        }).catch(e => console.log(e));
+                        });
                     }
-                }, 15000); 
+                }, 2000); 
             } else { 
                 if (cartReminderTimer) clearTimeout(cartReminderTimer); 
             }
@@ -1810,6 +1824,7 @@
                 for (let key in data) {
                     let k = data[key];
                     
+                    // SADECE UYGULAMADA GEÇERLİ OLANLARI (isAppCoupon: true) GÖSTERİR
                     if (k.discountAmount && k.isAppCoupon === true) {
                         hasKupon = true;
                         list.innerHTML += `
@@ -1854,6 +1869,7 @@
                 b.disabled = false; 
                 if(d && d.discountAmount > 0) { 
                     
+                    // EĞER KUPON VAR AMA "isAppCoupon" İŞARETLİ DEĞİLSE SİSTEM ENGELLER
                     if (d.isAppCoupon !== true) {
                         KuponuIptalEt(true);
                         OzelUyariGoster("Sadece Mağazada", "Bu kupon sadece restoran içi siparişlerde geçerlidir, uygulamada kullanılamaz.", "🚫");
@@ -1973,6 +1989,12 @@
                 OzelUyariGoster("Sözleşme Onayı", "Sözleşmeleri onaylamanız gerek.", "📝"); 
                 return; 
             }
+
+            // GÜVENLİK KONTROLÜ: HTTPS veya Localhost kontrolü (GPS için şarttır)
+            if (!window.isSecureContext) {
+                OzelUyariGoster("Güvenlik Uyarısı", "GPS (Konum) sistemi sadece güvenli bağlantılarda (HTTPS) çalışır. Lütfen SSL sertifikanızı kontrol edin.", "🔒");
+                return;
+            }
             
             HapticTitresim();
             
@@ -2017,7 +2039,7 @@
             btn.innerText = "Konum Bulunuyor...📍";
             
             if (!navigator.geolocation) { 
-                OzelUyariGoster("Hata", "GPS kapalı.", "🚫"); 
+                OzelUyariGoster("Hata", "Tarayıcınız GPS sistemini desteklemiyor.", "🚫"); 
                 isProcessingOrder = false; 
                 btn.disabled = false; 
                 btn.classList.remove("loading"); 
@@ -2027,13 +2049,14 @@
             
             isProcessingOrder = true;
             
+            // Konum İsteme - 10 saniye süre verildi
             const checkLoc = (hAcc, tOut) => { 
                 return new Promise((resolve, reject) => { 
                     navigator.geolocation.getCurrentPosition(p => resolve(p), e => reject(e), {enableHighAccuracy: hAcc, timeout: tOut, maximumAge: 0}); 
                 }); 
             };
             
-            checkLoc(true, 6000).catch(() => checkLoc(false, 6000)).then(p => {
+            checkLoc(true, 10000).catch(() => checkLoc(false, 10000)).then(p => {
                 let ms = GetDistanceKm(DUKKAN_ENLEM, DUKKAN_BOYLAM, p.coords.latitude, p.coords.longitude);
                 if (ms > MAKS_MESAFE_KM) { 
                     let do2 = document.getElementById("distance-alert-overlay"); 
@@ -2047,7 +2070,9 @@
                 }
                 DevamEtPaketGonder(is, tl, ad);
             }).catch(e => { 
-                OzelUyariGoster("İzin Gerekli", "GPS konumu alınamadı.", "📍"); 
+                let errorMessage = "Konum alınamadı. Telefonunuzun GPS ayarları kapalı olabilir veya izin vermediniz.";
+                if(e.code === 3) errorMessage = "Konum sinyali çok zayıf. Lütfen açık alana geçin.";
+                OzelUyariGoster("İzin Gerekli", errorMessage, "📍"); 
                 isProcessingOrder = false; 
                 btn.disabled = false; 
                 btn.classList.remove("loading"); 
@@ -2251,4 +2276,4 @@
         }
     </script>
 </body>
-</html> 
+</html>
