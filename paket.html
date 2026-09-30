@@ -66,9 +66,7 @@
         
         .app-header, #menu-container, #cart-container, #history-container, #profile-container, #opportunities-container { position: relative; z-index: 10; }
 
-        /* ========================================================================= */
-        /* SPLASH EKRANI                                                             */
-        /* ========================================================================= */
+        /* SPLASH EKRANI */
         #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-dark); z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.8s ease; overflow: hidden; }
         .aura-bg { position: absolute; width: 500px; height: 500px; background: var(--primary); border-radius: 50%; filter: blur(180px); opacity: 0.12; animation: auraPulse 5s infinite alternate ease-in-out; z-index: 1;}
         @keyframes auraPulse { 0% { transform: scale(0.8); opacity: 0.08; } 100% { transform: scale(1.1); opacity: 0.15; } }
@@ -79,29 +77,37 @@
         .status-dot::after { content: ''; position: absolute; top: -4px; left: -4px; right: -4px; bottom: -4px; border-radius: 50%; border: 1px solid var(--primary); animation: radarPulse 2s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
         @keyframes radarPulse { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(2.5); opacity: 0; } }
 
+        /* SPLASH LOGO & MOTOR ANİMASYONU */
         .splash-logo { font-size: 48px; font-weight: 900; color: #fff; margin-bottom: 8px; letter-spacing: -2px; line-height: 1; opacity: 0; transform: translateY(20px); animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.3s; display: flex; align-items: center; justify-content: center;}
         
         .splash-go-container { position: relative; display: flex; align-items: center; justify-content: center; width: 100px; height: 60px; margin-left: 8px; }
+        
+        /* GO Yazısının Şişme ve Kaybolma Döngüsü */
         .splash-text-group { position: absolute; display: flex; align-items: center; animation: goCycleSplash 6s infinite cubic-bezier(0.25, 1, 0.5, 1); }
         .splash-go-text { font-style: italic; color: var(--primary); text-shadow: 0 4px 15px var(--primary-glow); font-size: 48px; margin-bottom: 4px;}
         .splash-speed-lines { display: flex; flex-direction: column; justify-content: center; gap: 5px; margin-left: 4px;}
         
+        /* Orijinal Scooter SVG Motor Animasyonu */
         .splash-motor-wrapper { position: absolute; opacity: 0; display: flex; align-items: center; justify-content: center; animation: motorCycleSplash 6s infinite cubic-bezier(0.25, 1, 0.5, 1); }
         .splash-motor-svg { width: 65px; height: auto; filter: drop-shadow(0 4px 10px rgba(255,107,0,0.6)); }
         
+        /* Toz Bulutları */
         .dust-particle { position: absolute; border-radius: 50%; background: #ffffff; opacity: 0; pointer-events: none; }
         .splash-motor-wrapper .dust-particle { animation: splashDust 0.6s infinite cubic-bezier(0.16, 1, 0.3, 1); filter: blur(2px); }
         .splash-motor-wrapper .dp1 { width: 12px; height: 12px; bottom: 8px; left: -5px; animation-delay: 0s; }
         .splash-motor-wrapper .dp2 { width: 16px; height: 16px; bottom: 2px; left: -15px; animation-delay: 0.2s; }
         .splash-motor-wrapper .dp3 { width: 8px; height: 8px; bottom: 12px; left: -20px; animation-delay: 0.4s; }
 
-        @keyframes splashDust { 0% { transform: translateX(0) scale(0.5); opacity: 0.8; } 100% { transform: translateX(-35px) scale(2); opacity: 0; } }
+        @keyframes splashDust { 
+            0% { transform: translateX(0) scale(0.5); opacity: 0.8; } 
+            100% { transform: translateX(-35px) scale(2); opacity: 0; } 
+        }
         @keyframes goCycleSplash {
             0%, 40% { opacity: 1; transform: scale(1); filter: blur(0px); }
-            45% { opacity: 0; transform: scale(0.8); filter: blur(4px); }
-            80% { opacity: 0; transform: scale(0.8); filter: blur(4px); }
-            85% { opacity: 1; transform: scale(1.2); filter: blur(0px); }
-            90%, 100% { opacity: 1; transform: scale(1); filter: blur(0px); }
+            45% { opacity: 0; transform: scale(0.8); filter: blur(4px); } 
+            80% { opacity: 0; transform: scale(0.8); filter: blur(4px); } 
+            85% { opacity: 1; transform: scale(1.2); filter: blur(0px); } 
+            90%, 100% { opacity: 1; transform: scale(1); filter: blur(0px); } 
         }
         @keyframes motorCycleSplash {
             0%, 45% { opacity: 0; transform: translateX(-100px) scale(0.8); }
@@ -109,12 +115,11 @@
             70% { opacity: 1; transform: translateX(30px) scale(1) rotate(5deg); }
             75%, 100% { opacity: 0; transform: translateX(120px) scale(0.8) rotate(15deg); }
         }
+
         .splash-subtitle { font-size: 11px; color: var(--text-muted); font-weight: 600; letter-spacing: 4px; text-transform: uppercase; opacity: 0; animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.5s; margin-top: 5px;}
         @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 
-        /* ========================================================================= */
-        /* DÜZELTİLEN YER: APP HEADER HİZALAMASI                                     */
-        /* ========================================================================= */
+        /* HEADER & MOTOR ANİMASYONU */
         .app-header { display: flex; align-items: center; justify-content: center; padding: 15px; position: sticky; top: 0; background: rgba(0, 0, 0, 0.85); z-index: 100; border-bottom: 1px solid var(--border-light); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
         
         .brand-name { font-size: 24px; font-weight: 900; color: var(--text-main); letter-spacing: -0.5px; display: flex; align-items: center; justify-content: center; line-height: 1;}
@@ -156,9 +161,7 @@
         .splash-line:nth-child(3), .go-line:nth-child(3) { width: 10px; animation-duration: 1.1s; }
         @keyframes speedDash { 0% { transform: translateX(-6px); opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { transform: translateX(12px); opacity: 0; } }
 
-        /* ========================================================================= */
-        /* ALT MENÜ VE DİĞER KOMPONENTLER                                            */
-        /* ========================================================================= */
+        /* NAVIGATION */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(15, 15, 20, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-around; align-items: center; padding: 8px 10px calc(8px + env(safe-area-inset-bottom)) 10px; z-index: 2000; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); }
         .nav-item { background: transparent; border: none; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 4px; font-family: inherit; font-size: 10px; font-weight: 700; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); position: relative; flex: 1; }
         .nav-item .icon { font-size: 22px; filter: grayscale(1); transition: 0.3s; margin-bottom: 2px; }
@@ -167,7 +170,6 @@
         .nav-badge { position: absolute; top: -4px; right: 50%; margin-right: -14px; background: var(--gradient-fire); color: white; font-size: 9px; font-weight: 900; min-width: 16px; height: 16px; border-radius: 8px; display: flex; align-items: center; justify-content: center; opacity: 0; transform: scale(0); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 4px 10px var(--primary-glow); border: 2px solid #121215; }
         .nav-badge.show { opacity: 1; transform: scale(1); }
 
-        /* DÜZELTİLEN YER: KUPON KARTLARI HİZALAMASI */
         .coupon-card { display: flex; align-items: stretch; background: linear-gradient(135deg, rgba(255, 107, 0, 0.1) 0%, rgba(255, 149, 0, 0.05) 100%); border: 1px solid rgba(255, 107, 0, 0.2); border-radius: 16px; margin-bottom: 12px; overflow: hidden; opacity: 0; animation: cardEntrance 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; box-shadow: 0 8px 15px rgba(0,0,0,0.2); }
         .c-left { background: var(--gradient-fire); color: white; padding: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 90px; border-right: 2px dashed rgba(255,255,255,0.4); position: relative;}
         .c-left::before { content:''; position:absolute; top:-8px; right:-8px; width:16px; height:16px; background:var(--bg-dark); border-radius:50%; }
@@ -192,6 +194,7 @@
 
         @keyframes floatUpFade { 0% { opacity: 0; transform: translate(-50%, -20%) scale(0.8); } 20% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); } 80% { opacity: 1; transform: translate(-50%, -70%) scale(1); } 100% { opacity: 0; transform: translate(-50%, -90%) scale(0.9); } }
 
+        /* Arama & Sekmeler */
         .search-container { padding: 15px 15px 5px 15px; position: relative;}
         .search-input { width: 100%; background: rgba(25, 25, 30, 0.9); border: 1px solid var(--border-highlight); color: var(--text-main); padding: 14px 15px 14px 45px; border-radius: 20px; font-size: 14px; font-weight:600; font-family: inherit; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: inset 0 2px 10px rgba(0,0,0,0.3), 0 5px 15px rgba(0,0,0,0.2);}
         .search-input:focus { outline: none; border-color: var(--primary); background: var(--surface-solid); box-shadow: inset 0 2px 5px rgba(0,0,0,0.5), 0 0 0 2px var(--primary-light), 0 10px 25px rgba(0,0,0,0.5); transform: translateY(-2px); }
@@ -205,9 +208,9 @@
 
         @keyframes cardEntrance { 0% { opacity: 0; transform: translateY(40px) scale(0.9); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
         
+        /* Grid & Cards */
         .grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 15px 25px 15px; }
         .product-card { opacity: 0; animation: cardEntrance 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; background: linear-gradient(145deg, rgba(30, 30, 35, 0.9) 0%, rgba(15, 15, 20, 0.95) 100%); border: 1px solid rgba(255,255,255,0.05); border-top: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 16px 12px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer; position: relative; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.05);}
-        .product-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.05) 0%, transparent 60%); pointer-events: none; }
         .product-card:active { transform: scale(0.93) translateY(2px); background: linear-gradient(145deg, rgba(20, 20, 25, 0.95) 0%, rgba(10, 10, 15, 1) 100%); border-color: rgba(255,94,0,0.3); box-shadow: 0 4px 10px rgba(0,0,0,0.6), inset 0 2px 10px rgba(0,0,0,0.5); }
         .popular-badge { position: absolute; top: 12px; right: 12px; background: var(--gradient-gold); color: #000; font-size: 8px; font-weight: 900; padding: 4px 8px; border-radius: 10px; box-shadow: 0 2px 10px rgba(250, 204, 21, 0.3); z-index: 5; letter-spacing: 0.5px; text-transform: uppercase;}
         .product-icon-wrapper { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(145deg, #1f1f25, #141419); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.02); position: relative; box-shadow: 6px 6px 12px #070709, -6px -6px 12px #23232b, inset 0px 2px 4px rgba(255, 94, 0, 0.1); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);}
@@ -216,9 +219,9 @@
         .product-name { font-size: 14px; font-weight: 800; color: var(--text-main); margin-bottom: 12px; line-height: 1.3; letter-spacing: -0.3px; min-height: 36px; display: flex; align-items: center; justify-content: center; text-shadow: 0 2px 4px rgba(0,0,0,0.5);}
         .product-price-badge { background: rgba(0,0,0,0.4); color: var(--text-main); padding: 8px 12px; border-radius: 100px; font-weight: 800; font-size: 13px; border: 1px solid var(--border-highlight); width: 100%; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.2); letter-spacing: 0.5px; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);}
         .product-card:active .product-price-badge { background: var(--gradient-fire); color: white; border-color: transparent; box-shadow: 0 6px 15px var(--primary-glow), inset 0 1px 1px rgba(255,255,255,0.3);}
-        
         .empty-text { grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 50px 0; font-weight: 700; font-size: 14px; background: rgba(25,25,30,0.8); border-radius: 24px; border: 1px dashed var(--border-highlight); letter-spacing: -0.3px;}
 
+        /* Skeleton & PWA & Popup vs */
         .skeleton-card { background: rgba(30, 30, 35, 0.8); border: 1px solid var(--border-light); border-radius: 24px; padding: 16px 12px; display: flex; flex-direction: column; align-items: center; position: relative; overflow: hidden; }
         .skeleton-card::after { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent); transform: translateX(-100%); animation: skeletonShimmer 2s infinite ease-in-out; }
         @keyframes skeletonShimmer { 100% { transform: translateX(100%); } }
@@ -227,6 +230,7 @@
         .skel-text.short { width: 55%; margin-bottom: 24px;}
         .skel-btn { width: 100%; height: 36px; border-radius: 100px; background: rgba(0,0,0,0.3); }
 
+        /* SANAL POS FOOTER SVG-IMG */
         .secure-footer { margin-top: 40px; padding: 20px 15px 40px 15px; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; opacity: 0; transform: translateY(20px); animation: fadeUpFooter 1s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.5s; }
         @keyframes fadeUpFooter { to { opacity: 1; transform: translateY(0); } }
         .footer-text { font-size: 11px; color: var(--text-muted); line-height: 1.8; margin-top: 15px; }
@@ -237,7 +241,6 @@
         .floating-cart { position: fixed; bottom: calc(75px + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); width: calc(100% - 30px); max-width: 400px; height: 60px; background: linear-gradient(135deg, rgba(255, 107, 0, 0.95), rgba(220, 45, 0, 0.95)); backdrop-filter: blur(15px); border-radius: 100px; display: flex; align-items: center; justify-content: space-between; padding: 0 8px 0 24px; font-size: 15px; font-weight: 800; color: white; box-shadow: 0 15px 30px rgba(255, 94, 0, 0.4), inset 0 2px 4px rgba(255,255,255,0.3); z-index: 100; cursor: pointer; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); border: 1px solid rgba(255,255,255,0.15);}
         .floating-cart:active { transform: translateX(-50%) scale(0.95) translateY(2px); box-shadow: 0 8px 15px rgba(255, 94, 0, 0.3), inset 0 2px 8px rgba(0,0,0,0.2);}
         .floating-btn { background: #ffffff; color: var(--primary); padding: 12px 20px; border-radius: 100px; font-size: 14px; font-weight: 900; box-shadow: 0 6px 15px rgba(0,0,0,0.2); letter-spacing: -0.3px;}
-
         .page-title { font-size: 24px; font-weight: 900; margin: 15px 15px 25px 15px; color: var(--text-main); letter-spacing: -1px; text-shadow: 0 2px 10px rgba(0,0,0,0.8);}
         
         .cart-item { background: linear-gradient(145deg, rgba(30, 30, 35, 0.8) 0%, rgba(15, 15, 20, 0.9) 100%); padding: 16px; border-radius: 24px; margin: 0 15px 15px 15px; display: flex; align-items: center; justify-content: space-between; border: 1px solid rgba(255,255,255,0.05); border-top: 1px solid rgba(255,255,255,0.1); gap: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.05);}
@@ -319,11 +322,26 @@
         .receipt-header { border-bottom: 2px dashed #D4D4D8; padding-bottom: 20px; margin-bottom: 20px; font-size: 12px; font-weight: 800; display: flex; justify-content: space-between; align-items: center; color: #71717A;}
         .receipt-item { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 14px; font-weight: 700; color: #27272A;}
         .receipt-total { border-top: 2px dashed #D4D4D8; padding-top: 20px; margin-top: 20px; font-size: 24px; font-weight: 900; text-align: right; color: var(--primary); letter-spacing: -1px;}
-        
-        .pwa-install-banner { display:none; background: var(--gradient-fire); padding: 10px 15px; color: white; justify-content: space-between; align-items: center; z-index: 99; position: relative; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px; box-shadow: 0 5px 15px rgba(255,107,0,0.3); margin-top: -1px; }
-        .pwa-install-btn { background: white; color: var(--primary); border: none; padding: 6px 14px; border-radius: 100px; font-weight: 800; font-size: 12px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        
-        /* DÜZELTİLEN YER: Profil Sayfası Tasarımı ve Güvenlik Rozeti */
+
+        /* TAM EKRAN KURULUM POPUP'I */
+        .pwa-fullscreen-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(15px); z-index: 9999999; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.5s ease; padding: 20px; box-sizing: border-box; }
+        .pwa-fullscreen-overlay.active { opacity: 1; }
+        .pwa-close-btn { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); width: 40px; height: 40px; border-radius: 50%; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 5; }
+        .pwa-close-btn:active { transform: scale(0.9); background: rgba(255,255,255,0.15); color: #fff; }
+        .pwa-content-box { background: linear-gradient(180deg, #1a1a24 0%, #070709 100%); padding: 40px 25px; border-radius: 32px; text-align: center; width: 100%; max-width: 360px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 30px 80px rgba(0,0,0,0.8); position: relative; overflow: hidden; transform: translateY(30px) scale(0.95); transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .pwa-fullscreen-overlay.active .pwa-content-box { transform: translateY(0) scale(1); }
+        .pwa-icon-glow { position: absolute; width: 200px; height: 200px; background: var(--primary); border-radius: 50%; filter: blur(100px); opacity: 0.2; top: -40px; left: 50%; transform: translateX(-50%); z-index: 0; pointer-events: none;}
+        .pwa-icon { font-size: 65px; margin-bottom: 20px; position: relative; z-index: 1; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5)); animation: floatUpAndDown 4s ease-in-out infinite; }
+        @keyframes floatUpAndDown { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        .pwa-title { font-size: 24px; font-weight: 900; color: var(--text-main); margin-bottom: 12px; line-height: 1.2; letter-spacing: -0.5px; position: relative; z-index: 1; text-shadow: 0 4px 8px rgba(0,0,0,0.5); }
+        .pwa-desc { font-size: 14px; font-weight: 500; color: var(--text-muted); margin-bottom: 30px; line-height: 1.5; position: relative; z-index: 1; }
+        .pwa-main-btn { background: var(--gradient-fire); color: white; border: none; padding: 18px; font-size: 15px; font-weight: 800; border-radius: 100px; width: 100%; cursor: pointer; box-shadow: 0 15px 30px var(--primary-glow), inset 0 2px 4px rgba(255,255,255,0.3); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); letter-spacing: 0.5px; position: relative; z-index: 1;}
+        .pwa-main-btn:active { transform: scale(0.95); box-shadow: 0 8px 15px var(--primary-glow); }
+
+        /* UÇTAN UCA ŞİFRELEME METNİ DÜZELTİLDİ */
+        .security-badge { background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.05) 100%); border: 1px solid rgba(16, 185, 129, 0.3); padding: 16px; border-radius: 20px; display: flex; align-items: flex-start; gap: 12px; margin: 0 15px 20px 15px; }
+        .security-badge .icon { font-size: 24px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
+        .security-badge .text { color: #A1A1AA; font-size: 12px; font-weight: 500; line-height: 1.5; }
         .security-badge .badge-title { color: var(--success); font-size: 14px; display: block; font-weight: 900; margin-bottom: 4px; letter-spacing: -0.3px;}
         .security-badge .text strong { color: var(--success); font-weight: 800;}
         
@@ -361,12 +379,17 @@
         </button>
     </nav>
 
-    <div id="pwa-install-banner" class="pwa-install-banner">
-        <div style="display:flex; align-items:center; gap:10px;">
-            <span style="font-size:18px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3));">📱</span>
-            <span style="font-weight: 700; font-size: 12px; line-height: 1.3;">Sıra bekleme, Bekmez GO indir!</span>
+    <!-- TAM EKRAN UYGULAMA KURULUM EKRANI (ESKİ SİSTEM) -->
+    <div id="pwa-fullscreen-prompt" class="pwa-fullscreen-overlay">
+        <div class="pwa-content-box">
+            <button class="pwa-close-btn" onclick="CloseFullscreenPrompt()">&times;</button>
+            <div class="pwa-icon-glow"></div>
+            <div class="pwa-icon">📱</div>
+            <h2 class="pwa-title">Bekmez GO'yu<br><span style="color:var(--primary);">Telefonunuza Kurun</span></h2>
+            <p class="pwa-desc">Sıra beklemeden paket siparişi verin, kuponları kaçırmayın ve lezzete tek tıkla ulaşın.</p>
+            <button class="pwa-main-btn shimmer-btn neon-border" onclick="TetiklePwaPrompt()">Uygulamayı İndir</button>
+            <p style="font-size:11px; color:var(--text-muted); margin-top:20px; font-weight:600;">*Cihazınızda yer kaplamaz, anında kurulur.</p>
         </div>
-        <button class="pwa-install-btn" onclick="TetiklePwaPrompt()">İndir</button>
     </div>
 
     <div class="embers-container">
@@ -533,7 +556,6 @@
             </div>
             
             <button class="order-btn shimmer-btn neon-border" onclick="ProfiliKaydet()" style="margin-bottom: 15px; background: var(--primary);">Bilgilerimi Kaydet</button>
-            <button class="order-btn shimmer-btn" onclick="BildirimIzniIste()" style="margin-bottom: 15px; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid var(--border-highlight); box-shadow: none;">🔔 İndirim Bildirimlerini Aç</button>
             <button onclick="ProfiliSil()" style="width:100%; background:transparent; border:1px solid rgba(239, 68, 68, 0.3); color:var(--danger); padding:16px; border-radius:100px; font-weight:800; font-size:14px; cursor:pointer; transition:0.3s;">Kişisel Verilerimi Sil</button>
             
             <div style="margin-top:35px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 25px; text-align: center; font-size: 11px; color: var(--text-muted); line-height: 1.8;">
@@ -660,62 +682,69 @@
     </div>
 
     <script>
-        // YENİ: Tarayıcılarda spam filtresine takılmamak için bildirim iznini uygulamanın ilk tıklamasına bağladık.
-        document.body.addEventListener('click', function initNotifications() {
-            if ("Notification" in window && Notification.permission === "default") {
-                Notification.requestPermission();
-            }
-            document.body.removeEventListener('click', initNotifications);
-        }, { once: true });
-
-        function BildirimIzniIste() {
-            HapticTitresim();
-            if (!("Notification" in window)) { OzelUyariGoster("Desteklenmiyor", "Cihazınız bildirimleri desteklemiyor.", "🚫"); return; }
-            if (Notification.permission === "granted") { OzelUyariGoster("Zaten Açık", "Bildirimleriniz zaten açık!", "✅"); return; }
-            Notification.requestPermission().then(p => {
-                if (p === "granted") {
-                    OzelUyariGoster("Harika!", "Bildirimlere izin verdiniz.", "🔔");
-                    navigator.serviceWorker.ready.then(reg => reg.showNotification("Bekmez GO", { body: "Bildirimler aktif edildi.", icon: "icon-192.png", vibrate: [200, 100, 200] }));
-                } else { OzelUyariGoster("Reddedildi", "Bildirimleri kapalı tuttunuz.", "🔕"); }
-            });
-        }
-
-        function VeriSifrele(t) { try { return btoa(encodeURIComponent(t)); } catch(e) { return ""; } }
-        function VeriCoz(h) { try { return decodeURIComponent(atob(h)); } catch(e) { return ""; } }
-
-        const textMesafeli = `<strong style="color:white; font-size:14px;">MADDE 1 - TARAFLAR</strong><br><b>SATICI:</b> Bekmez Pişirim Gıda Ltd. Şti.<br><br><strong style="color:white; font-size:14px;">MADDE 2 - CAYMA HAKKI İSTİSNASI</strong><br>Tüketici Mevzuatı gereğince; çabuk bozulabilen malların teslimine ilişkin sözleşmelerde Tüketicinin CAYMA HAKKI BULUNMAMAKTADIR.`;
-        const textTeslimat = `<strong style="color:white; font-size:14px;">TESLİMAT ŞARTLARI</strong><br><br><b>1. Teslimat Bölgesi:</b> Maksimum 4 km yarıçapındaki bölgelere teslim edilmektedir.<br><b>2. Süre:</b> Ortalama 30-45 dakika içerisinde adresinize teslim edilir.`;
-        const textIptal = `<strong style="color:white; font-size:14px;">İPTAL KOŞULLARI</strong><br><br><b>1. Şartlar:</b> Sipariş ancak mutfağa iletilmeden önce iptal edebilir.<br><b>2. İade:</b> Onaylanan iadelerde tutar, 3-7 iş günü içerisinde karta yansıtılır.`;
-        const textKVKK = `<strong style="color:white; font-size:14px;">KVKK VE GİZLİLİK POLİTİKASI</strong><br><br><b>Kredi Kartı Güvenliği:</b> Kart bilgileriniz hiçbir şekilde sunucularımızda kaydedilmez.<br><b>Veri İşleme:</b> Bilgileriniz cihazınızda şifrelenir ve 3. şahıslarla paylaşılmaz.`;
-
-        const DUKKAN_ENLEM = 36.206278; const DUKKAN_BOYLAM = 36.134472; const MAKS_MESAFE_KM = 4; 
-        const firebaseMenuUrl = "https://bekmezpos-default-rtdb.firebaseio.com/Menu.json";
-        const firebasePaketSiparisUrl = "https://bekmezpos-default-rtdb.firebaseio.com/PaketSiparisler.json";
-        const firebaseKuponUrl = "https://bekmezpos-default-rtdb.firebaseio.com/Kuponlar/"; 
-        const authKeyStr = "?auth=dMbxeHXdGtbbPwi7EZGwFUhcfIYqrrnWK9MUxpBw";
-        
-        let ekmekUrunAdi = "Ekmek"; let ekmekBirimFiyati = 0; let sepet = []; let hamToplamFiyat = 0; let sonOdenecekFiyat = 0;
-        let aktifKuponKodu = ""; let aktifKuponIndirimTutari = 0; let aktifKuponAltLimit = 0; let aktifKuponHedefUrun = "Herşey"; 
-        let tumUrunler = []; let aktifKategori = 'Ana Yemek'; let sonMenuVerisi = ""; let sonMenuVersiyonu = "";
-        let seciliUrun = null; let seciliMiktar = 0; let seciliFiyat = 0; let seciliEkstraIstekler = []; let seciliOzelEkmekTip = "Normal"; 
-        let baseKgBread = 0; let ekstraEkmekKg = 0; let seciliUrunStok = 999; let oncekiToplamFiyat = 0; let oncekiPopupFiyat = 0; let oncekiPopupMiktar = 0;
-        let populerUrunlerListesi = []; let canliAdisyonTimer = null; let sonCekilenAdisyonHTML = ""; let sonKuponVerisi = ""; let isProcessingOrder = false;
-        let deferredPrompt; let installPromptDismissed = localStorage.getItem('pwa_prompt_dismissed') === 'true';
+        let deferredPrompt; 
+        let installPromptDismissed = localStorage.getItem('pwa_prompt_dismissed') === 'true';
 
         window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault(); deferredPrompt = e;
+            e.preventDefault(); 
+            deferredPrompt = e;
             const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+            
+            // ESKİ AGRESİF TAM EKRAN KURULUM SİSTEMİ (GERİ GELDİ)
             if (!isStandalone && !installPromptDismissed) {
-                let promptOverlay = document.getElementById('pwa-fullscreen-prompt'); promptOverlay.style.display = 'flex'; setTimeout(() => { promptOverlay.classList.add('active'); }, 10);
-            } else if (!isStandalone) { document.getElementById("pwa-install-banner").style.display = "flex"; }
+                let promptOverlay = document.getElementById('pwa-fullscreen-prompt'); 
+                promptOverlay.style.display = 'flex'; 
+                setTimeout(() => { promptOverlay.classList.add('active'); }, 10);
+            }
         });
 
+        // ESKİ ZİNCİRLEME İZİN İSTEME SİSTEMİ (GERİ GELDİ)
+        function SiraylaIzinIste() {
+            if ("Notification" in window && Notification.permission === "default") {
+                Notification.requestPermission().then(p => { setTimeout(KonumIzniIste, 1000); });
+            } else { setTimeout(KonumIzniIste, 1000); }
+        }
+        function KonumIzniIste() { 
+            if (navigator.geolocation) { 
+                navigator.geolocation.getCurrentPosition(()=>{}, ()=>{}, {timeout: 5000}); 
+            } 
+        }
+
+        // SPLASH EKRANI KAPANINCA İZİNLERİ OTOMATİK İSTEYEN SİSTEM
+        function SplashKapatSinematik() { 
+            let splash = document.getElementById('splash-screen'); 
+            if (splash && splash.style.display !== "none") { 
+                let c = document.getElementById('splash-content'); 
+                c.style.transform = 'scale(1.15)'; 
+                c.style.opacity = '0'; 
+                setTimeout(() => { 
+                    splash.style.opacity = '0'; 
+                    setTimeout(() => { 
+                        splash.style.display = 'none'; 
+                        
+                        // KULLANICI UYGULAMA İÇİNDEYSE VEYA TAM EKRANI KAPATTIYSA İZİNLERİ OTOMATİK İSTE
+                        if(!localStorage.getItem('bg_perms_asked')) { 
+                            SiraylaIzinIste(); 
+                            localStorage.setItem('bg_perms_asked', 'true'); 
+                        }
+                    }, 800); 
+                }, 400); 
+            } 
+        }
+
+        // SEPETİ UNUTTUN BİLDİRİMİ
         let cartReminderTimer = null;
         document.addEventListener("visibilitychange", function() {
             if (document.visibilityState === 'hidden' && sepet.length > 0) {
                 cartReminderTimer = setTimeout(() => {
                     if ("Notification" in window && Notification.permission === "granted") {
-                        navigator.serviceWorker.ready.then(reg => { reg.showNotification("Eyvah, sepetin soğuyor! 🥶🥩", { body: "Siparişini tamamla, Bekmez GO hızıyla hemen kapına getirelim! 🛵💨", icon: "icon-192.png", vibrate: [200, 100, 200] }); });
+                        navigator.serviceWorker.ready.then(reg => { 
+                            reg.showNotification("Eyvah, sepetin soğuyor! 🥶🥩", { 
+                                body: "Siparişini tamamla, Bekmez GO hızıyla hemen kapına getirelim! 🛵💨", 
+                                icon: "icon-192.png", 
+                                vibrate: [200, 100, 200] 
+                            }); 
+                        });
                     }
                 }, 15000); 
             } else { if (cartReminderTimer) clearTimeout(cartReminderTimer); }
@@ -745,13 +774,34 @@
             if (isIos()) { OzelUyariGoster("iOS Kurulumu", "iPhone'a kurmak için alt menüdeki [Paylaş] ikonuna basıp 'Ana Ekrana Ekle' seçeneğini seçiniz.", "🍏"); return; }
             const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
             if (isStandalone) { OzelUyariGoster("Zaten Uygulamadasınız", "Şu an zaten Bekmez GO uygulamasını kullanıyorsunuz.", "🚀"); return; }
+            
             if (deferredPrompt) {
                 deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((c) => { if (c.outcome === 'accepted') { document.getElementById("pwa-fullscreen-prompt").style.display="none"; document.getElementById("pwa-install-banner").style.display="none"; } deferredPrompt = null; });
+                deferredPrompt.userChoice.then((c) => { 
+                    if (c.outcome === 'accepted') { 
+                        document.getElementById("pwa-fullscreen-prompt").style.display="none"; 
+                        document.getElementById("pwa-install-banner").style.display="none"; 
+                    } 
+                    deferredPrompt = null; 
+                });
             } else { OzelUyariGoster("Uygulama Yüklü", "Uygulama zaten telefonunuzda yüklü.", "📲"); }
         }
 
-        function CloseFullscreenPrompt() { HapticTitresim(); let p = document.getElementById('pwa-fullscreen-prompt'); p.classList.remove('active'); setTimeout(() => { p.style.display = 'none'; }, 500); localStorage.setItem('pwa_prompt_dismissed', 'true'); if (deferredPrompt) document.getElementById('pwa-install-banner').style.display = 'flex'; }
+        function CloseFullscreenPrompt() { 
+            HapticTitresim(); 
+            let p = document.getElementById('pwa-fullscreen-prompt'); 
+            p.classList.remove('active'); 
+            setTimeout(() => { p.style.display = 'none'; }, 500); 
+            localStorage.setItem('pwa_prompt_dismissed', 'true'); 
+            if (deferredPrompt) document.getElementById('pwa-install-banner').style.display = 'flex'; 
+            
+            // Tam ekranı kapatınca otomatik izin sistemini tekrar tetikle
+            if(!localStorage.getItem('bg_perms_asked')) { 
+                SiraylaIzinIste(); 
+                localStorage.setItem('bg_perms_asked', 'true'); 
+            }
+        }
+
         function TetiklePwaPrompt() { ManuelUygulamaIndir(); }
         if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js'); }); }
 
@@ -776,7 +826,7 @@
             HapticTitresim(); localStorage.removeItem("bg_i"); localStorage.removeItem("bg_t"); localStorage.removeItem("bg_a");
             document.getElementById("prof-isim").value = ""; document.getElementById("prof-telefon").value = ""; document.getElementById("prof-adres").value = "";
             document.getElementById("chk-isim").value = ""; document.getElementById("chk-telefon").value = ""; document.getElementById("chk-adres").value = "";
-            OzelUyariGoster("Silindi", "Kişisel verileriniz cihazdan kalıcı olarak silindi.", "🗑️️");
+            OzelUyariGoster("Silindi", "Kişisel verileriniz cihazdan kalıcı olarak silindi.", "🗑️");
         }
 
         function UnityFiyatiniHesapla(urun, hedefMiktar) { let sf = (val) => { if(!val)return 0; let p=parseFloat(val.replace(',','.')); return isNaN(p)?0:p; }; let p1 = sf(urun.price1Kg); if (!urun.isKg) return p1 * hedefMiktar; let p750 = sf(urun.price750g); let p500 = sf(urun.price500g); if (p750 <= 0) p750 = p1 * 0.75; if (p500 <= 0) p500 = p1 * 0.50; if (hedefMiktar === 1) return p1; if (hedefMiktar === 0.75) return p750; if (hedefMiktar === 0.50) return p500; return (hedefMiktar * p1); }
@@ -788,19 +838,6 @@
         function deg2rad(deg) { return deg * (Math.PI/180); }
         function GetDistanceKm(l1, l2, l3, l4) { let R=6371; let a=Math.sin(deg2rad(l3-l1)/2)*Math.sin(deg2rad(l3-l1)/2)+Math.cos(deg2rad(l1))*Math.cos(deg2rad(l3))*Math.sin(deg2rad(l4-l2)/2)*Math.sin(deg2rad(l4-l2)/2); return R * (2*Math.atan2(Math.sqrt(a), Math.sqrt(1-a))); }
         function SmoothCounter(id, sV, eV, dur, isP = true, isK = false) { let obj = document.getElementById(id); if(!obj) return; let sT = null; let aI = Math.random().toString(); obj.setAttribute('data-anim', aI); const step = (t) => { if(obj.getAttribute('data-anim') !== aI) return; if (!sT) sT = t; const prog = Math.min((t - sT) / dur, 1); const ease = 1 - Math.pow(1 - prog, 3); let cV = sV + (eV - sV) * ease; if (isP) { obj.innerHTML = cV.toFixed(2) + " TL"; } else { let txt = (cV === 0) ? "0" : (isK ? cV.toFixed(2) + " KG" : cV.toFixed(0) + " Adet"); obj.innerText = txt; obj.style.color = cV > 0 ? "var(--text-main)" : "var(--text-muted)"; } if (prog < 1) window.requestAnimationFrame(step); else { if (isP) obj.innerHTML = eV.toFixed(2) + " TL"; else { obj.innerText = (eV === 0) ? "0" : (isK ? eV.toFixed(2) + " KG" : eV.toFixed(0) + " Adet"); } } }; window.requestAnimationFrame(step); }
-
-        function SplashKapatSinematik() { 
-            let splash = document.getElementById('splash-screen'); 
-            if (splash && splash.style.display !== "none") { 
-                let c = document.getElementById('splash-content'); c.style.transform = 'scale(1.15)'; c.style.opacity = '0'; 
-                setTimeout(() => { 
-                    splash.style.opacity = '0'; 
-                    setTimeout(() => { 
-                        splash.style.display = 'none'; 
-                    }, 800); 
-                }, 400); 
-            } 
-        }
 
         window.addEventListener('DOMContentLoaded', () => {
             let st = new Date().getHours(); let m = "Hoş Geldiniz ✨"; if (st >= 5 && st < 11) m = "Günaydın ☀️"; else if (st >= 11 && st < 17) m = "İyi Günler 🌤️"; else if (st >= 17 && st < 22) m = "İyi Akşamlar 🌙"; else m = "İyi Geceler 🌌";
@@ -901,7 +938,7 @@
         function KategoriSec(kA, bO) { HapticTitresim(); aktifKategori = kA; document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); if(bO) { bO.classList.add('active'); } else { let sI = kA.replace(/\s+/g, ''); let el = document.getElementById('tab-' + sI); if(el) el.classList.add('active'); } document.getElementById('tab-Arama').style.display = "none"; document.getElementById("search-input").value = ""; EkranaUrunleriCiz(tumUrunler.filter(u => GetKategoriAd(u) === aktifKategori)); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
         function ExtractBreadTotal(iN, iK, aM) { let lN = iN.toLocaleLowerCase('tr-TR'); let tB = 0; let ml = 1; let mQ = iN.match(/^([0-9]+)x\s/); if (mQ) { ml = parseInt(mQ[1]); } if (iK) { if (aM === 0.25) tB = 1; else if (aM === 0.50) tB = 2; else if (aM === 0.75) tB = 3; else tB = aM * 4; if (lN.includes("ekmeksiz")) { tB = 0; } else { let mO = lN.match(/sadece\s+([0-9]+)\s+ekmek/i); if (mO) { tB = parseFloat(mO[1]) * ml; } else { let mA = lN.match(/\+([0-9]+)\s+ek/i); if (mA) { tB += (parseFloat(mA[1]) * ml); } } } } else { let iS = lN.includes("dürüm") || lN.includes("doner") || lN.includes("kebap"); if (iS) { tB = aM * 2; if (lN.includes("1.5 ekmek")) { tB = aM * 1.5; } else if (lN.includes("3 ekmek")) { tB = aM * 3; } else if (lN.includes("ekmeksiz")) { tB = 0; } } } return tB; }
-        function GuncelEkmekIhtiyaci(hS) { let tl = 0; hS.forEach(i => { let gU = tumUrunler.find(u => u.pName === i.rawName); if (gU) { let dN = (i.quantity > 1 ? i.quantity + "x " : "") + item.baseName; tl += ExtractBreadTotal(dN, gU.isKg, i.baseStockAmount * i.quantity); } }); return tl; }
+        function GuncelEkmekIhtiyaci(hS) { let tl = 0; hS.forEach(i => { let gU = tumUrunler.find(u => u.pName === i.rawName); if (gU) { let dN = (i.quantity > 1 ? i.quantity + "x " : "") + i.baseName; tl += ExtractBreadTotal(dN, gU.isKg, i.baseStockAmount * i.quantity); } }); return tl; }
 
         function PopupIciMiktarDegistir(aY) { if (!seciliUrun) return; HapticTitresim(); let ar = seciliUrun.isKg ? 0.25 : 1; let nD = aY * ar; let yM = parseFloat((seciliMiktar + nD).toFixed(2)); if (yM < 0) return; let yF = UnityFiyatiniHesapla(seciliUrun, yM); let sA = 0; sepet.forEach(u => { if(u.rawName === seciliUrun.pName) { sA += (u.baseStockAmount * u.quantity); } }); if (yM + sA > seciliUrunStok) { OzelUyariGoster("Sınır Aşıldı", "Stok sınırına ulaştınız.", "⚠️"); return; } seciliMiktar = yM; seciliFiyat = yF; if (seciliUrun.isKg) { baseKgBread = Math.floor(seciliMiktar * 4); if (seciliEkstraIstekler.includes('Ekmeksiz')) { ekstraEkmekKg = -baseKgBread; } let sO = document.getElementById("ekmek-sayac"); if (sO) { sO.innerText = baseKgBread + ekstraEkmekKg; } } PopupUIYenile(true); }
 
@@ -970,7 +1007,7 @@
                                 if(gU) { let mS = (gU.stockAmount !== undefined) ? parseFloat(gU.stockAmount) : ((gU.stock !== undefined) ? parseFloat(gU.stock) : 999); let sT2 = 0; sepet.forEach(u => { if(u.rawName === gU.pName) sT2 += (u.baseStockAmount * u.quantity); }); if(sT2 > mS) { sH = true; hM = `"${gU.pName}" tükendi.`; break; } } else { sH = true; hM = "Ürün kaldırılmış."; break; }
                             }
                             if (!sH) { let eI = l.find(u => u.pName && u.pName.trim().toLocaleLowerCase('tr-TR') === ekmekUrunAdi.trim().toLocaleLowerCase('tr-TR')); if (eI) { let mE = (eI.stockAmount !== undefined) ? parseFloat(eI.stockAmount) : ((eI.stock !== undefined) ? parseFloat(eI.stock) : 999); let tB = GuncelEkmekIhtiyaci(sepet); if (tB > mE) { sH = true; hM = `Ekmek bitti!`; } } }
-                            if(sH) { OzelUyariGoster("Hata", hM, "⚠️"); isProcessingOrder=false; btn.disabled=false; btn.classList.remove("loading"); btn.innerHTML=sonOdenecekFiyat.toFixed(2)+" TL Öde"; return; }
+                            if(sH) { OzelUyariGoster("Hata", hM, "⚠️️"); isProcessingOrder=false; btn.disabled=false; btn.classList.remove("loading"); btn.innerHTML=sonOdenecekFiyat.toFixed(2)+" TL Öde"; return; }
                             
                             let n = document.getElementById("siparis-notu").value.trim().replace(/[<>]/g, '').substring(0, 100);
                             let sD = ""; sepet.forEach(u => { sD += (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName + "\n"; });
