@@ -200,7 +200,7 @@
         @keyframes inputShake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-5px); } 40%, 80% { transform: translateX(5px); } }
 
         .note-input, .checkout-input { width: calc(100% - 30px); margin: 5px 15px 20px 15px; background: rgba(25, 25, 30, 0.9); border: 1px solid var(--border-highlight); color: var(--text-main); padding: 16px; border-radius: 20px; font-family: inherit; font-size: 14px; font-weight:600; box-sizing: border-box; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: inset 0 2px 8px rgba(0,0,0,0.4), 0 5px 20px rgba(0,0,0,0.2);}
-        .note-input:focus, .checkout-input:focus { outline: none; border-color: var(--primary); background: var(--surface-solid); box-shadow: inset 0 2px 5px rgba(0,0,0,0.5), 0 0 0 2px var(--primary-light), 0 10px 30px rgba(0,0,0,0.5); transform: translateY(-2px);}
+        .note-input:focus, .checkout-input:focus { outline: none; border-color: var(--primary); background: var(--surface-solid); box-shadow: inset 0 2px 5px rgba(0,0,0,0.5), 0 0 0 2px var(--primary-light), 0 10px 30px rgba(0,0,0,0.5); transform: translateY(-2px); }
         .note-input::placeholder, .checkout-input::placeholder { color: #52525B; }
         .checkout-input { margin: 0 0 12px 0; width: 100%; }
 
@@ -373,17 +373,8 @@
         
         <div class="secure-footer">
             <div style="margin-bottom: 15px; display: flex; justify-content: center; align-items: center; gap: 15px;">
-                <!-- KESİNLİKLE BOZULMAYAN RESMİ VISA LOGOSU -->
-                <img src="https://cdn.visa.com/v2/assets/images/logos/visa/blue/logo.png" style="height: 18px; filter: brightness(0) invert(1); opacity: 0.9;" alt="VISA">
-                
-                <!-- MASTERCARD SVG -->
-                <svg viewBox="0 0 36 22" height="22px" xmlns="http://www.w3.org/2000/svg" style="opacity: 0.9;">
-                    <circle cx="11" cy="11" r="11" fill="#ea001b"/>
-                    <circle cx="25" cy="11" r="11" fill="#f79e1b"/>
-                    <path d="M18 21.4a11 11 0 0 1 0-20.8 11 11 0 0 1 0 20.8z" fill="#ff5f00"/>
-                </svg>
-                
-                <!-- TROY LOGOSU -->
+                <img src="https://cdn.visa.com/v2/assets/images/logos/visa/blue/logo.png" style="height: 16px; filter: brightness(0) invert(1); opacity: 0.9;" alt="VISA">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" style="height: 24px; opacity: 0.9;" alt="MasterCard">
                 <span style="font-family: Arial, sans-serif; font-weight: 900; font-style: italic; font-size: 22px; color: #ffffff; letter-spacing: -1px; opacity: 0.9;">TROY</span>
             </div>
             <div style="color: var(--success); font-weight: 800; font-size: 13px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 5px;">
@@ -447,6 +438,9 @@
             
             <button class="order-btn shimmer-btn neon-border" onclick="ProfiliKaydet()" style="margin-top: 10px; background: var(--primary);">Bilgilerimi Kaydet</button>
             <button onclick="ProfiliSil()" style="width:100%; background:transparent; border:1px solid rgba(239, 68, 68, 0.4); color:var(--danger); padding:18px; border-radius:100px; font-weight:800; font-size:14px; margin-top:15px; cursor:pointer; transition:0.3s;">Kişisel Verilerimi Sil</button>
+            
+            <!-- YENİ: BİLDİRİM İZNİ BUTONU -->
+            <button class="order-btn shimmer-btn" onclick="BildirimIzniIste()" style="margin-top: 15px; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid var(--border-highlight); box-shadow: none;">🔔 İndirim Bildirimlerini Aç</button>
             
             <div style="margin-top:35px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 25px; text-align: center; font-size: 11px; color: var(--text-muted); line-height: 1.8;">
                 <a class="legal-link" onclick="AcSozlesme('mesafeli')">Mesafeli Satış Sözleşmesi</a> • 
@@ -655,6 +649,33 @@
                 } else { document.getElementById("pwa-install-banner").style.display = "flex"; }
             }
         });
+
+        // YENİ: BİLDİRİM İZNİ İSTEME FONKSİYONU
+        function BildirimIzniIste() {
+            HapticTitresim();
+            if (!("Notification" in window)) {
+                OzelUyariGoster("Desteklenmiyor", "Cihazınız veya tarayıcınız bildirimleri desteklemiyor.", "🚫");
+                return;
+            }
+            if (Notification.permission === "granted") {
+                OzelUyariGoster("Zaten Açık", "Bildirimleriniz zaten açık! Yeni indirimleri anında öğreneceksiniz.", "✅");
+                return;
+            }
+            Notification.requestPermission().then(permission => {
+                if (permission === "granted") {
+                    OzelUyariGoster("Harika!", "Bildirimlere izin verdiniz. Fırsatları kaçırmayacaksınız.", "🔔");
+                    navigator.serviceWorker.ready.then(function(registration) {
+                        registration.showNotification("Bekmez GO Bildirimleri Açık!", {
+                            body: "İndirimler artık cebinize gelecek.",
+                            icon: "icon-192.png",
+                            vibrate: [200, 100, 200]
+                        });
+                    });
+                } else {
+                    OzelUyariGoster("Reddedildi", "Bildirimleri kapalı tuttunuz.", "🔕");
+                }
+            });
+        }
 
         function TogglePayButton() {
             let checkbox = document.getElementById('legal-checkbox');
@@ -908,11 +929,11 @@
                     let ekmek = tumUrunler.find(u => u.pName && u.pName.trim().toLocaleLowerCase('tr-TR') === ekmekUrunAdi.trim().toLocaleLowerCase('tr-TR')); 
                     if (ekmek) { let p = parseFloat(ekmek.price1Kg.replace(',', '.')); ekmekBirimFiyati = isNaN(p) ? 0 : p; }
                     
-                    // YENİ: OTOMATİK HAFIZA TEMİZLEYİCİ VE İNDİRİM TAKİPÇİSİ
+                    // YAPAY ZEKA GİBİ ÇALIŞAN İNDİRİM TAKİPÇİSİ VE BİLDİRİM SİSTEMİ
                     let history = JSON.parse(localStorage.getItem('bg_phist') || '{}');
                     let historyUpdated = false;
                     
-                    // 1. AŞAMA: Menüden silinen ürünlerin hafızasını (yanlış fiyat kayıtlarını) tamamen yok et
+                    // Silinen ürünleri temizle
                     let mevcutUrunAdlari = tumUrunler.map(u => u.pName);
                     for (let kayitliUrun in history) {
                         if (!mevcutUrunAdlari.includes(kayitliUrun)) {
@@ -921,12 +942,26 @@
                         }
                     }
 
-                    // 2. AŞAMA: Mevcut ürünlerin fiyat geçmişini kaydet
+                    // Fiyatları kontrol et ve PUSH BİLDİRİMİ TETİKLE
                     tumUrunler.forEach(u => {
                         if(u.pName && u.price1Kg) {
                             let cp = parseFloat(u.price1Kg.toString().replace(',', '.'));
                             if(!isNaN(cp) && cp > 0) {
                                 let hk = history[u.pName];
+                                
+                                // EĞER FİYAT DÜŞMÜŞSE VE UYGULAMA ARKA PLANDAYSA BİLDİRİM GÖNDER!
+                                if (hk !== undefined && cp < hk) {
+                                    if ("Notification" in window && Notification.permission === "granted" && document.hidden) {
+                                        navigator.serviceWorker.ready.then(function(registration) {
+                                            registration.showNotification("🔥 Fiyat Düştü!", {
+                                                body: `${escapeHTML(u.pName)} sadece ${cp} TL oldu! Hemen sipariş ver.`,
+                                                icon: "icon-192.png",
+                                                vibrate: [200, 100, 200]
+                                            });
+                                        });
+                                    }
+                                }
+
                                 if(hk === undefined || cp > hk) {
                                     history[u.pName] = cp;
                                     historyUpdated = true;
