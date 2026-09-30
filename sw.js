@@ -1,4 +1,4 @@
-const CACHE_NAME = "bekmez-go-v1";
+const CACHE_NAME = "bekmez-go-v2";
 const ASSETS_TO_CACHE = [
     "/bekmez-pisirim/paket.html",
     "/bekmez-pisirim/manifest.json",
@@ -10,7 +10,6 @@ self.addEventListener("install", function(event) {
     self.skipWaiting();
     event.waitUntil(
         caches.open(CACHE_NAME).then(function(cache) {
-            // Statik dosyaları (HTML, ikon) telefona kurar
             return cache.addAll(ASSETS_TO_CACHE);
         })
     );
@@ -22,7 +21,7 @@ self.addEventListener("activate", function(event) {
             return Promise.all(
                 cacheNames.map(function(cache) {
                     if (cache !== CACHE_NAME) {
-                        return caches.delete(cache); // Eski versiyonları temizle
+                        return caches.delete(cache);
                     }
                 })
             );
@@ -33,7 +32,6 @@ self.addEventListener("activate", function(event) {
 });
 
 self.addEventListener("fetch", function(event) {
-    // API (Firebase) isteklerini KESİNLİKLE cache'leme (Canlı veri çekimi için)
     if (event.request.url.includes("firebaseio.com")) {
         event.respondWith(fetch(event.request));
         return;
@@ -42,8 +40,7 @@ self.addEventListener("fetch", function(event) {
     event.respondWith(
         caches.match(event.request).then(function(response) {
             return response || fetch(event.request).catch(function() {
-                // İnternet koparsa cihazda kayıtlı olan PWA HTML arayüzünü göster
-                if (event.request.headers.get("accept").includes("text/html")) {
+                if (event.request.headers.get("accept") && event.request.headers.get("accept").includes("text/html")) {
                     return caches.match("/bekmez-pisirim/paket.html");
                 }
             });
@@ -53,19 +50,16 @@ self.addEventListener("fetch", function(event) {
 
 self.addEventListener("notificationclick", function(event) {
     event.notification.close();
-    var targetUrl = "/bekmez-pisirim/paket.html";
-    
     event.waitUntil(
         self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(function(clientList) {
-            for (var i = 0; i < clientList.length; i++) {
-                var client = clientList[i];
-                if (client.url.indexOf("paket.html") !== -1 && "focus" in client) {
-                    return client.focus();
+            if (clientList.length > 0) {
+                let client = clientList[0];
+                for (let i = 0; i < clientList.length; i++) {
+                    if (clientList[i].focused) { client = clientList[i]; }
                 }
+                return client.focus();
             }
-            if (self.clients.openWindow) {
-                return self.clients.openWindow(targetUrl);
-            }
+            return self.clients.openWindow("/bekmez-pisirim/paket.html");
         })
     );
 });
