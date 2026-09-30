@@ -59,14 +59,13 @@
         .status-dot::after { content: ''; position: absolute; top: -4px; left: -4px; right: -4px; bottom: -4px; border-radius: 50%; border: 1px solid var(--primary); animation: radarPulse 2s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
         @keyframes radarPulse { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(2.5); opacity: 0; } }
         
-        .splash-logo { font-size: 48px; font-weight: 900; color: #fff; margin-bottom: 8px; letter-spacing: -2px; line-height: 1; opacity: 0; transform: translateY(20px); animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.3s; text-align: center; display: flex; flex-direction: column; align-items: center;}
-        .splash-go-text { font-style: italic; color: var(--primary); text-shadow: 0 4px 15px var(--primary-glow); font-size: 44px; margin-bottom: 2px;}
-        .splash-speed-lines { display: flex; flex-direction: column; justify-content: center; gap: 5px; margin-left: 2px;}
-        .splash-line { background: var(--primary); height: 6px; border-radius: 3px; opacity: 0; animation: premiumDashSplash 4s infinite cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 0 8px var(--primary-glow);}
-        .splash-line:nth-child(1) { width: 14px; animation-delay: 0s; }
-        .splash-line:nth-child(2) { width: 22px; animation-delay: 0.15s; }
-        .splash-line:nth-child(3) { width: 10px; animation-delay: 0.3s; }
-        @keyframes premiumDashSplash { 0% { transform: translateX(-8px); opacity: 0; } 10% { transform: translateX(0); opacity: 1; } 20% { transform: translateX(8px); opacity: 0; } 100% { transform: translateX(8px); opacity: 0; } }
+        .splash-logo { font-size: 48px; font-weight: 900; color: #fff; margin-bottom: 8px; letter-spacing: -2px; line-height: 1; opacity: 0; transform: translateY(20px); animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.3s; text-align: center; display: flex; flex-direction: row; justify-content: center; align-items: baseline; gap: 8px; flex-wrap: wrap;}
+        .splash-go-text { font-style: italic; color: var(--primary); text-shadow: 0 4px 15px var(--primary-glow); }
+        .splash-speed-lines { display: inline-flex; flex-direction: column; gap: 4px; margin-left: -5px; transform: translateY(-8px);}
+        .splash-line { background: var(--primary); height: 6px; border-radius: 3px; animation: speedDash 1.2s infinite linear; box-shadow: 0 0 8px var(--primary-glow);}
+        .splash-line:nth-child(1) { width: 14px; animation-duration: 0.9s; }
+        .splash-line:nth-child(2) { width: 22px; animation-duration: 1.3s; }
+        .splash-line:nth-child(3) { width: 10px; animation-duration: 1.1s; }
         
         .splash-subtitle { font-size: 11px; color: var(--text-muted); font-weight: 600; letter-spacing: 4px; text-transform: uppercase; opacity: 0; animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.5s; margin-top: 5px;}
         @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
@@ -181,7 +180,8 @@
 
         @keyframes cartBounce { 0%, 100% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.05) translateY(-3px); box-shadow: 0 30px 40px rgba(255, 94, 0, 0.4), inset 0 2px 4px rgba(255,255,255,0.5); } }
         .floating-cart.bounce { animation: cartBounce 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .floating-cart { position: fixed; bottom: calc(75px + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); width: calc(100% - 30px); max-width: 400px; height: 60px; background: linear-gradient(135deg, rgba(255, 107, 0, 0.95), rgba(220, 45, 0, 0.95)); backdrop-filter: blur(15px); border-radius: 100px; display: flex; align-items: center; justify-content: space-between; padding: 0 8px 0 24px; font-size: 15px; font-weight: 800; color: white; box-shadow: 0 15px 30px rgba(255, 94, 0, 0.4), inset 0 2px 4px rgba(255,255,255,0.3); z-index: 100; cursor: pointer; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, border: 1px solid rgba(255,255,255,0.15);}
+        /* DÜZELTİLEN CSS HATASI: "1)" parantezi eksikti */
+        .floating-cart { position: fixed; bottom: calc(75px + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); width: calc(100% - 30px); max-width: 400px; height: 60px; background: linear-gradient(135deg, rgba(255, 107, 0, 0.95), rgba(220, 45, 0, 0.95)); backdrop-filter: blur(15px); border-radius: 100px; display: flex; align-items: center; justify-content: space-between; padding: 0 8px 0 24px; font-size: 15px; font-weight: 800; color: white; box-shadow: 0 15px 30px rgba(255, 94, 0, 0.4), inset 0 2px 4px rgba(255,255,255,0.3); z-index: 100; cursor: pointer; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); border: 1px solid rgba(255,255,255,0.15);}
         .floating-cart:active { transform: translateX(-50%) scale(0.95) translateY(2px); box-shadow: 0 8px 15px rgba(255, 94, 0, 0.3), inset 0 2px 8px rgba(0,0,0,0.2);}
         .floating-btn { background: #ffffff; color: var(--primary); padding: 12px 20px; border-radius: 100px; font-size: 14px; font-weight: 900; box-shadow: 0 6px 15px rgba(0,0,0,0.2); letter-spacing: -0.3px;}
 
@@ -266,18 +266,6 @@
         .receipt-header { border-bottom: 2px dashed #D4D4D8; padding-bottom: 20px; margin-bottom: 20px; font-size: 12px; font-weight: 800; display: flex; justify-content: space-between; align-items: center; color: #71717A;}
         .receipt-item { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 14px; font-weight: 700; color: #27272A;}
         .receipt-total { border-top: 2px dashed #D4D4D8; padding-top: 20px; margin-top: 20px; font-size: 24px; font-weight: 900; text-align: right; color: var(--primary); letter-spacing: -1px;}
-
-        /* YENİ: İLK KARŞILAMA (ONBOARDING) EKRANI */
-        #onboarding-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(15px); z-index: 99999999; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.5s ease; padding: 20px; box-sizing: border-box; }
-        #onboarding-overlay.active { opacity: 1; }
-        .ob-content { background: linear-gradient(180deg, #1a1a24 0%, #070709 100%); padding: 40px 25px; border-radius: 32px; text-align: center; width: 100%; max-width: 360px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 30px 80px rgba(0,0,0,0.8); position: relative; overflow: hidden; transform: translateY(30px) scale(0.95); transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        #onboarding-overlay.active .ob-content { transform: translateY(0) scale(1); }
-        .ob-icon-wrapper { display: flex; justify-content: center; gap: 15px; margin-bottom: 25px; position: relative; z-index: 1;}
-        .ob-icon { font-size: 45px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5)); animation: floatUpAndDown 4s ease-in-out infinite; }
-        .ob-title { font-size: 22px; font-weight: 900; color: var(--text-main); margin-bottom: 12px; line-height: 1.2; letter-spacing: -0.5px; position: relative; z-index: 1; }
-        .ob-desc { font-size: 14px; font-weight: 500; color: var(--text-muted); margin-bottom: 30px; line-height: 1.5; position: relative; z-index: 1; }
-        .ob-btn { background: var(--gradient-fire); color: white; border: none; padding: 18px; font-size: 15px; font-weight: 800; border-radius: 100px; width: 100%; cursor: pointer; box-shadow: 0 15px 30px var(--primary-glow), inset 0 2px 4px rgba(255,255,255,0.3); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); position: relative; z-index: 1;}
-        .ob-btn:active { transform: scale(0.95); box-shadow: 0 8px 15px var(--primary-glow); }
     </style>
 </head>
 <body>
@@ -305,21 +293,6 @@
             <span>Profil</span>
         </button>
     </nav>
-
-    <!-- YENİ: İLK KARŞILAMA VE İZİN EKRANI -->
-    <div id="onboarding-overlay">
-        <div class="ob-content">
-            <div class="pwa-icon-glow"></div>
-            <div class="ob-icon-wrapper">
-                <div class="ob-icon">📍</div>
-                <div class="ob-icon" style="animation-delay: 0.5s;">🔔</div>
-            </div>
-            <h2 class="ob-title">Bekmez GO'ya<br><span style="color:var(--primary);">Hoş Geldiniz!</span></h2>
-            <p class="ob-desc">Sıcak teslimat bölgemizi kontrol etmek ve sürpriz indirimlerden anında haberdar olmak için izinlerinize ihtiyacımız var.</p>
-            <button class="ob-btn shimmer-btn neon-border" onclick="IzinleriAlVeBasla()">İzin Ver ve Başla</button>
-            <p style="font-size:11px; color:var(--text-muted); margin-top:20px; font-weight:600;">*İzinleri istediğiniz zaman ayarlarınızdan değiştirebilirsiniz.</p>
-        </div>
-    </div>
 
     <div id="pwa-install-banner" style="display:none; background: var(--gradient-fire); padding: 10px 15px; color: white; align-items: center; justify-content: space-between; z-index: 99; position: relative; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px; box-shadow: 0 5px 15px rgba(255,107,0,0.3); margin-top: -1px;">
         <div style="display:flex; align-items:center; gap:10px;">
@@ -400,7 +373,7 @@
         
         <div class="secure-footer">
             <div style="margin-bottom: 15px; display: flex; justify-content: center; align-items: center; gap: 15px;">
-                <img src="https://cdn.visa.com/v2/assets/images/logos/visa/blue/logo.png" style="height: 18px; filter: brightness(0) invert(1); opacity: 0.9;" alt="VISA">
+                <img src="https://cdn.visa.com/v2/assets/images/logos/visa/blue/logo.png" style="height: 16px; filter: brightness(0) invert(1); opacity: 0.9;" alt="VISA">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" style="height: 24px; opacity: 0.9;" alt="MasterCard">
                 <span style="font-family: Arial, sans-serif; font-weight: 900; font-style: italic; font-size: 22px; color: #ffffff; letter-spacing: -1px; opacity: 0.9;">TROY</span>
             </div>
@@ -674,7 +647,6 @@
             }
         });
 
-        // YENİ: UYGULAMAYA GERİ ÇAĞIRAN SEPET HATIRLATICISI
         let cartReminderTimer = null;
         document.addEventListener("visibilitychange", function() {
             if (document.visibilityState === 'hidden') {
@@ -689,35 +661,19 @@
                                 });
                             });
                         }
-                    }, 30000); // 30 saniye sonra telefona bildirim atar
+                    }, 30000); 
                 }
             } else {
                 if (cartReminderTimer) clearTimeout(cartReminderTimer);
             }
         });
 
-        // YENİ: İLK KARŞILAMA VE İZİNLERİ ALMA (ONBOARDING)
-        function IzinleriAlVeBasla() {
-            HapticTitresim();
-            
-            if ("Notification" in window && Notification.permission !== "granted") {
+        function OtomatikIzinleriIste() {
+            if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
                 Notification.requestPermission();
             }
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(()=>{}, ()=>{});
-            }
-            
-            localStorage.setItem('bg_onboarded', 'true');
-            let ob = document.getElementById('onboarding-overlay');
-            ob.classList.remove('active');
-            setTimeout(()=> ob.style.display = 'none', 500);
-        }
-
-        function CheckOnboarding() {
-            if(!localStorage.getItem('bg_onboarded')) {
-                let ob = document.getElementById('onboarding-overlay');
-                ob.style.display = 'flex';
-                setTimeout(()=> ob.classList.add('active'), 100);
+                navigator.geolocation.getCurrentPosition(()=>{}, ()=>{}, {timeout: 5000});
             }
         }
 
@@ -852,7 +808,7 @@
                     splash.style.opacity = '0'; 
                     setTimeout(() => { 
                         splash.style.display = 'none'; 
-                        CheckOnboarding(); // Splash bitince Onboarding kontrolü
+                        OtomatikIzinleriIste(); 
                     }, 800); 
                 }, 400); 
             } 
