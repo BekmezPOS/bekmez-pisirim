@@ -71,7 +71,6 @@
         .c-b-desc { color: var(--text-muted); font-size: 13px; font-weight: 600; }
         .c-b-btn { background: var(--gradient-fire); color: white; padding: 10px 20px; border-radius: 100px; font-weight: 800; font-size: 13px; box-shadow: 0 4px 15px var(--primary-glow); position: relative; z-index: 2; }
         
-        /* ÇARKIFELEK */
         .cark-kutu { 
             width: 280px; height: 280px; border-radius: 50%; border: 8px solid #1a1a24; 
             box-shadow: 0 0 40px rgba(255, 107, 0, 0.4), inset 0 0 20px rgba(0,0,0,0.8); 
@@ -183,7 +182,6 @@
         </div>
 
         <div id="menu-grid" class="grid-container">
-            <!-- Skeleton cards -->
             <div class="skeleton-card"><div class="skel-icon"></div><div class="skel-text"></div><div class="skel-text short"></div><div class="skel-btn"></div></div>
             <div class="skeleton-card"><div class="skel-icon"></div><div class="skel-text"></div><div class="skel-text short"></div><div class="skel-btn"></div></div>
             <div class="skeleton-card"><div class="skel-icon"></div><div class="skel-text"></div><div class="skel-text short"></div><div class="skel-btn"></div></div>
@@ -230,6 +228,7 @@
         <div id="firsatlar-list" style="padding: 0 15px 25px 15px;"><div class="empty-text">Kuponlar aranıyor...</div></div>
     </div>
 
+    <!-- SEPET -->
     <div id="cart-container" style="display: none;">
         <h2 class="page-title">Siparişim</h2>
         <div id="aktif-hediye-uyari" style="display:none; background:rgba(52,199,89,0.1); border:1px dashed var(--success); border-radius:16px; margin: 0 15px 15px 15px; padding:15px; color:white; font-size:13px; font-weight:700;">
@@ -280,14 +279,30 @@
                     <input type="email" id="prof-email" class="checkout-input" placeholder="Örn: ahmet@gmail.com" maxlength="100">
                 </div>
 
-                <button id="btn-email-verify" onclick="EpostaDogrulamasiBaslat()" style="width:100%; background:var(--primary); color:white; border:none; padding:16px; border-radius:100px; font-weight:800; font-size:15px; cursor:pointer; box-shadow:0 6px 20px rgba(255,107,0,0.4); margin-bottom: 15px;">Telefonu E-Posta ile Doğrula</button>
+                <div id="kayit-bilgi-kutusu" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-highlight); padding: 15px; border-radius: 16px; margin-bottom: 20px; font-size: 11px; color: var(--text-muted); line-height: 1.6;">
+                    <strong>Bilgilendirme:</strong>
+                    <ul style="margin: 5px 0 10px 15px; padding: 0;">
+                        <li>Kayıt olduğunuzda telefonunuz eşleşir.</li>
+                        <li>Sistemin kötüye kullanımını engellemek amacıyla <strong>yeni açılan hesaplar 7 gün geçmeden silinemez.</strong></li>
+                        <li>Hesap silindikten sonra, aynı numara ile <strong>7 gün boyunca</strong> tekrar kayıt yapılamaz.</li>
+                    </ul>
+                    <div style="display: flex; align-items: flex-start; gap: 10px; margin-top: 10px;">
+                        <input type="checkbox" id="kayit-onay-cb" onchange="KayitOnayToggle()" style="min-width: 18px; width: 18px; height: 18px; accent-color: var(--primary); margin-top: 2px;">
+                        <label for="kayit-onay-cb" style="cursor:pointer; font-weight: 600;">Kullanıcı sözleşmesini ve güvenlik kurallarını okudum, kabul ediyorum.</label>
+                    </div>
+                </div>
+
+                <button id="btn-email-verify" disabled style="width:100%; background:var(--primary); color:white; border:none; padding:16px; border-radius:100px; font-weight:800; font-size:15px; cursor:pointer; box-shadow:0 6px 20px rgba(255,107,0,0.4); margin-bottom: 15px; opacity: 0.5; transition: 0.3s;" onclick="EpostaDogrulamasiBaslat()">Telefonu E-Posta ile Doğrula</button>
             </div>
             
-            <div id="dogrulandi-etiketi" style="display:none; color:var(--success); font-weight:800; font-size:14px; text-align: center; margin-bottom: 20px; padding: 15px; background: rgba(52,199,89,0.1); border-radius: 16px; border: 1px solid var(--success);">
+            <div id="dogrulandi-etiketi" style="display:none; color:var(--success); font-weight:800; font-size:14px; text-align: center; margin-bottom: 15px; padding: 15px; background: rgba(52,199,89,0.1); border-radius: 16px; border: 1px solid var(--success);">
                 ✅ E-Posta ve Telefon Doğrulandı!
             </div>
 
-            <button onclick="ProfiliSil()" style="width:100%; background:transparent; border:1px solid rgba(239, 68, 68, 0.3); color:var(--danger); padding:16px; border-radius:100px; font-weight:800; font-size:14px; cursor:pointer; transition:0.3s; margin-top:10px;">Çıkış Yap / Bilgileri Sil</button>
+            <div id="profil-aksiyon-butonlari" style="display:none; flex-direction: column; gap: 10px;">
+                <button onclick="SadeceCikisYap()" style="width:100%; background:rgba(255,255,255,0.05); border:1px solid var(--border-highlight); color:var(--text-main); padding:16px; border-radius:100px; font-weight:800; font-size:14px; cursor:pointer; transition:0.3s;">Sistemden Çıkış Yap</button>
+                <button onclick="HesabiTamamenSil()" style="width:100%; background:transparent; border:1px dashed rgba(239, 68, 68, 0.4); color:var(--danger); padding:16px; border-radius:100px; font-weight:800; font-size:14px; cursor:pointer; transition:0.3s;">Hesabımı Kalıcı Olarak Sil</button>
+            </div>
         </div>
     </div>
 
@@ -303,7 +318,6 @@
         <div class="floating-btn" id="floating-total">0.00 TL</div>
     </div>
 
-    <!-- ÇARKIFELEK POPUP -->
     <div id="cark-popup" class="popup-overlay" onclick="if(event.target === this) CarkPopupKapat();">
         <div class="popup-content" style="text-align: center;">
             <div class="popup-drag-handle"></div>
@@ -368,7 +382,7 @@
         </div>
     </div>
 
-    <!-- ALERTS, SUCCESS, LEGAL POPUPS VE EMAIL BEKLEME EKRANI -->
+    <!-- ALERTS VE BAŞARI EKRANLARI -->
     <div id="email-wait-overlay" class="custom-alert-overlay" style="z-index: 999999;">
         <div class="custom-alert-box" style="border-color: var(--primary);">
             <div class="custom-alert-glow" style="background: var(--primary);"></div>
@@ -391,13 +405,11 @@
         console.log("%c DUR!", "color: red; font-size: 60px; font-weight: bold; text-shadow: 2px 2px 0 #000;");
         console.log("%c Bu alan geliştiriciler içindir. Buraya gireceğiniz herhangi bir kod (XSS/Enjeksiyon) hesabınızın kalıcı olarak bloke edilmesine sebep olabilir.", "font-size: 18px; font-weight: bold; color: #fff; background: #000; padding: 10px; border-radius: 5px;");
 
-        // --- BİLDİRİM VE HATIRLATICI SİSTEMİ BAŞLANGICI ---
+        // --- BİLDİRİM VE HATIRLATICI SİSTEMİ ---
         let sepetHatirlaticiTimer = null;
 
         function SepetHatirlaticiAyarla() {
             if (sepetHatirlaticiTimer) { clearTimeout(sepetHatirlaticiTimer); sepetHatirlaticiTimer = null; }
-            
-            // Eğer sepette ürün varsa, 2 Dakika (120,000 ms) sonra bildirim at
             if (sepet.length > 0 || aktifKullanilanCarkOdulu !== null) {
                 sepetHatirlaticiTimer = setTimeout(() => {
                     let totalQty = sepet.reduce((acc, curr) => acc + curr.quantity, 0) + (aktifKullanilanCarkOdulu ? 1 : 0);
@@ -408,64 +420,38 @@
 
         function BildirimGonder(baslik, mesaj) {
             if (!("Notification" in window) || Notification.permission !== "granted") return;
-            
-            let ayarlar = { 
-                body: mesaj, 
-                icon: "icon-192.png", 
-                badge: "icon-192.png", 
-                vibrate: [200, 100, 200, 100, 200],
-                requireInteraction: true 
-            };
-
+            let ayarlar = { body: mesaj, icon: "icon-192.png", badge: "icon-192.png", vibrate: [200, 100, 200, 100, 200], requireInteraction: true };
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.ready.then(function(registration) {
                     registration.showNotification(baslik, ayarlar);
-                }).catch(function() {
-                    try { new Notification(baslik, ayarlar); } catch(e) {}
-                });
-            } else {
-                try { new Notification(baslik, ayarlar); } catch(e) {}
-            }
+                }).catch(function() { try { new Notification(baslik, ayarlar); } catch(e) {} });
+            } else { try { new Notification(baslik, ayarlar); } catch(e) {} }
         }
 
         function SessizIzinIste() { 
             if ("Notification" in window) {
                 if (Notification.permission === "default") {
                     Notification.requestPermission().then(permission => {
-                        if (permission === "granted") {
-                            BildirimGonder("Bildirimler Aktif! 🔔", "Sipariş durumlarınızı, hatırlatmaları ve fırsatları buradan takip edebilirsiniz.");
-                        }
+                        if (permission === "granted") BildirimGonder("Bildirimler Aktif! 🔔", "Sipariş durumlarınızı, hatırlatmaları ve fırsatları buradan takip edebilirsiniz.");
                     });
                 }
             }
         }
-        // --- BİLDİRİM SİSTEMİ BİTİŞİ ---
 
         const firebaseConfig = {
-            apiKey: "AIzaSyC8WLup5zoOmFBcFJkflo7J-XJjQEK_jr8",
-            authDomain: "bekmezpos.firebaseapp.com",
-            databaseURL: "https://bekmezpos-default-rtdb.firebaseio.com",
-            projectId: "bekmezpos",
-            storageBucket: "bekmezpos.firebasestorage.app",
-            messagingSenderId: "1013709760225",
-            appId: "1:1013709760225:web:ec71341cb6cdcce9fbf9a0",
-            measurementId: "G-BXKNH6B49K"
+            apiKey: "AIzaSyC8WLup5zoOmFBcFJkflo7J-XJjQEK_jr8", authDomain: "bekmezpos.firebaseapp.com",
+            databaseURL: "https://bekmezpos-default-rtdb.firebaseio.com", projectId: "bekmezpos",
+            storageBucket: "bekmezpos.firebasestorage.app", messagingSenderId: "1013709760225",
+            appId: "1:1013709760225:web:ec71341cb6cdcce9fbf9a0", measurementId: "G-BXKNH6B49K"
         };
-        
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const FIREBASE_URL = "https://bekmezpos-default-rtdb.firebaseio.com";
 
         const textMesafeli = `<strong style="color:white; font-size:14px;">MADDE 1 - TARAFLAR</strong><br><b>SATICI:</b> Bekmez Pişirim Gıda Ltd. Şti.<br><br><strong style="color:white; font-size:14px;">MADDE 2 - CAYMA HAKKI İSTİSNASI</strong><br>Tüketici Mevzuatı gereğince; çabuk bozulabilen malların teslimine ilişkin sözleşmelerde Tüketicinin CAYMA HAKKI BULUNMAMAKTADIR.`;
         const textTeslimat = `<strong style="color:white; font-size:14px;">TESLİMAT ŞARTLARI</strong><br><br><b>1. Teslimat Bölgesi:</b> Maksimum 4 km yarıçapındaki bölgelere teslim edilmektedir.<br><b>2. Süre:</b> Ortalama 30-45 dakika içerisinde adresinize teslim edilir.`;
         const textIptal = `<strong style="color:white; font-size:14px;">İPTAL KOŞULLARI</strong><br><br><b>1. Şartlar:</b> Sipariş ancak mutfağa iletilmeden önce iptal edilebilir.`;
         
-        const DUKKAN_ENLEM = 36.206278; 
-        const DUKKAN_BOYLAM = 36.134472; 
-        const MAKS_MESAFE_KM = 4; 
-        const GHOST_TIMEOUT_MS = 8 * 60 * 60 * 1000; 
+        const DUKKAN_ENLEM = 36.206278; const DUKKAN_BOYLAM = 36.134472; const MAKS_MESAFE_KM = 4; const GHOST_TIMEOUT_MS = 8 * 60 * 60 * 1000; 
 
         let ekmekUrunAdi = "Ekmek"; let ekmekBirimFiyati = 0; let sepet = []; let hamToplamFiyat = 0; let sonOdenecekFiyat = 0;
         let aktifKuponKodu = ""; let aktifKuponIndirimTutari = 0; let aktifKuponAltLimit = 0; let aktifKuponHedefUrun = "Herşey"; 
@@ -483,13 +469,11 @@
         let aktifKullanilanCarkOdulu = null; 
 
         function HapticTitresim() { if(navigator.vibrate) navigator.vibrate(15); }
-        
         function escapeHTML(str) { return str ? str.toString().replace(/[&<>'"]/g, function(tag){ return {'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[tag]; }) : ""; }
         function generateUUID() {
             if (crypto && crypto.randomUUID) return crypto.randomUUID();
             return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-                return v.toString(16);
+                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8); return v.toString(16);
             });
         }
         
@@ -501,20 +485,16 @@
         firebase.auth().languageCode = 'tr';
 
         function EpostaMaskele(email) {
-            let parts = email.split("@");
-            if(parts.length !== 2) return email;
-            let name = parts[0];
-            let maskedName = name.length > 3 ? name.substring(0,2) + "***" + name.substring(name.length-1) : name + "***";
+            let parts = email.split("@"); if(parts.length !== 2) return email;
+            let name = parts[0]; let maskedName = name.length > 3 ? name.substring(0,2) + "***" + name.substring(name.length-1) : name + "***";
             return maskedName + "@" + parts[1];
         }
 
-        async function handleVerifiedUser(userCred, formatliTel, emailInput) {
-            if(userCred.user.emailVerified) {
-                await BasariliGirisIslemleri(formatliTel, emailInput, true);
-            } else {
-                await userCred.user.sendEmailVerification();
-                EpostaOnayiniBekle(userCred.user, formatliTel, emailInput);
-            }
+        // --- PROFİL VE GÜVENLİK SİSTEMİ ---
+        function KayitOnayToggle() {
+            let cb = document.getElementById("kayit-onay-cb");
+            let btn = document.getElementById("btn-email-verify");
+            if (cb.checked) { btn.disabled = false; btn.style.opacity = "1"; } else { btn.disabled = true; btn.style.opacity = "0.5"; }
         }
 
         async function EpostaDogrulamasiBaslat() {
@@ -531,14 +511,25 @@
             btn.innerText = "Sistem Kontrol Ediliyor..."; btn.disabled = true;
 
             try {
+                // SİLİNEN HESAP / 7 GÜN TEKRAR KAYIT YASAĞI KONTROLÜ
+                let banRes = await fetch(`${FIREBASE_URL}/SilinmisHesaplar/${formatliTel}.json`);
+                let banData = await banRes.json();
+                if (banData && banData.silinmeZamani) {
+                    let passedMs = Date.now() - banData.silinmeZamani;
+                    let sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
+                    if (passedMs < sevenDaysMs) {
+                        let leftDays = Math.ceil((sevenDaysMs - passedMs) / (1000 * 60 * 60 * 24));
+                        OzelUyariGoster("Kayıt Engeli 🛑", `Bu numara sistemden yakın zamanda silinmiş. Kötüye kullanımı engellemek için aynı numara ile <b>${leftDays} gün</b> boyunca tekrar kayıt yapılamaz.`, "⏳");
+                        btn.innerText = "Telefonu E-Posta ile Doğrula"; btn.disabled = false;
+                        return;
+                    } else {
+                        // Süre dolmuşsa yasağı kaldır
+                        await fetch(`${FIREBASE_URL}/SilinmisHesaplar/${formatliTel}.json`, { method: "DELETE" });
+                    }
+                }
+
                 let dbRes = await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${formatliTel}.json`);
                 let dbData = await dbRes.json();
-
-                if (dbData && dbData.error) {
-                    btn.innerText = "Telefonu E-Posta ile Doğrula"; btn.disabled = false;
-                    OzelUyariGoster("Veritabanı İzni Kapalı", "Firebase Rules ayarlarını güncellemeyi unutmayın.", "🛑");
-                    return;
-                }
 
                 if (dbData && dbData.email) {
                     if (dbData.email.toLowerCase() !== emailInput) {
@@ -547,7 +538,6 @@
                         OzelUyariGoster("Numara Kullanımda", `Bu numara daha önce <b>${masked}</b> adresi ile kaydedilmiş.<br><br>Giriş yapmak için o e-postayı girin.`, "🔒");
                         return;
                     }
-
                     try {
                         let userCred = await firebase.auth().signInWithEmailAndPassword(emailInput, autoPass);
                         await handleVerifiedUser(userCred, formatliTel, emailInput);
@@ -557,20 +547,13 @@
                                 let userCred = await firebase.auth().createUserWithEmailAndPassword(emailInput, autoPass);
                                 await userCred.user.sendEmailVerification();
                                 EpostaOnayiniBekle(userCred.user, formatliTel, emailInput);
-                            } catch(err) {
-                                btn.innerText = "Telefonu E-Posta ile Doğrula"; btn.disabled = false;
-                                OzelUyariGoster("Sistem Hatası", "Kayıt yenilenemedi.", "❌");
-                            }
+                            } catch(err) { btn.innerText = "Telefonu E-Posta ile Doğrula"; btn.disabled = false; OzelUyariGoster("Sistem Hatası", "Kayıt yenilenemedi.", "❌"); }
                             return;
                         }
-                        
                         try {
                             let userCred = await firebase.auth().signInWithEmailAndPassword(emailInput, "Bekmez" + telInput);
                             await handleVerifiedUser(userCred, formatliTel, emailInput);
-                        } catch(e2) {
-                            btn.innerText = "Telefonu E-Posta ile Doğrula"; btn.disabled = false;
-                            OzelUyariGoster("Giriş Hatası", "Şifreniz veya bilgilerinizde uyuşmazlık var. Kontrol edip tekrar deneyin.", "❌");
-                        }
+                        } catch(e2) { btn.innerText = "Telefonu E-Posta ile Doğrula"; btn.disabled = false; OzelUyariGoster("Giriş Hatası", "Şifreniz veya bilgilerinizde uyuşmazlık var.", "❌"); }
                     }
                     return;
                 }
@@ -581,22 +564,19 @@
                     EpostaOnayiniBekle(userCred.user, formatliTel, emailInput);
                 } catch (error) {
                     btn.innerText = "Telefonu E-Posta ile Doğrula"; btn.disabled = false;
-                    if (error.code === 'auth/email-already-in-use') {
-                        OzelUyariGoster("E-Posta Kullanımda", "Bu e-posta başka bir telefon numarası ile kayıtlı! Lütfen o numara ile giriş yapın veya farklı e-posta kullanın.", "❌");
-                    } else {
-                        OzelUyariGoster("Kayıt Hatası", error.message, "❌");
-                    }
+                    if (error.code === 'auth/email-already-in-use') { OzelUyariGoster("E-Posta Kullanımda", "Bu e-posta başka bir telefon numarası ile kayıtlı!", "❌");
+                    } else { OzelUyariGoster("Kayıt Hatası", error.message, "❌"); }
                 }
-            } catch (e) {
-                btn.innerText = "Telefonu E-Posta ile Doğrula"; btn.disabled = false;
-                OzelUyariGoster("İşlem Başarısız", "Beklenmedik bir bağlantı hatası oluştu.", "📡");
-            }
+            } catch (e) { btn.innerText = "Telefonu E-Posta ile Doğrula"; btn.disabled = false; OzelUyariGoster("İşlem Başarısız", "Bağlantı hatası oluştu.", "📡"); }
+        }
+
+        async function handleVerifiedUser(userCred, formatliTel, emailInput) {
+            if(userCred.user.emailVerified) { await BasariliGirisIslemleri(formatliTel, emailInput, true); } 
+            else { await userCred.user.sendEmailVerification(); EpostaOnayiniBekle(userCred.user, formatliTel, emailInput); }
         }
 
         function EpostaOnayiniBekle(user, formatliTel, email) {
-            let p = document.getElementById("email-wait-overlay");
-            p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10);
-
+            let p = document.getElementById("email-wait-overlay"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10);
             emailInterval = setInterval(async () => {
                 try {
                     await user.reload(); 
@@ -611,16 +591,16 @@
 
         function IptalEtEpostaBekleme() {
             if(emailInterval) clearInterval(emailInterval);
-            let p = document.getElementById("email-wait-overlay");
-            p.classList.remove("active"); setTimeout(() => p.style.display = "none", 400);
-            
-            let btn = document.getElementById("btn-email-verify");
-            btn.innerText = "Telefonu E-Posta ile Doğrula"; btn.disabled = false;
+            let p = document.getElementById("email-wait-overlay"); p.classList.remove("active"); setTimeout(() => p.style.display = "none", 400);
+            let btn = document.getElementById("btn-email-verify"); btn.innerText = "Telefonu E-Posta ile Doğrula"; btn.disabled = false;
         }
 
         async function BasariliGirisIslemleri(formatliTel, email, isLogin = false) {
             if (!isLogin) {
-                await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${formatliTel}.json`, { method: "PUT", body: JSON.stringify({ email: email, tarih: new Date().toLocaleString() }) });
+                await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${formatliTel}.json`, { 
+                    method: "PUT", 
+                    body: JSON.stringify({ email: email, tarih: new Date().toLocaleString(), kayitZamani: Date.now() }) 
+                });
             }
 
             localStorage.setItem("bg_t", formatliTel);
@@ -628,7 +608,11 @@
             
             document.getElementById("auth-form-area").style.display = "none";
             document.getElementById("dogrulandi-etiketi").style.display = "block";
+            document.getElementById("profil-aksiyon-butonlari").style.display = "flex"; 
+            
             document.getElementById("btn-email-verify").innerText = "Telefonu E-Posta ile Doğrula";
+            document.getElementById("prof-telefon").disabled = true;
+            document.getElementById("prof-telefon").style.opacity = "0.5";
             
             ProfiliKaydet(false);
 
@@ -638,13 +622,10 @@
                 let sTime = await GetServerTime();
                 if (carkData && carkData.bitis && sTime < carkData.bitis) {
                     localStorage.setItem("bg_cark_data", CarkVerisiSifrele(carkData.odul, carkData.bitis));
-                } else {
-                    localStorage.removeItem("bg_cark_data"); 
-                }
+                } else { localStorage.removeItem("bg_cark_data"); }
                 CarkDurumunuKontrolEt(); 
             } catch(e) {}
 
-            // HESAP GİRİŞİ/AÇILIŞI BİLDİRİMİ EKLENDİ
             if(isLogin) {
                 OzelUyariGoster("Tekrar Hoş Geldiniz! 👋", "Hesabınıza başarıyla giriş yapıldı ve verileriniz cihazınıza senkronize edildi.", "✅");
                 BildirimGonder("Hoş Geldiniz 👋", "Bekmez GO hesabınıza başarıyla giriş yapıldı.");
@@ -655,52 +636,86 @@
         }
 
         function ProfiliKaydet(alertGoster = true) {
-            let i = escapeHTML(document.getElementById("prof-isim").value.trim());
-            let a = escapeHTML(document.getElementById("prof-adres").value.trim());
-            
+            let i = escapeHTML(document.getElementById("prof-isim").value.trim()); let a = escapeHTML(document.getElementById("prof-adres").value.trim());
             localStorage.setItem("bg_i", i); localStorage.setItem("bg_a", a);
             document.getElementById("chk-isim").value = i; document.getElementById("chk-adres").value = a;
-            
             if(alertGoster) { HapticTitresim(); OzelUyariGoster("Başarılı", "Profil bilgileriniz cihazınıza kaydedildi.", "✅"); }
         }
 
-        function ProfiliSil() {
-            SoruSor("Çıkış Yap", "Cihazdaki giriş bilgilerinizi silmek istediğinize emin misiniz?", "🚪", () => {
-                HapticTitresim(); 
-                localStorage.removeItem("bg_i"); 
-                localStorage.removeItem("bg_t"); 
-                localStorage.removeItem("bg_a");
-                localStorage.removeItem("bg_cark_data"); 
-                
-                document.getElementById("prof-isim").value = ""; 
-                document.getElementById("prof-telefon").value = ""; 
-                document.getElementById("prof-email").value = ""; 
-                document.getElementById("prof-adres").value = "";
-                document.getElementById("chk-isim").value = ""; 
-                document.getElementById("chk-telefon").value = ""; 
-                document.getElementById("chk-adres").value = "";
-                
-                document.getElementById("auth-form-area").style.display = "block";
-                document.getElementById("dogrulandi-etiketi").style.display = "none";
-                
-                firebase.auth().signOut();
-                aktifKullanilanCarkOdulu = null;
-                CarkDurumunuKontrolEt(); 
-                SepetEkraniniCiz(); 
-                
-                OzelUyariGoster("Çıkış Yapıldı", "Hesabınızdan güvenle çıkış yaptınız. Başka bir cihazdan veya tekrar bilgilerinizi girerek giriş yapabilirsiniz.", "🗑️");
+        function TemizleOturumVerileri() {
+            localStorage.removeItem("bg_i"); localStorage.removeItem("bg_t"); localStorage.removeItem("bg_a"); localStorage.removeItem("bg_cark_data"); 
+            document.getElementById("prof-isim").value = ""; document.getElementById("prof-telefon").value = ""; document.getElementById("prof-email").value = ""; document.getElementById("prof-adres").value = "";
+            document.getElementById("chk-isim").value = ""; document.getElementById("chk-telefon").value = ""; document.getElementById("chk-adres").value = "";
+            
+            document.getElementById("prof-telefon").disabled = false;
+            document.getElementById("prof-telefon").style.opacity = "1";
+            document.getElementById("kayit-onay-cb").checked = false; 
+            document.getElementById("btn-email-verify").disabled = true; 
+            document.getElementById("btn-email-verify").style.opacity = "0.5";
+            document.getElementById("btn-email-verify").innerText = "Telefonu E-Posta ile Doğrula";
+            
+            document.getElementById("auth-form-area").style.display = "block";
+            document.getElementById("dogrulandi-etiketi").style.display = "none";
+            document.getElementById("profil-aksiyon-butonlari").style.display = "none";
+            
+            firebase.auth().signOut();
+            aktifKullanilanCarkOdulu = null;
+            CarkDurumunuKontrolEt(); SepetEkraniniCiz(); 
+        }
+
+        function SadeceCikisYap() {
+            SoruSor("Oturumu Kapat", "Cihazınızdaki mevcut oturumu kapatmak istediğinize emin misiniz? (Bilgileriniz silinmez, tekrar giriş yapabilirsiniz.)", "🚪", () => {
+                HapticTitresim(); TemizleOturumVerileri();
+                OzelUyariGoster("Çıkış Yapıldı", "Hesabınızdan güvenle çıkış yaptınız.", "✅");
+            }, false);
+        }
+
+        async function HesabiTamamenSil() {
+            let tel = localStorage.getItem("bg_t");
+            if (!tel) return;
+
+            // KÖTÜYE KULLANIM 7 GÜN KİLİDİ
+            try {
+                let res = await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${tel}.json`);
+                let d = await res.json();
+                if (d && d.kayitZamani) {
+                    let gecenZamanMs = Date.now() - d.kayitZamani;
+                    let yediGunMs = 7 * 24 * 60 * 60 * 1000;
+                    if (gecenZamanMs < yediGunMs) {
+                        let kalanGun = Math.ceil((yediGunMs - gecenZamanMs) / (1000 * 60 * 60 * 24));
+                        OzelUyariGoster("Güvenlik Kilidi 🛡️", `Sistemi kötüye kullanımı (çark hilesi vb.) engellemek için yeni açılan hesaplar 7 gün boyunca silinemez.<br><br>Hesabınızı silebilmek için <b>${kalanGun} gün</b> daha beklemelisiniz.`, "⏳");
+                        return;
+                    }
+                }
+            } catch(e) {}
+
+            SoruSor("Hesabı Kalıcı Olarak Sil", "<b>DİKKAT!</b> Hesabınız, kayıtlı bilgileriniz ve çark/kupon haklarınız <b>kalıcı olarak silinecektir!</b><br><br>Emin misiniz?", "⚠️", async () => {
+                HapticTitresim();
+                let authUser = firebase.auth().currentUser;
+                if (authUser) {
+                    try {
+                        await authUser.delete();
+                        // 7 Günlük Kayıt Yasağını Başlat
+                        await fetch(`${FIREBASE_URL}/SilinmisHesaplar/${tel}.json`, { method: "PUT", body: JSON.stringify({ silinmeZamani: Date.now() }) });
+                        
+                        await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${tel}.json`, { method: "DELETE" });
+                        await fetch(`${FIREBASE_URL}/CarkKullanimlari/${tel}.json`, { method: "DELETE" });
+
+                        TemizleOturumVerileri();
+                        OzelUyariGoster("Hesap Silindi", "Hesabınız ve tüm verileriniz sistemden başarıyla silindi. Güvenlik kuralları gereği 7 gün boyunca aynı numarayla tekrar kayıt yapılamaz.", "🗑️");
+                    } catch (error) {
+                        if (error.code === 'auth/requires-recent-login') {
+                            OzelUyariGoster("Oturum Zaman Aşımı", "Hesabınızı silebilmek için güvenlik sebebiyle önce Çıkış Yapıp tekrar Giriş yapmalısınız.", "🔒");
+                        } else { OzelUyariGoster("Hata", "Silme işlemi sırasında bir hata oluştu.", "❌"); }
+                    }
+                } else { OzelUyariGoster("Hata", "Oturum bağlantısı kopmuş, lütfen tekrar giriş yapın.", "🔌"); }
             }, true);
         }
 
         async function CarkPopupAc() {
             HapticTitresim(); SessizIzinIste();
-            
             let tel = localStorage.getItem("bg_t");
-            if (!tel || tel.length < 10) {
-                OzelUyariGoster("Hesap Doğrulaması Şart", "Çarkıfelek sistemini kullanabilmek ve hileleri engellemek için önce <b>Profilim</b> sekmesinden hesabınızı e-posta ile doğrulamalısınız.", "🛡️");
-                SayfaGoster('profil'); 
-                return;
-            }
+            if (!tel || tel.length < 10) { OzelUyariGoster("Hesap Doğrulaması Şart", "Çarkıfelek sistemini kullanabilmek için hesabınızı doğrulamalısınız.", "🛡️"); SayfaGoster('profil'); return; }
 
             let p = document.getElementById("cark-popup"); let btn = document.getElementById("cark-cevir-btn"); let durum = document.getElementById("cark-durum-metni");
             p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10);
@@ -711,16 +726,11 @@
             if(parsed && sTime < parsed.bitis) {
                 let kalanGun = Math.ceil((parsed.bitis - sTime) / (1000 * 60 * 60 * 24));
                 durum.innerText = `Çarkı tekrar çevirmek için ${kalanGun} gün beklemelisin.`; durum.style.color = "var(--warning)"; btn.innerText = "Şansını Denedin"; btn.disabled = true;
-            } else {
-                durum.innerText = "Sadece 7 günde 1 kez çevirebilirsin."; durum.style.color = "var(--text-muted)"; btn.innerText = "Şansımı Dene!"; btn.disabled = false;
-            }
+            } else { durum.innerText = "Sadece 7 günde 1 kez çevirebilirsin."; durum.style.color = "var(--text-muted)"; btn.innerText = "Şansımı Dene!"; btn.disabled = false; }
         }
         function CarkPopupKapat() { let p = document.getElementById("cark-popup"); p.classList.remove("active"); setTimeout(() => p.style.display = "none", 500); }
 
-        function CarkVerisiSifrele(odul, bitis) { 
-            let tel = localStorage.getItem("bg_t") || "BOS";
-            return btoa(encodeURIComponent(`${odul}|||${bitis}|||${CARK_SALT}|||${tel}`)); 
-        }
+        function CarkVerisiSifrele(odul, bitis) { let tel = localStorage.getItem("bg_t") || "BOS"; return btoa(encodeURIComponent(`${odul}|||${bitis}|||${CARK_SALT}|||${tel}`)); }
         function CarkVerisiCoz(hash) {
             if(!hash) return null;
             try { 
@@ -745,10 +755,8 @@
                 let sTime = await GetServerTime();
                 if (data && data.bitis && sTime < data.bitis) {
                     let kalanGun = Math.ceil((data.bitis - sTime) / (1000 * 60 * 60 * 24));
-                    OzelUyariGoster("Hile Koruması", `Bu telefon numarası ile son 7 gün içinde çark zaten çevrilmiş. Tekrar çevirmek için <b>${kalanGun} gün</b> beklemelisiniz.`, "🛑");
-                    btn.innerText = "Şansımı Dene!"; btn.disabled = false;
-                    CarkPopupKapat();
-                    return;
+                    OzelUyariGoster("Hile Koruması", `Yakın zamanda çark zaten çevrilmiş. <b>${kalanGun} gün</b> beklemelisiniz.`, "🛑");
+                    btn.innerText = "Şansımı Dene!"; btn.disabled = false; CarkPopupKapat(); return;
                 }
             } catch(e) { OzelUyariGoster("Hata", "Sunucuya bağlanılamadı.", "📡"); btn.innerText = "Şansımı Dene!"; btn.disabled = false; return; }
 
@@ -765,8 +773,6 @@
                 let bitisZamani = sTime + (7 * 24 * 60 * 60 * 1000);
 
                 localStorage.setItem("bg_cark_data", CarkVerisiSifrele(kazanilanOdul, bitisZamani));
-                localStorage.removeItem("bg_cark_notif"); 
-
                 await fetch(`${FIREBASE_URL}/CarkKullanimlari/${tel}.json`, { method: "PUT", body: JSON.stringify({ odul: kazanilanOdul, bitis: bitisZamani, zaman: new Date().toLocaleString() }) });
 
                 if(kazanilanOdul === "😔 Pas") { 
@@ -857,7 +863,6 @@
             if(aktifKullanilanCarkOdulu !== null) totalQty += 1; 
             if (totalQty > 0) { badge.innerText = totalQty; badge.classList.add("show"); } else { badge.classList.remove("show"); }
 
-            // SEPET GÜNCELLENDİĞİNDE HATIRLATICIYI KUR/YENİLE
             SepetHatirlaticiAyarla();
         }
 
@@ -894,6 +899,7 @@
                 document.getElementById("prof-telefon").style.opacity = "0.5";
                 document.getElementById("auth-form-area").style.display = "none";
                 document.getElementById("dogrulandi-etiketi").style.display = "block";
+                document.getElementById("profil-aksiyon-butonlari").style.display = "flex"; 
             }
             if(ka) { document.getElementById("chk-adres").value = escapeHTML(ka); if(document.getElementById("prof-adres")) document.getElementById("prof-adres").value = escapeHTML(ka); }
 
@@ -1161,7 +1167,6 @@
                     if (hamToplamFiyat < d.bottomLimit) { KuponuIptalEt(true); OzelUyariGoster("Tutar Yetersiz", `Alt limit ${d.bottomLimit} TL.`, "🛒"); return; } 
                     HapticTitresim(); aktifKuponKodu = gK; aktifKuponIndirimTutari = d.discountAmount; aktifKuponAltLimit = d.bottomLimit; aktifKuponHedefUrun = aU; 
                     
-                    // KUPON BİLDİRİMİ EKLENDİ
                     OzelUyariGoster("Onaylandı", `${d.discountAmount} TL indirim uygulandı!`, "✅"); 
                     BildirimGonder("Kupon Aktif! 🎟️", `${d.discountAmount} TL değerindeki indiriminiz sepete başarıyla yansıtıldı.`);
                     
@@ -1286,7 +1291,6 @@
 
                     HapticTitresim(); CheckoutKapat(); BasariEkraniGoster();
                     
-                    // SİPARİŞ VERİLDİ, SEPET HATIRLATICIYI İPTAL ET
                     if(sepetHatirlaticiTimer) clearTimeout(sepetHatirlaticiTimer);
 
                     sepet = []; aktifKuponKodu = ""; aktifKuponIndirimTutari = 0; aktifKuponAltLimit = 0; aktifKuponHedefUrun = "Herşey"; 
