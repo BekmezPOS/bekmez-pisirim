@@ -70,14 +70,34 @@
         .c-b-title { color: var(--primary); font-size: 18px; font-weight: 900; margin-bottom: 5px; text-shadow: 0 2px 10px var(--primary-glow); }
         .c-b-desc { color: var(--text-muted); font-size: 13px; font-weight: 600; }
         .c-b-btn { background: var(--gradient-fire); color: white; padding: 10px 20px; border-radius: 100px; font-weight: 800; font-size: 13px; box-shadow: 0 4px 15px var(--primary-glow); position: relative; z-index: 2; }
-        .cark-kutu { width: 280px; height: 280px; border-radius: 50%; border: 8px solid #1a1a24; box-shadow: 0 0 40px rgba(255, 107, 0, 0.4), inset 0 0 20px rgba(0,0,0,0.8); position: relative; overflow: hidden; margin: 0 auto 30px auto; transition: transform 4s cubic-bezier(0.1, 0.7, 0.1, 1); background: conic-gradient( #FF6B00 0deg 60deg, #151518 60deg 120deg, #FACC15 120deg 180deg, #23232b 180deg 240deg, #FF9500 240deg 300deg, #333333 300deg 360deg ); }
-        .cark-ok { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 35px solid white; z-index: 10; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6)); }
-        .cark-dilim-yazi { position: absolute; top: 50%; left: 50%; width: 50%; height: 20px; transform-origin: 0% 50%; font-size: 12px; font-weight: 900; color: white; text-align: right; padding-right: 20px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: flex-end; }
-        .cark-dilim-yazi span { display: inline-block; transform: scale(-1, -1); }
-        .aktif-hediye-kart { background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.05) 100%); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 16px; padding: 15px; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
-
-        .btn-verify { width: 100%; background: var(--success); color: white; border: none; padding: 16px; border-radius: 100px; font-weight: 800; font-size: 14px; cursor: pointer; box-shadow: 0 6px 15px rgba(52,199,89,0.3); }
         
+        /* ÇARKIFELEK (5 DİLİM İÇİN GÜNCELLENDİ) */
+        .cark-kutu { 
+            width: 280px; height: 280px; border-radius: 50%; border: 8px solid #1a1a24; 
+            box-shadow: 0 0 40px rgba(255, 107, 0, 0.4), inset 0 0 20px rgba(0,0,0,0.8); 
+            position: relative; overflow: hidden; margin: 0 auto 30px auto; 
+            transition: transform 4s cubic-bezier(0.1, 0.7, 0.1, 1); 
+            /* TAM 5 EŞİT DİLİM (360/5 = 72 Derece) */
+            background: conic-gradient( 
+                #FF6B00 0deg 72deg, 
+                #151518 72deg 144deg, 
+                #FACC15 144deg 216deg, 
+                #23232b 216deg 288deg, 
+                #FF9500 288deg 360deg 
+            ); 
+        }
+        .cark-ok { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 35px solid white; z-index: 10; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6)); }
+        .cark-dilim-yazi { 
+            position: absolute; top: 50%; left: 50%; width: 50%; height: 20px; 
+            margin-top: -10px; /* MERKEZE TAM OTURMASI İÇİN EKLENDİ */
+            transform-origin: 0% 50%; font-size: 13px; font-weight: 900; color: white; 
+            text-align: right; padding-right: 15px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); 
+            display: flex; align-items: center; justify-content: flex-end; 
+        }
+        .cark-dilim-yazi span { display: inline-block; transform: scale(-1, -1); }
+        
+        .aktif-hediye-kart { background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.05) 100%); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 16px; padding: 15px; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+        .btn-verify { width: 100%; background: var(--success); color: white; border: none; padding: 16px; border-radius: 100px; font-weight: 800; font-size: 14px; cursor: pointer; box-shadow: 0 6px 15px rgba(52,199,89,0.3); }
         .spinner { border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 20px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
@@ -285,7 +305,7 @@
         <div class="floating-btn" id="floating-total">0.00 TL</div>
     </div>
 
-    <!-- 6 DİLİMLİ ÇARKIFELEK POPUP -->
+    <!-- 5 DİLİMLİ ÇARKIFELEK POPUP -->
     <div id="cark-popup" class="popup-overlay" onclick="if(event.target === this) CarkPopupKapat();">
         <div class="popup-content" style="text-align: center;">
             <div class="popup-drag-handle"></div>
@@ -293,12 +313,12 @@
             <div style="position:relative;">
                 <div class="cark-ok"></div>
                 <div class="cark-kutu" id="cark-element">
-                    <div class="cark-dilim-yazi" style="transform: rotate(30deg); color:white;"><span>🍟 Ekstra Patates</span></div>
-                    <div class="cark-dilim-yazi" style="transform: rotate(90deg); color:white;"><span>😔 Pas</span></div>
-                    <div class="cark-dilim-yazi" style="transform: rotate(150deg); color:black;"><span>🥤 1 Lt İçecek</span></div>
-                    <div class="cark-dilim-yazi" style="transform: rotate(210deg); color:white;"><span>🍰 Fırın Sütlaç</span></div>
-                    <div class="cark-dilim-yazi" style="transform: rotate(270deg); color:white;"><span>😔 Pas</span></div>
-                    <div class="cark-dilim-yazi" style="transform: rotate(330deg); color:white;"><span>🥖 Ekstra Lavaş</span></div>
+                    <!-- Dilimlerin rotasyon merkezleri: 36, 108, 180, 252, 324 -->
+                    <div class="cark-dilim-yazi" style="transform: rotate(36deg); color:white;"><span>🍟 Ekstra Patates</span></div>
+                    <div class="cark-dilim-yazi" style="transform: rotate(108deg); color:white;"><span>😔 Pas</span></div>
+                    <div class="cark-dilim-yazi" style="transform: rotate(180deg); color:black;"><span>🥤 1 Lt İçecek</span></div>
+                    <div class="cark-dilim-yazi" style="transform: rotate(252deg); color:white;"><span>😔 Pas</span></div>
+                    <div class="cark-dilim-yazi" style="transform: rotate(324deg); color:black;"><span>🍰 Fırın Sütlaç</span></div>
                 </div>
             </div>
             <p id="cark-durum-metni" style="color:var(--text-muted); font-weight:700; font-size:14px; margin-bottom:20px;">Sadece 7 günde 1 kez çevirebilirsin.</p>
@@ -412,7 +432,8 @@
         window.isOrderFinished = false; 
 
         const CARK_SALT = "BEKMEZ_GO_SECURE_2026"; 
-        const CARK_ODULLERI = ["🍟 Ekstra Patates", "😔 Pas", "🥤 1 Lt İçecek", "🍰 Fırın Sütlaç", "😔 Pas", "🥖 Ekstra Lavaş"];
+        // 5 SEÇENEKLİ YENİ ÇARK DİZİLİMİ (2 TANE PAS)
+        const CARK_ODULLERI = ["🍟 Ekstra Patates", "😔 Pas", "🥤 1 Lt İçecek", "😔 Pas", "🍰 Fırın Sütlaç"];
         let aktifKullanilanCarkOdulu = null; 
 
         function HapticTitresim() { if(navigator.vibrate) navigator.vibrate(15); }
@@ -448,6 +469,15 @@
             return maskedName + "@" + parts[1];
         }
 
+        async function handleVerifiedUser(userCred, formatliTel, emailInput) {
+            if(userCred.user.emailVerified) {
+                await BasariliGirisIslemleri(formatliTel, emailInput, true);
+            } else {
+                await userCred.user.sendEmailVerification();
+                EpostaOnayiniBekle(userCred.user, formatliTel, emailInput);
+            }
+        }
+
         async function EpostaDogrulamasiBaslat() {
             let telInput = document.getElementById("prof-telefon").value.replace(/[^0-9]/g, '');
             let emailInput = document.getElementById("prof-email").value.trim().toLowerCase();
@@ -465,25 +495,45 @@
                 let dbRes = await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${formatliTel}.json`);
                 let dbData = await dbRes.json();
 
-                if (dbData) {
+                if (dbData && dbData.error) {
+                    btn.innerText = "Telefonu E-Posta ile Doğrula"; btn.disabled = false;
+                    OzelUyariGoster("Veritabanı İzni Kapalı", "Firebase Rules ayarlarını güncellemeyi unutmayın.", "🛑");
+                    return;
+                }
+
+                if (dbData && dbData.email) {
                     if (dbData.email.toLowerCase() !== emailInput) {
                         let masked = EpostaMaskele(dbData.email);
                         btn.innerText = "Telefonu E-Posta ile Doğrula"; btn.disabled = false;
-                        OzelUyariGoster("Numara Kullanımda", `Bu numara daha önce <b>${masked}</b> adresi ile kaydedilmiş.<br><br>Giriş yapmak için lütfen kaydettiğiniz doğru e-postayı girin.`, "🔒");
+                        OzelUyariGoster("Numara Kullanımda", `Bu numara daha önce <b>${masked}</b> adresi ile kaydedilmiş.<br><br>Giriş yapmak için o e-postayı girin.`, "🔒");
                         return;
                     }
 
                     try {
                         let userCred = await firebase.auth().signInWithEmailAndPassword(emailInput, autoPass);
-                        if(userCred.user.emailVerified) {
-                            await BasariliGirisIslemleri(formatliTel, emailInput, true);
-                        } else {
-                            await userCred.user.sendEmailVerification();
-                            EpostaOnayiniBekle(userCred.user, formatliTel, emailInput);
-                        }
+                        await handleVerifiedUser(userCred, formatliTel, emailInput);
                     } catch(e) {
-                        btn.innerText = "Telefonu E-Posta ile Doğrula"; btn.disabled = false;
-                        OzelUyariGoster("Giriş Hatası", "Bir sorun oluştu. (Hesap engellenmiş veya silinmiş olabilir)", "❌");
+                        // Eğer hesap Auth'tan elle silinmişse, yeniden oluştur
+                        if (e.code === 'auth/user-not-found') {
+                            try {
+                                let userCred = await firebase.auth().createUserWithEmailAndPassword(emailInput, autoPass);
+                                await userCred.user.sendEmailVerification();
+                                EpostaOnayiniBekle(userCred.user, formatliTel, emailInput);
+                            } catch(err) {
+                                btn.innerText = "Telefonu E-Posta ile Doğrula"; btn.disabled = false;
+                                OzelUyariGoster("Sistem Hatası", "Kayıt yenilenemedi.", "❌");
+                            }
+                            return;
+                        }
+                        
+                        // ESKİ ŞİFRE FORMATIYLA GİRİŞ DENEMESİ (Geriye Dönük Uyumluluk - Hatayı Çözen Kısım)
+                        try {
+                            let userCred = await firebase.auth().signInWithEmailAndPassword(emailInput, "Bekmez" + telInput);
+                            await handleVerifiedUser(userCred, formatliTel, emailInput);
+                        } catch(e2) {
+                            btn.innerText = "Telefonu E-Posta ile Doğrula"; btn.disabled = false;
+                            OzelUyariGoster("Giriş Hatası", "Şifreniz veya bilgilerinizde uyuşmazlık var. Kontrol edip tekrar deneyin.", "❌");
+                        }
                     }
                     return;
                 }
@@ -495,14 +545,14 @@
                 } catch (error) {
                     btn.innerText = "Telefonu E-Posta ile Doğrula"; btn.disabled = false;
                     if (error.code === 'auth/email-already-in-use') {
-                        OzelUyariGoster("E-Posta Kullanımda", "Bu e-posta adresi başka bir telefon numarası ile kayıtlı! Lütfen o numara ile giriş yapın veya farklı e-posta kullanın.", "❌");
+                        OzelUyariGoster("E-Posta Kullanımda", "Bu e-posta başka bir telefon numarası ile kayıtlı! Lütfen o numara ile giriş yapın veya farklı e-posta kullanın.", "❌");
                     } else {
-                        OzelUyariGoster("Sistem Hatası", error.message, "❌");
+                        OzelUyariGoster("Kayıt Hatası", error.message, "❌");
                     }
                 }
             } catch (e) {
                 btn.innerText = "Telefonu E-Posta ile Doğrula"; btn.disabled = false;
-                OzelUyariGoster("Bağlantı Hatası", "İnternet bağlantınızı kontrol edin.", "📡");
+                OzelUyariGoster("İşlem Başarısız", "Beklenmedik bir bağlantı hatası oluştu.", "📡");
             }
         }
 
@@ -666,8 +716,9 @@
             btn.innerText = "Çevriliyor...";
             let cark = document.getElementById("cark-element");
             
-            let kazananIndex = Math.floor(Math.random() * 6); 
-            let hedefAci = (5 * 360) + (360 - (kazananIndex * 60)) - 30; 
+            // YENİ 5 DİLİMLİ MATEMATİK
+            let kazananIndex = Math.floor(Math.random() * 5); 
+            let hedefAci = (5 * 360) + (360 - (kazananIndex * 72) - 36); 
             cark.style.transform = `rotate(${hedefAci}deg)`;
 
             setTimeout(async () => {
@@ -680,8 +731,12 @@
 
                 await fetch(`${FIREBASE_URL}/CarkKullanimlari/${tel}.json`, { method: "PUT", body: JSON.stringify({ odul: kazanilanOdul, bitis: bitisZamani, zaman: new Date().toLocaleString() }) });
 
-                if(kazanilanOdul === "😔 Pas") { OzelUyariGoster("Ah be!", "Bu hafta şans sana gülmedi (Pas). 7 Gün sonra tekrar dene!", "😔"); } 
-                else { OzelUyariGoster("Tebrikler! 🎉", `Şans çarkından <b>${kazanilanOdul}</b> kazandınız! Fırsatlar menüsünden siparişinize ekleyebilirsiniz.`, "🎁"); BildirimGonder("Hediye Kazandın! 🎁", `Bekmez GO çarkından ${kazanilanOdul} kazandın. Sepetine eklemeyi unutma!`); }
+                if(kazanilanOdul === "😔 Pas") { 
+                    OzelUyariGoster("Ah be!", "Bu hafta şans sana gülmedi (Pas). 7 Gün sonra tekrar dene!", "😔"); 
+                } else { 
+                    OzelUyariGoster("Tebrikler! 🎉", `Şans çarkından <b>${kazanilanOdul}</b> kazandınız! Fırsatlar menüsünden siparişinize ekleyebilirsiniz.`, "🎁"); 
+                    BildirimGonder("Hediye Kazandın! 🎁", `Bekmez GO çarkından ${kazanilanOdul} kazandın. Sepetine eklemeyi unutma!`); 
+                }
                 
                 CarkPopupKapat(); CarkDurumunuKontrolEt(); 
                 setTimeout(() => { cark.style.transition = "none"; cark.style.transform = `rotate(0deg)`; setTimeout(() => cark.style.transition = "transform 4s cubic-bezier(0.1, 0.7, 0.1, 1)", 50); }, 500);
@@ -944,7 +999,7 @@
 
         function PopupIciMiktarDegistir(artisYonu) { 
             if (!seciliUrun) return; HapticTitresim(); let artisan = seciliUrun.isKg ? 0.25 : 1; let netDegisim = artisYonu * artisan; let yeniMiktar = parseFloat((seciliMiktar + netDegisim).toFixed(2)); if (yeniMiktar < 0) return; let yeniFiyat = UnityFiyatiniHesapla(seciliUrun, yeniMiktar); 
-            let sepettekiAyniUrunMiktari = 0; sepet.forEach(u => { if(u.rawName === seciliUrun.pName) { sepettekiAyniUrunMiktari += (u.baseStockAmount * u.quantity); } }); if (yeniMiktar + sepettekiAyniUrunMiktari > seciliUrunStok) { OzelUyariGoster("Sınır Aşıldı", "Stok sınırına ulaştınız.", "⚠️"); return; } 
+            let sepettekiAyniUrunMiktari = 0; sepet.forEach(u => { if(u.rawName === seciliUrun.pName) { sepettekiAyniUrunMiktari += (u.baseStockAmount * u.quantity); } }); if (yeniMiktar + sepettekiAyniUrunMiktari > seciliUrunStok) { OzelUyariGoster("Sınır Aşıldı", "Stok sınırına ulaştınız.", "⚠️️"); return; } 
             seciliMiktar = yeniMiktar; seciliFiyat = yeniFiyat; 
             if (seciliUrun.isKg) { baseKgBread = Math.floor(seciliMiktar * 4); if (seciliEkstraIstekler.includes('Ekmeksiz')) { ekstraEkmekKg = -baseKgBread; } let sayacObj = document.getElementById("ekmek-sayac"); if (sayacObj) { sayacObj.innerText = baseKgBread + ekstraEkmekKg; } } 
             PopupUIYenile(true); 
