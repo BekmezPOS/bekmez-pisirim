@@ -904,16 +904,16 @@
         function CarkHediyesiIptal() { HapticTitresim(); aktifKullanilanCarkOdulu = null; CarkDurumunuKontrolEt(); SepetEkraniniCiz(); }
 
         function IptalOnaySor() { HapticTitresim(); SoruSor("Siparişi İptal Et", "Siparişinizi iptal etmek istediğinize emin misiniz? İşlem geri alınamaz.", "⚠️", () => { SiparişiGercektenIptalEt(); }, true); }
-      async function SiparişiGercektenIptalEt() {
+     async function SiparişiGercektenIptalEt() {
             let siparisId = localStorage.getItem("bg_active_order_id"); if(!siparisId) return;
             try {
                 let authUser = firebase.auth().currentUser;
                 if(!authUser) return;
                 
                 let idToken = await authUser.getIdToken(true);
-                let tel = localStorage.getItem("bg_t"); // Eksik olan telefon bilgisini ekledik
+                let telInput = document.getElementById("prof-telefon");
+                let tel = telInput ? telInput.value.replace(/[^0-9]/g, '') : localStorage.getItem("bg_t");
                 
-                // Taslaga IPTAL emri yolla (Tam Güvenlik Paketi)
                 let iptalPaketi = { 
                     islemTuru: "IPTAL", 
                     zaman: new Date().toLocaleTimeString(),
@@ -926,7 +926,15 @@
                     body: JSON.stringify(iptalPaketi) 
                 });
                 
-                OzelUyariGoster("İptal Talebi Alındı", "İptal işleminiz kasaya iletildi.", "✅");
+                OzelUyariGoster("İptal Ediliyor...", "Siparişiniz iptal ediliyor. Kupon ve ödülleriniz iade edilecek...", "✅");
+                
+                // Sipariş kilitlerini kaldır
+                localStorage.removeItem("bg_active_order_id");
+                
+                // Unity'nin iadeleri Firebase'e yazması için 3 saniye bekle ve sayfayı yenile!
+                setTimeout(() => {
+                    window.location.reload(true);
+                }, 3000);
             } catch(e) {}
         }
 
