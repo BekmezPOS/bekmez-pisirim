@@ -404,17 +404,27 @@
         console.log("%c DUR!", "color: red; font-size: 60px; font-weight: bold; text-shadow: 2px 2px 0 #000;");
         console.log("%c Bu alan geliştiriciler içindir. Buraya gireceğiniz herhangi bir kod (XSS/Enjeksiyon) hesabınızın kalıcı olarak bloke edilmesine sebep olabilir.", "font-size: 18px; font-weight: bold; color: #fff; background: #000; padding: 10px; border-radius: 5px;");
 
-       // --- YENİ VE GÜÇLÜ ARKA PLAN BİLDİRİM SİSTEMİ ---
-        let sepetHatirlaticiTimer = null;
+     let sepetHatirlaticiTimer = null;
 
         document.addEventListener('visibilitychange', function() {
             if (document.visibilityState === 'hidden') {
-                ArkaPlanBildirimKur();
+                // Kullanıcı uygulamayı alta aldığı an tetikle
+                if (typeof sepet !== 'undefined' && (sepet.length > 0 || aktifKullanilanCarkOdulu !== null)) {
+                    let totalQty = sepet.reduce((acc, curr) => acc + curr.quantity, 0) + (aktifKullanilanCarkOdulu ? 1 : 0);
+                    
+                    // 2 saniyelik kısa bir gecikme ile atıyoruz ki kullanıcı ana ekrana çıktığında bildirimi net görsün
+                    sepetHatirlaticiTimer = setTimeout(() => {
+                        BildirimGonder("Sepetiniz Sizi Bekliyor! 🛒", `Sepetinizdeki ${totalQty} ürünü unutmayın. Soğumadan siparişinizi tamamlayın!`);
+                    }, 2000); 
+                }
             } else {
-                ArkaPlanBildirimIptalEt();
+                // Kullanıcı uygulamaya 2 saniye dolmadan geri dönerse bildirimi iptal et
+                if (sepetHatirlaticiTimer) {
+                    clearTimeout(sepetHatirlaticiTimer);
+                    sepetHatirlaticiTimer = null;
+                }
             }
         });
-
         function ArkaPlanBildirimKur() {
             if (sepet.length === 0 && aktifKullanilanCarkOdulu === null) return;
             
@@ -464,21 +474,35 @@
             }
         }
 
-        function BildirimGonder(baslik, mesaj) {
+      function BildirimGonder(baslik, mesaj) {
             if (!("Notification" in window) || Notification.permission !== "granted") return;
-            let ayarlar = { body: mesaj, icon: "icon-192.png", badge: "icon-192.png", vibrate: [200, 100, 200, 100, 200], requireInteraction: true };
+            
+            let ayarlar = { 
+                body: mesaj, 
+                icon: "icon-192.png", 
+                badge: "icon-192.png", 
+                vibrate: [200, 100, 200, 100, 200], 
+                requireInteraction: true 
+            };
+
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.ready.then(function(registration) {
                     registration.showNotification(baslik, ayarlar);
-                }).catch(function() { try { new Notification(baslik, ayarlar); } catch(e) {} });
-            } else { try { new Notification(baslik, ayarlar); } catch(e) {} }
+                }).catch(function() { 
+                    try { new Notification(baslik, ayarlar); } catch(e) {} 
+                });
+            } else { 
+                try { new Notification(baslik, ayarlar); } catch(e) {} 
+            }
         }
 
-        function SessizIzinIste() { 
+       function SessizIzinIste() { 
             if ("Notification" in window) {
                 if (Notification.permission === "default") {
                     Notification.requestPermission().then(permission => {
-                        if (permission === "granted") BildirimGonder("Bildirimler Aktif! 🔔", "Sipariş durumlarınızı, hatırlatmaları ve fırsatları buradan takip edebilirsiniz.");
+                        if (permission === "granted") {
+                            BildirimGonder("Bildirimler Aktif! 🔔", "Sipariş durumlarınızı, hatırlatmaları ve fırsatları buradan takip edebilirsiniz.");
+                        }
                     });
                 }
             }
