@@ -239,7 +239,7 @@
         </div>
     </div>
 
-    <!-- PROFİL (E-POSTA İLE TAMAMEN ÜCRETSİZ SİSTEM) -->
+    <!-- PROFİL (GÜNCELLENMİŞ SİSTEM) -->
     <div id="profile-container" style="display: none;">
         <h2 class="page-title">Profilim</h2>
         <div class="security-badge">
@@ -269,7 +269,7 @@
                 ✅ E-Posta ve Telefon Doğrulandı!
             </div>
 
-            <button onclick="ProfiliSil()" style="width:100%; background:transparent; border:1px solid rgba(239, 68, 68, 0.3); color:var(--danger); padding:16px; border-radius:100px; font-weight:800; font-size:14px; cursor:pointer; transition:0.3s; margin-top:10px;">Cihazdaki Bilgilerimi Sil</button>
+            <button onclick="ProfiliSil()" style="width:100%; background:transparent; border:1px solid rgba(239, 68, 68, 0.3); color:var(--danger); padding:16px; border-radius:100px; font-weight:800; font-size:14px; cursor:pointer; transition:0.3s; margin-top:10px;">Çıkış Yap / Bilgileri Sil</button>
         </div>
     </div>
 
@@ -437,56 +437,66 @@
         function SoruSor(baslik, metin, ikon, evetCallback, isDanger=false) { document.getElementById("confirm-title").innerText = baslik; document.getElementById("confirm-text").innerHTML = metin; document.getElementById("confirm-icon").innerText = ikon; let btn = document.getElementById("confirm-yes-btn"); let box = document.getElementById("confirm-box"); let glow = document.getElementById("confirm-glow"); if(isDanger) { btn.style.background = "var(--danger)"; btn.innerText = "İptal Et"; box.style.borderColor = "var(--danger)"; glow.style.background = "var(--danger)"; } else { btn.style.background = "var(--primary)"; btn.innerText = "Onayla"; box.style.borderColor = "var(--primary)"; glow.style.background = "var(--primary)"; } let currentConfirmAction = evetCallback; document.getElementById("confirm-yes-btn").onclick = () => { KapatConfirmModal(null, true); if(currentConfirmAction) currentConfirmAction(); }; let p = document.getElementById("confirm-overlay"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10); }
         function KapatConfirmModal(e, force=false) { if(force || e.target === document.getElementById("confirm-overlay")) { let p = document.getElementById("confirm-overlay"); p.classList.remove("active"); setTimeout(() => p.style.display = "none", 400); } }
 
-        // --- SIFIR MALİYETLİ %100 ÜCRETSİZ E-POSTA DOĞRULAMA SİSTEMİ ---
+        // --- SIFIR MALİYETLİ %100 ÜCRETSİZ E-POSTA DOĞRULAMA SİSTEMİ (GÜNCELLENDİ) ---
         firebase.auth().languageCode = 'tr';
+
+        function EpostaMaskele(email) {
+            let parts = email.split("@");
+            if(parts.length !== 2) return email;
+            let name = parts[0];
+            let maskedName = name.length > 3 ? name.substring(0,2) + "***" + name.substring(name.length-1) : name + "***";
+            return maskedName + "@" + parts[1];
+        }
 
         async function EpostaDogrulamasiBaslat() {
             let telInput = document.getElementById("prof-telefon").value.replace(/[^0-9]/g, '');
-            let emailInput = document.getElementById("prof-email").value.trim();
+            let emailInput = document.getElementById("prof-email").value.trim().toLowerCase();
             let btn = document.getElementById("btn-email-verify");
 
             if(telInput.length < 10) { OzelUyariGoster("Eksik Numara", "Lütfen başında 0 olmadan 10 haneli numaranızı girin. (Örn: 532...)", "📱"); return; }
             if(emailInput.length < 5 || !emailInput.includes("@")) { OzelUyariGoster("Eksik E-Posta", "Lütfen geçerli bir e-posta adresi girin.", "📧"); return; }
 
-            // Numarayı normalize et
-            if(telInput.length === 11 && telInput.startsWith("0")) telInput = telInput.substring(1);
-
+            let formatliTel = telInput.length === 11 && telInput.startsWith("0") ? telInput : "0" + telInput;
+            let autoPass = "Bekmez" + formatliTel; 
+            
             btn.innerText = "Sistem Kontrol Ediliyor..."; btn.disabled = true;
 
             try {
-                // Güvenli şifre: Bekmez + Telefon Numarası
-                let autoPass = "Bekmez" + telInput;
-                let userCred;
+                let dbRes = await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${formatliTel}.json`);
+                let dbData = await dbRes.json();
+
+                if (dbData) {
+                    if (dbData.email.toLowerCase() !== emailInput) {
+                        let masked = EpostaMaskele(dbData.email);
+                        btn.innerText = "Telefonu E-Posta ile Doğrula"; btn.disabled = false;
+                        OzelUyariGoster("Numara Kullanımda", `Bu numara daha önce <b>${masked}</b> adresi ile kaydedilmiş.<br><br>Giriş yapmak için lütfen kaydettiğiniz doğru e-postayı girin.`, "🔒");
+                        return;
+                    }
+
+                    try {
+                        let userCred = await firebase.auth().signInWithEmailAndPassword(emailInput, autoPass);
+                        if(userCred.user.emailVerified) {
+                            await BasariliGirisIslemleri(formatliTel, emailInput, true);
+                        } else {
+                            await userCred.user.sendEmailVerification();
+                            EpostaOnayiniBekle(userCred.user, formatliTel, emailInput);
+                        }
+                    } catch(e) {
+                        btn.innerText = "Telefonu E-Posta ile Doğrula"; btn.disabled = false;
+                        OzelUyariGoster("Giriş Hatası", "Bir sorun oluştu. (Hesap engellenmiş veya silinmiş olabilir)", "❌");
+                    }
+                    return;
+                }
 
                 try {
-                    // Yeni kullanıcı oluşturmayı dene
-                    userCred = await firebase.auth().createUserWithEmailAndPassword(emailInput, autoPass);
-                    // Başarılı olursa doğrulama e-postası gönder
+                    let userCred = await firebase.auth().createUserWithEmailAndPassword(emailInput, autoPass);
                     await userCred.user.sendEmailVerification();
-                    EpostaOnayiniBekle(userCred.user, telInput, emailInput);
-                } 
-                catch (error) {
-                    // Eğer e-posta zaten kayıtlıysa
+                    EpostaOnayiniBekle(userCred.user, formatliTel, emailInput);
+                } catch (error) {
+                    btn.innerText = "Telefonu E-Posta ile Doğrula"; btn.disabled = false;
                     if (error.code === 'auth/email-already-in-use') {
-                        // Giriş yapmayı dene (Daha önce kaydedilmiş numara ile aynıysa girer)
-                        try {
-                            userCred = await firebase.auth().signInWithEmailAndPassword(emailInput, autoPass);
-                            
-                            // Giriş başarılı, e-posta doğrulanmış mı kontrol et
-                            if(userCred.user.emailVerified) {
-                                DogrulamaBasariliKaydet(telInput, emailInput);
-                            } else {
-                                // Doğrulanmamışsa tekrar e-posta yolla
-                                await userCred.user.sendEmailVerification();
-                                EpostaOnayiniBekle(userCred.user, telInput, emailInput);
-                            }
-                        } catch (loginError) {
-                            // Şifre yanlışsa (Başka numara ile kaydolmuş demek ki)
-                            btn.innerText = "Telefonu E-Posta ile Doğrula"; btn.disabled = false;
-                            OzelUyariGoster("Hata", "Bu e-posta adresi başka bir telefon numarası ile kullanılıyor.", "❌");
-                        }
+                        OzelUyariGoster("E-Posta Kullanımda", "Bu e-posta adresi başka bir telefon numarası ile kayıtlı! Lütfen o numara ile giriş yapın veya farklı e-posta kullanın.", "❌");
                     } else {
-                        btn.innerText = "Telefonu E-Posta ile Doğrula"; btn.disabled = false;
                         OzelUyariGoster("Sistem Hatası", error.message, "❌");
                     }
                 }
@@ -496,20 +506,19 @@
             }
         }
 
-        function EpostaOnayiniBekle(user, tel, email) {
+        function EpostaOnayiniBekle(user, formatliTel, email) {
             let p = document.getElementById("email-wait-overlay");
             p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10);
 
-            // Her 3 saniyede bir onaylanıp onaylanmadığını kontrol et
             emailInterval = setInterval(async () => {
                 try {
-                    await user.reload(); // Kullanıcı bilgilerini Firebase'den yenile
+                    await user.reload(); 
                     if (user.emailVerified) {
                         clearInterval(emailInterval);
                         p.classList.remove("active"); setTimeout(() => p.style.display = "none", 400);
-                        DogrulamaBasariliKaydet(tel, email);
+                        BasariliGirisIslemleri(formatliTel, email, false);
                     }
-                } catch(e) { console.error(e); }
+                } catch(e) {}
             }, 3000);
         }
 
@@ -522,23 +531,37 @@
             btn.innerText = "Telefonu E-Posta ile Doğrula"; btn.disabled = false;
         }
 
-        async function DogrulamaBasariliKaydet(tel, email) {
-            // Sadece başı 0 ile başlayacak şekilde kaydet
-            let formatliTel = "0" + tel;
-            
-            // Veritabanına bu numaranın güvenli olduğunu kaydet
-            let emailKey = email.replace(/\./g, ','); // Firebase key'de nokta olmaz
-            await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${formatliTel}.json`, { method: "PUT", body: JSON.stringify({ email: email, tarih: new Date().toLocaleString() }) });
+        async function BasariliGirisIslemleri(formatliTel, email, isLogin = false) {
+            if (!isLogin) {
+                await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${formatliTel}.json`, { method: "PUT", body: JSON.stringify({ email: email, tarih: new Date().toLocaleString() }) });
+            }
 
             localStorage.setItem("bg_t", formatliTel);
             document.getElementById("chk-telefon").value = formatliTel;
             
-            // Arayüzü kilitle
             document.getElementById("auth-form-area").style.display = "none";
             document.getElementById("dogrulandi-etiketi").style.display = "block";
+            document.getElementById("btn-email-verify").innerText = "Telefonu E-Posta ile Doğrula";
             
             ProfiliKaydet(false);
-            OzelUyariGoster("Hesap Doğrulandı! 🎉", "E-Posta adresiniz ve telefonunuz başarıyla eşleştirildi. Artık güvenle sipariş verebilirsiniz.", "✅");
+
+            try {
+                let carkRes = await fetch(`${FIREBASE_URL}/CarkKullanimlari/${formatliTel}.json?t=${Date.now()}`);
+                let carkData = await carkRes.json();
+                let sTime = await GetServerTime();
+                if (carkData && carkData.bitis && sTime < carkData.bitis) {
+                    localStorage.setItem("bg_cark_data", CarkVerisiSifrele(carkData.odul, carkData.bitis));
+                } else {
+                    localStorage.removeItem("bg_cark_data"); 
+                }
+                CarkDurumunuKontrolEt(); 
+            } catch(e) {}
+
+            if(isLogin) {
+                OzelUyariGoster("Tekrar Hoş Geldiniz! 👋", "Hesabınıza başarıyla giriş yapıldı ve verileriniz cihazınıza senkronize edildi.", "✅");
+            } else {
+                OzelUyariGoster("Hesap Doğrulandı! 🎉", "E-Posta adresiniz ve telefonunuz eşleştirildi.", "✅");
+            }
         }
 
         function ProfiliKaydet(alertGoster = true) {
@@ -552,24 +575,31 @@
         }
 
         function ProfiliSil() {
-            HapticTitresim(); localStorage.removeItem("bg_i"); localStorage.removeItem("bg_t"); localStorage.removeItem("bg_a");
-            document.getElementById("prof-isim").value = ""; 
-            document.getElementById("prof-telefon").value = ""; 
-            document.getElementById("prof-email").value = ""; 
-            document.getElementById("prof-adres").value = "";
-            document.getElementById("chk-isim").value = ""; 
-            document.getElementById("chk-telefon").value = ""; 
-            document.getElementById("chk-adres").value = "";
-            
-            // Arayüzü aç
-            document.getElementById("auth-form-area").style.display = "block";
-            document.getElementById("dogrulandi-etiketi").style.display = "none";
-            
-            let btn = document.getElementById("btn-email-verify");
-            btn.innerText = "Telefonu E-Posta ile Doğrula"; btn.disabled = false;
-
-            firebase.auth().signOut();
-            OzelUyariGoster("Silindi", "Verileriniz cihazdan silindi. Başka bir hesapla giriş yapabilirsiniz.", "🗑️");
+            SoruSor("Çıkış Yap", "Cihazdaki giriş bilgilerinizi silmek istediğinize emin misiniz?", "🚪", () => {
+                HapticTitresim(); 
+                localStorage.removeItem("bg_i"); 
+                localStorage.removeItem("bg_t"); 
+                localStorage.removeItem("bg_a");
+                localStorage.removeItem("bg_cark_data"); 
+                
+                document.getElementById("prof-isim").value = ""; 
+                document.getElementById("prof-telefon").value = ""; 
+                document.getElementById("prof-email").value = ""; 
+                document.getElementById("prof-adres").value = "";
+                document.getElementById("chk-isim").value = ""; 
+                document.getElementById("chk-telefon").value = ""; 
+                document.getElementById("chk-adres").value = "";
+                
+                document.getElementById("auth-form-area").style.display = "block";
+                document.getElementById("dogrulandi-etiketi").style.display = "none";
+                
+                firebase.auth().signOut();
+                aktifKullanilanCarkOdulu = null;
+                CarkDurumunuKontrolEt(); 
+                SepetEkraniniCiz(); 
+                
+                OzelUyariGoster("Çıkış Yapıldı", "Hesabınızdan güvenle çıkış yaptınız. Başka bir cihazdan veya tekrar bilgilerinizi girerek giriş yapabilirsiniz.", "🗑️");
+            }, true);
         }
         // --- E-POSTA DOĞRULAMA SİSTEMİ BİTİŞİ ---
 
