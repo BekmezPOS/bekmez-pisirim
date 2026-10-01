@@ -415,7 +415,7 @@
                     // 2 saniyelik kısa bir gecikme ile atıyoruz ki kullanıcı ana ekrana çıktığında bildirimi net görsün
                     sepetHatirlaticiTimer = setTimeout(() => {
                         BildirimGonder("Sepetiniz Sizi Bekliyor! 🛒", `Sepetinizdeki ${totalQty} ürünü unutmayın. Soğumadan siparişinizi tamamlayın!`);
-                    }, 60000); 
+                    }, 10000); 
                 }
             } else {
                 // Kullanıcı uygulamaya 2 saniye dolmadan geri dönerse bildirimi iptal et
