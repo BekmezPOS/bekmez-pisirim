@@ -921,17 +921,17 @@
                     uid: authUser.uid
                 };
 
-                await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}.json?auth=${idToken}`, { 
-                    method: "PATCH", 
+                // YENİ GÜVENLİK: İptal emrini, orijinal ID'nin sonuna -IPTAL ekleyerek ayrı bir dosya gibi yolluyoruz!
+                // Böylece Unity'nin İşlem Kilitlerine (Blacklist) takılmaz ve anında onaylanır.
+                await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}-IPTAL.json?auth=${idToken}`, { 
+                    method: "PUT", 
                     body: JSON.stringify(iptalPaketi) 
                 });
                 
                 OzelUyariGoster("İptal Ediliyor...", "Siparişiniz iptal ediliyor. Kupon ve ödülleriniz iade edilecek...", "✅");
                 
-                // Sipariş kilitlerini kaldır
                 localStorage.removeItem("bg_active_order_id");
                 
-                // Unity'nin iadeleri Firebase'e yazması için 3 saniye bekle ve sayfayı yenile!
                 setTimeout(() => {
                     window.location.reload(true);
                 }, 3000);
