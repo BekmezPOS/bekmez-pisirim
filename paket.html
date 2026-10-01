@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no">
-    <!-- Firebase Auth, SMS sistemi ve reCAPTCHA için bağlantı izinleri eklendi -->
+    <!-- Firebase Auth, SMS sistemi ve reCAPTCHA için bağlantı izinleri -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https://bekmezpos-default-rtdb.firebaseio.com https://*.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.google.com https://www.gstatic.com https://fonts.googleapis.com https://fonts.gstatic.com https://cdn.visa.com https://upload.wikimedia.org;">
     <title>Bekmez GO - Premium Paket</title>
 
@@ -12,7 +12,7 @@
     <meta name="theme-color" content="#FF6B00">
     <link rel="apple-touch-icon" href="icon-192.png">
 
-    <!-- FİREBASE KİMLİK DOĞRULAMA (SMS İÇİN ŞART) -->
+    <!-- FİREBASE KİMLİK DOĞRULAMA -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
@@ -76,7 +76,6 @@
         .cark-dilim-yazi span { display: inline-block; transform: scale(-1, -1); }
         .aktif-hediye-kart { background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.05) 100%); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 16px; padding: 15px; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
 
-        /* YENİ: SMS DOĞRULAMA KUTUSU İÇİN CSS */
         .otp-container { background: rgba(0,0,0,0.5); padding: 15px; border-radius: 20px; border: 1px solid var(--border-highlight); margin-bottom: 25px; display:none; }
         .otp-input { width: 100%; background: var(--surface-solid); border: 2px solid var(--primary); color: white; text-align: center; font-size: 24px; font-weight: 900; padding: 15px; border-radius: 15px; margin-bottom: 10px; letter-spacing: 5px; }
         .otp-input:focus { outline:none; box-shadow: 0 0 15px var(--primary-glow); }
@@ -166,7 +165,6 @@
         </div>
 
         <div id="menu-grid" class="grid-container">
-            <!-- Skeleton cards -->
             <div class="skeleton-card"><div class="skel-icon"></div><div class="skel-text"></div><div class="skel-text short"></div><div class="skel-btn"></div></div>
             <div class="skeleton-card"><div class="skel-icon"></div><div class="skel-text"></div><div class="skel-text short"></div><div class="skel-btn"></div></div>
             <div class="skeleton-card"><div class="skel-icon"></div><div class="skel-text"></div><div class="skel-text short"></div><div class="skel-btn"></div></div>
@@ -240,7 +238,7 @@
         </div>
     </div>
 
-    <!-- PROFİL (GÜNCELLENDİ) -->
+    <!-- PROFİL -->
     <div id="profile-container" style="display: none;">
         <h2 class="page-title">Profilim</h2>
         <div class="security-badge">
@@ -261,7 +259,7 @@
                 <div id="dogrulandi-etiketi" style="display:none; color:var(--success); font-weight:800; font-size:12px; margin-top:8px;">✅ Numaranız Doğrulandı.</div>
             </div>
 
-            <!-- GİZLİ RECAPTCHA ALANI (Robot Koruması) -->
+            <!-- GİZLİ RECAPTCHA ALANI -->
             <div id="recaptcha-container"></div>
 
             <div id="otp-kutu" class="otp-container">
@@ -309,7 +307,6 @@
 
     <!-- DİĞER POPUPLAR -->
     <div id="product-popup" class="popup-overlay" onclick="if(event.target === this) PopupKapat();">
-        <!-- İÇERİK AYNI KALDI -->
         <div class="popup-content">
             <div class="popup-drag-handle"></div>
             <div class="popup-header"><h3 id="popup-title" class="popup-title">Ürün Adı</h3><button onclick="PopupKapat()" style="background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button></div>
@@ -332,7 +329,6 @@
             <div class="popup-header"><h3 class="popup-title">Teslimat ve Ödeme</h3><button onclick="CheckoutKapat()" style="background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button></div>
             <div style="margin-bottom: 20px;">
                 <input type="text" id="chk-isim" class="checkout-input" placeholder="Adınız Soyadınız" autocomplete="name" maxlength="50">
-                <!-- TELEFON GİRDİSİ KİLİTLENDİ! -->
                 <input type="tel" id="chk-telefon" class="checkout-input" placeholder="Telefon (Profilinizden Onaylayın)" autocomplete="tel" disabled style="opacity:0.6; cursor:not-allowed;">
                 <textarea id="chk-adres" class="checkout-input" rows="3" placeholder="Açık Adresiniz (Mahalle, Sokak, No...)" style="resize:none;" maxlength="250"></textarea>
             </div>
@@ -362,11 +358,9 @@
     <div id="success-overlay" class="success-overlay"><div class="success-icon-wrapper"><div class="success-ring"></div><div class="success-circle"><svg class="success-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div></div><div class="success-text">Sipariş Alındı</div><div class="success-subtext">Paketiniz en kısa sürede yola çıkacaktır...</div></div>
 
     <script>
-        // SİBER GÜVENLİK KALKANI: KONSOL UYARISI
         console.log("%c DUR!", "color: red; font-size: 60px; font-weight: bold; text-shadow: 2px 2px 0 #000;");
         console.log("%c Bu alan geliştiriciler içindir. Buraya gireceğiniz herhangi bir kod (XSS/Enjeksiyon) hesabınızın kalıcı olarak bloke edilmesine sebep olabilir.", "font-size: 18px; font-weight: bold; color: #fff; background: #000; padding: 10px; border-radius: 5px;");
 
-        // FIREBASE ENTEGRASYONU 
         const firebaseConfig = {
             apiKey: "AIzaSyC8WLup5zoOmFBcFJkflo7J-XJjQEK_jr8",
             authDomain: "bekmezpos.firebaseapp.com",
@@ -374,7 +368,8 @@
             projectId: "bekmezpos",
             storageBucket: "bekmezpos.firebasestorage.app",
             messagingSenderId: "1013709760225",
-            appId: "1:1013709760225:web:ec71341cb6cdcce9fbf9a0"
+            appId: "1:1013709760225:web:ec71341cb6cdcce9fbf9a0",
+            measurementId: "G-BXKNH6B49K"
         };
         
         if (!firebase.apps.length) {
@@ -428,7 +423,6 @@
         function SoruSor(baslik, metin, ikon, evetCallback, isDanger=false) { document.getElementById("confirm-title").innerText = baslik; document.getElementById("confirm-text").innerHTML = metin; document.getElementById("confirm-icon").innerText = ikon; let btn = document.getElementById("confirm-yes-btn"); let box = document.getElementById("confirm-box"); let glow = document.getElementById("confirm-glow"); if(isDanger) { btn.style.background = "var(--danger)"; btn.innerText = "İptal Et"; box.style.borderColor = "var(--danger)"; glow.style.background = "var(--danger)"; } else { btn.style.background = "var(--primary)"; btn.innerText = "Onayla"; box.style.borderColor = "var(--primary)"; glow.style.background = "var(--primary)"; } let currentConfirmAction = evetCallback; document.getElementById("confirm-yes-btn").onclick = () => { KapatConfirmModal(null, true); if(currentConfirmAction) currentConfirmAction(); }; let p = document.getElementById("confirm-overlay"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10); }
         function KapatConfirmModal(e, force=false) { if(force || e.target === document.getElementById("confirm-overlay")) { let p = document.getElementById("confirm-overlay"); p.classList.remove("active"); setTimeout(() => p.style.display = "none", 400); } }
 
-        // --- YENİ EKLENEN SMS DOĞRULAMA MOTORU ---
         window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { 'size': 'invisible' });
 
         function SmsGonder() {
@@ -450,8 +444,14 @@
                     OzelUyariGoster("SMS Gönderildi", "Telefonunuza 6 haneli bir doğrulama kodu gönderildi. Lütfen kodu giriniz.", "📩");
                 }).catch((error) => {
                     btnSend.innerText = "Kod Gönder"; btnSend.disabled = false;
-                    window.recaptchaVerifier.render().then(function(widgetId) { grecaptcha.reset(widgetId); });
-                    OzelUyariGoster("Hata Oluştu", "SMS gönderilemedi. Çok fazla deneme yapmış olabilirsiniz. Lütfen daha sonra tekrar deneyin.", "❌");
+                    
+                    if (window.recaptchaVerifier) {
+                        window.recaptchaVerifier.clear();
+                        document.getElementById('recaptcha-container').innerHTML = '';
+                        window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { 'size': 'invisible' });
+                    }
+                    
+                    OzelUyariGoster("Hata Oluştu", "SMS gönderilemedi. Çok fazla deneme yapmış olabilirsiniz. Lütfen numaranızı kontrol edip tekrar deneyin.", "❌");
                     console.error("SMS Hatası:", error);
                 });
         }
@@ -468,7 +468,6 @@
                 let user = result.user;
                 let temizTel = user.phoneNumber.replace("+90", "0");
                 
-                // Numarayı Cihaza Mühürle
                 localStorage.setItem("bg_t", temizTel);
                 document.getElementById("chk-telefon").value = temizTel;
                 document.getElementById("prof-telefon").disabled = true;
@@ -500,20 +499,36 @@
             document.getElementById("prof-isim").value = ""; document.getElementById("prof-telefon").value = ""; document.getElementById("prof-adres").value = "";
             document.getElementById("chk-isim").value = ""; document.getElementById("chk-telefon").value = ""; document.getElementById("chk-adres").value = "";
             
-            // Kilitleri kaldır
             document.getElementById("prof-telefon").disabled = false;
             document.getElementById("prof-telefon").style.opacity = "1";
             document.getElementById("btn-send-sms").style.display = "block";
             document.getElementById("btn-send-sms").disabled = false;
             document.getElementById("btn-send-sms").innerText = "Kod Gönder";
             document.getElementById("dogrulandi-etiketi").style.display = "none";
-            firebase.auth().signOut(); // Oturumu kapat
+            document.getElementById("otp-kutu").style.display = "none";
+            document.getElementById("prof-otp").value = "";
 
-            OzelUyariGoster("Silindi", "Verileriniz cihazdan silindi.", "🗑️");
+            firebase.auth().signOut().then(() => {
+                if (window.recaptchaVerifier) {
+                    window.recaptchaVerifier.clear();
+                    document.getElementById('recaptcha-container').innerHTML = '';
+                    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { 'size': 'invisible' });
+                }
+            });
+
+            OzelUyariGoster("Silindi", "Verileriniz cihazdan silindi. Başka bir numarayı SMS ile doğrulayabilirsiniz.", "🗑️");
         }
 
         async function CarkPopupAc() {
             HapticTitresim(); SessizIzinIste();
+            
+            let tel = localStorage.getItem("bg_t");
+            if (!tel || tel.length < 10) {
+                OzelUyariGoster("SMS Doğrulaması Şart", "Çarkıfelek sistemini kullanabilmek ve hileleri engellemek için önce <b>Profilim</b> sekmesinden telefon numaranızı SMS ile doğrulamalısınız.", "🛡️");
+                SayfaGoster('profil'); 
+                return;
+            }
+
             let p = document.getElementById("cark-popup"); let btn = document.getElementById("cark-cevir-btn"); let durum = document.getElementById("cark-durum-metni");
             p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10);
             
@@ -529,26 +544,31 @@
         }
         function CarkPopupKapat() { let p = document.getElementById("cark-popup"); p.classList.remove("active"); setTimeout(() => p.style.display = "none", 500); }
 
+        function CarkVerisiSifrele(odul, bitis) { 
+            let tel = localStorage.getItem("bg_t") || "BOS";
+            return btoa(encodeURIComponent(`${odul}|||${bitis}|||${CARK_SALT}|||${tel}`)); 
+        }
+        function CarkVerisiCoz(hash) {
+            if(!hash) return null;
+            try { 
+                let dec = decodeURIComponent(atob(hash)); let parts = dec.split("|||"); 
+                let suankiTel = localStorage.getItem("bg_t") || "BOS";
+                if(parts.length === 4 && parts[2] === CARK_SALT && parts[3] === suankiTel) return { odul: parts[0], bitis: parseInt(parts[1]) }; 
+            } catch(e) {}
+            return null; 
+        }
+
         async function CarkCevir() {
             HapticTitresim();
-            
-            // ADIM 1: Telefon numarası yoksa asla çarkı çeviremez (Gizli Sekme Koruma Duvarı 1)
             let tel = localStorage.getItem("bg_t");
-            if (!tel || tel.length < 10) {
-                OzelUyariGoster("Telefon Gerekli", "Gizli sekme ve hile koruması sebebiyle çarkı çevirebilmek için önce <b>Profilim</b> menüsünden telefon numaranızı doğrulamalısınız.", "📱");
-                CarkPopupKapat();
-                SayfaGoster('profil'); 
-                return;
-            }
+            if (!tel || tel.length < 10) return; 
 
             let btn = document.getElementById("cark-cevir-btn");
             btn.disabled = true; btn.innerText = "Doğrulanıyor...";
 
-            // ADIM 2: Hile Koruması - Telefon numarası son 7 günde kullanılmış mı? (Gizli Sekme Koruma Duvarı 2)
             try {
                 let res = await fetch(`${FIREBASE_URL}/CarkKullanimlari/${tel}.json?t=${Date.now()}`);
                 let data = await res.json();
-                
                 let sTime = await GetServerTime();
                 if (data && data.bitis && sTime < data.bitis) {
                     let kalanGun = Math.ceil((data.bitis - sTime) / (1000 * 60 * 60 * 24));
@@ -557,11 +577,7 @@
                     CarkPopupKapat();
                     return;
                 }
-            } catch(e) {
-                OzelUyariGoster("Hata", "Sunucuya bağlanılamadı.", "📡");
-                btn.innerText = "Şansımı Dene!"; btn.disabled = false;
-                return;
-            }
+            } catch(e) { OzelUyariGoster("Hata", "Sunucuya bağlanılamadı.", "📡"); btn.innerText = "Şansımı Dene!"; btn.disabled = false; return; }
 
             btn.innerText = "Çevriliyor...";
             let cark = document.getElementById("cark-element");
@@ -578,18 +594,10 @@
                 localStorage.setItem("bg_cark_data", CarkVerisiSifrele(kazanilanOdul, bitisZamani));
                 localStorage.removeItem("bg_cark_notif"); 
 
-                // ADIM 3: Firebase veritabanına bu telefon numarasını mühürle!
-                await fetch(`${FIREBASE_URL}/CarkKullanimlari/${tel}.json`, { 
-                    method: "PUT", 
-                    body: JSON.stringify({ odul: kazanilanOdul, bitis: bitisZamani, zaman: new Date().toLocaleString() }) 
-                });
+                await fetch(`${FIREBASE_URL}/CarkKullanimlari/${tel}.json`, { method: "PUT", body: JSON.stringify({ odul: kazanilanOdul, bitis: bitisZamani, zaman: new Date().toLocaleString() }) });
 
-                if(kazanilanOdul === "😔 Pas") { 
-                    OzelUyariGoster("Ah be!", "Bu hafta şans sana gülmedi (Pas). 7 Gün sonra tekrar dene!", "😔"); 
-                } else { 
-                    OzelUyariGoster("Tebrikler! 🎉", `Şans çarkından <b>${kazanilanOdul}</b> kazandınız! Fırsatlar menüsünden siparişinize ekleyebilirsiniz.`, "🎁"); 
-                    BildirimGonder("Hediye Kazandın! 🎁", `Bekmez GO çarkından ${kazanilanOdul} kazandın. Sepetine eklemeyi unutma!`);
-                }
+                if(kazanilanOdul === "😔 Pas") { OzelUyariGoster("Ah be!", "Bu hafta şans sana gülmedi (Pas). 7 Gün sonra tekrar dene!", "😔"); } 
+                else { OzelUyariGoster("Tebrikler! 🎉", `Şans çarkından <b>${kazanilanOdul}</b> kazandınız! Fırsatlar menüsünden siparişinize ekleyebilirsiniz.`, "🎁"); BildirimGonder("Hediye Kazandın! 🎁", `Bekmez GO çarkından ${kazanilanOdul} kazandın. Sepetine eklemeyi unutma!`); }
                 
                 CarkPopupKapat(); CarkDurumunuKontrolEt(); 
                 setTimeout(() => { cark.style.transition = "none"; cark.style.transform = `rotate(0deg)`; setTimeout(() => cark.style.transition = "transform 4s cubic-bezier(0.1, 0.7, 0.1, 1)", 50); }, 500);
@@ -617,14 +625,7 @@
             }
         }
 
-        function CarkHediyesiniKullan() {
-            HapticTitresim(); let hash = localStorage.getItem("bg_cark_data"); let parsed = CarkVerisiCoz(hash);
-            if(parsed && parsed.odul !== "😔 Pas") {
-                aktifKullanilanCarkOdulu = parsed.odul.replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, '').trim();
-                OzelUyariGoster("Sepete Eklendi", `Çark hediyeniz (${aktifKullanilanCarkOdulu}) siparişinize eklendi!`, "🛒");
-                CarkDurumunuKontrolEt(); SayfaGoster('sepet'); 
-            }
-        }
+        function CarkHediyesiniKullan() { HapticTitresim(); let hash = localStorage.getItem("bg_cark_data"); let parsed = CarkVerisiCoz(hash); if(parsed && parsed.odul !== "😔 Pas") { aktifKullanilanCarkOdulu = parsed.odul.replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, '').trim(); OzelUyariGoster("Sepete Eklendi", `Çark hediyeniz (${aktifKullanilanCarkOdulu}) siparişinize eklendi!`, "🛒"); CarkDurumunuKontrolEt(); SayfaGoster('sepet'); } }
         function CarkHediyesiIptal() { HapticTitresim(); aktifKullanilanCarkOdulu = null; CarkDurumunuKontrolEt(); SepetEkraniniCiz(); }
 
         function IptalOnaySor() { HapticTitresim(); SoruSor("Siparişi İptal Et", "Siparişinizi iptal etmek istediğinize emin misiniz? İşlem geri alınamaz.", "⚠️", () => { SiparişiGercektenIptalEt(); }, true); }
