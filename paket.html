@@ -256,57 +256,71 @@
         </div>
     </div>
 
-    <!-- PROFİL -->
+<!-- PROFİL -->
     <div id="profile-container" style="display: none;">
-        <h2 class="page-title">Profilim</h2>
-        <div class="security-badge">
-            <div class="icon">🛡️</div>
-            <div class="text"><span class="badge-title">E-Posta Doğrulaması</span>Sistemin güvenliği için e-postanıza gönderilecek link ile doğrulama yapılmaktadır. Bu işlem tamamen ücretsizdir.</div>
-        </div>
+        <h2 class="page-title">Profil & Hesap</h2>
         
-        <div style="margin: 0 15px 30px 15px;">
+        <!-- YENİ: KATEGORİ GİBİ ÇALIŞAN HESAP SEKMELERİ -->
+        <div class="category-tabs" style="padding-top:0;">
+            <button class="tab-btn active" id="tab-Teslimat" onclick="ProfilSekmeSec('Teslimat', this);">📍 Teslimat Bilgileri</button>
+            <button class="tab-btn" id="tab-Guvenlik" onclick="ProfilSekmeSec('Guvenlik', this);">🛡️ Hesap Sistemi</button>
+        </div>
+
+        <!-- 1. TESLİMAT BİLGİLERİ SEKMESİ -->
+        <div id="profil-teslimat-sekmesi" style="display: block; margin: 0 15px 30px 15px;">
             <div class="input-group"><label>Adınız Soyadınız</label><input type="text" id="prof-isim" class="checkout-input" placeholder="Örn: Ahmet Yılmaz" maxlength="50"></div>
             <div class="input-group" style="margin-bottom: 25px;"><label>Açık Adresiniz</label><textarea id="prof-adres" class="checkout-input" rows="3" placeholder="Mahalle, Sokak, Kapı No, Kat, Daire..." maxlength="250"></textarea></div>
-            
-            <div id="auth-form-area">
-                <div class="input-group">
-                    <label>Telefon Numaranız</label>
-                    <input type="tel" id="prof-telefon" class="checkout-input" placeholder="Örn: 532 000 00 00" maxlength="15">
-                </div>
-                
-                <div class="input-group" id="email-input-group">
-                    <label>E-Posta Adresiniz</label>
-                    <input type="email" id="prof-email" class="checkout-input" placeholder="Örn: ahmet@gmail.com" maxlength="100">
-                </div>
-                
-                <div class="input-group" id="password-input-group">
-                    <label>Güvenlik Şifreniz (En az 6 karakter)</label>
-                    <input type="password" id="prof-password" class="checkout-input" placeholder="Gizli şifrenizi belirleyin veya girin" maxlength="30">
-                </div>
+            <button class="order-btn shimmer-btn neon-border" onclick="ProfiliKaydet(true)">Bilgilerimi Kaydet</button>
+        </div>
 
-                <div id="kayit-bilgi-kutusu" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-highlight); padding: 15px; border-radius: 16px; margin-bottom: 20px; font-size: 11px; color: var(--text-muted); line-height: 1.6;">
-                    <strong>Bilgilendirme:</strong>
-                    <ul style="margin: 5px 0 10px 15px; padding: 0;">
-                        <li>Kayıt olduğunuzda telefonunuz eşleşir.</li>
-                        <li>Sistemin kötüye kullanımını engellemek amacıyla <strong>yeni açılan hesaplar 7 gün geçmeden silinemez.</strong></li>
-                        <li>Hesap silindikten sonra, aynı numara ile <strong>7 gün boyunca</strong> tekrar kayıt yapılamaz.</li>
-                    </ul>
-                    <div style="display: flex; align-items: flex-start; gap: 10px; margin-top: 10px;">
-                        <input type="checkbox" id="kayit-onay-cb" onchange="KayitOnayToggle()" style="min-width: 18px; width: 18px; height: 18px; accent-color: var(--primary); margin-top: 2px;">
-                        <label for="kayit-onay-cb" style="cursor:pointer; font-weight: 600;">Kullanıcı sözleşmesini ve güvenlik kurallarını okudum, kabul ediyorum.</label>
+        <!-- 2. GÜVENLİK VE KAYIT SEKMESİ -->
+        <div id="profil-guvenlik-sekmesi" style="display: none;">
+            <div class="security-badge">
+                <div class="icon">🛡️</div>
+                <div class="text"><span class="badge-title">E-Posta Doğrulaması</span>Sistemin güvenliği için e-postanıza gönderilecek link ile doğrulama yapılmaktadır. Bu işlem tamamen ücretsizdir.</div>
+            </div>
+            
+            <div style="margin: 0 15px 30px 15px;">
+                <div id="auth-form-area">
+                    <div class="input-group">
+                        <label>Telefon Numaranız</label>
+                        <input type="tel" id="prof-telefon" class="checkout-input" placeholder="Örn: 532 000 00 00" maxlength="15">
                     </div>
+                    
+                    <div class="input-group" id="email-input-group">
+                        <label>E-Posta Adresiniz</label>
+                        <input type="email" id="prof-email" class="checkout-input" placeholder="Örn: ahmet@gmail.com" maxlength="100">
+                    </div>
+                    
+                    <div class="input-group" id="password-input-group">
+                        <label>Güvenlik Şifreniz (En az 6 karakter)</label>
+                        <input type="password" id="prof-password" class="checkout-input" placeholder="Gizli şifrenizi belirleyin veya girin" maxlength="30">
+                    </div>
+
+                    <div id="kayit-bilgi-kutusu" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-highlight); padding: 15px; border-radius: 16px; margin-bottom: 20px; font-size: 11px; color: var(--text-muted); line-height: 1.6;">
+                        <strong>Bilgilendirme:</strong>
+                        <ul style="margin: 5px 0 10px 15px; padding: 0;">
+                            <li>Kayıt olduğunuzda telefonunuz eşleşir.</li>
+                            <li>Sistemin kötüye kullanımını engellemek amacıyla <strong>yeni açılan hesaplar 7 gün geçmeden silinemez.</strong></li>
+                            <li>Hesap silindikten sonra, aynı numara ile <strong>7 gün boyunca</strong> tekrar kayıt yapılamaz.</li>
+                        </ul>
+                        <div style="display: flex; align-items: flex-start; gap: 10px; margin-top: 10px;">
+                            <input type="checkbox" id="kayit-onay-cb" onchange="KayitOnayToggle()" style="min-width: 18px; width: 18px; height: 18px; accent-color: var(--primary); margin-top: 2px;">
+                            <label for="kayit-onay-cb" style="cursor:pointer; font-weight: 600;">Kullanıcı sözleşmesini ve güvenlik kurallarını okudum, kabul ediyorum.</label>
+                        </div>
+                    </div>
+
+                    <button id="btn-email-verify" disabled style="width:100%; background:var(--primary); color:white; border:none; padding:16px; border-radius:100px; font-weight:800; font-size:15px; cursor:pointer; box-shadow:0 6px 20px rgba(255,107,0,0.4); margin-bottom: 15px; opacity: 0.5; transition: 0.3s;" onclick="EpostaDogrulamasiBaslat()">Telefonu E-Posta ile Doğrula</button>
+                </div>
+                
+                <div id="dogrulandi-etiketi" style="display:none; color:var(--success); font-weight:800; font-size:14px; text-align: center; margin-bottom: 15px; padding: 15px; background: rgba(52,199,89,0.1); border-radius: 16px; border: 1px solid var(--success);">
+                    ✅ E-Posta ve Telefon Doğrulandı!
                 </div>
 
-                <button id="btn-email-verify" disabled style="width:100%; background:var(--primary); color:white; border:none; padding:16px; border-radius:100px; font-weight:800; font-size:15px; cursor:pointer; box-shadow:0 6px 20px rgba(255,107,0,0.4); margin-bottom: 15px; opacity: 0.5; transition: 0.3s;" onclick="EpostaDogrulamasiBaslat()">Telefonu E-Posta ile Doğrula</button>
-            </div>
-            
-            <div id="dogrulandi-etiketi" style="display:none; color:var(--success); font-weight:800; font-size:14px; text-align: center; margin-bottom: 15px; padding: 15px; background: rgba(52,199,89,0.1); border-radius: 16px; border: 1px solid var(--success);">
-                ✅ E-Posta ve Telefon Doğrulandı!
-            </div>
-
-            <div id="profil-aksiyon-butonlari" style="display:none; flex-direction: column; gap: 10px;">
-                <button onclick="SadeceCikisYap()" style="width:100%; background:rgba(255,255,255,0.05); border:1px solid var(--border-highlight); color:var(--text-main); padding:16px; border-radius:100px; font-weight:800; font-size:14px; cursor:pointer; transition:0.3s;">Sistemden Çıkış Yap</button>
-                <button onclick="HesabiTamamenSil()" style="width:100%; background:transparent; border:1px dashed rgba(239, 68, 68, 0.4); color:var(--danger); padding:16px; border-radius:100px; font-weight:800; font-size:14px; cursor:pointer; transition:0.3s;">Hesabımı Kalıcı Olarak Sil</button>
+                <div id="profil-aksiyon-butonlari" style="display:none; flex-direction: column; gap: 10px;">
+                    <button onclick="SadeceCikisYap()" style="width:100%; background:rgba(255,255,255,0.05); border:1px solid var(--border-highlight); color:var(--text-main); padding:16px; border-radius:100px; font-weight:800; font-size:14px; cursor:pointer; transition:0.3s;">Sistemden Çıkış Yap</button>
+                    <button onclick="HesabiTamamenSil()" style="width:100%; background:transparent; border:1px dashed rgba(239, 68, 68, 0.4); color:var(--danger); padding:16px; border-radius:100px; font-weight:800; font-size:14px; cursor:pointer; transition:0.3s;">Hesabımı Kalıcı Olarak Sil</button>
+                </div>
             </div>
         </div>
     </div>
@@ -719,6 +733,20 @@
             localStorage.setItem("bg_i", i); localStorage.setItem("bg_a", a);
             document.getElementById("chk-isim").value = i; document.getElementById("chk-adres").value = a;
             if(alertGoster) { HapticTitresim(); OzelUyariGoster("Başarılı", "Profil bilgileriniz cihazınıza kaydedildi.", "✅"); }
+        }
+        function ProfilSekmeSec(sekme, btnObj) {
+            HapticTitresim();
+            document.getElementById('tab-Teslimat').classList.remove('active');
+            document.getElementById('tab-Guvenlik').classList.remove('active');
+            btnObj.classList.add('active');
+
+            if (sekme === 'Teslimat') {
+                document.getElementById('profil-teslimat-sekmesi').style.display = 'block';
+                document.getElementById('profil-guvenlik-sekmesi').style.display = 'none';
+            } else {
+                document.getElementById('profil-teslimat-sekmesi').style.display = 'none';
+                document.getElementById('profil-guvenlik-sekmesi').style.display = 'block';
+            }
         }
 
         function TemizleOturumVerileri() {
@@ -1218,7 +1246,16 @@
         function TriggerCartBounce() { let cart = document.getElementById("floating-cart"); if(cart) { cart.classList.remove("bounce"); void cart.offsetWidth; cart.classList.add("bounce"); } }
 
         function PopupSepeteEkle() { 
-            if(seciliMiktar <= 0) return; HapticTitresim(); SessizIzinIste(); 
+            if(seciliMiktar <= 0) return; 
+            
+            // --- GÜVENLİK KİLİDİ: Aktif sipariş varsa sepete yeni ürün eklenemez ---
+            if(localStorage.getItem("bg_active_order_id")) {
+                OzelUyariGoster("İşlem Engellendi", "Mevcut siparişiniz teslim edilmeden veya iptal edilmeden yeni bir sipariş oluşturamazsınız.", "⏳");
+                PopupKapat();
+                return;
+            }
+
+            HapticTitresim(); SessizIzinIste(); 
             let tamIsim = ""; let eklenecekAdet = 1; let gercekStokMiktari = seciliMiktar; let ekstraEkmekUcreti = 0; let pL = (seciliUrun.pName || "").toString().toLocaleLowerCase('tr-TR'); let isSpecial = pL.includes("dürüm") || pL.includes("doner") || pL.includes("kebap"); 
             if (seciliUrun.isKg) { tamIsim = Number(seciliMiktar.toFixed(2)) + " KG " + seciliUrun.pName; eklenecekAdet = 1; if (ekstraEkmekKg > 0 && !seciliEkstraIstekler.includes('Ekmeksiz')) { ekstraEkmekUcreti = ekstraEkmekKg * ekmekBirimFiyati; } } else { tamIsim = seciliUrun.pName; eklenecekAdet = seciliMiktar; gercekStokMiktari = 1; if (isSpecial && seciliOzelEkmekTip === "3 Lavaş") ekstraEkmekUcreti = ekmekBirimFiyati; } 
             let modlar = [...seciliEkstraIstekler]; if (seciliUrun.isKg) { let tB = baseKgBread + ekstraEkmekKg; if (tB === 0) { if (!modlar.includes("Ekmeksiz")) modlar.push("Ekmeksiz"); } else if (ekstraEkmekKg > 0) { modlar.push("+" + ekstraEkmekKg + " Ek Ekmek"); } else if (ekstraEkmekKg < 0) { modlar.push("Sadece " + tB + " Ekmek"); } } else { if (isSpecial && seciliOzelEkmekTip !== "Normal") modlar.push(seciliOzelEkmekTip); } 
@@ -1305,8 +1342,21 @@
         function KuponArayuzunuGuncelle() { let b = document.getElementById("coupon-apply-btn"); let m = document.getElementById("coupon-message"); let iE = document.getElementById("coupon-code"); if(aktifKuponIndirimTutari > 0) { b.style.background = "var(--danger)"; b.style.color = "white"; b.innerText = "İptal Et"; b.onclick = () => KuponuIptalEt(false); if(iE) { iE.disabled = true; iE.style.opacity = "0.6"; } m.innerHTML = `<span style="color: var(--success);">✓ ${aktifKuponIndirimTutari} TL İndirim!</span>`; } else { b.style.background = "rgba(255,255,255,0.05)"; b.style.color = "var(--text-main)"; b.innerText = "Uygula"; b.onclick = KuponSorgula; if(iE) { iE.disabled = false; iE.style.opacity = "1"; } m.innerHTML = ""; } }
         function GosterHataInput(id) { let el = document.getElementById(id); if(el) { el.classList.remove("input-error"); void el.offsetWidth; el.classList.add("input-error"); setTimeout(() => el.classList.remove("input-error"), 500); } }
         
-        function CheckoutPopupAc() { if(sepet.length === 0 && aktifKullanilanCarkOdulu === null) return; HapticTitresim(); let p = document.getElementById("checkout-popup"); p.style.display = "flex"; setTimeout(() => { p.classList.add("active"); }, 10); TogglePayButton(); }
-        function CheckoutKapat() { let p = document.getElementById("checkout-popup"); p.classList.remove("active"); setTimeout(() => { p.style.display = "none"; }, 500); }
+        function CheckoutPopupAc() { 
+            if(sepet.length === 0 && aktifKullanilanCarkOdulu === null) return; 
+            
+            // --- GÜVENLİK KİLİDİ: Aktif sipariş varken ödeme ekranı kesinlikle AÇILAMAZ ---
+            if(localStorage.getItem("bg_active_order_id")) {
+                OzelUyariGoster("Siparişiniz Yolda", "Mevcut siparişiniz teslim edilmeden veya iptal edilmeden yeni bir sipariş oluşturamazsınız.", "🛵");
+                return;
+            }
+
+            HapticTitresim(); 
+            let p = document.getElementById("checkout-popup"); 
+            p.style.display = "flex"; 
+            setTimeout(() => { p.classList.add("active"); }, 10); 
+            TogglePayButton(); 
+        }        function CheckoutKapat() { let p = document.getElementById("checkout-popup"); p.classList.remove("active"); setTimeout(() => { p.style.display = "none"; }, 500); }
 
         async function PaketSiparisiGonder() {
             if(isProcessingOrder || (sepet.length === 0 && aktifKullanilanCarkOdulu === null)) return;
