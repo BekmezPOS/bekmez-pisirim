@@ -820,14 +820,28 @@
         function CarkHediyesiIptal() { HapticTitresim(); aktifKullanilanCarkOdulu = null; CarkDurumunuKontrolEt(); SepetEkraniniCiz(); }
 
         function IptalOnaySor() { HapticTitresim(); SoruSor("Siparişi İptal Et", "Siparişinizi iptal etmek istediğinize emin misiniz? İşlem geri alınamaz.", "⚠️", () => { SiparişiGercektenIptalEt(); }, true); }
-        async function SiparişiGercektenIptalEt() {
+      async function SiparişiGercektenIptalEt() {
             let siparisId = localStorage.getItem("bg_active_order_id"); if(!siparisId) return;
             try {
                 let authUser = firebase.auth().currentUser;
                 if(!authUser) return;
+                
                 let idToken = await authUser.getIdToken(true);
-                // Taslaga IPTAL emri yolla
-                await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}.json?auth=${idToken}`, { method: "PATCH", body: JSON.stringify({ islemTuru: "IPTAL", zaman: new Date().toLocaleTimeString() }) });
+                let tel = localStorage.getItem("bg_t"); // Eksik olan telefon bilgisini ekledik
+                
+                // Taslaga IPTAL emri yolla (Tam Güvenlik Paketi)
+                let iptalPaketi = { 
+                    islemTuru: "IPTAL", 
+                    zaman: new Date().toLocaleTimeString(),
+                    telefon: tel,
+                    uid: authUser.uid
+                };
+
+                await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}.json?auth=${idToken}`, { 
+                    method: "PATCH", 
+                    body: JSON.stringify(iptalPaketi) 
+                });
+                
                 OzelUyariGoster("İptal Talebi Alındı", "İptal işleminiz kasaya iletildi.", "✅");
             } catch(e) {}
         }
