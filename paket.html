@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no">
-    <!-- Firebase Auth, SMS sistemi ve reCAPTCHA için bağlantı izinleri -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https://bekmezpos-default-rtdb.firebaseio.com https://*.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.google.com https://www.gstatic.com https://fonts.googleapis.com https://fonts.gstatic.com https://cdn.visa.com https://upload.wikimedia.org;">
+    <!-- Firebase Auth, SMS sistemi ve reCAPTCHA için bağlantı izinleri (CSP GÜNCELLENDİ) -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https://bekmezpos.firebaseapp.com https://bekmezpos-default-rtdb.firebaseio.com https://*.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.google.com https://www.gstatic.com https://fonts.googleapis.com https://fonts.gstatic.com https://cdn.visa.com https://upload.wikimedia.org;">
     <title>Bekmez GO - Premium Paket</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -255,9 +255,12 @@
                 <label>Telefon Numaranız</label>
                 <div style="display:flex; gap:10px;">
                     <input type="tel" id="prof-telefon" class="checkout-input" placeholder="Örn: 532 000 00 00" maxlength="15" style="margin-bottom:0; flex:1;">
-                    <!-- RECAPTCHA GİZLİ TETİKLEYİCİSİ BU BUTONUN ÜZERİNE GÖMÜLDÜ -->
-                    <button id="btn-send-sms" style="background:var(--primary); color:white; border:none; padding:0 20px; border-radius:20px; font-weight:800; cursor:pointer;">Kod Gönder</button>
+                    <!-- BUTONA onclick EKLENDİ VE GİZLİ RECAPTCHA DİV'İ YERLEŞTİRİLDİ -->
+                    <button id="btn-send-sms" onclick="SmsGonder()" style="background:var(--primary); color:white; border:none; padding:0 20px; border-radius:20px; font-weight:800; cursor:pointer;">Kod Gönder</button>
                 </div>
+                <!-- RECAPTCHA BURAYA YÜKLENECEK -->
+                <div id="recaptcha-container"></div>
+
                 <div id="dogrulandi-etiketi" style="display:none; color:var(--success); font-weight:800; font-size:12px; margin-top:8px;">✅ Numaranız Doğrulandı.</div>
             </div>
 
@@ -422,35 +425,27 @@
         function SoruSor(baslik, metin, ikon, evetCallback, isDanger=false) { document.getElementById("confirm-title").innerText = baslik; document.getElementById("confirm-text").innerHTML = metin; document.getElementById("confirm-icon").innerText = ikon; let btn = document.getElementById("confirm-yes-btn"); let box = document.getElementById("confirm-box"); let glow = document.getElementById("confirm-glow"); if(isDanger) { btn.style.background = "var(--danger)"; btn.innerText = "İptal Et"; box.style.borderColor = "var(--danger)"; glow.style.background = "var(--danger)"; } else { btn.style.background = "var(--primary)"; btn.innerText = "Onayla"; box.style.borderColor = "var(--primary)"; glow.style.background = "var(--primary)"; } let currentConfirmAction = evetCallback; document.getElementById("confirm-yes-btn").onclick = () => { KapatConfirmModal(null, true); if(currentConfirmAction) currentConfirmAction(); }; let p = document.getElementById("confirm-overlay"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10); }
         function KapatConfirmModal(e, force=false) { if(force || e.target === document.getElementById("confirm-overlay")) { let p = document.getElementById("confirm-overlay"); p.classList.remove("active"); setTimeout(() => p.style.display = "none", 400); } }
 
-        // --- GÖRÜNMEZ RECAPTCHA BAŞLATICI ---
+        // --- GÜNCELLENEN RECAPTCHA VE SMS FONKSİYONLARI BAŞLANGICI ---
         function InitRecaptcha() {
             if (!window.recaptchaVerifier) {
                 try {
-                    // reCAPTCHA artık direkt 'Kod Gönder' butonunun kimliğine bağlandı
-                    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('btn-send-sms', {
-                        'size': 'invisible',
-                        'callback': function(response) {
-                            SmsKoduSunucuyaIlet();
-                        },
-                        'expired-callback': function() {
-                            OzelUyariGoster("Zaman Aşımı", "Robot doğrulaması zaman aşımına uğradı. Lütfen tekrar deneyin.", "⏳");
-                            window.recaptchaVerifier.clear();
-                            window.recaptchaVerifier = null;
-                        }
+                    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+                        'size': 'invisible'
                     });
                 } catch(e) { console.error("ReCaptcha başlatılamadı:", e); }
             }
         }
 
-        // SMS GÖNDERME BUTONU ARTIK BU FONKSİYONU ÇALIŞTIRIR
         function SmsGonder() {
             let telInput = document.getElementById("prof-telefon");
             let numaraStr = telInput.value.replace(/[^0-9]/g, '');
 
-            if(numaraStr.length < 10) { OzelUyariGoster("Hatalı Numara", "Lütfen başında 0 olmadan 10 haneli numaranızı girin. (Örn: 532...)", "📱"); return; }
+            if(numaraStr.length < 10) { 
+                OzelUyariGoster("Hatalı Numara", "Lütfen başında 0 olmadan 10 haneli numaranızı girin. (Örn: 532...)", "📱"); 
+                return; 
+            }
             
-            // Firebase reCAPTCHA'yı tetiklemek için işi ona bırakır (Callback içinden devam eder)
-            // Eğer reCAPTCHA çözülmüşse veya görünmez şekilde otomatik onaylanırsa 'SmsKoduSunucuyaIlet' çalışır.
+            SmsKoduSunucuyaIlet();
         }
 
         function SmsKoduSunucuyaIlet() {
@@ -461,7 +456,10 @@
             if(numaraStr.length === 10) numaraStr = "+90" + numaraStr;
             else if(numaraStr.length === 11 && numaraStr.startsWith("0")) numaraStr = "+9" + numaraStr;
 
-            btnSend.innerText = "Gönderiliyor..."; btnSend.disabled = true;
+            btnSend.innerText = "Bekleyin..."; 
+            btnSend.disabled = true;
+
+            if (!window.recaptchaVerifier) { InitRecaptcha(); }
 
             firebase.auth().signInWithPhoneNumber(numaraStr, window.recaptchaVerifier)
                 .then((confirmationResult) => {
@@ -470,7 +468,9 @@
                     btnSend.innerText = "Kod Gönderildi";
                     OzelUyariGoster("SMS Gönderildi", "Telefonunuza 6 haneli bir doğrulama kodu gönderildi. Lütfen kodu giriniz.", "📩");
                 }).catch((error) => {
-                    btnSend.innerText = "Kod Gönder"; btnSend.disabled = false;
+                    console.error("SMS Hatası:", error);
+                    btnSend.innerText = "Kod Gönder"; 
+                    btnSend.disabled = false;
                     
                     if (window.recaptchaVerifier) {
                         window.recaptchaVerifier.clear();
@@ -478,10 +478,14 @@
                     }
                     InitRecaptcha();
                     
-                    OzelUyariGoster("Hata Oluştu", "SMS gönderilemedi. Çok fazla deneme yapmış olabilirsiniz veya tarayıcınız engelliyor olabilir. Lütfen sayfayı yenileyip tekrar deneyin.", "❌");
-                    console.error("SMS Hatası:", error);
+                    let hataMesaji = "SMS gönderilemedi. Bağlantınızı kontrol edip tekrar deneyin.";
+                    if(error.code === 'auth/invalid-phone-number') hataMesaji = "Geçersiz telefon numarası formatı.";
+                    else if(error.code === 'auth/too-many-requests') hataMesaji = "Çok fazla deneme yaptınız. Lütfen bir süre bekleyip tekrar deneyin.";
+
+                    OzelUyariGoster("Hata Oluştu", hataMesaji, "❌");
                 });
         }
+        // --- GÜNCELLENEN RECAPTCHA VE SMS FONKSİYONLARI BİTİŞİ ---
 
         function KoduDogrula() {
             let otp = document.getElementById("prof-otp").value.trim();
@@ -790,7 +794,7 @@
                 document.getElementById("cart-container").style.display = "block"; SepetEkraniniCiz(); 
             } else if (s === 'profil') { 
                 document.getElementById("profile-container").style.display = "block";
-                InitRecaptcha(); // 3. DÜZELTME: Sekme açılınca reCAPTCHA dinlemeye başlar
+                InitRecaptcha(); // Sekme açılınca reCAPTCHA dinlemeye başlar
             } else if (s === 'firsatlar') { 
                 document.getElementById("opportunities-container").style.display = "block"; KuponlariCek(); CarkDurumunuKontrolEt();
             } else if (s === 'gecmis') { 
@@ -827,6 +831,9 @@
                 }
             } catch(error) { if (ilkYukleme) { document.getElementById("menu-grid").innerHTML = `<div class="empty-text" style="color:var(--danger)">Bağlantı Hatası! İnternetinizi kontrol edin.</div>`; } }
         }
+
+        // Zaman bilgisini almak için yardımcı fonksiyon
+        async function GetServerTime() { return Date.now(); }
 
         function GetKategoriAd(u) { 
             try { 
