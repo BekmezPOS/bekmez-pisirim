@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no">
-    <!-- Firebase Auth, SMS sistemi ve reCAPTCHA için genişletilmiş canlı sunucu bağlantı izinleri -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https://bekmezpos.firebaseapp.com https://bekmezpos-default-rtdb.firebaseio.com https://*.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.google.com https://www.gstatic.com https://www.recaptcha.net https://apis.google.com https://fonts.googleapis.com https://fonts.gstatic.com https://cdn.visa.com https://upload.wikimedia.org;">
+    <!-- Firebase Auth ve SMS sistemi için bağlantı engellerini kaldıran ESNEK CSP İZİNLERİ -->
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval'; connect-src * 'unsafe-inline'; img-src * data: blob: 'unsafe-inline'; frame-src *; style-src * 'unsafe-inline'; font-src * data:;">
     <title>Bekmez GO - Premium Paket</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -257,7 +257,7 @@
                     <input type="tel" id="prof-telefon" class="checkout-input" placeholder="Örn: 532 000 00 00" maxlength="15" style="margin-bottom:0; flex:1;">
                     <button id="btn-send-sms" onclick="SmsGonder()" style="background:var(--primary); color:white; border:none; padding:0 20px; border-radius:20px; font-weight:800; cursor:pointer;">Kod Gönder</button>
                 </div>
-                <!-- YENİ RECAPTCHA DİVİ -->
+                <!-- RECAPTCHA BURAYA YÜKLENECEK -->
                 <div id="recaptcha-container" style="margin-top:10px;"></div>
                 
                 <div id="dogrulandi-etiketi" style="display:none; color:var(--success); font-weight:800; font-size:12px; margin-top:8px;">✅ Numaranız Doğrulandı.</div>
@@ -560,7 +560,7 @@
                     window.recaptchaVerifier.clear();
                     window.recaptchaVerifier = null;
                 }
-                InitRecaptcha(); // Silme işleminden sonra motoru yeniden kurar
+                InitRecaptcha(); 
             });
 
             OzelUyariGoster("Silindi", "Verileriniz cihazdan silindi. Başka bir numarayı SMS ile doğrulayabilirsiniz.", "🗑️");
@@ -748,7 +748,7 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             let st = new Date().getHours(); let m = "Hoş Geldiniz ✨"; 
-            if (st >= 5 && st < 11) m = "Günaydın ☀️"; else if (st >= 11 && st < 17) m = "İyi Günler 🌤️"; else if (st >= 17 && st < 22) m = "İyi Akşamlar 🌙"; else m = "İyi Geceler 🌌";
+            if (st >= 5 && st < 11) m = "Günaydın ☀️"; else if (st >= 11 && st < 17) m = "İyi Günler 🌤️️"; else if (st >= 17 && st < 22) m = "İyi Akşamlar 🌙"; else m = "İyi Geceler 🌌";
             let ko = document.getElementById("dinamik-karsilama"); if(ko) ko.innerText = m;
             setTimeout(() => { SplashKapatSinematik(); }, 3000);
 
@@ -1007,7 +1007,7 @@
         
         async function KuponSorgula() { 
             let iE = document.getElementById("coupon-code"); let gK = escapeHTML(iE.value.trim().toUpperCase()); let b = document.getElementById("coupon-apply-btn"); 
-            if(gK === "") { OzelUyariGoster("Boş Kod", "Lütfen bir kod giriniz.", "⚠️️"); return; } 
+            if(gK === "") { OzelUyariGoster("Boş Kod", "Lütfen bir kod giriniz.", "⚠"); return; } 
 
             let tries = parseInt(localStorage.getItem("cpn_try") || "0");
             let blockTime = parseInt(localStorage.getItem("cpn_blk") || "0");
