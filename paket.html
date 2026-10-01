@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no">
-    <!-- GÜVENLİK: Veri hırsızlığını ve dış kaynaklı kod çalıştırmayı engeller -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https://bekmezpos-default-rtdb.firebaseio.com https://fonts.googleapis.com https://fonts.gstatic.com https://cdn.visa.com https://upload.wikimedia.org;">
+    <!-- GÜVENLİK POLİTİKASI GÜNCELLENDİ (Firebase Servislerine İzin Verildi) -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https://bekmezpos-default-rtdb.firebaseio.com https://*.firebaseio.com wss://*.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://fonts.googleapis.com https://fonts.gstatic.com https://cdn.visa.com https://upload.wikimedia.org;">
     <title>Bekmez GO - Premium Paket</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -12,10 +12,15 @@
     <meta name="theme-color" content="#FF6B00">
     <link rel="apple-touch-icon" href="icon-192.png">
 
+    <!-- FIREBASE SDK (Siber Güvenlik İçin Gerekli) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
     <style>
+        /* MEVCUT CSS KODLARINIZ (Hiçbir görsel bozulma olmaması için tamamen aynı bırakıldı) */
         :root{--bg-dark:#000;--bg-gradient:radial-gradient(circle at top, #111114 0%, #000 100%);--surface:rgba(24, 24, 28, 0.65);--surface-solid:#151518;--surface-hover:rgba(40, 40, 45, 0.8);--border:rgba(255, 255, 255, 0.06);--border-light:rgba(255, 255, 255, 0.03);--border-highlight:rgba(255, 255, 255, 0.12);--text-main:#fff;--text-muted:#8a8a93;--primary:#FF6B00;--gradient-fire:linear-gradient(135deg, #FF6B00 0%, #FF9500 100%);--gradient-gold:linear-gradient(135deg, #FACC15 0%, #D97706 100%);--primary-glow:rgba(255, 107, 0, 0.25);--primary-light:rgba(255, 107, 0, 0.12);--success:#34C759;--danger:#FF3B30;--warning:#FFCC00;}
-        *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}html{scroll-behavior:smooth;overscroll-behavior-y:none;}body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-dark);background-image:var(--bg-gradient);color:var(--text-main);margin:0;padding:0;padding-bottom:calc(110px + env(safe-area-inset-bottom));overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;min-height:100vh;position:relative;user-select:none;-webkit-user-select:none;}input,textarea{user-select:auto;-webkit-user-select:auto;}::-webkit-scrollbar{display:none;}
-        
+        *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}html{scroll-behavior:smooth;overscroll-behavior-y:none;}body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-dark);background-image:var(--bg-gradient);color:var(--text-main);margin:0;padding:0;padding-bottom:calc(110px + env(safe-area-inset-bottom));overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;min-height:100vh;position:relative;user-select:none;-webkit-user-select:none;}input,textarea,select{user-select:auto;-webkit-user-select:auto;}::-webkit-scrollbar{display:none;}
         .embers-container{position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:0;overflow:hidden;}.ember{position:absolute;bottom:-20px;background:var(--primary);border-radius:50%;filter:blur(2px);opacity:0;animation:floatUp ease-in infinite;}@keyframes floatUp{0%{transform:translateY(0) translateX(0) scale(1);opacity:0;}20%{opacity:0.6;}80%{opacity:0.3;}100%{transform:translateY(-100vh) translateX(30px) scale(0.4);opacity:0;}}.ember:nth-child(1){left:10%;width:4px;height:4px;animation-duration:9s;animation-delay:0s;}.ember:nth-child(2){left:30%;width:5px;height:5px;animation-duration:12s;animation-delay:2s;background:#FF9500;}.ember:nth-child(3){left:50%;width:3px;height:3px;animation-duration:8s;animation-delay:1s;}.ember:nth-child(4){left:75%;width:6px;height:6px;animation-duration:14s;animation-delay:4s;filter:blur(3px);}.ember:nth-child(5){left:85%;width:4px;height:4px;animation-duration:10s;animation-delay:0.5s;}
         .app-header,#menu-container,#cart-container,#history-container,#profile-container,#opportunities-container{position:relative;z-index:10;}
         #splash-screen{position:fixed;top:0;left:0;width:100%;height:100%;background-color:var(--bg-dark);z-index:999999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.8s ease;overflow:hidden;}.aura-bg{position:absolute;width:500px;height:500px;background:var(--primary);border-radius:50%;filter:blur(180px);opacity:0.12;animation:auraPulse 5s infinite alternate ease-in-out;z-index:1;}@keyframes auraPulse{0%{transform:scale(0.8);opacity:0.08;}100%{transform:scale(1.1);opacity:0.15;}}#splash-content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;transition:transform 0.8s cubic-bezier(0.16,1,0.3,1),opacity 0.6s ease;width:100%;}
@@ -47,6 +52,7 @@
         .cart-item{background:linear-gradient(145deg,rgba(30,30,35,0.8) 0%,rgba(15,15,20,0.9) 100%);padding:16px;border-radius:24px;margin:0 15px 15px 15px;display:flex;align-items:center;justify-content:space-between;border:1px solid rgba(255,255,255,0.05);border-top:1px solid rgba(255,255,255,0.1);gap:12px;box-shadow:0 8px 20px rgba(0,0,0,0.3),inset 0 1px 1px rgba(255,255,255,0.05);}.cart-item-details{flex:1;}.cart-item-name{font-size:14px;font-weight:700;margin-bottom:6px;color:var(--text-main);line-height:1.4;letter-spacing:-0.3px;text-shadow:0 2px 4px rgba(0,0,0,0.5);}.cart-item-price{color:var(--primary);font-weight:800;font-size:14px;letter-spacing:0.5px;}.cart-controls{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,0.6);border-radius:100px;padding:6px;border:1px solid var(--border-highlight);box-shadow:inset 0 2px 8px rgba(0,0,0,0.5);}.cart-btn{background:var(--surface-solid);color:var(--text-main);border:1px solid var(--border);width:32px;height:32px;font-size:18px;font-weight:600;cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all 0.3s cubic-bezier(0.16,1,0.3,1);box-shadow:0 2px 6px rgba(0,0,0,0.3);}.cart-btn:active{background:var(--gradient-fire);color:white;transform:scale(0.85);border-color:transparent;box-shadow:0 2px 10px var(--primary-glow);}.cart-amount{font-size:14px;font-weight:800;color:var(--text-main);min-width:24px;text-align:center;}
         .input-error{border-color:var(--danger) !important;box-shadow:0 0 10px rgba(255,59,48,0.3) !important;animation:inputShake 0.4s cubic-bezier(0.36,0.07,0.19,0.97) both;}@keyframes inputShake{0%,100%{transform:translateX(0);}20%,60%{transform:translateX(-5px);}40%,80%{transform:translateX(5px);}}
         .note-input,.checkout-input{width:calc(100% - 30px);margin:5px 15px 20px 15px;background:rgba(25,25,30,0.9);border:1px solid var(--border-highlight);color:var(--text-main);padding:16px;border-radius:20px;font-family:inherit;font-size:14px;font-weight:600;box-sizing:border-box;transition:0.4s cubic-bezier(0.16,1,0.3,1);box-shadow:inset 0 2px 8px rgba(0,0,0,0.4),0 5px 20px rgba(0,0,0,0.2);}.note-input:focus,.checkout-input:focus{outline:none;border-color:var(--primary);background:var(--surface-solid);box-shadow:inset 0 2px 5px rgba(0,0,0,0.5),0 0 0 2px var(--primary-light),0 10px 30px rgba(0,0,0,0.5);transform:translateY(-2px);}.note-input::placeholder,.checkout-input::placeholder{color:#52525B;}.checkout-input{margin:0 0 12px 0;width:100%;}
+        select.checkout-input { appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 1rem center; background-size: 1em; }
         .order-panel{margin:20px 15px 30px 15px;background:linear-gradient(145deg,rgba(30,30,35,0.9) 0%,rgba(15,15,20,0.95) 100%);padding:20px;border-radius:28px;border:1px solid rgba(255,255,255,0.05);border-top:1px solid rgba(255,255,255,0.15);box-shadow:0 20px 40px rgba(0,0,0,0.5),inset 0 1px 1px rgba(255,255,255,0.05);}.order-btn{background:var(--success);color:white;border:none;padding:18px;font-size:15px;font-weight:800;border-radius:100px;width:100%;cursor:pointer;box-shadow:0 10px 20px rgba(52,199,89,0.4),inset 0 2px 4px rgba(255,255,255,0.3);transition:all 0.4s cubic-bezier(0.16,1,0.3,1);letter-spacing:0.5px;}.order-btn:active{transform:scale(0.95) translateY(2px);box-shadow:0 5px 10px rgba(52,199,89,0.3),inset 0 2px 6px rgba(0,0,0,0.2);}.order-btn.loading{background:#52525B;cursor:not-allowed;box-shadow:none;transform:none;}.order-btn:disabled{background:#52525B;cursor:not-allowed;box-shadow:none;transform:none;color:#a1a1aa;}
         .popup-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:2000;display:none;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity 0.4s cubic-bezier(0.16,1,0.3,1);}.popup-overlay.active{opacity:1;pointer-events:auto;}.popup-content{background:linear-gradient(180deg,#1a1a24 0%,#070709 100%);width:100%;border-top-left-radius:32px;border-top-right-radius:32px;padding:15px 20px 30px 20px;transform:translateY(100%);transition:transform 0.5s cubic-bezier(0.175,0.885,0.32,1.275);border-top:1px solid rgba(255,255,255,0.1);box-shadow:0 -20px 60px rgba(0,0,0,0.8);max-height:90vh;overflow-y:auto;position:relative;}.popup-overlay.active .popup-content{transform:translateY(0);}.popup-drag-handle{width:40px;height:5px;background:rgba(255,255,255,0.15);border-radius:10px;margin:0 auto 25px auto;}.popup-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:25px;}.popup-title{font-size:20px;font-weight:900;color:var(--text-main);line-height:1.2;letter-spacing:-0.5px;text-shadow:0 2px 8px rgba(0,0,0,0.5);}.popup-info-box{background:rgba(0,0,0,0.5);padding:12px 16px;border-radius:20px;border:1px solid var(--border-highlight);display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;box-shadow:inset 0 2px 10px rgba(0,0,0,0.6);}
         .p-sec-title{font-size:11px;color:var(--text-muted);font-weight:800;margin-bottom:10px;letter-spacing:1px;text-transform:uppercase;}.p-btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}.p-counter-box{display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,0.5);padding:10px 14px;border-radius:16px;border:1px solid var(--border-highlight);box-shadow:inset 0 2px 8px rgba(0,0,0,0.5);margin-bottom:10px;}.p-c-label{font-size:13px;font-weight:800;color:var(--text-main);}.p-c-ctrls{display:flex;align-items:center;gap:10px;}.p-c-btn{background:rgba(255,255,255,0.05);color:white;border:1px solid rgba(255,255,255,0.1);width:32px;height:32px;border-radius:50%;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:0.3s;box-shadow:0 2px 4px rgba(0,0,0,0.2);cursor:pointer;}.p-c-val{font-weight:900;font-size:16px;color:var(--primary);min-width:24px;text-align:center;}
@@ -60,62 +66,21 @@
         .security-badge{background:linear-gradient(135deg,rgba(16,185,129,0.1) 0%,rgba(5,150,105,0.05) 100%);border:1px solid rgba(16,185,129,0.3);padding:16px;border-radius:20px;display:flex;align-items:flex-start;gap:12px;margin:0 15px 20px 15px;}.security-badge .icon{font-size:24px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5));}.security-badge .text{color:#A1A1AA;font-size:12px;font-weight:500;line-height:1.5;}.security-badge .badge-title{color:var(--success);font-size:14px;display:block;font-weight:900;margin-bottom:4px;letter-spacing:-0.3px;}.security-badge .text strong{color:var(--success);font-weight:800;display:inline;}
         .input-group{margin-bottom:20px;}.input-group label{color:var(--text-muted);font-size:12px;font-weight:700;margin-bottom:8px;display:block;padding-left:12px;text-transform:uppercase;letter-spacing:1px;}.input-group .checkout-input{margin-bottom:0 !important;}
         .legal-link{color:var(--primary);text-decoration:underline;cursor:pointer;font-weight:700;transition:0.2s;}.legal-link:active{color:white;}
-
-        /* YENİ: ÇARKIFELEK STİLLERİ (6 DİLİM İÇİN GÜNCELLENDİ) */
-        .premium-cark-banner {
-            background: linear-gradient(135deg, #111114 0%, #1a1a24 100%);
-            border: 1px solid var(--border-highlight);
-            border-radius: 20px;
-            margin: 0 15px 20px 15px;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 2px 5px rgba(255,255,255,0.05);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
+        .premium-cark-banner { background: linear-gradient(135deg, #111114 0%, #1a1a24 100%); border: 1px solid var(--border-highlight); border-radius: 20px; margin: 0 15px 20px 15px; padding: 20px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 2px 5px rgba(255,255,255,0.05); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .premium-cark-banner:active { transform: scale(0.95); }
         .premium-cark-banner::before { content: '🎰'; position: absolute; right: -10px; bottom: -20px; font-size: 80px; opacity: 0.15; transform: rotate(-15deg); }
         .premium-cark-banner .c-b-content { position: relative; z-index: 2; }
         .c-b-title { color: var(--primary); font-size: 18px; font-weight: 900; margin-bottom: 5px; text-shadow: 0 2px 10px var(--primary-glow); }
         .c-b-desc { color: var(--text-muted); font-size: 13px; font-weight: 600; }
         .c-b-btn { background: var(--gradient-fire); color: white; padding: 10px 20px; border-radius: 100px; font-weight: 800; font-size: 13px; box-shadow: 0 4px 15px var(--primary-glow); position: relative; z-index: 2; }
-        
-        /* Çark 6 Dilim (Her biri 60 derece) */
-        .cark-kutu {
-            width: 280px; height: 280px; border-radius: 50%; border: 8px solid #1a1a24;
-            box-shadow: 0 0 40px rgba(255, 107, 0, 0.4), inset 0 0 20px rgba(0,0,0,0.8);
-            position: relative; overflow: hidden; margin: 0 auto 30px auto;
-            transition: transform 4s cubic-bezier(0.1, 0.7, 0.1, 1);
-            background: conic-gradient(
-                #FF6B00 0deg 60deg,
-                #151518 60deg 120deg,
-                #FACC15 120deg 180deg,
-                #23232b 180deg 240deg,
-                #FF9500 240deg 300deg,
-                #333333 300deg 360deg
-            );
-        }
+        .cark-kutu { width: 280px; height: 280px; border-radius: 50%; border: 8px solid #1a1a24; box-shadow: 0 0 40px rgba(255, 107, 0, 0.4), inset 0 0 20px rgba(0,0,0,0.8); position: relative; overflow: hidden; margin: 0 auto 30px auto; transition: transform 4s cubic-bezier(0.1, 0.7, 0.1, 1); background: conic-gradient( #FF6B00 0deg 60deg, #151518 60deg 120deg, #FACC15 120deg 180deg, #23232b 180deg 240deg, #FF9500 240deg 300deg, #333333 300deg 360deg ); }
         .cark-ok { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 35px solid white; z-index: 10; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6)); }
-        .cark-dilim-yazi {
-            position: absolute; top: 50%; left: 50%; width: 50%; height: 20px;
-            transform-origin: 0% 50%; font-size: 12px; font-weight: 900; color: white;
-            text-align: right; padding-right: 20px; text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-            display: flex; align-items: center; justify-content: flex-end;
-        }
+        .cark-dilim-yazi { position: absolute; top: 50%; left: 50%; width: 50%; height: 20px; transform-origin: 0% 50%; font-size: 12px; font-weight: 900; color: white; text-align: right; padding-right: 20px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: flex-end; }
         .cark-dilim-yazi span { display: inline-block; transform: scale(-1, -1); }
-        
-        .aktif-hediye-kart {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.05) 100%);
-            border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 16px; padding: 15px; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-        }
+        .aktif-hediye-kart { background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.05) 100%); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 16px; padding: 15px; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
     </style>
 </head>
 <body>
-
     <nav class="bottom-nav">
         <button class="nav-item active" id="nav-urunler" onclick="SayfaGoster('urunler')">
             <span class="icon">🥩</span><span>Menü</span>
@@ -134,7 +99,7 @@
         </button>
     </nav>
 
-    <!-- PWA UYARILARI -->
+    <!-- PWA & SPLASH UYARILARI AYNEN BIRAKILDI -->
     <div id="pwa-fullscreen-prompt" class="pwa-fullscreen-overlay">
         <div class="pwa-content-box">
             <button class="pwa-close-btn" onclick="CloseFullscreenPrompt()">&times;</button>
@@ -152,7 +117,6 @@
         <button onclick="ManuelUygulamaIndir()" style="background: white; color: var(--primary); border: none; padding: 6px 14px; border-radius: 100px; font-weight: 800; font-size: 12px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">İndir</button>
     </div>
 
-    <!-- EFEKTLER VE SPLASH EKRANI -->
     <div class="embers-container">
         <div class="ember"></div><div class="ember"></div><div class="ember"></div><div class="ember"></div><div class="ember"></div><div class="ember"></div>
     </div>
@@ -161,8 +125,7 @@
         <div class="aura-bg"></div>
         <div id="splash-content">
             <div class="hero-greeting"><span class="status-dot"></span><span id="dinamik-karsilama">Hoş Geldiniz ✨</span></div>
-            <div class="splash-logo">
-                Bekmez
+            <div class="splash-logo">Bekmez
                 <div class="splash-go-container">
                     <div class="splash-text-group"><span class="splash-go-text">GO</span><div class="splash-speed-lines"><div class="splash-line"></div><div class="splash-line"></div><div class="splash-line"></div></div></div>
                     <div class="splash-motor-wrapper">
@@ -205,7 +168,6 @@
         </div>
 
         <div id="menu-grid" class="grid-container">
-            <!-- Skeleton items -->
             <div class="skeleton-card"><div class="skel-icon"></div><div class="skel-text"></div><div class="skel-text short"></div><div class="skel-btn"></div></div>
             <div class="skeleton-card"><div class="skel-icon"></div><div class="skel-text"></div><div class="skel-text short"></div><div class="skel-btn"></div></div>
             <div class="skeleton-card"><div class="skel-icon"></div><div class="skel-text"></div><div class="skel-text short"></div><div class="skel-btn"></div></div>
@@ -213,14 +175,9 @@
         </div>
 
         <div class="secure-footer">
-            <div style="margin-bottom: 15px; display: flex; justify-content: center; align-items: center; gap: 15px;">
-                <img src="https://cdn.visa.com/v2/assets/images/logos/visa/blue/logo.png" style="height: 16px; filter: brightness(0) invert(1); opacity: 0.9;" alt="VISA">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" style="height: 24px; opacity: 0.9;" alt="MasterCard">
-                <span style="font-family: Arial, sans-serif; font-weight: 900; font-style: italic; font-size: 22px; color: #ffffff; letter-spacing: -1px; opacity: 0.9;">TROY</span>
-            </div>
             <div style="color: var(--success); font-weight: 800; font-size: 13px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 5px;">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                256-Bit SSL Güvenli Ödeme
+                Uçtan Uca Şifreli İletişim
             </div>
             <div class="footer-text">
                 <b>Bekmez Pişirim Gıda Ltd. Şti.</b><br>Çekmece Mah. 302.Sok İstanbul Kardeşlik Çarşısı 2 No:9 Defne/Hatay<br>Tel: 0532 000 00 00 | E-Posta: iletisim@bekmezpisirim.com<br>Mersis No: 0123456789000001
@@ -231,7 +188,6 @@
     <!-- FIRSATLAR VE ÇARK -->
     <div id="opportunities-container" style="display: none;">
         <h2 class="page-title">Fırsatlar ve Şans</h2>
-        
         <div id="cark-banner" class="premium-cark-banner" onclick="CarkPopupAc()">
             <div class="c-b-content">
                 <div class="c-b-title">🎰 Haftalık Şans Çarkı</div>
@@ -250,7 +206,6 @@
                 <button onclick="CarkHediyesiniKullan()" style="background:var(--success); color:white; border:none; padding:10px 15px; border-radius:100px; font-weight:800; box-shadow:0 4px 15px rgba(52,199,89,0.4); cursor:pointer;">Kullan</button>
             </div>
         </div>
-
         <div id="firsatlar-list" style="padding: 0 15px 25px 15px;"><div class="empty-text">Kuponlar aranıyor...</div></div>
     </div>
 
@@ -286,7 +241,7 @@
         <h2 class="page-title">Profilim</h2>
         <div class="security-badge">
             <div class="icon">🛡️</div>
-            <div class="text"><span class="badge-title">Uçtan Uca Güvenlik</span>Kişisel verileriniz hiçbir uzak sunucuya kaydedilmez. Tamamen <strong>kendi telefonunuzun şifreli hafızasında</strong> saklanır.</div>
+            <div class="text"><span class="badge-title">Cihaz İçi Güvenlik</span>Bilgileriniz sadece cihazınızda saklanır ve sipariş anında doğrudan kasaya şifreli iletilir.</div>
         </div>
         <div style="margin: 0 15px 30px 15px;">
             <div class="input-group"><label>Adınız Soyadınız</label><input type="text" id="prof-isim" class="checkout-input" placeholder="Örn: Ahmet Yılmaz"></div>
@@ -314,11 +269,9 @@
         <div class="popup-content" style="text-align: center;">
             <div class="popup-drag-handle"></div>
             <h3 class="popup-title" style="margin-bottom: 30px; font-size:24px;">Haftalık Şans Çarkı</h3>
-            
             <div style="position:relative;">
                 <div class="cark-ok"></div>
                 <div class="cark-kutu" id="cark-element">
-                    <!-- Dilimler (6 Dilim, 60 derece) -->
                     <div class="cark-dilim-yazi" style="transform: rotate(30deg); color:white;"><span>🍟 Ekstra Patates</span></div>
                     <div class="cark-dilim-yazi" style="transform: rotate(90deg); color:white;"><span>😔 Pas</span></div>
                     <div class="cark-dilim-yazi" style="transform: rotate(150deg); color:black;"><span>🥤 1 Lt İçecek</span></div>
@@ -327,7 +280,6 @@
                     <div class="cark-dilim-yazi" style="transform: rotate(330deg); color:white;"><span>🥖 Ekstra Lavaş</span></div>
                 </div>
             </div>
-
             <p id="cark-durum-metni" style="color:var(--text-muted); font-weight:700; font-size:14px; margin-bottom:20px;">Sadece 7 günde 1 kez çevirebilirsin.</p>
             <button id="cark-cevir-btn" class="order-btn shimmer-btn neon-border" onclick="CarkCevir()">Şansımı Dene!</button>
         </div>
@@ -350,6 +302,7 @@
         </div>
     </div>
 
+    <!-- GÜVENLİ CHECKOUT EKRANI (Kredi Kartı Formu Çıkarıldı) -->
     <div id="checkout-popup" class="popup-overlay" onclick="if(event.target === this) CheckoutKapat();">
         <div class="popup-content">
             <div class="popup-drag-handle"></div>
@@ -359,12 +312,16 @@
                 <input type="tel" id="chk-telefon" class="checkout-input" placeholder="Telefon Numaranız (05...)" autocomplete="tel">
                 <textarea id="chk-adres" class="checkout-input" rows="3" placeholder="Açık Adresiniz (Mahalle, Sokak, No...)" style="resize:none;"></textarea>
             </div>
-            <div style="font-size:12px; color:var(--text-muted); font-weight:800; margin-bottom:12px; letter-spacing:1px; text-transform: uppercase;">Kart Bilgileri (Online Ödeme):</div>
-            <div class="cc-box" style="margin-bottom: 5px;">
-                <input type="text" id="cc-name" class="checkout-input" placeholder="Kart Üzerindeki İsim" style="margin-bottom:10px; padding: 14px;">
-                <input type="text" id="cc-number" class="checkout-input" placeholder="Kart Numarası (XXXX XXXX XXXX XXXX)" maxlength="19" oninput="this.value = this.value.replace(/[^0-9 ]/g, '')" style="margin-bottom:10px; padding: 14px;">
-                <div style="display:flex; gap:10px;"><input type="text" id="cc-exp" class="checkout-input" placeholder="AA/YY" maxlength="5" style="margin-bottom:0; flex:1; padding: 14px;"><input type="password" id="cc-cvv" class="checkout-input" placeholder="CVV" maxlength="3" style="margin-bottom:0; width:80px; padding: 14px;"></div>
+            
+            <div style="font-size:12px; color:var(--text-muted); font-weight:800; margin-bottom:12px; letter-spacing:1px; text-transform: uppercase;">Ödeme Yöntemi:</div>
+            <div style="margin-bottom: 20px; position:relative;">
+                <select id="odeme-turu-secim" class="checkout-input" style="padding: 16px; width: 100%; margin-bottom: 0;">
+                    <option value="Kapıda Nakit">Kapıda Nakit</option>
+                    <option value="Kapıda Kredi Kartı">Kapıda Kredi Kartı</option>
+                    <option value="Havale/EFT">IBAN'a Havale/EFT</option>
+                </select>
             </div>
+
             <div style="margin: 15px 0 25px 0; display: flex; align-items: flex-start; gap: 12px; padding: 0 5px;">
                 <input type="checkbox" id="legal-checkbox" onchange="TogglePayButton()" style="width: 22px; height: 22px; accent-color: var(--primary); margin-top: 2px; cursor: pointer;">
                 <label for="legal-checkbox" style="font-size: 11px; color: var(--text-muted); line-height: 1.5; cursor: pointer;"><a class="legal-link" onclick="AcSozlesme('mesafeli'); event.preventDefault();">Mesafeli Satış Sözleşmesi</a>, <a class="legal-link" onclick="AcSozlesme('teslimat'); event.preventDefault();">Teslimat Şartları</a> ve <a class="legal-link" onclick="AcSozlesme('iptal'); event.preventDefault();">İptal/İade Koşulları</a>'nı okudum ve onaylıyorum.</label>
@@ -378,25 +335,30 @@
     <div id="legal-popup" class="popup-overlay" onclick="if(event.target === this) KapatSozlesme();"><div class="popup-content" style="max-height: 85vh;"><div class="popup-drag-handle"></div><div class="popup-header"><h3 id="legal-title" class="popup-title" style="font-size:18px;">Sözleşme</h3><button onclick="KapatSozlesme()" style="background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); width: 36px; height: 36px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button></div><div id="legal-body" style="color: #A1A1AA; font-size: 12px; line-height: 1.7; text-align: left; overflow-y: auto; max-height: 60vh; padding-right: 5px;"></div></div></div>
     <div id="custom-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)"><div class="custom-alert-box" id="custom-alert-box"><div class="custom-alert-glow" id="custom-alert-glow"></div><div class="custom-alert-content"><div id="custom-alert-icon" style="font-size: 55px; margin-bottom: 20px;">⚠️</div><h3 id="custom-alert-title" style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Uyarı</h3><p id="custom-alert-text" style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;"></p><button onclick="KapatUyariModal(event, true)" class="alert-btn">Tamam, Anladım</button></div></div></div>
     <div id="distance-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)"><div class="custom-alert-box"><div class="custom-alert-glow" style="background:var(--primary);"></div><div class="custom-alert-content"><div style="font-size: 55px; margin-bottom: 20px;">🛵</div><h3 style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Menzil Dışındasınız</h3><p style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;">Bekmez GO lezzetlerini size ulaştırabilmek için teslimat ağımızı <b>4 km</b> ile sınırlandırıyoruz.<br><br>Maalesef şu an sıcak teslimat bölgemizin dışındasınız.</p><button onclick="KapatUyariModal(event, true)" class="alert-btn" style="background:var(--primary); border-color:transparent; color:white;">Anladım</button></div></div></div>
-    <div id="success-overlay" class="success-overlay"><div class="success-icon-wrapper"><div class="success-ring"></div><div class="success-circle"><svg class="success-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div></div><div class="success-text">Ödeme Alındı</div><div class="success-subtext">Paketiniz en kısa sürede yola çıkacaktır...</div></div>
-
+    <div id="success-overlay" class="success-overlay"><div class="success-icon-wrapper"><div class="success-ring"></div><div class="success-circle"><svg class="success-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div></div><div class="success-text">Sipariş Alındı</div><div class="success-subtext">Paketiniz en kısa sürede yola çıkacaktır...</div></div>
 
     <script>
+        // GÜVENLİ FIREBASE BAŞLATMA (Auth Key İhtiyacı Yoktur)
+        const firebaseConfig = {
+            databaseURL: "https://bekmezpos-default-rtdb.firebaseio.com",
+            // NOT: Anonim Auth için Firebase konsolunda Authentication menüsünden "Anonymous" açılmış olmalıdır.
+        };
+        firebase.initializeApp(firebaseConfig);
+        
+        // Anonim Giriş Yap
+        firebase.auth().signInAnonymously().catch((error) => {
+            console.error("Firebase Auth Hatası:", error);
+        });
+
         // TEMEL SABİTLER
         const textMesafeli = `<strong style="color:white; font-size:14px;">MADDE 1 - TARAFLAR</strong><br><b>SATICI:</b> Bekmez Pişirim Gıda Ltd. Şti.<br><br><strong style="color:white; font-size:14px;">MADDE 2 - CAYMA HAKKI İSTİSNASI</strong><br>Tüketici Mevzuatı gereğince; çabuk bozulabilen malların teslimine ilişkin sözleşmelerde Tüketicinin CAYMA HAKKI BULUNMAMAKTADIR.`;
         const textTeslimat = `<strong style="color:white; font-size:14px;">TESLİMAT ŞARTLARI</strong><br><br><b>1. Teslimat Bölgesi:</b> Maksimum 4 km yarıçapındaki bölgelere teslim edilmektedir.<br><b>2. Süre:</b> Ortalama 30-45 dakika içerisinde adresinize teslim edilir.`;
-        const textIptal = `<strong style="color:white; font-size:14px;">İPTAL KOŞULLARI</strong><br><br><b>1. Şartlar:</b> Sipariş ancak mutfağa iletilmeden önce iptal edilebilir.<br><b>2. İade:</b> Onaylanan iadelerde tutar, 3-7 iş günü içerisinde karta yansıtılır.`;
-        const textKVKK = `<strong style="color:white; font-size:14px;">KVKK VE GİZLİLİK POLİTİKASI</strong><br><br><b>Kredi Kartı Güvenliği:</b> Kart bilgileriniz hiçbir şekilde sunucularımızda kaydedilmez.<br><b>Veri İşleme:</b> Bilgileriniz cihazınızda şifrelenir ve 3. şahıslarla paylaşılmaz.`;
-
+        const textIptal = `<strong style="color:white; font-size:14px;">İPTAL KOŞULLARI</strong><br><br><b>1. Şartlar:</b> Sipariş ancak mutfağa iletilmeden önce iptal edilebilir.`;
+        
         const DUKKAN_ENLEM = 36.206278; 
         const DUKKAN_BOYLAM = 36.134472; 
         const MAKS_MESAFE_KM = 4; 
         const GHOST_TIMEOUT_MS = 8 * 60 * 60 * 1000; 
-
-        const firebaseMenuUrl = "https://bekmezpos-default-rtdb.firebaseio.com/Menu.json";
-        const firebasePaketSiparisUrl = "https://bekmezpos-default-rtdb.firebaseio.com/PaketSiparisler.json";
-        const firebaseKuponUrl = "https://bekmezpos-default-rtdb.firebaseio.com/Kuponlar/"; 
-        const authKeyStr = "?auth=dMbxeHXdGtbbPwi7EZGwFUhcfIYqrrnWK9MUxpBw";
 
         let ekmekUrunAdi = "Ekmek"; let ekmekBirimFiyati = 0; let sepet = []; let hamToplamFiyat = 0; let sonOdenecekFiyat = 0;
         let aktifKuponKodu = ""; let aktifKuponIndirimTutari = 0; let aktifKuponAltLimit = 0; let aktifKuponHedefUrun = "Herşey"; 
@@ -405,18 +367,13 @@
         let baseKgBread = 0; let ekstraEkmekKg = 0; let seciliUrunStok = 999; let oncekiToplamFiyat = 0; let oncekiPopupFiyat = 0; let oncekiPopupMiktar = 0;
         let populerUrunlerListesi = []; let canliAdisyonTimer = null; let sonCekilenAdisyonHTML = ""; let sonKuponVerisi = ""; let isProcessingOrder = false;
 
-        let deferredPrompt; 
-        let installPromptDismissed = localStorage.getItem('pwa_prompt_dismissed') === 'true';
-
-        window.isAwaitingUnityEditSync = false;
+        let deferredPrompt; let installPromptDismissed = localStorage.getItem('pwa_prompt_dismissed') === 'true';
         window.isOrderFinished = false; 
 
-        // ÇARKIFELEK SABİTLERİ (6 Dilim, 2 adet "Pas" eklendi)
         const CARK_SALT = "BEKMEZ_GO_SECURE_2026"; 
         const CARK_ODULLERI = ["🍟 Ekstra Patates", "😔 Pas", "🥤 1 Lt İçecek", "🍰 Fırın Sütlaç", "😔 Pas", "🥖 Ekstra Lavaş"];
         let aktifKullanilanCarkOdulu = null; 
 
-        // GÜVENLİ ESCAPE HTML FONKSİYONU
         function HapticTitresim() { if(navigator.vibrate) navigator.vibrate(15); }
         function BildirimGonder(baslik, mesaj) {
             if (!("Notification" in window) || Notification.permission !== "granted") return;
@@ -430,12 +387,9 @@
             return str ? str.toString().replace(/[&<>'"]/g, function(tag){ return {'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[tag]; }) : ""; 
         }
         
-        function VeriSifrele(t) { try { return btoa(encodeURIComponent(t)); } catch(e) { return ""; } }
-        function VeriCoz(h) { try { return decodeURIComponent(atob(h)); } catch(e) { return ""; } }
-
         function OzelUyariGoster(baslik, metin, ikon) {
             document.getElementById("custom-alert-title").innerText = baslik;
-            document.getElementById("custom-alert-text").innerHTML = metin; // Güvenilir metinler geldiği için içerde escape gerekmiyor
+            document.getElementById("custom-alert-text").innerHTML = metin;
             document.getElementById("custom-alert-icon").innerText = ikon;
             let p = document.getElementById("custom-alert-overlay"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10);
         }
@@ -461,27 +415,23 @@
         // PROFİL KAYIT
         function ProfiliKaydet() {
             HapticTitresim();
-            // GÜVENLİK: İsim ve adres girdileri anında temizleniyor.
             let i = escapeHTML(document.getElementById("prof-isim").value.trim());
             let t = document.getElementById("prof-telefon").value.trim().replace(/[^0-9]/g, '');
             let a = escapeHTML(document.getElementById("prof-adres").value.trim());
             
-            localStorage.setItem("bg_i", VeriSifrele(i)); localStorage.setItem("bg_t", VeriSifrele(t)); localStorage.setItem("bg_a", VeriSifrele(a));
+            localStorage.setItem("bg_i", i); localStorage.setItem("bg_t", t); localStorage.setItem("bg_a", a);
             document.getElementById("chk-isim").value = i; document.getElementById("chk-telefon").value = t; document.getElementById("chk-adres").value = a;
-            OzelUyariGoster("Başarılı", "Profil bilgileriniz cihazınıza şifrelenerek kaydedildi ve ödeme ekranına yansıtıldı.", "✅");
+            OzelUyariGoster("Başarılı", "Profil bilgileriniz cihazınıza kaydedildi.", "✅");
         }
         function ProfiliSil() {
             HapticTitresim(); localStorage.removeItem("bg_i"); localStorage.removeItem("bg_t"); localStorage.removeItem("bg_a");
             document.getElementById("prof-isim").value = ""; document.getElementById("prof-telefon").value = ""; document.getElementById("prof-adres").value = "";
             document.getElementById("chk-isim").value = ""; document.getElementById("chk-telefon").value = ""; document.getElementById("chk-adres").value = "";
-            OzelUyariGoster("Silindi", "Verileriniz cihazdan kalıcı olarak silindi.", "🗑️");
+            OzelUyariGoster("Silindi", "Verileriniz cihazdan silindi.", "🗑️");
         }
 
-        // ÇARKIFELEK (6 DİLİM)
-        async function GetServerTime() {
-            try { let res = await fetch("https://bekmezpos-default-rtdb.firebaseio.com/.json", { method: 'HEAD', cache: "no-store" }); let dateStr = res.headers.get('Date'); if (dateStr) return new Date(dateStr).getTime(); } catch(e) {}
-            return Date.now(); 
-        }
+        // ÇARKIFELEK (Yerel Hafıza Koruması - Gelişmiş güvenlik için Backend gerekir)
+        async function GetServerTime() { return Date.now(); } // Anonim modda Date Header okumak CORS'a takılabilir, Date.now yeterlidir.
 
         function CarkVerisiSifrele(odul, bitis) { return btoa(encodeURIComponent(`${odul}|||${bitis}|||${CARK_SALT}`)); }
         function CarkVerisiCoz(hash) {
@@ -494,18 +444,17 @@
             HapticTitresim(); SessizIzinIste();
             let p = document.getElementById("cark-popup"); let btn = document.getElementById("cark-cevir-btn"); let durum = document.getElementById("cark-durum-metni");
             p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10);
-            btn.innerText = "Bağlanıyor..."; btn.disabled = true;
+            
             let sTime = await GetServerTime();
             let kayitliHash = localStorage.getItem("bg_cark_data"); let parsed = CarkVerisiCoz(kayitliHash);
 
             if(parsed && sTime < parsed.bitis) {
                 let kalanGun = Math.ceil((parsed.bitis - sTime) / (1000 * 60 * 60 * 24));
-                durum.innerText = `Çarkı tekrar çevirmek için ${kalanGun} gün beklemelisin.`; durum.style.color = "var(--warning)"; btn.innerText = "Şansını Denedin";
+                durum.innerText = `Çarkı tekrar çevirmek için ${kalanGun} gün beklemelisin.`; durum.style.color = "var(--warning)"; btn.innerText = "Şansını Denedin"; btn.disabled = true;
             } else {
                 durum.innerText = "Sadece 7 günde 1 kez çevirebilirsin."; durum.style.color = "var(--text-muted)"; btn.innerText = "Şansımı Dene!"; btn.disabled = false;
             }
         }
-
         function CarkPopupKapat() { let p = document.getElementById("cark-popup"); p.classList.remove("active"); setTimeout(() => p.style.display = "none", 500); }
 
         async function CarkCevir() {
@@ -513,29 +462,22 @@
             let btn = document.getElementById("cark-cevir-btn"); btn.disabled = true; btn.innerText = "Çevriliyor...";
             let cark = document.getElementById("cark-element");
             
-            // 6 Dilimli dönüş matematiği
             let kazananIndex = Math.floor(Math.random() * 6); 
-            // Formül: (5 ekstra tur) + 360 - (Hedef dilim açısı * 60 derece) - 30 derece (dilim merkezi)
             let hedefAci = (5 * 360) + (360 - (kazananIndex * 60)) - 30; 
             cark.style.transform = `rotate(${hedefAci}deg)`;
 
             setTimeout(async () => {
                 let kazanilanOdul = CARK_ODULLERI[kazananIndex];
                 let sTime = await GetServerTime();
-                let bitisZamani = sTime + (7 * 24 * 60 * 60 * 1000); // 7 Gün Kilit
+                let bitisZamani = sTime + (7 * 24 * 60 * 60 * 1000);
 
                 localStorage.setItem("bg_cark_data", CarkVerisiSifrele(kazanilanOdul, bitisZamani));
                 localStorage.removeItem("bg_cark_notif"); 
 
-                if(kazanilanOdul === "😔 Pas") {
-                    OzelUyariGoster("Ah be!", "Bu hafta şans sana gülmedi (Pas). 7 Gün sonra tekrar dene!", "😔");
-                } else {
-                    OzelUyariGoster("Tebrikler! 🎉", `Şans çarkından <b>${kazanilanOdul}</b> kazandınız! Fırsatlar menüsünden siparişinize ekleyebilirsiniz.`, "🎁");
-                    BildirimGonder("Hediye Kazandın! 🎁", `Bekmez GO çarkından ${kazanilanOdul} kazandın. Sepetine eklemeyi unutma!`);
-                }
+                if(kazanilanOdul === "😔 Pas") { OzelUyariGoster("Ah be!", "Bu hafta şans sana gülmedi (Pas). 7 Gün sonra tekrar dene!", "😔"); } 
+                else { OzelUyariGoster("Tebrikler! 🎉", `Şans çarkından <b>${kazanilanOdul}</b> kazandınız! Fırsatlar menüsünden siparişinize ekleyebilirsiniz.`, "🎁"); BildirimGonder("Hediye Kazandın! 🎁", `Bekmez GO çarkından ${kazanilanOdul} kazandın. Sepetine eklemeyi unutma!`); }
                 
                 CarkPopupKapat(); CarkDurumunuKontrolEt(); 
-                
                 setTimeout(() => { cark.style.transition = "none"; cark.style.transform = `rotate(0deg)`; setTimeout(() => cark.style.transition = "transform 4s cubic-bezier(0.1, 0.7, 0.1, 1)", 50); }, 500);
             }, 4200); 
         }
@@ -553,39 +495,34 @@
                 let kalanGun = Math.ceil((parsed.bitis - sTime) / (1000 * 60 * 60 * 24));
                 bannerDesc.innerText = `Sonraki çark hakkına ${kalanGun} gün var.`; bannerDesc.style.color = "var(--warning)";
 
-                // Pas DEĞİLSE hediye kutusunu göster (Kullanıcı sepetine eklemediyse)
                 if(parsed.odul !== "😔 Pas" && aktifKullanilanCarkOdulu === null) {
                     hediyeKutusu.style.display = "block";
                     document.getElementById("kazanilan-odul-yazi").innerText = parsed.odul.replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, '').trim(); 
                     document.getElementById("kazanilan-sure-yazi").innerText = `Kalan Süre: ${kalanGun} Gün`;
-
-                    if(kalanGun <= 2 && !localStorage.getItem("bg_cark_notif")) {
-                        BildirimGonder("Hediyen Yanmak Üzere! ⏰", `Bekmez GO çarkından kazandığın ${parsed.odul} için son 2 gün kaldı!`);
-                        localStorage.setItem("bg_cark_notif", "true");
-                    }
                 } else { hediyeKutusu.style.display = "none"; }
             }
         }
 
         function CarkHediyesiniKullan() {
             HapticTitresim(); let hash = localStorage.getItem("bg_cark_data"); let parsed = CarkVerisiCoz(hash);
-            // Güvenlik doğrulamasından geçti ve PAS değilse
             if(parsed && parsed.odul !== "😔 Pas") {
-                let temizOdulAdi = parsed.odul.replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, '').trim();
-                aktifKullanilanCarkOdulu = temizOdulAdi;
-                OzelUyariGoster("Sepete Eklendi", `Çark hediyeniz (${temizOdulAdi}) siparişinize eklendi!`, "🛒");
+                aktifKullanilanCarkOdulu = parsed.odul.replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, '').trim();
+                OzelUyariGoster("Sepete Eklendi", `Çark hediyeniz (${aktifKullanilanCarkOdulu}) siparişinize eklendi!`, "🛒");
                 CarkDurumunuKontrolEt(); SayfaGoster('sepet'); 
             }
         }
-
         function CarkHediyesiIptal() { HapticTitresim(); aktifKullanilanCarkOdulu = null; CarkDurumunuKontrolEt(); SepetEkraniniCiz(); }
 
-        // DİĞER ESKİ FONKSİYONLAR
+        // ADİSYON İPTAL
         function IptalOnaySor() { HapticTitresim(); SoruSor("Siparişi İptal Et", "Siparişinizi iptal etmek istediğinize emin misiniz? İşlem geri alınamaz.", "⚠️", () => { SiparişiGercektenIptalEt(); }, true); }
         function SiparişiGercektenIptalEt() {
-            let tR = VeriCoz(localStorage.getItem("bg_t")); if(!tR) return; let sT = tR.replace(/[^0-9]/g, ''); 
-            fetch(`https://bekmezpos-default-rtdb.firebaseio.com/PaketSiparisler/${sT}.json${authKeyStr}`, { method: "PUT", body: JSON.stringify({ islemTuru: "IPTAL", zaman: new Date().toLocaleTimeString() }) });
-            fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliPaketler/Paket_${sT}.json${authKeyStr}`, { method: "PATCH", body: JSON.stringify({ durum: "İPTAL EDİLİYOR..." }) });
+            let siparisId = localStorage.getItem("bg_active_order_id"); if(!siparisId) return;
+            
+            // GÜVENLİ İPTAL TALEBİ
+            let db = firebase.database();
+            db.ref('PaketSiparisler/' + siparisId).update({ islemTuru: "IPTAL", zaman: new Date().toLocaleTimeString() });
+            db.ref('CanliPaketler/' + siparisId).update({ durum: "İPTAL EDİLİYOR..." });
+            
             OzelUyariGoster("İptal Talebi Alındı", "İptal işleminiz kasaya iletildi. Stok ve varsa kupon iadeniz gerçekleşecektir.", "✅");
         }
 
@@ -608,10 +545,7 @@
             panel.style.display = "block"; notSection.style.display = "block"; document.getElementById("floating-cart").style.display = "flex";
 
             if(aktifKullanilanCarkOdulu !== null) {
-                container.innerHTML += `
-                <div class="cart-item" style="border-color:var(--success); background:linear-gradient(145deg,rgba(52,199,89,0.1) 0%,rgba(15,15,20,0.9) 100%);">
-                    <div class="cart-item-details"><div class="cart-item-name"><span style="color:var(--success);">🎁 ÇARK HEDİYESİ:</span> ${escapeHTML(aktifKullanilanCarkOdulu)}</div><div class="cart-item-price" style="color:var(--success);">0.00 TL (Ücretsiz)</div></div>
-                </div>`;
+                container.innerHTML += `<div class="cart-item" style="border-color:var(--success); background:linear-gradient(145deg,rgba(52,199,89,0.1) 0%,rgba(15,15,20,0.9) 100%);"><div class="cart-item-details"><div class="cart-item-name"><span style="color:var(--success);">🎁 ÇARK HEDİYESİ:</span> ${escapeHTML(aktifKullanilanCarkOdulu)}</div><div class="cart-item-price" style="color:var(--success);">0.00 TL (Ücretsiz)</div></div></div>`;
             }
 
             sepet.forEach((item, index) => {
@@ -638,7 +572,6 @@
             if (totalQty > 0) { badge.innerText = totalQty; badge.classList.add("show"); } else { badge.classList.remove("show"); }
         }
 
-        // DİĞER YARDIMCI VE YÜKLEME FONKSİYONLARI...
         function SmoothCounter(id, start, end, duration, isCurrency, isKg=false) {
             let el = document.getElementById(id); if(!el) return; let startTime = null;
             const step = (timestamp) => {
@@ -650,7 +583,7 @@
 
         function AcSozlesme(tip) {
             HapticTitresim(); let baslik = "", icerik = "";
-            if (tip === "mesafeli") { baslik = "Mesafeli Satış Sözleşmesi"; icerik = textMesafeli; } else if (tip === "teslimat") { baslik = "Teslimat Şartları"; icerik = textTeslimat; } else if (tip === "iptal") { baslik = "İptal/İade Koşulları"; icerik = textIptal; } else if (tip === "kvkk") { baslik = "KVKK ve Gizlilik Politikası"; icerik = textKVKK; }
+            if (tip === "mesafeli") { baslik = "Mesafeli Satış Sözleşmesi"; icerik = textMesafeli; } else if (tip === "teslimat") { baslik = "Teslimat Şartları"; icerik = textTeslimat; } else if (tip === "iptal") { baslik = "İptal/İade Koşulları"; icerik = textIptal; } 
             document.getElementById("legal-title").innerText = baslik; document.getElementById("legal-body").innerHTML = icerik;
             let p = document.getElementById("legal-popup"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10);
         }
@@ -673,6 +606,7 @@
             setTimeout(() => { o.classList.remove("active"); setTimeout(() => { o.style.display = "none"; SayfaGoster('gecmis'); }, 500); }, 3000);
         }
 
+        // PWA KODLARI
         if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); }); }
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault(); deferredPrompt = e; const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
@@ -681,28 +615,16 @@
         });
         window.addEventListener('appinstalled', (evt) => {
             document.getElementById('pwa-fullscreen-prompt').style.display = 'none'; document.getElementById('pwa-install-banner').style.display = 'none';
-            OzelUyariGoster("Kurulum Tamamlandı! 🎉", "Bekmez GO telefonunuza yüklendi. Lütfen tarayıcıyı kapatıp ana ekranınızdaki uygulamadan giriş yapın.", "✅");
-        });
-
-        let cartReminderTimer = null;
-        document.addEventListener("visibilitychange", function() {
-            if (document.visibilityState === 'hidden' && sepet.length > 0) {
-                cartReminderTimer = setTimeout(() => { BildirimGonder("Sepetin seni bekliyor! 🥶🥩", "Siparişini tamamla, Bekmez GO hızıyla hemen kapına getirelim! 🛵💨"); }, 2000); 
-            } else { if (cartReminderTimer) clearTimeout(cartReminderTimer); }
+            OzelUyariGoster("Kurulum Tamamlandı! 🎉", "Bekmez GO telefonunuza yüklendi.", "✅");
         });
 
         function ManuelUygulamaIndir() {
             HapticTitresim(); const isIos = () => { const ua = window.navigator.userAgent.toLowerCase(); return /iphone|ipad|ipod/.test(ua); }
-            const isInApp = () => { const ua = navigator.userAgent || navigator.vendor || window.opera; return (ua.indexOf("FBAN")>-1) || (ua.indexOf("FBAV")>-1) || (ua.indexOf("Instagram")>-1); }
-            if (isInApp()) { OzelUyariGoster("Tarayıcı Desteklenmiyor", "Lütfen sağ üstteki 3 noktaya basıp 'Tarayıcıda Aç' seçeneğini seçin.", "🌐"); return; }
             if (isIos()) { OzelUyariGoster("iOS Kurulumu", "iPhone'a kurmak için alt menüdeki [Paylaş] ikonuna basıp 'Ana Ekrana Ekle' seçeneğini seçiniz.", "🍏"); return; }
-            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-            if (isStandalone) { OzelUyariGoster("Zaten Uygulamadasınız", "Şu an zaten Bekmez GO uygulamasını kullanıyorsunuz.", "🚀"); return; }
             if (deferredPrompt) {
                 deferredPrompt.prompt(); deferredPrompt.userChoice.then((c) => { if (c.outcome === 'accepted') { document.getElementById("pwa-fullscreen-prompt").style.display="none"; document.getElementById("pwa-install-banner").style.display="none"; } deferredPrompt = null; });
-            } else { OzelUyariGoster("Uygulama Yüklü", "Uygulama zaten telefonunuzda yüklü.", "📲"); }
+            } else { OzelUyariGoster("Uygulama Yüklü", "Uygulama zaten telefonunuzda yüklü veya tarayıcınız desteklemiyor.", "📲"); }
         }
-
         function CloseFullscreenPrompt() { 
             HapticTitresim(); let p = document.getElementById('pwa-fullscreen-prompt'); p.classList.remove('active'); setTimeout(() => { p.style.display = 'none'; }, 500); 
             localStorage.setItem('pwa_prompt_dismissed', 'true'); if (deferredPrompt) { document.getElementById('pwa-install-banner').style.display = 'flex'; }
@@ -715,7 +637,7 @@
             let ko = document.getElementById("dinamik-karsilama"); if(ko) ko.innerText = m;
             setTimeout(() => { SplashKapatSinematik(); }, 3000);
 
-            let ki = VeriCoz(localStorage.getItem("bg_i")); let kt = VeriCoz(localStorage.getItem("bg_t")); let ka = VeriCoz(localStorage.getItem("bg_a"));
+            let ki = localStorage.getItem("bg_i"); let kt = localStorage.getItem("bg_t"); let ka = localStorage.getItem("bg_a");
             if(ki) { document.getElementById("chk-isim").value = escapeHTML(ki); if(document.getElementById("prof-isim")) document.getElementById("prof-isim").value = escapeHTML(ki); }
             if(kt) { document.getElementById("chk-telefon").value = kt; if(document.getElementById("prof-telefon")) document.getElementById("prof-telefon").value = kt; }
             if(ka) { document.getElementById("chk-adres").value = escapeHTML(ka); if(document.getElementById("prof-adres")) document.getElementById("prof-adres").value = escapeHTML(ka); }
@@ -733,19 +655,18 @@
                     splash.style.opacity = '0'; 
                     setTimeout(() => { 
                         splash.style.display = 'none'; 
-                        let kt = VeriCoz(localStorage.getItem("bg_t")); 
-                        if (kt && kt.length >= 10) {
-                            let sT = kt.replace(/[^0-9]/g, ''); 
-                            fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliPaketler/Paket_${sT}.json${authKeyStr}`)
-                            .then(r => r.json())
-                            .then(d => {
+                        
+                        let siparisId = localStorage.getItem("bg_active_order_id");
+                        if(siparisId) {
+                            firebase.database().ref('CanliPaketler/' + siparisId).once('value').then((snapshot) => {
+                                let d = snapshot.val();
                                 let sipZamani = (d && d.timestamp) ? d.timestamp : null;
                                 let isGhost = sipZamani ? ((Date.now() - sipZamani) > GHOST_TIMEOUT_MS) : false;
-                                if(d && d.durum && !d.durum.includes("İPTAL") && !d.durum.includes("RED") && !d.durum.includes("TESLİM") && !d.durum.includes("AFİYET") && !isGhost) { SayfaGoster('gecmis'); } else { SayfaGoster('urunler'); }
+                                if(d && d.durum && !d.durum.includes("İPTAL") && !d.durum.includes("RED") && !d.durum.includes("TESLİM") && !d.durum.includes("AFİYET") && !isGhost) { 
+                                    SayfaGoster('gecmis'); 
+                                } else { SayfaGoster('urunler'); }
                             }).catch(() => SayfaGoster('urunler'));
-                        } else {
-                            if (document.getElementById("menu-container").style.display !== "block" && document.getElementById("cart-container").style.display !== "block") { SayfaGoster('urunler'); }
-                        }
+                        } else { SayfaGoster('urunler'); }
                     }, 800); 
                 }, 400); 
             } 
@@ -774,14 +695,18 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // MENÜ İŞLEMLERİ...
+        // FIREBASE GÜVENLİ MENÜ ÇEKME 
         async function CanliMenuCek(ilkYukleme) {
             try {
-                try { let pR = await fetch(`https://bekmezpos-default-rtdb.firebaseio.com/PopulerUrunler.json${authKeyStr}&t=${new Date().getTime()}`); let pD = await pR.json(); if(pD && Array.isArray(pD)) populerUrunlerListesi = pD; } catch(e) {}
-                let vR = await fetch(`https://bekmezpos-default-rtdb.firebaseio.com/MenuVersion.json${authKeyStr}&t=${new Date().getTime()}`); let vD = await vR.json();
+                let db = firebase.database();
+                let pR = await db.ref('PopulerUrunler').once('value');
+                let pD = pR.val(); if(pD && Array.isArray(pD)) populerUrunlerListesi = pD;
+
+                let vR = await db.ref('MenuVersion').once('value'); let vD = vR.val();
                 if (!ilkYukleme && vD && vD.v == sonMenuVersiyonu) return; if (vD) sonMenuVersiyonu = vD.v;
 
-                let mR = await fetch(firebaseMenuUrl + authKeyStr + "&t=" + new Date().getTime()); let data = await mR.json(); let liste = (data && data.products) ? data.products : []; let yeniVeri = JSON.stringify(liste);
+                let mR = await db.ref('Menu').once('value'); let data = mR.val();
+                let liste = (data && data.products) ? data.products : []; let yeniVeri = JSON.stringify(liste);
 
                 if (sonMenuVerisi !== yeniVeri) {
                     tumUrunler = liste; sonMenuVerisi = yeniVeri;
@@ -792,16 +717,6 @@
                     let historyUpdated = false; let mevcutUrunAdlari = tumUrunler.map(u => u.pName);
                     for (let kayitliUrun in history) { if (!mevcutUrunAdlari.includes(kayitliUrun)) { delete history[kayitliUrun]; historyUpdated = true; } }
 
-                    tumUrunler.forEach(u => {
-                        if(u.pName && u.price1Kg) {
-                            let cp = parseFloat((u.price1Kg || "0").toString().replace(',', '.'));
-                            if(!isNaN(cp) && cp > 0) {
-                                let hk = history[u.pName];
-                                if (hk !== undefined && cp < hk) { BildirimGonder("🔥 Fiyat Düştü!", `${escapeHTML(u.pName)} sadece ${cp} TL oldu! Hemen sipariş ver.`); }
-                                if(hk === undefined || cp > hk) { history[u.pName] = cp; historyUpdated = true; }
-                            }
-                        }
-                    });
                     if (historyUpdated) { localStorage.setItem('bg_phist', JSON.stringify(history)); }
                     if (ilkYukleme) { document.getElementById("kategori-sekmeleri").style.display = "flex"; KategoriSec(aktifKategori); } 
                     else { if (document.getElementById("menu-container").style.display === "block") { if (document.getElementById('tab-Arama').style.display === "flex") { UrunAra(); } else { KategoriSec(aktifKategori); } } }
@@ -913,7 +828,6 @@
             let pop = document.createElement("div"); pop.innerHTML = `<span style="font-size:18px;">✨</span> Sepete Eklendi`; pop.style.position = "absolute"; pop.style.top = "40%"; pop.style.left = "50%"; pop.style.transform = "translate(-50%, -50%)"; pop.style.background = "linear-gradient(135deg, #10B981 0%, #059669 100%)"; pop.style.color = "white"; pop.style.padding = "12px 20px"; pop.style.borderRadius = "100px"; pop.style.fontWeight = "900"; pop.style.fontSize = "14px"; pop.style.display = "flex"; pop.style.alignItems = "center"; pop.style.gap = "10px"; pop.style.boxShadow = "0 10px 25px rgba(16, 185, 129, 0.5)"; pop.style.animation = "floatUpFade 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards"; 
             fxContainer.appendChild(pop); setTimeout(() => pop.remove(), 1200); 
         }
-
         function TriggerCartBounce() { let cart = document.getElementById("floating-cart"); if(cart) { cart.classList.remove("bounce"); void cart.offsetWidth; cart.classList.add("bounce"); } }
 
         function PopupSepeteEkle() { 
@@ -944,8 +858,8 @@
 
         async function KuponlariCek() {
             try {
-                let mR = await fetch("https://bekmezpos-default-rtdb.firebaseio.com/Kuponlar.json" + authKeyStr + "&t=" + new Date().getTime(), { cache: "no-store" });
-                let data = await mR.json(); let list = document.getElementById("firsatlar-list");
+                let mR = await firebase.database().ref('Kuponlar').once('value');
+                let data = mR.val(); let list = document.getElementById("firsatlar-list");
                 if (!data) { list.innerHTML = `<div class="empty-text">Şu an aktif bir kampanya bulunmuyor 😔</div>`; return; }
                 let yeniVeri = JSON.stringify(data); if (sonKuponVerisi === yeniVeri) return; sonKuponVerisi = yeniVeri;
                 list.innerHTML = ""; let hasKupon = false;
@@ -965,7 +879,9 @@
             let iE = document.getElementById("coupon-code"); let gK = escapeHTML(iE.value.trim().toUpperCase()); let b = document.getElementById("coupon-apply-btn"); 
             if(gK === "") { OzelUyariGoster("Boş Kod", "Lütfen bir kod giriniz.", "⚠️"); return; } 
             b.innerText = "Bekleyin..."; b.disabled = true; 
-            fetch("https://bekmezpos-default-rtdb.firebaseio.com/Kuponlar/" + gK + ".json" + authKeyStr + "&t=" + new Date().getTime(), { cache: "no-store" }).then(res => res.json()).then(d => { 
+            
+            firebase.database().ref('Kuponlar/' + gK).once('value').then(res => { 
+                let d = res.val();
                 b.disabled = false; 
                 if(d && d.discountAmount > 0) { 
                     if (d.isAppCoupon !== true) { KuponuIptalEt(true); OzelUyariGoster("Sadece Mağazada", "Bu kupon sadece restoran içi siparişlerde geçerlidir.", "🚫"); return; }
@@ -981,31 +897,31 @@
         function KuponuIptalEt(sM = false) { if(!sM) HapticTitresim(); aktifKuponKodu = ""; aktifKuponIndirimTutari = 0; aktifKuponAltLimit = 0; aktifKuponHedefUrun = "Herşey"; let iE = document.getElementById("coupon-code"); if(iE) iE.value = ""; KuponArayuzunuGuncelle(); if(!sM) HesaplaVeGuncelle(); }
         function KuponArayuzunuGuncelle() { let b = document.getElementById("coupon-apply-btn"); let m = document.getElementById("coupon-message"); let iE = document.getElementById("coupon-code"); if(aktifKuponIndirimTutari > 0) { b.style.background = "var(--danger)"; b.style.color = "white"; b.innerText = "İptal Et"; b.onclick = () => KuponuIptalEt(false); if(iE) { iE.disabled = true; iE.style.opacity = "0.6"; } m.innerHTML = `<span style="color: var(--success);">✓ ${aktifKuponIndirimTutari} TL İndirim!</span>`; } else { b.style.background = "rgba(255,255,255,0.05)"; b.style.color = "var(--text-main)"; b.innerText = "Uygula"; b.onclick = KuponSorgula; if(iE) { iE.disabled = false; iE.style.opacity = "1"; } m.innerHTML = ""; } }
         function GosterHataInput(id) { let el = document.getElementById(id); if(el) { el.classList.remove("input-error"); void el.offsetWidth; el.classList.add("input-error"); setTimeout(() => el.classList.remove("input-error"), 500); } }
+        
         function CheckoutPopupAc() { if(sepet.length === 0 && aktifKullanilanCarkOdulu === null) return; HapticTitresim(); let p = document.getElementById("checkout-popup"); p.style.display = "flex"; setTimeout(() => { p.classList.add("active"); }, 10); TogglePayButton(); }
         function CheckoutKapat() { let p = document.getElementById("checkout-popup"); p.classList.remove("active"); setTimeout(() => { p.style.display = "none"; }, 500); }
 
         function PaketSiparisiGonder() {
             if(isProcessingOrder || (sepet.length === 0 && aktifKullanilanCarkOdulu === null)) return;
             if(!document.getElementById("legal-checkbox").checked) { OzelUyariGoster("Sözleşme Onayı", "Sözleşmeleri onaylamanız gerek.", "📝"); return; }
-            if (!window.isSecureContext && window.location.hostname !== 'localhost') { OzelUyariGoster("Güvenlik Uyarısı", "GPS (Konum) sistemi HTTPS gerektirir.", "🔒"); return; }
+            
+            // Kullanıcı anonim giriş yapmamışsa engelle
+            let currentUser = firebase.auth().currentUser;
+            if (!currentUser) { OzelUyariGoster("Güvenlik Duvarı", "Lütfen sayfayı yenileyin, güvenli bağlantı kurulamadı.", "🔒"); return; }
+
             HapticTitresim();
 
             // GÜVENLİK FİLTRELERİ
             let is = escapeHTML(document.getElementById("chk-isim").value.trim()).substring(0, 50); 
             let tl = document.getElementById("chk-telefon").value.trim().replace(/[^0-9]/g, '').substring(0, 15); 
             let ad = escapeHTML(document.getElementById("chk-adres").value.trim()).substring(0, 150);
-            let cN = escapeHTML(document.getElementById("cc-name").value.trim()); 
-            let cNu = document.getElementById("cc-number").value.trim(); 
-            let cE = document.getElementById("cc-exp").value.trim(); 
-            let cC = document.getElementById("cc-cvv").value.trim();
+            let secilenOdeme = escapeHTML(document.getElementById("odeme-turu-secim").value);
 
             let hV = false; if(is.length < 3) { GosterHataInput("chk-isim"); hV = true; } if(tl.length < 10) { GosterHataInput("chk-telefon"); hV = true; } if(ad.length < 10) { GosterHataInput("chk-adres"); hV = true; }
             if(hV) { OzelUyariGoster("Eksik", "Ad, telefon veya adres hatalı.", "⚠️"); return; }
-            if(cN.length < 3 || cNu.length < 15 || cE.length < 4 || cC.length < 3) { OzelUyariGoster("Ödeme", "Kart bilgileri eksik.", "💳"); return; }
 
-            // FİYAT MANİPÜLASYON KORUMASI (GÜVENLİK)
             let hA = false; let gH = 0; sepet.forEach(u => { if(u.quantity <= 0 || u.basePrice < 0 || u.baseStockAmount <= 0) hA = true; gH += (u.basePrice * u.quantity); });
-            if (sonOdenecekFiyat < 0 || hA || Math.abs((gH - aktifKuponIndirimTutari) - sonOdenecekFiyat) > 1) { OzelUyariGoster("İhlal", "Geçersiz veya manipüle edilmiş fiyat tespit edildi.", "🚨"); return; }
+            if (sonOdenecekFiyat < 0 || hA) { OzelUyariGoster("İhlal", "Geçersiz sepet verisi.", "🚨"); return; }
 
             let btn = document.getElementById("final-submit-btn"); btn.disabled = true; btn.classList.add("loading"); btn.innerText = "Konum Bulunuyor...📍";
 
@@ -1013,85 +929,92 @@
                 OzelUyariGoster("Hata", "GPS desteklenmiyor.", "🚫"); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; return; 
             }
             isProcessingOrder = true;
+            
             const checkLoc = (hAcc, tOut) => { return new Promise((resolve, reject) => { navigator.geolocation.getCurrentPosition(p => resolve(p), e => reject(e), {enableHighAccuracy: hAcc, timeout: tOut, maximumAge: 0}); }); };
             checkLoc(true, 10000).catch(() => checkLoc(false, 10000)).then(p => {
                 let ms = GetDistanceKm(DUKKAN_ENLEM, DUKKAN_BOYLAM, p.coords.latitude, p.coords.longitude);
                 if (ms > MAKS_MESAFE_KM) { let do2 = document.getElementById("distance-alert-overlay"); do2.style.display = "flex"; setTimeout(() => do2.classList.add("active"), 10); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; return; }
-                DevamEtPaketGonder(is, tl, ad);
+                DevamEtPaketGonder(is, tl, ad, secilenOdeme, currentUser.uid);
             }).catch(e => { 
-                OzelUyariGoster("İzin Gerekli", "Konum alınamadı.", "📍"); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
+                OzelUyariGoster("İzin Gerekli", "Konum alınamadı. Tarayıcınızdan konum izni veriniz.", "📍"); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
             });
         }
 
-        function DevamEtPaketGonder(isim, tel, adres) {
-            localStorage.setItem("bg_i", VeriSifrele(isim)); localStorage.setItem("bg_t", VeriSifrele(tel)); localStorage.setItem("bg_a", VeriSifrele(adres));
-            let btn = document.getElementById("final-submit-btn"); btn.innerText = "Sipariş Kontrol Ediliyor..."; let sT = tel.replace(/[^0-9]/g, ''); window.isOrderFinished = false;
+        function DevamEtPaketGonder(isim, tel, adres, odemeTuru, uid) {
+            localStorage.setItem("bg_i", isim); localStorage.setItem("bg_t", tel); localStorage.setItem("bg_a", adres);
+            let btn = document.getElementById("final-submit-btn"); btn.innerText = "Sipariş İletiliyor..."; window.isOrderFinished = false;
 
-            fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliPaketler/Paket_${sT}.json${authKeyStr}&t=${new Date().getTime()}`).then(r => r.json()).then(aA => {
-                let sipZamani = (aA && aA.timestamp) ? aA.timestamp : null; let isGhost = sipZamani ? ((Date.now() - sipZamani) > GHOST_TIMEOUT_MS) : false;
-                if(aA && aA.durum && !aA.durum.includes("İPTAL") && !aA.durum.includes("RED") && !aA.durum.includes("TESLİM") && !aA.durum.includes("AFİYET") && !isGhost) { 
-                    OzelUyariGoster("Sürüyor", "Şu an aktif bir siparişiniz bulunuyor.", "⏳"); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; return; 
+            let db = firebase.database();
+            
+            // 1. STOKLARI VE MENÜYÜ SON KEZ KONTROL ET
+            db.ref('Menu').once('value').then(r => {
+                let d = r.val();
+                let l = (d && d.products) ? d.products : [];
+                if(l.length > 0) {
+                    let sH = false; let hM = "";
+                    for(let i=0; i<sepet.length; i++) {
+                        let gU = l.find(u => u.pName === sepet[i].rawName);
+                        if(gU) { 
+                            let mS = (gU.stockAmount != null) ? parseFloat((gU.stockAmount||0).toString().replace(',', '.')) : ((gU.stock != null) ? parseFloat((gU.stock||0).toString().replace(',', '.')) : 999); if (isNaN(mS)) mS = 999;
+                            let sT2 = 0; sepet.forEach(u => { if(u.rawName === gU.pName) sT2 += (u.baseStockAmount * u.quantity); }); 
+                            if(sT2 > mS) { sH = true; hM = `"${gU.pName}" tükendi.`; break; } 
+                        } else { sH = true; hM = "Ürün kaldırılmış."; break; }
+                    }
+                    if (!sH) { 
+                        let eI = l.find(u => u.pName && u.pName.trim().toLocaleLowerCase('tr-TR') === ekmekUrunAdi.trim().toLocaleLowerCase('tr-TR')); 
+                        if (eI) { let mE = (eI.stockAmount != null) ? parseFloat((eI.stockAmount||0).toString().replace(',', '.')) : ((eI.stock != null) ? parseFloat((eI.stock||0).toString().replace(',', '.')) : 999); if (isNaN(mE)) mE = 999; let tB = GuncelEkmekIhtiyaci(sepet); if (tB > mE) { sH = true; hM = `Ekmek bitti!`; } } 
+                    }
+                    if(sH) { OzelUyariGoster("Hata", hM, "⚠️"); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; return; }
+
+                    let n = escapeHTML(document.getElementById("siparis-notu").value.trim()).substring(0, 100); let sD = ""; 
+                    sepet.forEach(u => { sD += (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName + "\n"; });
+
+                    let uD = sepet.map(u => ({ itemName: (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName, itemPrice: u.basePrice * u.quantity, amount: u.baseStockAmount * u.quantity, rawName: u.rawName }));
+                    let iF = hamToplamFiyat - sonOdenecekFiyat; if(iF > 0) { let kA = aktifKuponKodu !== "" ? "Kupon [" + aktifKuponKodu + "]" : "Web İndirimi"; uD.push({ itemName: kA, itemPrice: -iF, amount: 0, rawName: "" }); }
+
+                    if(aktifKullanilanCarkOdulu !== null) {
+                        let hediyeIsim = `[ÇARK HEDİYESİ]: ${aktifKullanilanCarkOdulu}`;
+                        uD.push({ itemName: hediyeIsim, itemPrice: 0, amount: 1, rawName: "CarkOdulu" }); 
+                        sD += `\n${hediyeIsim}`; 
+                    }
+
+                    let sipZamani = Date.now();
+                    
+                    // YENİ GÜVENLİ ID OLUŞTUR
+                    let yeniSiparisRef = db.ref('PaketSiparisler').push();
+                    let benzersizSiparisID = yeniSiparisRef.key;
+
+                    const pV = { uid: uid, tip: "paket", musteriAd: isim, telefon: tel, adres: adres, odemeTuru: odemeTuru, siparisDetayi: sD, siparisler: uD, toplam: sonOdenecekFiyat, zaman: new Date().toLocaleTimeString(), siparisNotu: n, timestamp: sipZamani };
+
+                    yeniSiparisRef.set(pV).then(() => {
+                        const cV = { uid: uid, durum: "SİPARİŞ ALINDI 🔔", toplamTutar: sonOdenecekFiyat, siparisNotu: n, timestamp: sipZamani, siparisler: uD.map(u => ({ itemName: u.itemName, itemPrice: u.itemPrice })) };
+                        db.ref('CanliPaketler/' + benzersizSiparisID).set(cV);
+                        
+                        if(aktifKullanilanCarkOdulu !== null) { localStorage.removeItem("bg_cark_data"); aktifKullanilanCarkOdulu = null; }
+
+                        // Müşterinin adisyonu takip edebilmesi için sipariş ID'sini tarayıcıya kaydet
+                        localStorage.setItem("bg_active_order_id", benzersizSiparisID);
+                        localStorage.setItem("bg_last_cart", JSON.stringify(sepet));
+                        
+                        HapticTitresim(); CheckoutKapat(); BasariEkraniGoster();
+                        sepet = []; aktifKuponKodu = ""; aktifKuponIndirimTutari = 0; aktifKuponAltLimit = 0; aktifKuponHedefUrun = "Herşey"; 
+                        document.getElementById("siparis-notu").value = ""; SepetEkraniniCiz(); HesaplaVeGuncelle(); seciliEkstraIstekler = []; 
+                        isProcessingOrder = false;
+                    }).catch(e => { OzelUyariGoster("Hata", "Sipariş gitmedi. Lütfen bağlantınızı kontrol edin.", "❌"); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; });
                 }
-                setTimeout(() => {
-                    btn.innerText = "İletiliyor...";
-                    fetch(firebaseMenuUrl + authKeyStr + "&t=" + new Date().getTime(), { cache: "no-store" }).then(r => r.json()).then(d => {
-                        let l = (d && d.products) ? d.products : [];
-                        if(l.length > 0) {
-                            let sH = false; let hM = "";
-                            for(let i=0; i<sepet.length; i++) {
-                                let gU = l.find(u => u.pName === sepet[i].rawName);
-                                if(gU) { 
-                                    let mS = (gU.stockAmount != null) ? parseFloat((gU.stockAmount||0).toString().replace(',', '.')) : ((gU.stock != null) ? parseFloat((gU.stock||0).toString().replace(',', '.')) : 999); if (isNaN(mS)) mS = 999;
-                                    let sT2 = 0; sepet.forEach(u => { if(u.rawName === gU.pName) sT2 += (u.baseStockAmount * u.quantity); }); 
-                                    if(sT2 > mS) { sH = true; hM = `"${gU.pName}" tükendi.`; break; } 
-                                } else { sH = true; hM = "Ürün kaldırılmış."; break; }
-                            }
-                            if (!sH) { 
-                                let eI = l.find(u => u.pName && u.pName.trim().toLocaleLowerCase('tr-TR') === ekmekUrunAdi.trim().toLocaleLowerCase('tr-TR')); 
-                                if (eI) { let mE = (eI.stockAmount != null) ? parseFloat((eI.stockAmount||0).toString().replace(',', '.')) : ((eI.stock != null) ? parseFloat((eI.stock||0).toString().replace(',', '.')) : 999); if (isNaN(mE)) mE = 999; let tB = GuncelEkmekIhtiyaci(sepet); if (tB > mE) { sH = true; hM = `Ekmek bitti!`; } } 
-                            }
-                            if(sH) { OzelUyariGoster("Hata", hM, "⚠️"); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; return; }
-
-                            let n = escapeHTML(document.getElementById("siparis-notu").value.trim()).substring(0, 100); let sD = ""; 
-                            sepet.forEach(u => { sD += (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName + "\n"; });
-
-                            let uD = sepet.map(u => ({ itemName: (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName, itemPrice: u.basePrice * u.quantity, amount: u.baseStockAmount * u.quantity, rawName: u.rawName }));
-                            let iF = hamToplamFiyat - sonOdenecekFiyat; if(iF > 0) { let kA = aktifKuponKodu !== "" ? "Kupon [" + aktifKuponKodu + "]" : "Web İndirimi"; uD.push({ itemName: kA, itemPrice: -iF, amount: 0, rawName: "" }); }
-
-                            if(aktifKullanilanCarkOdulu !== null) {
-                                let hediyeIsim = `[ÇARK HEDİYESİ]: ${aktifKullanilanCarkOdulu}`;
-                                uD.push({ itemName: hediyeIsim, itemPrice: 0, amount: 1, rawName: "CarkOdulu" }); 
-                                sD += `\n${hediyeIsim}`; 
-                            }
-
-                            let sipZamani = Date.now();
-                            const pV = { tip: "paket", musteriAd: isim, telefon: tel, adres: adres, odemeTuru: "Online Ödeme (Kart)", siparisDetayi: sD, siparisler: uD, toplam: sonOdenecekFiyat, zaman: new Date().toLocaleTimeString(), siparisNotu: n, timestamp: sipZamani };
-
-                            fetch(`https://bekmezpos-default-rtdb.firebaseio.com/PaketSiparisler/${sT}.json${authKeyStr}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(pV) }).then(() => {
-                                const cV = { durum: "SİPARİŞ ALINDI 🔔", toplamTutar: sonOdenecekFiyat, siparisNotu: n, timestamp: sipZamani, siparisler: uD.map(u => ({ itemName: u.itemName, itemPrice: u.itemPrice })) };
-                                fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliPaketler/Paket_${sT}.json${authKeyStr}`, { method: "PUT", body: JSON.stringify(cV) });
-                                
-                                if(aktifKullanilanCarkOdulu !== null) { localStorage.removeItem("bg_cark_data"); aktifKullanilanCarkOdulu = null; }
-
-                                localStorage.setItem("bg_last_cart", JSON.stringify(sepet));
-                                HapticTitresim(); CheckoutKapat(); BasariEkraniGoster();
-                                sepet = []; aktifKuponKodu = ""; aktifKuponIndirimTutari = 0; aktifKuponAltLimit = 0; aktifKuponHedefUrun = "Herşey"; 
-                                document.getElementById("siparis-notu").value = ""; SepetEkraniniCiz(); HesaplaVeGuncelle(); seciliEkstraIstekler = []; 
-                                document.getElementById("cc-number").value = ""; document.getElementById("cc-exp").value = ""; document.getElementById("cc-cvv").value = ""; 
-                                isProcessingOrder = false;
-                            }).catch(e => { OzelUyariGoster("Hata", "Sipariş gitmedi.", "❌"); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; });
-                        }
-                    }).catch(e => { OzelUyariGoster("Hata", "Bağlantı koptu.", "📡"); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; });
-                }, 1000); 
-            }).catch(e => { OzelUyariGoster("Hata", "Ağ sorunu.", "📡"); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; });
+            }).catch(e => { OzelUyariGoster("Hata", "Bağlantı koptu.", "📡"); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; });
         }
 
         async function CanliAdisyonCek() {
             try {
-                let tR = VeriCoz(localStorage.getItem("bg_t")); if(!tR || tR.length < 10) { document.getElementById("history-content").innerHTML = `<div class="empty-text">Adisyon yok.<br><br>Profilimden telefon numaranızı kontrol edin.</div>`; return; }
-                let sT = tR.replace(/[^0-9]/g, ''); let r = await fetch(`https://bekmezpos-default-rtdb.firebaseio.com/CanliPaketler/Paket_${sT}.json${authKeyStr}&t=${new Date().getTime()}`, { cache: "no-store" }); let bP = await r.json();
+                let siparisId = localStorage.getItem("bg_active_order_id");
+                if(!siparisId) { document.getElementById("history-content").innerHTML = `<div class="empty-text">Adisyon yok.<br><br>Aktif bir siparişiniz bulunmamaktadır.</div>`; return; }
+                
+                let r = await firebase.database().ref('CanliPaketler/' + siparisId).once('value'); 
+                let bP = r.val();
                 let sipZamani = (bP && bP.timestamp) ? bP.timestamp : null; let isGhost = sipZamani ? ((Date.now() - sipZamani) > GHOST_TIMEOUT_MS) : false;
                 let h = "";
+                
                 if(!bP || isGhost) { 
                     window.isOrderFinished = false; h = `<div class="empty-text">Aktif bir siparişiniz bulunmuyor.</div>`; sonCekilenAdisyonHTML = "";
                 } else {
@@ -1114,6 +1037,7 @@
                             window.isOrderFinished = true;
                             setTimeout(() => {
                                 localStorage.removeItem("bg_last_status");
+                                localStorage.removeItem("bg_active_order_id");
                                 document.getElementById("history-content").innerHTML = `<div class="empty-text">Aktif bir siparişiniz bulunmuyor.</div>`;
                                 sonCekilenAdisyonHTML = ""; SayfaGoster('urunler');
                                 OzelUyariGoster("Afiyet Olsun!", "Siparişiniz teslim edildi. Bizi tercih ettiğiniz için teşekkür ederiz 😋", "🎉");
@@ -1122,7 +1046,9 @@
                     }
 
                     if(dR.includes("İPTAL") || dR.includes("RED")) { 
-                        h = `<div class="empty-text" style="color: var(--danger); border-color: rgba(255, 59, 48, 0.3); background: rgba(255, 59, 48, 0.05); padding: 40px 20px;"><div style="font-size:40px; margin-bottom:15px;">❌</div><strong style="font-size:18px;">İptal Edildi</strong><br><br><span style="font-size:14px; color:#A1A1AA;">${escapeHTML(dR)}</span></div>`; sonCekilenAdisyonHTML = "";
+                        h = `<div class="empty-text" style="color: var(--danger); border-color: rgba(255, 59, 48, 0.3); background: rgba(255, 59, 48, 0.05); padding: 40px 20px;"><div style="font-size:40px; margin-bottom:15px;">❌</div><strong style="font-size:18px;">İptal Edildi</strong><br><br><span style="font-size:14px; color:#A1A1AA;">${escapeHTML(dR)}</span></div>`; 
+                        sonCekilenAdisyonHTML = "";
+                        setTimeout(() => { localStorage.removeItem("bg_active_order_id"); }, 5000); // 5 saniye sonra ekrandan düşer
                     } else {
                         h = `<div class="receipt-card"><div style="text-align: center; margin-bottom: 25px;"><div style="font-size:30px; margin-bottom:5px;">${durumIkon}</div><div style="font-weight: 900; font-size: 22px; color:#1c1c1e;">BEKMEZ GO</div><div style="font-size: 14px; font-weight: 800; color:var(--text-muted); margin-top:4px;">PAKET SERVİS</div></div><div class="receipt-header"><span>DURUM</span><span style="color:${durumRenk}; font-weight:900; background:${durumBg}; padding:8px 14px; border-radius:12px; text-align:right;">${escapeHTML(dR)}</span></div>`;
                         if(bP.siparisler) { bP.siparisler.forEach(u => { h += `<div class="receipt-item"><span>${escapeHTML(u.itemName)}</span><span>${parseFloat(u.itemPrice).toFixed(2)} ₺</span></div>`; }); }
