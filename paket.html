@@ -80,9 +80,6 @@
         .otp-input { width: 100%; background: var(--surface-solid); border: 2px solid var(--primary); color: white; text-align: center; font-size: 24px; font-weight: 900; padding: 15px; border-radius: 15px; margin-bottom: 10px; letter-spacing: 5px; }
         .otp-input:focus { outline:none; box-shadow: 0 0 15px var(--primary-glow); }
         .btn-verify { width: 100%; background: var(--success); color: white; border: none; padding: 16px; border-radius: 100px; font-weight: 800; font-size: 14px; cursor: pointer; box-shadow: 0 6px 15px rgba(52,199,89,0.3); }
-        
-        /* RECAPTCHA GİZLEME KODU */
-        .grecaptcha-badge { visibility: hidden !important; }
     </style>
 </head>
 <body>
@@ -274,7 +271,6 @@
 
             <button onclick="ProfiliSil()" style="width:100%; background:transparent; border:1px solid rgba(239, 68, 68, 0.3); color:var(--danger); padding:16px; border-radius:100px; font-weight:800; font-size:14px; cursor:pointer; transition:0.3s; margin-top:20px;">Cihazdaki Bilgilerimi Sil</button>
             
-            <!-- Google'ın kuralları gereği reCAPTCHA gizlendiğinde bu yazının bulunması zorunludur -->
             <div style="font-size: 10px; color: rgba(255,255,255,0.3); text-align: center; margin-top: 15px;">Bu site reCAPTCHA ile korunmaktadır. Google <a href="https://policies.google.com/privacy" style="color: rgba(255,255,255,0.4);">Gizlilik Politikası</a> ve <a href="https://policies.google.com/terms" style="color: rgba(255,255,255,0.4);">Kullanım Şartları</a> geçerlidir.</div>
         </div>
     </div>
@@ -449,14 +445,13 @@
                             }
                         }
                     });
-                    
-                    // RENDER ÇAĞRISI SİLİNDİ
                 } catch(e) { console.error("ReCaptcha başlatılamadı:", e); }
             }
         }
 
         function SmsGonder() {
             let telInput = document.getElementById("prof-telefon");
+            let btnSend = document.getElementById("btn-send-sms");
             let numaraStr = telInput.value.replace(/[^0-9]/g, '');
 
             if(numaraStr.length < 10) { 
@@ -464,21 +459,15 @@
                 return; 
             }
             
-            SmsKoduSunucuyaIlet();
-        }
-
-        function SmsKoduSunucuyaIlet() {
-            let telInput = document.getElementById("prof-telefon");
-            let btnSend = document.getElementById("btn-send-sms");
-            let numaraStr = telInput.value.replace(/[^0-9]/g, '');
-
-            if(numaraStr.length === 10) numaraStr = "+90" + numaraStr;
-            else if(numaraStr.length === 11 && numaraStr.startsWith("0")) numaraStr = "+9" + numaraStr;
-
             btnSend.innerText = "Bekleyin..."; 
             btnSend.disabled = true;
 
-            if (!window.recaptchaVerifier) { InitRecaptcha(); }
+            if (!window.recaptchaVerifier) { 
+                InitRecaptcha(); 
+            }
+
+            if(numaraStr.length === 10) numaraStr = "+90" + numaraStr;
+            else if(numaraStr.length === 11 && numaraStr.startsWith("0")) numaraStr = "+9" + numaraStr;
 
             firebase.auth().signInWithPhoneNumber(numaraStr, window.recaptchaVerifier)
                 .then((confirmationResult) => {
@@ -498,13 +487,8 @@
                     }
                     InitRecaptcha();
                     
-                    let hataMesaji = "SMS gönderilemedi. Bağlantınızı kontrol edip tekrar deneyin.";
-                    
-                    if(error.code === 'auth/invalid-phone-number') hataMesaji = "Geçersiz telefon numarası formatı.";
-                    else if(error.code === 'auth/too-many-requests') hataMesaji = "Çok fazla deneme yaptınız. Lütfen 15 dakika bekleyip tekrar deneyin.";
-                    else if(error.code === 'auth/unauthorized-domain') hataMesaji = "Domain yetkilendirmesi henüz aktifleşmedi. (Firebase'de domain ekledikten sonra sistemin güncellenmesi 5-10 dakika sürebilir).";
-
-                    OzelUyariGoster("Hata Oluştu", hataMesaji, "❌");
+                    // EKLEME: Firebase'in fırlattığı gerçek hatayı ekranda gösteriyoruz!
+                    OzelUyariGoster("Sistem Hatası", "Hata: " + error.code + "<br><br>Detay: " + error.message, "❌");
                 });
         }
         // --- SMS BÖLÜMÜNÜN SONU ---
