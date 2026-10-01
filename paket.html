@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no">
-    <!-- Firebase Auth, SMS sistemi ve reCAPTCHA için bağlantı izinleri (CSP GÜNCELLENDİ) -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https://bekmezpos.firebaseapp.com https://bekmezpos-default-rtdb.firebaseio.com https://*.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.google.com https://www.gstatic.com https://fonts.googleapis.com https://fonts.gstatic.com https://cdn.visa.com https://upload.wikimedia.org;">
+    <!-- Firebase Auth, SMS sistemi ve reCAPTCHA için genişletilmiş canlı sunucu bağlantı izinleri -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https://bekmezpos.firebaseapp.com https://bekmezpos-default-rtdb.firebaseio.com https://*.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.google.com https://www.gstatic.com https://www.recaptcha.net https://apis.google.com https://fonts.googleapis.com https://fonts.gstatic.com https://cdn.visa.com https://upload.wikimedia.org;">
     <title>Bekmez GO - Premium Paket</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -255,12 +255,11 @@
                 <label>Telefon Numaranız</label>
                 <div style="display:flex; gap:10px;">
                     <input type="tel" id="prof-telefon" class="checkout-input" placeholder="Örn: 532 000 00 00" maxlength="15" style="margin-bottom:0; flex:1;">
-                    <!-- BUTONA onclick EKLENDİ VE GİZLİ RECAPTCHA DİV'İ YERLEŞTİRİLDİ -->
                     <button id="btn-send-sms" onclick="SmsGonder()" style="background:var(--primary); color:white; border:none; padding:0 20px; border-radius:20px; font-weight:800; cursor:pointer;">Kod Gönder</button>
                 </div>
-                <!-- RECAPTCHA BURAYA YÜKLENECEK -->
-                <div id="recaptcha-container"></div>
-
+                <!-- YENİ RECAPTCHA DİVİ -->
+                <div id="recaptcha-container" style="margin-top:10px;"></div>
+                
                 <div id="dogrulandi-etiketi" style="display:none; color:var(--success); font-weight:800; font-size:12px; margin-top:8px;">✅ Numaranız Doğrulandı.</div>
             </div>
 
@@ -425,12 +424,26 @@
         function SoruSor(baslik, metin, ikon, evetCallback, isDanger=false) { document.getElementById("confirm-title").innerText = baslik; document.getElementById("confirm-text").innerHTML = metin; document.getElementById("confirm-icon").innerText = ikon; let btn = document.getElementById("confirm-yes-btn"); let box = document.getElementById("confirm-box"); let glow = document.getElementById("confirm-glow"); if(isDanger) { btn.style.background = "var(--danger)"; btn.innerText = "İptal Et"; box.style.borderColor = "var(--danger)"; glow.style.background = "var(--danger)"; } else { btn.style.background = "var(--primary)"; btn.innerText = "Onayla"; box.style.borderColor = "var(--primary)"; glow.style.background = "var(--primary)"; } let currentConfirmAction = evetCallback; document.getElementById("confirm-yes-btn").onclick = () => { KapatConfirmModal(null, true); if(currentConfirmAction) currentConfirmAction(); }; let p = document.getElementById("confirm-overlay"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10); }
         function KapatConfirmModal(e, force=false) { if(force || e.target === document.getElementById("confirm-overlay")) { let p = document.getElementById("confirm-overlay"); p.classList.remove("active"); setTimeout(() => p.style.display = "none", 400); } }
 
-        // --- GÜNCELLENEN RECAPTCHA VE SMS FONKSİYONLARI BAŞLANGICI ---
+        // --- GÜNCELLENEN RECAPTCHA VE SMS FONKSİYONLARI ---
+        firebase.auth().languageCode = 'tr';
+
         function InitRecaptcha() {
             if (!window.recaptchaVerifier) {
                 try {
                     window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-                        'size': 'invisible'
+                        'size': 'invisible',
+                        'callback': function(response) {
+                            // ReCaptcha çözüldü
+                        },
+                        'expired-callback': function() {
+                            OzelUyariGoster("Zaman Aşımı", "Doğrulama zaman aşımına uğradı, sayfayı yenileyip tekrar deneyin.", "⏳");
+                            window.recaptchaVerifier.clear();
+                            window.recaptchaVerifier = null;
+                        }
+                    });
+                    
+                    window.recaptchaVerifier.render().catch(function(error) {
+                        console.error("ReCaptcha Render Hatası:", error);
                     });
                 } catch(e) { console.error("ReCaptcha başlatılamadı:", e); }
             }
@@ -468,7 +481,8 @@
                     btnSend.innerText = "Kod Gönderildi";
                     OzelUyariGoster("SMS Gönderildi", "Telefonunuza 6 haneli bir doğrulama kodu gönderildi. Lütfen kodu giriniz.", "📩");
                 }).catch((error) => {
-                    console.error("SMS Hatası:", error);
+                    console.error("FIREBASE SMS HATASI:", error);
+                    
                     btnSend.innerText = "Kod Gönder"; 
                     btnSend.disabled = false;
                     
@@ -478,14 +492,16 @@
                     }
                     InitRecaptcha();
                     
-                    let hataMesaji = "SMS gönderilemedi. Bağlantınızı kontrol edip tekrar deneyin.";
+                    let hataMesaji = "SMS gönderilemedi. Hata kodu: " + error.code;
+                    
                     if(error.code === 'auth/invalid-phone-number') hataMesaji = "Geçersiz telefon numarası formatı.";
-                    else if(error.code === 'auth/too-many-requests') hataMesaji = "Çok fazla deneme yaptınız. Lütfen bir süre bekleyip tekrar deneyin.";
+                    else if(error.code === 'auth/too-many-requests') hataMesaji = "Çok fazla deneme yaptınız. Lütfen 15 dakika bekleyip tekrar deneyin.";
+                    else if(error.code === 'auth/unauthorized-domain') hataMesaji = "Domain yetkilendirmesi henüz aktifleşmedi. (Firebase'de domain ekledikten sonra sistemin güncellenmesi 5-10 dakika sürebilir).";
 
                     OzelUyariGoster("Hata Oluştu", hataMesaji, "❌");
                 });
         }
-        // --- GÜNCELLENEN RECAPTCHA VE SMS FONKSİYONLARI BİTİŞİ ---
+        // --- SMS BÖLÜMÜNÜN SONU ---
 
         function KoduDogrula() {
             let otp = document.getElementById("prof-otp").value.trim();
@@ -753,6 +769,8 @@
             setInterval(() => { if(document.getElementById("opportunities-container").style.display === "block") { KuponlariCek(); CarkDurumunuKontrolEt(); } }, 5000);
         });
 
+        async function GetServerTime() { return Date.now(); }
+
         async function SplashKapatSinematik() { 
             let splash = document.getElementById('splash-screen'); 
             if (splash && splash.style.display !== "none") { 
@@ -794,7 +812,7 @@
                 document.getElementById("cart-container").style.display = "block"; SepetEkraniniCiz(); 
             } else if (s === 'profil') { 
                 document.getElementById("profile-container").style.display = "block";
-                InitRecaptcha(); // Sekme açılınca reCAPTCHA dinlemeye başlar
+                InitRecaptcha(); 
             } else if (s === 'firsatlar') { 
                 document.getElementById("opportunities-container").style.display = "block"; KuponlariCek(); CarkDurumunuKontrolEt();
             } else if (s === 'gecmis') { 
@@ -831,9 +849,6 @@
                 }
             } catch(error) { if (ilkYukleme) { document.getElementById("menu-grid").innerHTML = `<div class="empty-text" style="color:var(--danger)">Bağlantı Hatası! İnternetinizi kontrol edin.</div>`; } }
         }
-
-        // Zaman bilgisini almak için yardımcı fonksiyon
-        async function GetServerTime() { return Date.now(); }
 
         function GetKategoriAd(u) { 
             try { 
@@ -992,7 +1007,7 @@
         
         async function KuponSorgula() { 
             let iE = document.getElementById("coupon-code"); let gK = escapeHTML(iE.value.trim().toUpperCase()); let b = document.getElementById("coupon-apply-btn"); 
-            if(gK === "") { OzelUyariGoster("Boş Kod", "Lütfen bir kod giriniz.", "⚠️"); return; } 
+            if(gK === "") { OzelUyariGoster("Boş Kod", "Lütfen bir kod giriniz.", "⚠️️"); return; } 
 
             let tries = parseInt(localStorage.getItem("cpn_try") || "0");
             let blockTime = parseInt(localStorage.getItem("cpn_blk") || "0");
