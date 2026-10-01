@@ -80,6 +80,9 @@
         .otp-input { width: 100%; background: var(--surface-solid); border: 2px solid var(--primary); color: white; text-align: center; font-size: 24px; font-weight: 900; padding: 15px; border-radius: 15px; margin-bottom: 10px; letter-spacing: 5px; }
         .otp-input:focus { outline:none; box-shadow: 0 0 15px var(--primary-glow); }
         .btn-verify { width: 100%; background: var(--success); color: white; border: none; padding: 16px; border-radius: 100px; font-weight: 800; font-size: 14px; cursor: pointer; box-shadow: 0 6px 15px rgba(52,199,89,0.3); }
+        
+        /* RECAPTCHA GİZLEME KODU */
+        .grecaptcha-badge { visibility: hidden !important; }
     </style>
 </head>
 <body>
@@ -270,6 +273,9 @@
             </div>
 
             <button onclick="ProfiliSil()" style="width:100%; background:transparent; border:1px solid rgba(239, 68, 68, 0.3); color:var(--danger); padding:16px; border-radius:100px; font-weight:800; font-size:14px; cursor:pointer; transition:0.3s; margin-top:20px;">Cihazdaki Bilgilerimi Sil</button>
+            
+            <!-- Google'ın kuralları gereği reCAPTCHA gizlendiğinde bu yazının bulunması zorunludur -->
+            <div style="font-size: 10px; color: rgba(255,255,255,0.3); text-align: center; margin-top: 15px;">Bu site reCAPTCHA ile korunmaktadır. Google <a href="https://policies.google.com/privacy" style="color: rgba(255,255,255,0.4);">Gizlilik Politikası</a> ve <a href="https://policies.google.com/terms" style="color: rgba(255,255,255,0.4);">Kullanım Şartları</a> geçerlidir.</div>
         </div>
     </div>
 
@@ -437,14 +443,14 @@
                         },
                         'expired-callback': function() {
                             OzelUyariGoster("Zaman Aşımı", "Doğrulama zaman aşımına uğradı, sayfayı yenileyip tekrar deneyin.", "⏳");
-                            window.recaptchaVerifier.clear();
-                            window.recaptchaVerifier = null;
+                            if (window.recaptchaVerifier) {
+                                window.recaptchaVerifier.clear();
+                                window.recaptchaVerifier = null;
+                            }
                         }
                     });
                     
-                    window.recaptchaVerifier.render().catch(function(error) {
-                        console.error("ReCaptcha Render Hatası:", error);
-                    });
+                    // RENDER ÇAĞRISI SİLİNDİ
                 } catch(e) { console.error("ReCaptcha başlatılamadı:", e); }
             }
         }
@@ -492,7 +498,7 @@
                     }
                     InitRecaptcha();
                     
-                    let hataMesaji = "SMS gönderilemedi. Hata kodu: " + error.code;
+                    let hataMesaji = "SMS gönderilemedi. Bağlantınızı kontrol edip tekrar deneyin.";
                     
                     if(error.code === 'auth/invalid-phone-number') hataMesaji = "Geçersiz telefon numarası formatı.";
                     else if(error.code === 'auth/too-many-requests') hataMesaji = "Çok fazla deneme yaptınız. Lütfen 15 dakika bekleyip tekrar deneyin.";
@@ -748,7 +754,7 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             let st = new Date().getHours(); let m = "Hoş Geldiniz ✨"; 
-            if (st >= 5 && st < 11) m = "Günaydın ☀️"; else if (st >= 11 && st < 17) m = "İyi Günler 🌤️️"; else if (st >= 17 && st < 22) m = "İyi Akşamlar 🌙"; else m = "İyi Geceler 🌌";
+            if (st >= 5 && st < 11) m = "Günaydın ☀️"; else if (st >= 11 && st < 17) m = "İyi Günler 🌤️"; else if (st >= 17 && st < 22) m = "İyi Akşamlar 🌙"; else m = "İyi Geceler 🌌";
             let ko = document.getElementById("dinamik-karsilama"); if(ko) ko.innerText = m;
             setTimeout(() => { SplashKapatSinematik(); }, 3000);
 
