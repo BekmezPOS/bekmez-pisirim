@@ -404,24 +404,65 @@
         console.log("%c DUR!", "color: red; font-size: 60px; font-weight: bold; text-shadow: 2px 2px 0 #000;");
         console.log("%c Bu alan geliştiriciler içindir. Buraya gireceğiniz herhangi bir kod (XSS/Enjeksiyon) hesabınızın kalıcı olarak bloke edilmesine sebep olabilir.", "font-size: 18px; font-weight: bold; color: #fff; background: #000; padding: 10px; border-radius: 5px;");
 
-        // --- ARKA PLAN (BACKGROUND) BİLDİRİM SİSTEMİ ---
+       // --- YENİ VE GÜÇLÜ ARKA PLAN BİLDİRİM SİSTEMİ ---
         let sepetHatirlaticiTimer = null;
 
         document.addEventListener('visibilitychange', function() {
             if (document.visibilityState === 'hidden') {
-                if (sepet.length > 0 || aktifKullanilanCarkOdulu !== null) {
-                    sepetHatirlaticiTimer = setTimeout(() => {
-                        let totalQty = sepet.reduce((acc, curr) => acc + curr.quantity, 0) + (aktifKullanilanCarkOdulu ? 1 : 0);
-                        BildirimGonder("Sepetiniz Sizi Bekliyor! 🛒", `Sepetinizdeki ${totalQty} ürünü unutmayın. Soğumadan siparişinizi tamamlayın!`);
-                    }, 60 * 1000); 
-                }
+                ArkaPlanBildirimKur();
             } else {
-                if (sepetHatirlaticiTimer) {
-                    clearTimeout(sepetHatirlaticiTimer);
-                    sepetHatirlaticiTimer = null;
-                }
+                ArkaPlanBildirimIptalEt();
             }
         });
+
+        function ArkaPlanBildirimKur() {
+            if (sepet.length === 0 && aktifKullanilanCarkOdulu === null) return;
+            
+            let totalQty = sepet.reduce((acc, curr) => acc + curr.quantity, 0) + (aktifKullanilanCarkOdulu ? 1 : 0);
+            let baslik = "Sepetiniz Sizi Bekliyor! 🛒";
+            let mesaj = `Sepetinizdeki ${totalQty} ürünü unutmayın. Soğumadan siparişinizi tamamlayın!`;
+            
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.ready.then(function(registration) {
+                    // YENİ: İşletim sistemi düzeyinde zamanlanmış bildirim (Modern cihazlar)
+                    // Uygulama dondurulsa/kapansa bile OS bu bildirimi zamanı gelince zorla çalar.
+                    if ('showTrigger' in Notification.prototype) {
+                        try {
+                            registration.showNotification(baslik, {
+                                body: mesaj,
+                                icon: "icon-192.png",
+                                badge: "icon-192.png",
+                                vibrate: [200, 100, 200, 100, 200],
+                                tag: "sepet-hatirlatici", // İptal edebilmek için kimlik verdik
+                                showTrigger: new TimestampTrigger(Date.now() + 60 * 1000) // Tam 1 dk (60.000 ms) sonra
+                            });
+                            return;
+                        } catch(e) {}
+                    }
+                });
+            }
+            
+            // Eski nesil telefonlar için klasik yedek yöntem
+            sepetHatirlaticiTimer = setTimeout(() => {
+                BildirimGonder(baslik, mesaj);
+            }, 60 * 1000);
+        }
+
+        function ArkaPlanBildirimIptalEt() {
+            if (sepetHatirlaticiTimer) {
+                clearTimeout(sepetHatirlaticiTimer);
+                sepetHatirlaticiTimer = null;
+            }
+            
+            // Müşteri uygulamaya geri dönerse OS'a verdiğimiz alarmı iptal ediyoruz
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.ready.then(function(registration) {
+                    registration.getNotifications({tag: "sepet-hatirlatici"}).then(function(notifications) {
+                        notifications.forEach(notification => notification.close());
+                    });
+                });
+            }
+        }
 
         function BildirimGonder(baslik, mesaj) {
             if (!("Notification" in window) || Notification.permission !== "granted") return;
