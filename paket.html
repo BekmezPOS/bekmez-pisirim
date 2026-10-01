@@ -867,7 +867,7 @@
             } catch(e) { OzelUyariGoster("Hata", "Sunucuya bağlanılamadı.", "📡"); btn.innerText = "Şansımı Dene!"; btn.disabled = false; return; }
         }
 
-        async function CarkDurumunuKontrolEt() {
+       async function CarkDurumunuKontrolEt() {
             let kayitliHash = localStorage.getItem("bg_cark_data"); let parsed = CarkVerisiCoz(kayitliHash);
             let bannerDesc = document.getElementById("cark-banner-desc"); let hediyeKutusu = document.getElementById("aktif-cark-hediye-kutusu");
 
@@ -882,13 +882,25 @@
 
                 if(parsed.odul !== "😔 Pas" && aktifKullanilanCarkOdulu === null) {
                     hediyeKutusu.style.display = "block";
-                    document.getElementById("kazanilan-odul-yazi").innerText = parsed.odul.replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, '').trim(); 
+                    // HATALI EMOJİ SİLİCİ (replace) KALDIRILDI! Tam güvenlik için metin bozulmamalı.
+                    document.getElementById("kazanilan-odul-yazi").innerText = parsed.odul; 
                     document.getElementById("kazanilan-sure-yazi").innerText = `Kalan Süre: ${kalanGun} Gün`;
                 } else { hediyeKutusu.style.display = "none"; }
             }
         }
 
-        function CarkHediyesiniKullan() { HapticTitresim(); let hash = localStorage.getItem("bg_cark_data"); let parsed = CarkVerisiCoz(hash); if(parsed && parsed.odul !== "😔 Pas") { aktifKullanilanCarkOdulu = parsed.odul.replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, '').trim(); OzelUyariGoster("Sepete Eklendi", `Çark hediyeniz (${aktifKullanilanCarkOdulu}) siparişinize eklendi!`, "🛒"); CarkDurumunuKontrolEt(); SayfaGoster('sepet'); } }
+        function CarkHediyesiniKullan() { 
+            HapticTitresim(); 
+            let hash = localStorage.getItem("bg_cark_data"); 
+            let parsed = CarkVerisiCoz(hash); 
+            if(parsed && parsed.odul !== "😔 Pas") { 
+                // HATALI EMOJİ SİLİCİ KALDIRILDI! Unity ile tam eşleşme sağlanacak.
+                aktifKullanilanCarkOdulu = parsed.odul; 
+                OzelUyariGoster("Sepete Eklendi", `Çark hediyeniz siparişinize eklendi!`, "🛒"); 
+                CarkDurumunuKontrolEt(); 
+                SayfaGoster('sepet'); 
+            } 
+        }
         function CarkHediyesiIptal() { HapticTitresim(); aktifKullanilanCarkOdulu = null; CarkDurumunuKontrolEt(); SepetEkraniniCiz(); }
 
         function IptalOnaySor() { HapticTitresim(); SoruSor("Siparişi İptal Et", "Siparişinizi iptal etmek istediğinize emin misiniz? İşlem geri alınamaz.", "⚠️", () => { SiparişiGercektenIptalEt(); }, true); }
