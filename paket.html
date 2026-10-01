@@ -165,6 +165,7 @@
         </div>
 
         <div id="menu-grid" class="grid-container">
+            <!-- Skeleton cards -->
             <div class="skeleton-card"><div class="skel-icon"></div><div class="skel-text"></div><div class="skel-text short"></div><div class="skel-btn"></div></div>
             <div class="skeleton-card"><div class="skel-icon"></div><div class="skel-text"></div><div class="skel-text short"></div><div class="skel-btn"></div></div>
             <div class="skeleton-card"><div class="skel-icon"></div><div class="skel-text"></div><div class="skel-text short"></div><div class="skel-btn"></div></div>
@@ -254,13 +255,11 @@
                 <label>Telefon Numaranız</label>
                 <div style="display:flex; gap:10px;">
                     <input type="tel" id="prof-telefon" class="checkout-input" placeholder="Örn: 532 000 00 00" maxlength="15" style="margin-bottom:0; flex:1;">
-                    <button id="btn-send-sms" onclick="SmsGonder()" style="background:var(--primary); color:white; border:none; padding:0 20px; border-radius:20px; font-weight:800; cursor:pointer;">Kod Gönder</button>
+                    <!-- RECAPTCHA GİZLİ TETİKLEYİCİSİ BU BUTONUN ÜZERİNE GÖMÜLDÜ -->
+                    <button id="btn-send-sms" style="background:var(--primary); color:white; border:none; padding:0 20px; border-radius:20px; font-weight:800; cursor:pointer;">Kod Gönder</button>
                 </div>
                 <div id="dogrulandi-etiketi" style="display:none; color:var(--success); font-weight:800; font-size:12px; margin-top:8px;">✅ Numaranız Doğrulandı.</div>
             </div>
-
-            <!-- GİZLİ RECAPTCHA ALANI -->
-            <div id="recaptcha-container"></div>
 
             <div id="otp-kutu" class="otp-container">
                 <div style="font-size:12px; color:var(--text-main); font-weight:700; text-align:center; margin-bottom:15px;">Lütfen telefonunuza gelen 6 haneli kodu giriniz.</div>
@@ -423,14 +422,42 @@
         function SoruSor(baslik, metin, ikon, evetCallback, isDanger=false) { document.getElementById("confirm-title").innerText = baslik; document.getElementById("confirm-text").innerHTML = metin; document.getElementById("confirm-icon").innerText = ikon; let btn = document.getElementById("confirm-yes-btn"); let box = document.getElementById("confirm-box"); let glow = document.getElementById("confirm-glow"); if(isDanger) { btn.style.background = "var(--danger)"; btn.innerText = "İptal Et"; box.style.borderColor = "var(--danger)"; glow.style.background = "var(--danger)"; } else { btn.style.background = "var(--primary)"; btn.innerText = "Onayla"; box.style.borderColor = "var(--primary)"; glow.style.background = "var(--primary)"; } let currentConfirmAction = evetCallback; document.getElementById("confirm-yes-btn").onclick = () => { KapatConfirmModal(null, true); if(currentConfirmAction) currentConfirmAction(); }; let p = document.getElementById("confirm-overlay"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10); }
         function KapatConfirmModal(e, force=false) { if(force || e.target === document.getElementById("confirm-overlay")) { let p = document.getElementById("confirm-overlay"); p.classList.remove("active"); setTimeout(() => p.style.display = "none", 400); } }
 
-        window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { 'size': 'invisible' });
+        // --- GÖRÜNMEZ RECAPTCHA BAŞLATICI ---
+        function InitRecaptcha() {
+            if (!window.recaptchaVerifier) {
+                try {
+                    // reCAPTCHA artık direkt 'Kod Gönder' butonunun kimliğine bağlandı
+                    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('btn-send-sms', {
+                        'size': 'invisible',
+                        'callback': function(response) {
+                            SmsKoduSunucuyaIlet();
+                        },
+                        'expired-callback': function() {
+                            OzelUyariGoster("Zaman Aşımı", "Robot doğrulaması zaman aşımına uğradı. Lütfen tekrar deneyin.", "⏳");
+                            window.recaptchaVerifier.clear();
+                            window.recaptchaVerifier = null;
+                        }
+                    });
+                } catch(e) { console.error("ReCaptcha başlatılamadı:", e); }
+            }
+        }
 
+        // SMS GÖNDERME BUTONU ARTIK BU FONKSİYONU ÇALIŞTIRIR
         function SmsGonder() {
+            let telInput = document.getElementById("prof-telefon");
+            let numaraStr = telInput.value.replace(/[^0-9]/g, '');
+
+            if(numaraStr.length < 10) { OzelUyariGoster("Hatalı Numara", "Lütfen başında 0 olmadan 10 haneli numaranızı girin. (Örn: 532...)", "📱"); return; }
+            
+            // Firebase reCAPTCHA'yı tetiklemek için işi ona bırakır (Callback içinden devam eder)
+            // Eğer reCAPTCHA çözülmüşse veya görünmez şekilde otomatik onaylanırsa 'SmsKoduSunucuyaIlet' çalışır.
+        }
+
+        function SmsKoduSunucuyaIlet() {
             let telInput = document.getElementById("prof-telefon");
             let btnSend = document.getElementById("btn-send-sms");
             let numaraStr = telInput.value.replace(/[^0-9]/g, '');
 
-            if(numaraStr.length < 10) { OzelUyariGoster("Hatalı Numara", "Lütfen başında 0 olmadan 10 haneli numaranızı girin. (Örn: 532...)", "📱"); return; }
             if(numaraStr.length === 10) numaraStr = "+90" + numaraStr;
             else if(numaraStr.length === 11 && numaraStr.startsWith("0")) numaraStr = "+9" + numaraStr;
 
@@ -447,11 +474,11 @@
                     
                     if (window.recaptchaVerifier) {
                         window.recaptchaVerifier.clear();
-                        document.getElementById('recaptcha-container').innerHTML = '';
-                        window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { 'size': 'invisible' });
+                        window.recaptchaVerifier = null;
                     }
+                    InitRecaptcha();
                     
-                    OzelUyariGoster("Hata Oluştu", "SMS gönderilemedi. Çok fazla deneme yapmış olabilirsiniz. Lütfen numaranızı kontrol edip tekrar deneyin.", "❌");
+                    OzelUyariGoster("Hata Oluştu", "SMS gönderilemedi. Çok fazla deneme yapmış olabilirsiniz veya tarayıcınız engelliyor olabilir. Lütfen sayfayı yenileyip tekrar deneyin.", "❌");
                     console.error("SMS Hatası:", error);
                 });
         }
@@ -511,9 +538,9 @@
             firebase.auth().signOut().then(() => {
                 if (window.recaptchaVerifier) {
                     window.recaptchaVerifier.clear();
-                    document.getElementById('recaptcha-container').innerHTML = '';
-                    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { 'size': 'invisible' });
+                    window.recaptchaVerifier = null;
                 }
+                InitRecaptcha(); // Silme işleminden sonra motoru yeniden kurar
             });
 
             OzelUyariGoster("Silindi", "Verileriniz cihazdan silindi. Başka bir numarayı SMS ile doğrulayabilirsiniz.", "🗑️");
@@ -762,7 +789,8 @@
             } else if (s === 'sepet') { 
                 document.getElementById("cart-container").style.display = "block"; SepetEkraniniCiz(); 
             } else if (s === 'profil') { 
-                document.getElementById("profile-container").style.display = "block"; 
+                document.getElementById("profile-container").style.display = "block";
+                InitRecaptcha(); // 3. DÜZELTME: Sekme açılınca reCAPTCHA dinlemeye başlar
             } else if (s === 'firsatlar') { 
                 document.getElementById("opportunities-container").style.display = "block"; KuponlariCek(); CarkDurumunuKontrolEt();
             } else if (s === 'gecmis') { 
@@ -971,7 +999,7 @@
                 let d = await res.json();
                 b.disabled = false; b.innerText = "Uygula";
                 if(d && d.discountAmount > 0) { 
-                    localStorage.removeItem("cpn_try"); // Başarılı olunca sayacı sıfırla
+                    localStorage.removeItem("cpn_try"); 
                     if (d.isAppCoupon !== true) { KuponuIptalEt(true); OzelUyariGoster("Sadece Mağazada", "Bu kupon sadece restoran içi siparişlerde geçerlidir.", "🚫"); return; }
                     let aU = (d.targetProduct && d.targetProduct !== "") ? d.targetProduct : "Herşey"; let uS = false; let hM = ""; 
                     if(aU === "Herşey") { uS = true; } else { let aV = sepet.some(u => u.rawName.toLocaleLowerCase('tr-TR') === aU.toLocaleLowerCase('tr-TR')); let bV = sepet.some(u => u.rawName.toLocaleLowerCase('tr-TR') !== aU.toLocaleLowerCase('tr-TR')); if (!aV) { hM = `'${escapeHTML(aU)}' sepette yok.`; } else if (bV) { hM = `Sadece '${escapeHTML(aU)}' almalısınız.`; } else { uS = true; } } 
