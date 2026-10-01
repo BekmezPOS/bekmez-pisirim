@@ -1347,7 +1347,7 @@
             });
         }
 
-        async function DevamEtPaketGonder(isim, tel, adres, odemeTuru, temizSepet) {
+      async function DevamEtPaketGonder(isim, tel, adres, odemeTuru, temizSepet) {
             localStorage.setItem("bg_i", isim); localStorage.setItem("bg_a", adres);
             let btn = document.getElementById("final-submit-btn");
             btn.innerText = "Kasa Onayına İletiliyor...";
@@ -1362,10 +1362,12 @@
 
                 let benzersizSiparisID = generateUUID();
 
+                // ÇÖZÜM BURADA: Artık sadece sepetteki "adet" (quantity) değil,
+                // ürünün gerçek gramajı/kilosu (baseStockAmount) hesaplanıp Unity'ye yollanıyor!
                 let sunucuyaGidecekSepet = temizSepet.map(u => ({
                     rawName: u.rawName,
                     tamIsim: (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName,
-                    miktar: u.quantity
+                    miktar: (u.baseStockAmount * u.quantity) 
                 }));
 
                 let taslakVerisi = {
