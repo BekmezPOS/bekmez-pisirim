@@ -77,7 +77,6 @@
             box-shadow: 0 0 40px rgba(255, 107, 0, 0.4), inset 0 0 20px rgba(0,0,0,0.8); 
             position: relative; overflow: hidden; margin: 0 auto 30px auto; 
             transition: transform 4s cubic-bezier(0.1, 0.7, 0.1, 1); 
-            /* TAM 5 EŞİT DİLİM (360/5 = 72 Derece) */
             background: conic-gradient( 
                 #FF6B00 0deg 72deg, 
                 #151518 72deg 144deg, 
@@ -89,8 +88,7 @@
         .cark-ok { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 35px solid white; z-index: 10; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6)); }
         .cark-dilim-yazi { 
             position: absolute; top: 50%; left: 50%; width: 50%; height: 20px; 
-            margin-top: -10px; /* MERKEZE TAM OTURMASI İÇİN EKLENDİ */
-            transform-origin: 0% 50%; font-size: 13px; font-weight: 900; color: white; 
+            margin-top: -10px; transform-origin: 0% 50%; font-size: 13px; font-weight: 900; color: white; 
             text-align: right; padding-right: 15px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); 
             display: flex; align-items: center; justify-content: flex-end; 
         }
@@ -432,17 +430,34 @@
         window.isOrderFinished = false; 
 
         const CARK_SALT = "BEKMEZ_GO_SECURE_2026"; 
-        // 5 SEÇENEKLİ YENİ ÇARK DİZİLİMİ (2 TANE PAS)
         const CARK_ODULLERI = ["🍟 Ekstra Patates", "😔 Pas", "🥤 1 Lt İçecek", "😔 Pas", "🍰 Fırın Sütlaç"];
         let aktifKullanilanCarkOdulu = null; 
 
         function HapticTitresim() { if(navigator.vibrate) navigator.vibrate(15); }
+        
+        // BİLDİRİM SİSTEMİ ONARILDI: Artık modern mobil cihazlarda (ServiceWorker var ise) zorunlu API'yi kullanıyor.
         function BildirimGonder(baslik, mesaj) {
             if (!("Notification" in window) || Notification.permission !== "granted") return;
             let ayarlar = { body: mesaj, icon: "icon-192.png", badge: "icon-192.png", vibrate: [200, 100, 200] };
-            try { new Notification(baslik, ayarlar); } catch(e) {}
+            try { 
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.ready.then(registration => {
+                        registration.showNotification(baslik, ayarlar);
+                    });
+                } else {
+                    new Notification(baslik, ayarlar); 
+                }
+            } catch(e) { console.log("Bildirim hatası:", e); }
         }
-        function SessizIzinIste() { if ("Notification" in window && Notification.permission === "default") { Notification.requestPermission(); } }
+
+        // BİLDİRİM İZNİ MODERNİZE EDİLDİ
+        function SessizIzinIste() { 
+            if ("Notification" in window && Notification.permission === "default") { 
+                Notification.requestPermission().then(permission => {
+                    if(permission === "granted") console.log("Bildirim izni verildi.");
+                }); 
+            } 
+        }
         
         function escapeHTML(str) { return str ? str.toString().replace(/[&<>'"]/g, function(tag){ return {'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[tag]; }) : ""; }
         function generateUUID() {
@@ -458,7 +473,6 @@
         function SoruSor(baslik, metin, ikon, evetCallback, isDanger=false) { document.getElementById("confirm-title").innerText = baslik; document.getElementById("confirm-text").innerHTML = metin; document.getElementById("confirm-icon").innerText = ikon; let btn = document.getElementById("confirm-yes-btn"); let box = document.getElementById("confirm-box"); let glow = document.getElementById("confirm-glow"); if(isDanger) { btn.style.background = "var(--danger)"; btn.innerText = "İptal Et"; box.style.borderColor = "var(--danger)"; glow.style.background = "var(--danger)"; } else { btn.style.background = "var(--primary)"; btn.innerText = "Onayla"; box.style.borderColor = "var(--primary)"; glow.style.background = "var(--primary)"; } let currentConfirmAction = evetCallback; document.getElementById("confirm-yes-btn").onclick = () => { KapatConfirmModal(null, true); if(currentConfirmAction) currentConfirmAction(); }; let p = document.getElementById("confirm-overlay"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10); }
         function KapatConfirmModal(e, force=false) { if(force || e.target === document.getElementById("confirm-overlay")) { let p = document.getElementById("confirm-overlay"); p.classList.remove("active"); setTimeout(() => p.style.display = "none", 400); } }
 
-        // --- SIFIR MALİYETLİ %100 ÜCRETSİZ E-POSTA DOĞRULAMA SİSTEMİ (GÜNCELLENDİ) ---
         firebase.auth().languageCode = 'tr';
 
         function EpostaMaskele(email) {
@@ -479,6 +493,7 @@
         }
 
         async function EpostaDogrulamasiBaslat() {
+            SessizIzinIste();
             let telInput = document.getElementById("prof-telefon").value.replace(/[^0-9]/g, '');
             let emailInput = document.getElementById("prof-email").value.trim().toLowerCase();
             let btn = document.getElementById("btn-email-verify");
@@ -513,7 +528,6 @@
                         let userCred = await firebase.auth().signInWithEmailAndPassword(emailInput, autoPass);
                         await handleVerifiedUser(userCred, formatliTel, emailInput);
                     } catch(e) {
-                        // Eğer hesap Auth'tan elle silinmişse, yeniden oluştur
                         if (e.code === 'auth/user-not-found') {
                             try {
                                 let userCred = await firebase.auth().createUserWithEmailAndPassword(emailInput, autoPass);
@@ -526,7 +540,6 @@
                             return;
                         }
                         
-                        // ESKİ ŞİFRE FORMATIYLA GİRİŞ DENEMESİ (Geriye Dönük Uyumluluk - Hatayı Çözen Kısım)
                         try {
                             let userCred = await firebase.auth().signInWithEmailAndPassword(emailInput, "Bekmez" + telInput);
                             await handleVerifiedUser(userCred, formatliTel, emailInput);
@@ -607,10 +620,13 @@
                 CarkDurumunuKontrolEt(); 
             } catch(e) {}
 
+            // YENİ EKLENEN HESAP BİLDİRİMLERİ
             if(isLogin) {
                 OzelUyariGoster("Tekrar Hoş Geldiniz! 👋", "Hesabınıza başarıyla giriş yapıldı ve verileriniz cihazınıza senkronize edildi.", "✅");
+                BildirimGonder("Giriş Yapıldı ✅", "Bekmez GO hesabınıza yeni bir giriş tespit edildi. Verileriniz eşitlendi.");
             } else {
                 OzelUyariGoster("Hesap Doğrulandı! 🎉", "E-Posta adresiniz ve telefonunuz eşleştirildi.", "✅");
+                BildirimGonder("Hoş Geldiniz! 🎉", "Bekmez GO hesabınız başarıyla doğrulandı ve aktifleştirildi.");
             }
         }
 
@@ -649,9 +665,10 @@
                 SepetEkraniniCiz(); 
                 
                 OzelUyariGoster("Çıkış Yapıldı", "Hesabınızdan güvenle çıkış yaptınız. Başka bir cihazdan veya tekrar bilgilerinizi girerek giriş yapabilirsiniz.", "🗑️");
+                // YENİ EKLENEN ÇIKIŞ BİLDİRİMİ
+                BildirimGonder("Çıkış Yapıldı 🚪", "Cihazınızdaki Bekmez GO hesap oturumu sonlandırıldı.");
             }, true);
         }
-        // --- E-POSTA DOĞRULAMA SİSTEMİ BİTİŞİ ---
 
         async function CarkPopupAc() {
             HapticTitresim(); SessizIzinIste();
@@ -716,7 +733,6 @@
             btn.innerText = "Çevriliyor...";
             let cark = document.getElementById("cark-element");
             
-            // YENİ 5 DİLİMLİ MATEMATİK
             let kazananIndex = Math.floor(Math.random() * 5); 
             let hedefAci = (5 * 360) + (360 - (kazananIndex * 72) - 36); 
             cark.style.transform = `rotate(${hedefAci}deg)`;
@@ -999,7 +1015,7 @@
 
         function PopupIciMiktarDegistir(artisYonu) { 
             if (!seciliUrun) return; HapticTitresim(); let artisan = seciliUrun.isKg ? 0.25 : 1; let netDegisim = artisYonu * artisan; let yeniMiktar = parseFloat((seciliMiktar + netDegisim).toFixed(2)); if (yeniMiktar < 0) return; let yeniFiyat = UnityFiyatiniHesapla(seciliUrun, yeniMiktar); 
-            let sepettekiAyniUrunMiktari = 0; sepet.forEach(u => { if(u.rawName === seciliUrun.pName) { sepettekiAyniUrunMiktari += (u.baseStockAmount * u.quantity); } }); if (yeniMiktar + sepettekiAyniUrunMiktari > seciliUrunStok) { OzelUyariGoster("Sınır Aşıldı", "Stok sınırına ulaştınız.", "⚠️️"); return; } 
+            let sepettekiAyniUrunMiktari = 0; sepet.forEach(u => { if(u.rawName === seciliUrun.pName) { sepettekiAyniUrunMiktari += (u.baseStockAmount * u.quantity); } }); if (yeniMiktar + sepettekiAyniUrunMiktari > seciliUrunStok) { OzelUyariGoster("Sınır Aşıldı", "Stok sınırına ulaştınız.", "⚠️"); return; } 
             seciliMiktar = yeniMiktar; seciliFiyat = yeniFiyat; 
             if (seciliUrun.isKg) { baseKgBread = Math.floor(seciliMiktar * 4); if (seciliEkstraIstekler.includes('Ekmeksiz')) { ekstraEkmekKg = -baseKgBread; } let sayacObj = document.getElementById("ekmek-sayac"); if (sayacObj) { sayacObj.innerText = baseKgBread + ekstraEkmekKg; } } 
             PopupUIYenile(true); 
@@ -1175,13 +1191,40 @@
             }
             isProcessingOrder = true;
             
-            const checkLoc = (hAcc, tOut) => { return new Promise((resolve, reject) => { navigator.geolocation.getCurrentPosition(p => resolve(p), e => reject(e), {enableHighAccuracy: hAcc, timeout: tOut, maximumAge: 0}); }); };
-            checkLoc(true, 10000).catch(() => checkLoc(false, 10000)).then(p => {
+            // GÜÇLENDİRİLMİŞ GPS SİSTEMİ
+            const checkLoc = () => { 
+                return new Promise((resolve, reject) => { 
+                    navigator.geolocation.getCurrentPosition(
+                        p => resolve(p), 
+                        e => {
+                            if(e.code === 1) return reject(e); // Kullanıcı izni reddettiyse uzatma, hemen reddet
+                            // Yüksek doğruluk başarısız olursa (örn: kapalı alan), düşük doğrulukla tekrar dene
+                            navigator.geolocation.getCurrentPosition(
+                                p2 => resolve(p2),
+                                e2 => reject(e2),
+                                {enableHighAccuracy: false, timeout: 15000, maximumAge: 0}
+                            );
+                        }, 
+                        {enableHighAccuracy: true, timeout: 10000, maximumAge: 0}
+                    ); 
+                }); 
+            };
+
+            checkLoc().then(p => {
                 let ms = GetDistanceKm(DUKKAN_ENLEM, DUKKAN_BOYLAM, p.coords.latitude, p.coords.longitude);
-                if (ms > MAKS_MESAFE_KM) { let do2 = document.getElementById("distance-alert-overlay"); do2.style.display = "flex"; setTimeout(() => do2.classList.add("active"), 10); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; return; }
+                if (ms > MAKS_MESAFE_KM) { 
+                    let do2 = document.getElementById("distance-alert-overlay"); do2.style.display = "flex"; setTimeout(() => do2.classList.add("active"), 10); 
+                    isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
+                    return; 
+                }
                 DevamEtPaketGonder(is, tl, ad, secilenOdeme, temizSepet);
             }).catch(e => { 
-                OzelUyariGoster("İzin Gerekli", "Konum alınamadı. Tarayıcınızdan konum izni veriniz.", "📍"); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
+                isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde";
+                if(e && e.code === 1) { // Kullanıcı İzni Reddedildi
+                    OzelUyariGoster("İzin Reddedildi", "Teslimat mesafesini ölçmek için konum (GPS) izni vermeniz şarttır. Lütfen tarayıcı ayarlarından konuma izin verin.", "📍"); 
+                } else { // GPS Kapalı veya Sinyal Yok
+                    OzelUyariGoster("Konum Bulunamadı", "Cihazınızın GPS (Konum) özelliği kapalı veya sinyal alınamıyor. Lütfen konumunuzu açıp tekrar deneyin.", "📡"); 
+                }
             });
         }
 
