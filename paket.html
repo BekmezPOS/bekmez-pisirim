@@ -270,8 +270,6 @@
             </div>
 
             <button onclick="ProfiliSil()" style="width:100%; background:transparent; border:1px solid rgba(239, 68, 68, 0.3); color:var(--danger); padding:16px; border-radius:100px; font-weight:800; font-size:14px; cursor:pointer; transition:0.3s; margin-top:20px;">Cihazdaki Bilgilerimi Sil</button>
-            
-            <div style="font-size: 10px; color: rgba(255,255,255,0.3); text-align: center; margin-top: 15px;">Bu site reCAPTCHA ile korunmaktadır. Google <a href="https://policies.google.com/privacy" style="color: rgba(255,255,255,0.4);">Gizlilik Politikası</a> ve <a href="https://policies.google.com/terms" style="color: rgba(255,255,255,0.4);">Kullanım Şartları</a> geçerlidir.</div>
         </div>
     </div>
 
@@ -487,8 +485,10 @@
                     }
                     InitRecaptcha();
                     
-                    // EKLEME: Firebase'in fırlattığı gerçek hatayı ekranda gösteriyoruz!
-                    OzelUyariGoster("Sistem Hatası", "Hata: " + error.code + "<br><br>Detay: " + error.message, "❌");
+                    let hataKod = error.code ? error.code : "Bilinmeyen Hata";
+                    let hataMesaj = error.message ? error.message : "Detay yok.";
+                    
+                    OzelUyariGoster("Sistem Hatası", "Hata: " + hataKod + "<br><br>Detay: " + hataMesaj, "❌");
                 });
         }
         // --- SMS BÖLÜMÜNÜN SONU ---
