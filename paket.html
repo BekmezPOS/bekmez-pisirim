@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no">
+    <!-- Firebase ve PWA izinleri -->
     <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval'; connect-src * 'unsafe-inline'; img-src * data: blob: 'unsafe-inline'; frame-src *; style-src * 'unsafe-inline'; font-src * data:;">
     <title>Bekmez GO - Premium Paket</title>
 
@@ -399,7 +400,6 @@
     <div id="custom-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)"><div class="custom-alert-box" id="custom-alert-box"><div class="custom-alert-glow" id="custom-alert-glow"></div><div class="custom-alert-content"><div id="custom-alert-icon" style="font-size: 55px; margin-bottom: 20px;">⚠️</div><h3 id="custom-alert-title" style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Uyarı</h3><p id="custom-alert-text" style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;"></p><button onclick="KapatUyariModal(event, true)" class="alert-btn">Tamam, Anladım</button></div></div></div>
     <div id="distance-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)"><div class="custom-alert-box"><div class="custom-alert-glow" style="background:var(--primary);"></div><div class="custom-alert-content"><div style="font-size: 55px; margin-bottom: 20px;">🛵</div><h3 style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Menzil Dışındasınız</h3><p style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;">Bekmez GO lezzetlerini size ulaştırabilmek için teslimat ağımızı <b>4 km</b> ile sınırlandırıyoruz.<br><br>Maalesef şu an sıcak teslimat bölgemizin dışındasınız.</p><button onclick="KapatUyariModal(event, true)" class="alert-btn" style="background:var(--primary); border-color:transparent; color:white;">Anladım</button></div></div></div>
     <div id="success-overlay" class="success-overlay"><div class="success-icon-wrapper"><div class="success-ring"></div><div class="success-circle"><svg class="success-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div></div><div class="success-text">Sipariş İletildi</div><div class="success-subtext">Kasa onayı bekleniyor...</div></div>
-
     <script>
         console.log("%c DUR!", "color: red; font-size: 60px; font-weight: bold; text-shadow: 2px 2px 0 #000;");
         console.log("%c Bu alan geliştiriciler içindir. Buraya gireceğiniz herhangi bir kod (XSS/Enjeksiyon) hesabınızın kalıcı olarak bloke edilmesine sebep olabilir.", "font-size: 18px; font-weight: bold; color: #fff; background: #000; padding: 10px; border-radius: 5px;");
@@ -515,6 +515,7 @@
             btn.innerText = "Sistem Kontrol Ediliyor..."; btn.disabled = true;
 
             try {
+                // SİLİNMİŞ HESAP KONTROLÜ
                 let banRes = await fetch(`${FIREBASE_URL}/SilinmisHesaplar/${formatliTel}.json`);
                 let banData = await banRes.json();
                 if (banData && banData.silinmeZamani) {
@@ -525,11 +526,10 @@
                         OzelUyariGoster("Kayıt Engeli 🛑", `Bu numara sistemden yakın zamanda silinmiş. Kötüye kullanımı engellemek için aynı numara ile <b>${leftDays} gün</b> boyunca tekrar kayıt yapılamaz.`, "⏳");
                         btn.innerText = "Telefonu E-Posta ile Doğrula"; btn.disabled = false;
                         return;
-                    } else {
-                        await fetch(`${FIREBASE_URL}/SilinmisHesaplar/${formatliTel}.json`, { method: "DELETE" });
                     }
                 }
 
+                // DOĞRULANMIŞ HESAP KONTROLÜ (.read: true sayesinde authsuz çalışır)
                 let dbRes = await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${formatliTel}.json`);
                 let dbData = await dbRes.json();
 
@@ -598,13 +598,16 @@
         }
 
         async function BasariliGirisIslemleri(formatliTel, email, isLogin = false) {
+            // ARTIK GÜVENLİK ANAHTARI (TOKEN) KULLANIYORUZ
+            let idToken = await firebase.auth().currentUser.getIdToken(true);
+            
             if (!isLogin) {
-                // TOKEN EKLENDİ (Firebase Kurallarını Aşabilmek İçin)
-                let idToken = await firebase.auth().currentUser.getIdToken(true);
                 await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${formatliTel}.json?auth=${idToken}`, { 
                     method: "PUT", 
                     body: JSON.stringify({ email: email, tarih: new Date().toLocaleString(), kayitZamani: Date.now() }) 
                 });
+                // Giriş yapıldıysa cezasını silebiliriz
+                await fetch(`${FIREBASE_URL}/SilinmisHesaplar/${formatliTel}.json?auth=${idToken}`, { method: "DELETE" });
             }
 
             localStorage.setItem("bg_t", formatliTel);
@@ -621,7 +624,6 @@
             ProfiliKaydet(false);
 
             try {
-                let idToken = await firebase.auth().currentUser.getIdToken(true);
                 let carkRes = await fetch(`${FIREBASE_URL}/CarkKullanimlari/${formatliTel}.json?auth=${idToken}&t=${Date.now()}`);
                 let carkData = await carkRes.json();
                 let sTime = await GetServerTime();
@@ -632,7 +634,7 @@
             } catch(e) {}
 
             if(isLogin) {
-                OzelUyariGoster("Tekrar Hoş Geldiniz! 👋", "Hesabınıza başarıyla giriş yapıldı ve verileriniz cihazınıza senkronize edildi.", "✅");
+                OzelUyariGoster("Tekrar Hoş Geldiniz! 👋", "Hesabınıza başarıyla giriş yapıldı.", "✅");
                 BildirimGonder("Hoş Geldiniz 👋", "Bekmez GO hesabınıza başarıyla giriş yapıldı.");
             } else {
                 OzelUyariGoster("Hesap Doğrulandı! 🎉", "E-Posta adresiniz ve telefonunuz eşleştirildi.", "✅");
@@ -680,15 +682,14 @@
             if (!tel) return;
 
             try {
-                let idToken = await firebase.auth().currentUser.getIdToken(true);
-                let res = await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${tel}.json?auth=${idToken}`);
+                let res = await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${tel}.json`); // Artık .read: true
                 let d = await res.json();
                 if (d && d.kayitZamani) {
                     let gecenZamanMs = Date.now() - d.kayitZamani;
                     let yediGunMs = 7 * 24 * 60 * 60 * 1000;
                     if (gecenZamanMs < yediGunMs) {
                         let kalanGun = Math.ceil((yediGunMs - gecenZamanMs) / (1000 * 60 * 60 * 24));
-                        OzelUyariGoster("Güvenlik Kilidi 🛡️", `Sistemi kötüye kullanımı (çark hilesi vb.) engellemek için yeni açılan hesaplar 7 gün boyunca silinemez.<br><br>Hesabınızı silebilmek için <b>${kalanGun} gün</b> daha beklemelisiniz.`, "⏳");
+                        OzelUyariGoster("Güvenlik Kilidi 🛡️", `Sistemi kötüye kullanımı engellemek için yeni açılan hesaplar 7 gün boyunca silinemez.<br><br>Hesabınızı silebilmek için <b>${kalanGun} gün</b> daha beklemelisiniz.`, "⏳");
                         return;
                     }
                 }
@@ -700,10 +701,11 @@
                 if (authUser) {
                     try {
                         let idToken = await authUser.getIdToken(true);
-                        await authUser.delete();
-                        await fetch(`${FIREBASE_URL}/SilinmisHesaplar/${tel}.json`, { method: "PUT", body: JSON.stringify({ silinmeZamani: Date.now() }) });
+                        await fetch(`${FIREBASE_URL}/SilinmisHesaplar/${tel}.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify({ silinmeZamani: Date.now() }) });
                         await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${tel}.json?auth=${idToken}`, { method: "DELETE" });
                         await fetch(`${FIREBASE_URL}/CarkKullanimlari/${tel}.json?auth=${idToken}`, { method: "DELETE" });
+
+                        await authUser.delete();
 
                         TemizleOturumVerileri();
                         OzelUyariGoster("Hesap Silindi", "Hesabınız ve tüm verileriniz sistemden başarıyla silindi. Güvenlik kuralları gereği 7 gün boyunca aynı numarayla tekrar kayıt yapılamaz.", "🗑️");
@@ -931,7 +933,13 @@
                         let siparisId = localStorage.getItem("bg_active_order_id");
                         if(siparisId) {
                             try {
-                                let res = await fetch(`${FIREBASE_URL}/CanliPaketler/${siparisId}.json`);
+                                let authUser = firebase.auth().currentUser;
+                                let urlStr = `${FIREBASE_URL}/CanliPaketler/${siparisId}.json`;
+                                if(authUser) {
+                                    let idToken = await authUser.getIdToken(true);
+                                    urlStr += `?auth=${idToken}`;
+                                }
+                                let res = await fetch(urlStr);
                                 let d = await res.json();
                                 let sipZamani = (d && d.timestamp) ? d.timestamp : null;
                                 let isGhost = sipZamani ? ((Date.now() - sipZamani) > GHOST_TIMEOUT_MS) : false;
@@ -1248,7 +1256,6 @@
 
                 let benzersizSiparisID = generateUUID();
 
-                // FİYATLARI SİLİP SADECE TASLAK ÜRÜNLERİ GÖNDERİYORUZ (Sıfır Güven)
                 let sunucuyaGidecekSepet = temizSepet.map(u => ({
                     rawName: u.rawName,
                     tamIsim: (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName,
@@ -1256,6 +1263,7 @@
                 }));
 
                 let taslakVerisi = {
+                    uid: authUser.uid,
                     telefon: tel,
                     musteriAd: isim,
                     adres: adres,
