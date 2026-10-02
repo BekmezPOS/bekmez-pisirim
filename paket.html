@@ -67,7 +67,7 @@
         .input-group { position: relative; display: flex; align-items: center; }
         .input-icon-left { position: absolute; left: 15px; font-size: 16px; pointer-events: none; opacity: 0.7; }
         .premium-input-box input, .premium-input-box textarea { width: 100%; background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border-highlight); color: white; padding: 15px 15px 15px 45px; border-radius: 14px; font-size: 14px; font-weight: 600; transition: 0.3s; box-sizing: border-box; }
-        .premium-input-box textarea { padding: 15px; } /* Adres kutusu için ikon boşluğu kaldırıldı */
+        .premium-input-box textarea { padding: 15px; } 
         .premium-input-box input:focus, .premium-input-box textarea:focus { border-color: var(--primary); background: rgba(0,0,0,0.8); box-shadow: 0 0 0 2px rgba(255, 107, 0, 0.2); outline: none; }
         .premium-input-box input:disabled { opacity: 0.5; cursor: not-allowed; }
         
@@ -260,7 +260,6 @@
             <button class="tab-btn" id="tab-Guvenlik" onclick="ProfilSekmeSec('Guvenlik', this);">🛡️ Hesap Güvenliği</button>
         </div>
 
-        <!-- TESLİMAT SEKMESİ (TELEFON NUMARASI BURADAN KALDIRILDI) -->
         <div id="profil-teslimat-sekmesi" style="display: block; margin: 0 15px 30px 15px;">
             <div class="premium-input-box">
                 <label>👤 Adınız Soyadınız</label>
@@ -277,11 +276,9 @@
             <button class="order-btn shimmer-btn neon-border" onclick="ProfiliKaydet(true)">Bilgilerimi Kaydet</button>
         </div>
 
-        <!-- GÜVENLİK SEKMESİ (TELEFON NUMARASI VE CANLI ŞİFRE KONTROLÜ EKLENDİ) -->
+        <!-- GÜVENLİK SEKMESİ -->
         <div id="profil-guvenlik-sekmesi" style="display: none; margin: 0 15px 30px 15px;">
-            
             <div id="auth-form-area" class="premium-input-box">
-                <!-- TELEFON NUMARASI GİRİŞİ (+90 İbareli) -->
                 <label>📱 İletişim Numaranız</label>
                 <div class="input-group" style="margin-bottom: 20px;">
                     <span class="input-icon-left" style="font-size: 13px; font-weight: 900; letter-spacing: 0.5px;">🇹🇷 +90</span>
@@ -300,8 +297,7 @@
                     <input type="password" id="prof-password" placeholder="Yeni şifrenizi belirleyin" maxlength="30" onkeyup="CanliSifreKontrolu(this.value)">
                 </div>
 
-                <!-- CANLI ŞİFRE KONTROL LİSTESİ -->
-                <div class="password-rules-box" id="password-rules-box">
+                <div class="password-rules-box" id="password-rules-box" style="display: none;">
                     <div style="color: var(--text-main); font-size: 11px; font-weight: 800; margin-bottom: 2px;">Şifre Gereksinimleri:</div>
                     <div id="rule-lower" class="rule-item"><span class="rule-icon">❌</span> En az bir küçük harf</div>
                     <div id="rule-upper" class="rule-item"><span class="rule-icon">❌</span> En az bir büyük harf</div>
@@ -390,13 +386,10 @@
             </div>
             <div style="margin-bottom: 20px;">
                 <input type="text" id="chk-isim" class="checkout-input" placeholder="Adınız Soyadınız" autocomplete="name" maxlength="50" onkeyup="document.getElementById('prof-isim').value = this.value">
-                
-                <!-- CHECKOUT TELEFON KUTUSU (+90 Tarafı Eklendi) -->
                 <div class="input-group" style="margin-bottom: 12px;">
                     <span class="input-icon-left" style="font-size: 13px; font-weight: 900; z-index: 10; top: 16px;">🇹🇷 +90</span>
                     <input type="tel" id="chk-telefon" class="checkout-input" placeholder="Profilinizden Onaylayın" autocomplete="tel" disabled style="padding-left: 75px; opacity:0.6; cursor:not-allowed; margin-bottom:0;">
                 </div>
-
                 <textarea id="chk-adres" class="checkout-input" rows="3" placeholder="Açık Adresiniz (Mahalle, Sokak, No...)" style="resize:none;" maxlength="250" onkeyup="document.getElementById('prof-adres').value = this.value"></textarea>
             </div>
             
@@ -452,11 +445,14 @@
 
     <script>
         console.log("%c DİKKAT!", "color: #FF3B30; font-size: 50px; font-weight: 900; text-shadow: 2px 2px 0 #000;");
-        console.log("%c Bu alan geliştiriciler ve siber güvenlik uzmanları içindir. Konsol üzerinden yapılacak her türlü XSS, Enjeksiyon veya Manipülasyon girişimi sistem tarafından loglanmakta olup, tespit edildiğinde IP adresiniz ve cihaz kimliğiniz kalıcı olarak kara listeye alınacaktır.", "font-size: 14px; font-weight: bold; color: #fff; background: #1a1a24; padding: 15px; border-radius: 8px; border: 1px solid #FF3B30;");
+        console.log("%c Bu alan geliştiriciler ve siber güvenlik uzmanları içindir.", "font-size: 14px; font-weight: bold; color: #fff; background: #1a1a24; padding: 15px; border-radius: 8px; border: 1px solid #FF3B30;");
+
+        // İŞLETME WHATSAPP NUMARAN
+        const DUKKAN_WHATSAPP_NUMARASI = "905369517776"; 
 
         let sepetHatirlaticiTimer = null;
-        
         let serverTimeOffset = 0;
+        
         async function SyncServerTime() {
             try {
                 let st = Date.now();
@@ -521,10 +517,7 @@
         const textIptal = `<strong style="color:white; font-size:14px;">İPTAL VE İADE KOŞULLARI</strong><br><br><b>1. Şartlar:</b> Siparişiniz yalnızca "Kasa Onayı Bekleniyor" aşamasındayken (ilk 3 dakika içerisinde) iptal edilebilir. Sipariş mutfağa iletildiğinde veya yola çıktığında iptal ve iade yapılamaz.`;
         
         const DUKKAN_ENLEM = 36.206278; const DUKKAN_BOYLAM = 36.134472; const MAKS_MESAFE_KM = 4; const GHOST_TIMEOUT_MS = 8 * 60 * 60 * 1000; 
-
-        // KRİPTOGRAFİK GÜVENLİK ANAHTARLARI
-        const CARK_SALT = "BEKMEZ_GO_SECURE_2026"; 
-        const TIME_SALT = "BKMZ_TIME_SEAL_X9";
+        const CARK_SALT = "BEKMEZ_GO_SECURE_2026"; const TIME_SALT = "BKMZ_TIME_SEAL_X9";
 
         let ekmekUrunAdi = "Ekmek"; let ekmekBirimFiyati = 0; let sepet = []; let hamToplamFiyat = 0; let sonOdenecekFiyat = 0;
         let aktifKuponKodu = ""; let aktifKuponIndirimTutari = 0; let aktifKuponAltLimit = 0; let aktifKuponHedefUrun = "Herşey"; 
@@ -532,11 +525,14 @@
         let seciliUrun = null; let seciliMiktar = 0; let seciliFiyat = 0; let seciliEkstraIstekler = []; let seciliOzelEkmekTip = "Normal"; 
         let baseKgBread = 0; let ekstraEkmekKg = 0; let seciliUrunStok = 999; let oncekiToplamFiyat = 0; let oncekiPopupFiyat = 0; let oncekiPopupMiktar = 0;
         let populerUrunlerListesi = []; let canliAdisyonTimer = null; let sonCekilenAdisyonHTML = ""; let sonKuponVerisi = ""; let isProcessingOrder = false;
-        let emailInterval = null; window.isAddingToCart = false;
+        
+        let emailInterval = null; 
+        let whatsappInterval = null; 
+        let aktifWhatsappKodu = "";
+        window.isAddingToCart = false;
 
         let deferredPrompt; let installPromptDismissed = localStorage.getItem('pwa_prompt_dismissed') === 'true';
-        window.isOrderFinished = false; 
-        let aktifKullanilanCarkOdulu = null; 
+        window.isOrderFinished = false; let aktifKullanilanCarkOdulu = null; 
 
         function HapticTitresim() { if(navigator.vibrate) navigator.vibrate(15); }
         function escapeHTML(str) { return str ? str.toString().replace(/[&<>'"]/g, function(tag){ return {'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[tag]; }) : ""; }
@@ -547,7 +543,6 @@
             });
         }
         
-        // ZAMAN MÜHRÜ (CRYPTOGRAPHIC TIME SEAL)
         function ZamanMuhruSifrele(ts, id) { return btoa(encodeURIComponent(`${ts}|||${id}|||${TIME_SALT}`)); }
         function ZamanMuhruCoz(hash, id) {
             if(!hash) return 0;
@@ -559,7 +554,7 @@
         }
 
         function OzelUyariGoster(baslik, metin, ikon) { document.getElementById("custom-alert-title").innerText = baslik; document.getElementById("custom-alert-text").innerHTML = metin; document.getElementById("custom-alert-icon").innerText = ikon; let p = document.getElementById("custom-alert-overlay"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10); }
-        function KapatUyariModal(e, force=false) { if(force || e.target === document.getElementById("custom-alert-overlay") || e.target === document.getElementById("distance-alert-overlay")) { let p = document.getElementById("custom-alert-overlay"); let d = document.getElementById("distance-alert-overlay"); p.classList.remove("active"); d.classList.remove("active"); setTimeout(() => { p.style.display = "none"; d.style.display = "none"; }, 400); } }
+        function KapatUyariModal(e, force=false) { if(force || e.target === document.getElementById("custom-alert-overlay") || e.target === document.getElementById("distance-alert-overlay") || e.target === document.getElementById("whatsapp-wait-overlay")) { let p = document.getElementById("custom-alert-overlay"); let d = document.getElementById("distance-alert-overlay"); p.classList.remove("active"); d.classList.remove("active"); setTimeout(() => { p.style.display = "none"; d.style.display = "none"; }, 400); } }
         function SoruSor(baslik, metin, ikon, evetCallback, isDanger=false) { document.getElementById("confirm-title").innerText = baslik; document.getElementById("confirm-text").innerHTML = metin; document.getElementById("confirm-icon").innerText = ikon; let btn = document.getElementById("confirm-yes-btn"); let box = document.getElementById("confirm-box"); let glow = document.getElementById("confirm-glow"); if(isDanger) { btn.style.background = "var(--danger)"; btn.innerText = "İptal Et"; box.style.borderColor = "var(--danger)"; glow.style.background = "var(--danger)"; } else { btn.style.background = "var(--primary)"; btn.innerText = "Onayla"; box.style.borderColor = "var(--primary)"; glow.style.background = "var(--primary)"; } let currentConfirmAction = evetCallback; document.getElementById("confirm-yes-btn").onclick = () => { KapatConfirmModal(null, true); if(currentConfirmAction) currentConfirmAction(); }; let p = document.getElementById("confirm-overlay"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10); }
         function KapatConfirmModal(e, force=false) { if(force || e.target === document.getElementById("confirm-overlay")) { let p = document.getElementById("confirm-overlay"); p.classList.remove("active"); setTimeout(() => p.style.display = "none", 400); } }
 
@@ -586,7 +581,6 @@
             }
         }
 
-        // OTOMATİK SIFIR SİLİCİ VE NUMARA FORMATLAYICI
         function FormatTelefon(input) {
             let val = input.value.replace(/[^0-9]/g, '');
             if (val.startsWith('0')) { val = val.substring(1); }
@@ -596,7 +590,6 @@
             if (chk) chk.value = val;
         }
 
-        // CANLI ŞİFRE DOĞRULAMA (LIVE VALIDATOR)
         let isPasswordValid = false;
         function CanliSifreKontrolu(val) {
             let rL = /[a-z]/.test(val) || /[çğıöşü]/.test(val);
@@ -624,17 +617,14 @@
             updateRule('rule-length', rLen, 'En az 8 karakter uzunluğunda');
 
             isPasswordValid = rL && rU && rN && rS && rLen;
-            
             let rb = document.getElementById('password-rules-box');
             if (val.length > 0) { rb.style.display = "flex"; } else { rb.style.display = "none"; }
-            
             KayitOnayToggle();
         }
 
         function KayitOnayToggle() {
             let cb = document.getElementById("kayit-onay-cb");
             let btn = document.getElementById("btn-email-verify");
-            // Hem şifre gereksinimleri hem de sözleşme kutusu aynı anda sağlanmalı
             if (cb.checked && isPasswordValid) { 
                 btn.disabled = false; btn.style.opacity = "1"; 
             } else { 
@@ -643,10 +633,7 @@
         }
 
         async function YeniNesilKayitOl() {
-            if (!isPasswordValid) {
-                OzelUyariGoster("Zayıf Şifre", "Lütfen şifre gereksinimlerinin tamamını karşılayın.", "🔒");
-                return;
-            }
+            if (!isPasswordValid) { OzelUyariGoster("Zayıf Şifre", "Lütfen şifre gereksinimlerinin tamamını karşılayın.", "🔒"); return; }
             await EpostaDogrulamasiBaslat();
         }
 
@@ -659,7 +646,7 @@
             if(telInput.length < 10) { OzelUyariGoster("Eksik Numara", "Lütfen başında 0 olmadan tam 10 haneli numaranızı girin.", "📱"); return; }
             if(emailInput.length < 5 || !emailInput.includes("@")) { OzelUyariGoster("Eksik E-Posta", "Lütfen geçerli bir e-posta adresi girin.", "📧"); return; }
             
-            let formatliTel = "0" + telInput; // Backend uyumluluğu için 0 eklenir
+            let formatliTel = "0" + telInput; 
             let autoPass = passInput; 
             
             btn.innerText = "Sistem Kontrol Ediliyor..."; btn.disabled = true;
@@ -672,7 +659,7 @@
                     let sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
                     if (passedMs < sevenDaysMs) {
                         let leftDays = Math.ceil((sevenDaysMs - passedMs) / (1000 * 60 * 60 * 24));
-                        OzelUyariGoster("Kayıt Engeli 🛑", `Bu numara sistemden yakın zamanda silinmiş. Kötüye kullanımı engellemek için aynı numara ile <b>${leftDays} gün</b> boyunca tekrar kayıt yapılamaz.`, "⏳");
+                        OzelUyariGoster("Kayıt Engeli 🛑", `Bu numara sistemden yakın zamanda silinmiş. Aynı numara ile <b>${leftDays} gün</b> boyunca tekrar kayıt yapılamaz.`, "⏳");
                         btn.innerText = "Hesabımı Oluştur"; btn.disabled = false; return;
                     }
                 }
@@ -697,7 +684,7 @@
                                 EpostaOnayiniBekle(userCred.user, formatliTel, emailInput);
                             } catch(err) { btn.innerText = "Hesabımı Oluştur"; btn.disabled = false; OzelUyariGoster("Sistem Hatası", "Kayıt yenilenemedi.", "❌"); } return;
                         }
-                        OzelUyariGoster("Giriş Hatası", "Şifreniz veya bilgilerinizde uyuşmazlık var. Daha önce belirlediğiniz şifreyi girin.", "❌");
+                        OzelUyariGoster("Giriş Hatası", "Şifreniz hatalı. Lütfen kontrol edip tekrar deneyin.", "❌");
                         btn.innerText = "Hesabımı Oluştur"; btn.disabled = false;
                     } return;
                 }
@@ -715,8 +702,12 @@
         }
 
         async function handleVerifiedUser(userCred, formatliTel, emailInput) {
-            if(userCred.user.emailVerified) { await BasariliGirisIslemleri(formatliTel, emailInput, true); } 
-            else { await userCred.user.sendEmailVerification(); EpostaOnayiniBekle(userCred.user, formatliTel, emailInput); }
+            if(userCred.user.emailVerified) { 
+                await WhatsappIkinciDogrulama(formatliTel, emailInput, true); 
+            } else { 
+                await userCred.user.sendEmailVerification(); 
+                EpostaOnayiniBekle(userCred.user, formatliTel, emailInput); 
+            }
         }
 
         function EpostaOnayiniBekle(user, formatliTel, email) {
@@ -727,7 +718,7 @@
                     if (user.emailVerified) {
                         clearInterval(emailInterval);
                         p.classList.remove("active"); setTimeout(() => p.style.display = "none", 400);
-                        BasariliGirisIslemleri(formatliTel, email, false);
+                        WhatsappDogrulamasiniBaslat(formatliTel, email);
                     }
                 } catch(e) {}
             }, 3000);
@@ -739,6 +730,97 @@
             let btn = document.getElementById("btn-email-verify"); btn.innerText = "Hesabımı Oluştur"; btn.disabled = false;
         }
 
+        // ==========================================
+        // YENİ: WHATSAPP DOĞRULAMA (2. ADIM) MOTORU
+        // ==========================================
+        function WhatsappDogrulamasiniBaslat(formatliTel, email) {
+            let rastgeleKod = Math.floor(1000 + Math.random() * 9000);
+            aktifWhatsappKodu = `BKMZ-${rastgeleKod}`;
+
+            let wpOverlay = document.createElement("div");
+            wpOverlay.id = "whatsapp-wait-overlay";
+            wpOverlay.className = "custom-alert-overlay";
+            wpOverlay.style.zIndex = "9999999";
+            wpOverlay.style.display = "flex";
+            
+            let wpHtml = `
+            <div class="custom-alert-box" style="border-color: #25D366;">
+                <div class="custom-alert-glow" style="background: #25D366;"></div>
+                <div class="custom-alert-content">
+                    <div style="font-size: 55px; margin-bottom: 20px;">💬</div>
+                    <h3 style="margin: 0 0 14px 0; font-weight: 900; font-size: 20px; color: var(--text-main); letter-spacing:-0.5px;">Son Bir Adım Kaldı!</h3>
+                    <p style="color: var(--text-muted); font-size: 13px; font-weight: 600; margin: 0 0 20px 0; line-height: 1.5;">
+                        E-postanız onaylandı. Güvenliğiniz için lütfen telefon numaranızı WhatsApp üzerinden ücretsiz olarak doğrulayın.
+                    </p>
+                    <div style="background: rgba(0,0,0,0.5); padding: 15px; border-radius: 12px; border: 1px dashed #25D366; margin-bottom: 20px;">
+                        <span style="font-size: 11px; color: #A1A1AA; font-weight: 800; display: block; margin-bottom: 5px;">ONAY KODUNUZ:</span>
+                        <span style="font-size: 24px; color: white; font-weight: 900; letter-spacing: 2px;">${aktifWhatsappKodu}</span>
+                    </div>
+                    <button onclick="WhatsappMesajiGonder()" class="shimmer-btn" style="width:100%; background: #25D366; color: white; border: none; padding: 16px; border-radius: 100px; font-weight: 800; font-size: 15px; box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4); margin-bottom: 15px; cursor: pointer;">
+                        WhatsApp'ı Aç ve Onayla
+                    </button>
+                    <button onclick="IptalEtWhatsappBekleme()" class="alert-btn" style="background: rgba(255,255,255,0.05); color:white; border: 1px solid var(--border-highlight);">
+                        Vazgeç
+                    </button>
+                    <div id="wp-dinleme-yazisi" style="font-size: 11px; color: var(--warning); margin-top: 15px; font-weight: 600; display: none;">
+                        Mesajınız bekleniyor... Bu ekranı kapatmayın.
+                    </div>
+                </div>
+            </div>`;
+            
+            wpOverlay.innerHTML = wpHtml;
+            document.body.appendChild(wpOverlay);
+            setTimeout(() => wpOverlay.classList.add("active"), 10);
+
+            let temizNumara = formatliTel.startsWith("0") ? formatliTel.substring(1) : formatliTel; 
+            
+            whatsappInterval = setInterval(async () => {
+                try {
+                    let idToken = await firebase.auth().currentUser.getIdToken(true);
+                    let res = await fetch(`${FIREBASE_URL}/WhatsappOnayliNumaralar/${temizNumara}.json?auth=${idToken}`);
+                    let data = await res.json();
+                    
+                    if (data && data.onaylandi === 1 && data.kod === aktifWhatsappKodu) {
+                        clearInterval(whatsappInterval);
+                        await fetch(`${FIREBASE_URL}/WhatsappOnayliNumaralar/${temizNumara}.json?auth=${idToken}`, { method: "DELETE" });
+                        
+                        wpOverlay.classList.remove("active"); 
+                        setTimeout(() => wpOverlay.remove(), 400);
+                        BasariliGirisIslemleri(formatliTel, email, false);
+                    }
+                } catch(e) {}
+            }, 3000);
+        }
+
+        async function WhatsappIkinciDogrulama(formatliTel, email, isLogin) {
+            let idToken = await firebase.auth().currentUser.getIdToken(true);
+            if(isLogin) {
+                await BasariliGirisIslemleri(formatliTel, email, true);
+                return; 
+            }
+            WhatsappDogrulamasiniBaslat(formatliTel, email);
+        }
+
+        function WhatsappMesajiGonder() {
+            HapticTitresim();
+            document.getElementById("wp-dinleme-yazisi").style.display = "block";
+            let mesaj = `Merhaba Bekmez GO. Hesabımı onaylamak için kodum: ${aktifWhatsappKodu}`;
+            let wpLink = `https://wa.me/${DUKKAN_WHATSAPP_NUMARASI}?text=${encodeURIComponent(mesaj)}`;
+            window.open(wpLink, "_blank");
+        }
+
+        function IptalEtWhatsappBekleme() {
+            if(whatsappInterval) clearInterval(whatsappInterval);
+            let wpOverlay = document.getElementById("whatsapp-wait-overlay");
+            if (wpOverlay) { wpOverlay.classList.remove("active"); setTimeout(() => wpOverlay.remove(), 400); }
+            let btn = document.getElementById("btn-email-verify"); btn.innerText = "Hesabımı Oluştur"; btn.disabled = false;
+            
+            let user = firebase.auth().currentUser;
+            if (user) { user.delete(); }
+            firebase.auth().signOut();
+            OzelUyariGoster("İptal Edildi", "WhatsApp onayı yapılmadığı için hesap oluşturma işlemi iptal edildi.", "❌");
+        }
+
         async function BasariliGirisIslemleri(formatliTel, email, isLogin = false) {
             let idToken = await firebase.auth().currentUser.getIdToken(true);
             if (!isLogin) {
@@ -747,13 +829,13 @@
             }
 
             localStorage.setItem("bg_t", formatliTel); 
-            // Profil telefon numarasını +90 formatından dolayı sadece numaraları yazdırıyoruz
             let displayTel = formatliTel.startsWith("0") ? formatliTel.substring(1) : formatliTel;
             document.getElementById("prof-telefon").value = displayTel;
             document.getElementById("chk-telefon").value = displayTel;
             
             document.getElementById("auth-form-area").style.display = "none"; document.getElementById("dogrulandi-etiketi").style.display = "block"; document.getElementById("profil-aksiyon-butonlari").style.display = "flex"; 
             document.getElementById("btn-email-verify").innerText = "Hesabımı Oluştur"; document.getElementById("prof-telefon").disabled = true; document.getElementById("prof-email").disabled = true; document.getElementById("prof-password").disabled = true;
+            let rb = document.getElementById("password-rules-box"); if(rb) rb.style.display = "none";
             ProfiliKaydet(false);
 
             try {
@@ -774,7 +856,7 @@
             } catch(e) {}
 
             if(isLogin) { OzelUyariGoster("Tekrar Hoş Geldiniz! 👋", "Hesabınıza başarıyla giriş yapıldı.", "✅"); BildirimGonder("Hoş Geldiniz 👋", "Bekmez GO hesabınıza başarıyla giriş yapıldı."); } 
-            else { OzelUyariGoster("Hesap Doğrulandı! 🎉", "E-Posta adresiniz ve telefonunuz eşleştirildi.", "✅"); BildirimGonder("Hesap Oluşturuldu 🎉", "Bekmez GO'ya hoş geldiniz! İndirimleri kaçırmayın."); }
+            else { OzelUyariGoster("Hesap Doğrulandı! 🎉", "E-Posta adresiniz ve WhatsApp onayınız tamamlandı.", "✅"); BildirimGonder("Hesap Oluşturuldu 🎉", "Bekmez GO'ya hoş geldiniz! İndirimleri kaçırmayın."); }
             
             if(localStorage.getItem("bg_active_order_id")) { SayfaGoster('gecmis'); }
         }
@@ -786,7 +868,6 @@
             if(alertGoster) { HapticTitresim(); OzelUyariGoster("Başarılı", "Profil bilgileriniz cihazınıza kaydedildi.", "✅"); }
         }
 
-        // KUSURSUZ ÇIKIŞ TEMİZLİĞİ VE BULUT SENKRONİZASYONU
         function TemizleOturumVerileri() {
             localStorage.removeItem("bg_i"); localStorage.removeItem("bg_t"); localStorage.removeItem("bg_a"); localStorage.removeItem("bg_cark_data"); 
             localStorage.removeItem("bg_active_order_id"); localStorage.removeItem("bg_order_timestamp"); localStorage.removeItem("bg_last_status"); localStorage.removeItem("bg_odeme_turu");
@@ -828,6 +909,8 @@
                         await fetch(`${FIREBASE_URL}/SilinmisHesaplar/${tel}.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify({ silinmeZamani: Date.now() }) });
                         await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${tel}.json?auth=${idToken}`, { method: "DELETE" });
                         await fetch(`${FIREBASE_URL}/CarkKullanimlari/${tel}.json?auth=${idToken}`, { method: "DELETE" });
+                        let temizTel = tel.replace(/[^0-9]/g, '');
+                        await fetch(`${FIREBASE_URL}/WhatsappOnayliNumaralar/${temizTel}.json?auth=${idToken}`, { method: "DELETE" });
                         await authUser.delete();
                         TemizleOturumVerileri(); OzelUyariGoster("Hesap Silindi", "Hesabınız ve tüm verileriniz sistemden başarıyla silindi. Güvenlik kuralları gereği 7 gün boyunca aynı numarayla tekrar kayıt yapılamaz.", "🗑️");
                     } catch (error) {
@@ -921,7 +1004,7 @@
             } catch(e) {}
         }
 
-        function IptalOnaySor() { HapticTitresim(); SoruSor("Siparişi İptal Et", "Siparişinizi iptal etmek istediğinize emin misiniz? İşlem geri alınamaz.", "⚠️", () => { SiparişiGercektenIptalEt(); }, true); }
+        function IptalOnaySor() { HapticTitresim(); SoruSor("Siparişi İptal Et", "Siparişinizi iptal etmek istediğinize emin misiniz? İşlem geri alınamaz.", "⚠️️", () => { SiparişiGercektenIptalEt(); }, true); }
         
         async function SiparişiGercektenIptalEt() {
             let siparisId = localStorage.getItem("bg_active_order_id"); if(!siparisId) return;
@@ -985,13 +1068,12 @@
             HesaplaVeGuncelle();
         }
 
-        // ZAFİYET ÇÖZÜMÜ: Floating Point (Kuruş) Hatası Giderildi
         function HesaplaVeGuncelle() {
             hamToplamFiyat = 0; 
             sepet.forEach(item => { hamToplamFiyat += (item.basePrice * item.quantity); });
             hamToplamFiyat = Math.round(hamToplamFiyat * 100) / 100;
             
-            if (aktifKuponKodu !== "" && hamToplamFiyat < aktifKuponAltLimit) { OzelUyariGoster("Kupon İptal Edildi", `Sepet tutarınız ${aktifKuponAltLimit} TL'nin altına düştüğü için kuponunuz devre dışı bırakıldı.`, "⚠️️"); KuponuIptalEt(true); }
+            if (aktifKuponKodu !== "" && hamToplamFiyat < aktifKuponAltLimit) { OzelUyariGoster("Kupon İptal Edildi", `Sepet tutarınız ${aktifKuponAltLimit} TL'nin altına düştüğü için kuponunuz devre dışı bırakıldı.`, "⚠️"); KuponuIptalEt(true); }
 
             sonOdenecekFiyat = hamToplamFiyat - aktifKuponIndirimTutari; if (sonOdenecekFiyat < 0) sonOdenecekFiyat = 0;
             sonOdenecekFiyat = Math.round(sonOdenecekFiyat * 100) / 100;
@@ -1030,7 +1112,7 @@
         function CloseFullscreenPrompt() { HapticTitresim(); let p = document.getElementById('pwa-fullscreen-prompt'); p.classList.remove('active'); setTimeout(() => { p.style.display = 'none'; }, 500); localStorage.setItem('pwa_prompt_dismissed', 'true'); if (deferredPrompt) { document.getElementById('pwa-install-banner').style.display = 'flex'; } }
         function TetiklePwaPrompt() { ManuelUygulamaIndir(); }
 
-        window.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('DOMContentLoaded', async () => {
             SyncServerTime();
             let st = new Date().getHours(); let m = "Hoş Geldiniz ✨"; 
             if (st >= 5 && st < 11) m = "Günaydın ☀️"; else if (st >= 11 && st < 17) m = "İyi Günler 🌤️"; else if (st >= 17 && st < 22) m = "İyi Akşamlar 🌙"; else m = "İyi Geceler 🌌";
@@ -1045,8 +1127,24 @@
                 document.getElementById("prof-telefon").value = displayTel; 
                 
                 document.getElementById("prof-telefon").disabled = true; document.getElementById("prof-email").disabled = true; document.getElementById("prof-password").disabled = true;
-                document.getElementById("password-rules-box").style.display = "none";
+                let rb = document.getElementById("password-rules-box"); if(rb) rb.style.display = "none";
                 document.getElementById("auth-form-area").style.display = "none"; document.getElementById("dogrulandi-etiketi").style.display = "block"; document.getElementById("profil-aksiyon-butonlari").style.display = "flex"; 
+
+                try {
+                    let authUser = firebase.auth().currentUser;
+                    if (authUser) {
+                        let idToken = await authUser.getIdToken(true);
+                        let adisyonRes = await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${kt}/aktifSiparis.json?auth=${idToken}&t=${Date.now()}`);
+                        let adisyonData = await adisyonRes.json();
+                        if(adisyonData && adisyonData.siparisId) {
+                            localStorage.setItem("bg_active_order_id", adisyonData.siparisId);
+                            localStorage.setItem("bg_order_timestamp", adisyonData.zamanMuhru);
+                            if(adisyonData.odemeTuru) localStorage.setItem("bg_odeme_turu", adisyonData.odemeTuru);
+                        } else {
+                            localStorage.removeItem("bg_active_order_id");
+                        }
+                    }
+                } catch(e) {}
             }
             if(ka) { document.getElementById("chk-adres").value = escapeHTML(ka); if(document.getElementById("prof-adres")) document.getElementById("prof-adres").value = escapeHTML(ka); }
 
