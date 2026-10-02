@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no">
-    <!-- Askeri Düzey CSP Güvenlik Kalkanı -->
+    <!-- CSP: Yüksek Güvenlikli Content Security Policy -->
     <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval'; connect-src * 'unsafe-inline'; img-src * data: blob: 'unsafe-inline'; frame-src *; style-src * 'unsafe-inline'; font-src * data:;">
     <title>Bekmez GO - Premium Paket</title>
 
@@ -61,13 +61,13 @@
         .receipt-card{background:linear-gradient(to bottom,#FAFAFA,#F4F4F5);color:#18181B;padding:30px 25px;margin:0 15px 20px 15px;border-radius:8px;position:relative;box-shadow:0 20px 40px rgba(0,0,0,0.5),inset 0 0 10px rgba(0,0,0,0.05);border:1px solid #E4E4E7;filter:drop-shadow(0 0 15px rgba(255,255,255,0.05));}.receipt-card::before{content:"";position:absolute;top:-10px;left:0;right:0;height:10px;background-size:20px 20px;background-image:radial-gradient(circle at 10px 0,transparent 10px,#FAFAFA 11px);}.receipt-card::after{content:"";position:absolute;bottom:-10px;left:0;right:0;height:10px;background-size:20px 20px;background-image:radial-gradient(circle at 10px 10px,transparent 10px,#F4F4F5 11px);}.receipt-header{border-bottom:2px dashed #D4D4D8;padding-bottom:20px;margin-bottom:20px;font-size:12px;font-weight:800;display:flex;justify-content:space-between;align-items:center;color:#71717A;}.receipt-item{display:flex;justify-content:space-between;margin-bottom:15px;font-size:14px;font-weight:700;color:#27272A;}.receipt-total{border-top:2px dashed #D4D4D8;padding-top:20px;margin-top:20px;font-size:24px;font-weight:900;text-align:right;color:var(--primary);letter-spacing:-1px;}
         .pwa-fullscreen-overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.9);backdrop-filter:blur(15px);z-index:9999999;display:none;align-items:center;justify-content:center;opacity:0;transition:opacity 0.5s ease;padding:20px;box-sizing:border-box;}.pwa-fullscreen-overlay.active{opacity:1;}.pwa-close-btn{position:absolute;top:20px;right:20px;background:rgba(255,255,255,0.05);color:var(--text-muted);border:1px solid rgba(255,255,255,0.1);width:40px;height:40px;border-radius:50%;font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:0.3s cubic-bezier(0.16,1,0.3,1);box-shadow:0 4px 15px rgba(0,0,0,0.3);z-index:5;}.pwa-close-btn:active{transform:scale(0.9);background:rgba(255,255,255,0.15);color:#fff;}.pwa-content-box{background:linear-gradient(180deg,#1a1a24 0%,#070709 100%);padding:40px 25px;border-radius:32px;text-align:center;width:100%;max-width:360px;border:1px solid rgba(255,255,255,0.1);box-shadow:0 30px 80px rgba(0,0,0,0.8);position:relative;overflow:hidden;transform:translateY(30px) scale(0.95);transition:transform 0.6s cubic-bezier(0.175,0.885,0.32,1.275);}.pwa-fullscreen-overlay.active .pwa-content-box{transform:translateY(0) scale(1);}.pwa-icon-glow{position:absolute;width:200px;height:200px;background:var(--primary);border-radius:50%;filter:blur(100px);opacity:0.2;top:-40px;left:50%;transform:translateX(-50%);z-index:0;pointer-events:none;}.pwa-icon{font-size:65px;margin-bottom:20px;position:relative;z-index:1;filter:drop-shadow(0 10px 20px rgba(0,0,0,0.5));animation:floatUpAndDown 4s ease-in-out infinite;}@keyframes floatUpAndDown{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}.pwa-title{font-size:24px;font-weight:900;color:var(--text-main);margin-bottom:12px;line-height:1.2;letter-spacing:-0.5px;position:relative;z-index:1;text-shadow:0 4px 8px rgba(0,0,0,0.5);}.pwa-desc{font-size:14px;font-weight:500;color:var(--text-muted);margin-bottom:30px;line-height:1.5;position:relative;z-index:1;}.pwa-main-btn{background:var(--gradient-fire);color:white;border:none;padding:18px;font-size:15px;font-weight:800;border-radius:100px;width:100%;cursor:pointer;box-shadow:0 15px 30px var(--primary-glow),inset 0 2px 4px rgba(255,255,255,0.3);transition:all 0.4s cubic-bezier(0.16,1,0.3,1);letter-spacing:0.5px;position:relative;z-index:1;}.pwa-main-btn:active{transform:scale(0.95);box-shadow:0 8px 15px var(--primary-glow);}
         
-        /* PREMIUM PROFİL VE ŞİFRE CANLI DOĞRULAMA (YENİ EKLENDİ) */
+        /* PREMIUM PROFİL VE ŞİFRE CANLI DOĞRULAMA EKLENTİSİ */
         .premium-input-box { background: linear-gradient(145deg, rgba(30, 30, 35, 0.6) 0%, rgba(15, 15, 20, 0.8) 100%); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 20px; padding: 20px; margin-bottom: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
         .premium-input-box label { display: flex; align-items: center; gap: 8px; color: var(--primary); font-size: 12px; font-weight: 800; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
         .input-group { position: relative; display: flex; align-items: center; }
         .input-icon-left { position: absolute; left: 15px; font-size: 16px; pointer-events: none; opacity: 0.7; }
         .premium-input-box input, .premium-input-box textarea { width: 100%; background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border-highlight); color: white; padding: 15px 15px 15px 45px; border-radius: 14px; font-size: 14px; font-weight: 600; transition: 0.3s; box-sizing: border-box; }
-        .premium-input-box textarea { padding: 15px; } /* Adres kutusu için ikon yok */
+        .premium-input-box textarea { padding: 15px; } /* Adres kutusu için ikon boşluğu kaldırıldı */
         .premium-input-box input:focus, .premium-input-box textarea:focus { border-color: var(--primary); background: rgba(0,0,0,0.8); box-shadow: 0 0 0 2px rgba(255, 107, 0, 0.2); outline: none; }
         .premium-input-box input:disabled { opacity: 0.5; cursor: not-allowed; }
         
@@ -251,7 +251,7 @@
         </div>
     </div>
 
-    <!-- PREMIUM PROFİL & HESAP YÖNETİMİ (YENİLENDİ: CANLI ŞİFRE KONTROLÜ EKLENDİ) -->
+    <!-- PREMIUM PROFİL & HESAP YÖNETİMİ -->
     <div id="profile-container" style="display: none;">
         <h2 class="page-title">Profil & Hesap</h2>
         
@@ -260,21 +260,13 @@
             <button class="tab-btn" id="tab-Guvenlik" onclick="ProfilSekmeSec('Guvenlik', this);">🛡️ Hesap Güvenliği</button>
         </div>
 
-        <!-- TESLİMAT SEKMESİ -->
+        <!-- TESLİMAT SEKMESİ (TELEFON NUMARASI BURADAN KALDIRILDI) -->
         <div id="profil-teslimat-sekmesi" style="display: block; margin: 0 15px 30px 15px;">
             <div class="premium-input-box">
                 <label>👤 Adınız Soyadınız</label>
                 <div class="input-group">
                     <span class="input-icon-left">📝</span>
                     <input type="text" id="prof-isim" placeholder="Örn: Ahmet Yılmaz" maxlength="50" onkeyup="document.getElementById('chk-isim').value = this.value">
-                </div>
-            </div>
-            
-            <div class="premium-input-box">
-                <label>📱 İletişim Numaranız</label>
-                <div class="input-group">
-                    <span class="input-icon-left" style="font-size: 12px; font-weight: 900; letter-spacing: 1px;">🇹🇷 +90</span>
-                    <input type="tel" id="prof-telefon" placeholder="555 123 45 67" maxlength="15" style="padding-left: 65px;" onkeyup="document.getElementById('chk-telefon').value = this.value">
                 </div>
             </div>
 
@@ -285,10 +277,17 @@
             <button class="order-btn shimmer-btn neon-border" onclick="ProfiliKaydet(true)">Bilgilerimi Kaydet</button>
         </div>
 
-        <!-- GÜVENLİK SEKMESİ (Canlı Validatör Eklendi) -->
+        <!-- GÜVENLİK SEKMESİ (TELEFON NUMARASI VE CANLI ŞİFRE KONTROLÜ EKLENDİ) -->
         <div id="profil-guvenlik-sekmesi" style="display: none; margin: 0 15px 30px 15px;">
             
             <div id="auth-form-area" class="premium-input-box">
+                <!-- TELEFON NUMARASI GİRİŞİ (+90 İbareli) -->
+                <label>📱 İletişim Numaranız</label>
+                <div class="input-group" style="margin-bottom: 20px;">
+                    <span class="input-icon-left" style="font-size: 13px; font-weight: 900; letter-spacing: 0.5px;">🇹🇷 +90</span>
+                    <input type="tel" id="prof-telefon" placeholder="5XX XXX XX XX" maxlength="10" style="padding-left: 75px;" oninput="FormatTelefon(this)">
+                </div>
+
                 <label>📧 E-Posta Adresiniz</label>
                 <div class="input-group" style="margin-bottom: 20px;">
                     <span class="input-icon-left">✉️</span>
@@ -391,7 +390,13 @@
             </div>
             <div style="margin-bottom: 20px;">
                 <input type="text" id="chk-isim" class="checkout-input" placeholder="Adınız Soyadınız" autocomplete="name" maxlength="50" onkeyup="document.getElementById('prof-isim').value = this.value">
-                <input type="tel" id="chk-telefon" class="checkout-input" placeholder="Telefon Numarası" autocomplete="tel" maxlength="15" disabled style="opacity:0.6; cursor:not-allowed;">
+                
+                <!-- CHECKOUT TELEFON KUTUSU (+90 Tarafı Eklendi) -->
+                <div class="input-group" style="margin-bottom: 12px;">
+                    <span class="input-icon-left" style="font-size: 13px; font-weight: 900; z-index: 10; top: 16px;">🇹🇷 +90</span>
+                    <input type="tel" id="chk-telefon" class="checkout-input" placeholder="Profilinizden Onaylayın" autocomplete="tel" disabled style="padding-left: 75px; opacity:0.6; cursor:not-allowed; margin-bottom:0;">
+                </div>
+
                 <textarea id="chk-adres" class="checkout-input" rows="3" placeholder="Açık Adresiniz (Mahalle, Sokak, No...)" style="resize:none;" maxlength="250" onkeyup="document.getElementById('prof-adres').value = this.value"></textarea>
             </div>
             
@@ -414,6 +419,18 @@
     </div>
 
     <!-- ALERTS VE BAŞARI EKRANLARI -->
+    <div id="email-wait-overlay" class="custom-alert-overlay" style="z-index: 999999;">
+        <div class="custom-alert-box" style="border-color: var(--primary);">
+            <div class="custom-alert-glow" style="background: var(--primary);"></div>
+            <div class="custom-alert-content">
+                <div class="spinner"></div>
+                <h3 style="margin: 0 0 14px 0; font-weight: 900; font-size: 20px; color: var(--text-main); letter-spacing:-0.5px;">E-Postanızı Kontrol Edin</h3>
+                <p style="color: var(--text-muted); font-size: 13px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;">Girdiğiniz adrese bir doğrulama linki gönderdik. <br><br><span style="color:white; font-weight:800;">Lütfen mailinize gidip linke tıklayın.</span> Biz bu ekranda tıkladığınızı otomatik anlayacağız...</p>
+                <button onclick="IptalEtEpostaBekleme()" class="alert-btn" style="background: rgba(255,255,255,0.05); color:white;">Vazgeç</button>
+            </div>
+        </div>
+    </div>
+
     <div id="confirm-overlay" class="custom-alert-overlay" onclick="KapatConfirmModal(event)"><div class="custom-alert-box" id="confirm-box" style="border-color: var(--danger);"><div class="custom-alert-glow" id="confirm-glow" style="background: var(--danger);"></div><div class="custom-alert-content"><div id="confirm-icon" style="font-size: 55px; margin-bottom: 20px;">❓</div><h3 id="confirm-title" style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Emin misiniz?</h3><p id="confirm-text" style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;"></p><div style="display:flex; gap:10px;"><button onclick="KapatConfirmModal(event, true)" class="alert-btn" style="background: rgba(255,255,255,0.05); color:white; flex:1;">Vazgeç</button><button id="confirm-yes-btn" class="alert-btn" style="background: var(--danger); border-color:transparent; color:white; flex:1;">Evet</button></div></div></div></div>
     
     <div id="legal-popup" class="popup-overlay" onclick="if(event.target === this) KapatSozlesme();">
@@ -432,7 +449,6 @@
     <div id="distance-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)"><div class="custom-alert-box"><div class="custom-alert-glow" style="background:var(--primary);"></div><div class="custom-alert-content"><div style="font-size: 55px; margin-bottom: 20px;">🛵</div><h3 style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Menzil Dışındasınız</h3><p style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;">Bekmez GO lezzetlerini size ulaştırabilmek için teslimat ağımızı <b>4 km</b> ile sınırlandırıyoruz.<br><br>Maalesef şu an sıcak teslimat bölgemizin dışındasınız.</p><button onclick="KapatUyariModal(event, true)" class="alert-btn" style="background:var(--primary); border-color:transparent; color:white;">Anladım</button></div></div></div>
     
     <div id="success-overlay" class="success-overlay"><div class="success-icon-wrapper"><div class="success-ring"></div><div class="success-circle"><svg class="success-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div></div><div class="success-text">Sipariş İletildi</div><div class="success-subtext">Kasa onayı bekleniyor...</div></div>
-
 
     <script>
         console.log("%c DİKKAT!", "color: #FF3B30; font-size: 50px; font-weight: 900; text-shadow: 2px 2px 0 #000;");
@@ -498,6 +514,11 @@
         };
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const FIREBASE_URL = "https://bekmezpos-default-rtdb.firebaseio.com";
+
+        const textKVKK = `<strong style="color:white; font-size:14px;">KVKK AYDINLATMA METNİ</strong><br><br><b>1. Veri Sorumlusu:</b> Bekmez Pişirim Gıda Ltd. Şti.<br><b>2. İşlenen Veriler:</b> Ad, soyad, telefon numarası, adres ve sipariş geçmişiniz siparişinizin teslimi amacıyla işlenmektedir.<br><b>3. Veri Güvenliği:</b> Verileriniz sistemimizde uçtan uca şifrelenerek saklanmakta ve üçüncü şahıslarla/kurumlarla kesinlikle paylaşılmamaktadır. Hesabınızı sildiğiniz an tüm verileriniz kalıcı olarak yok edilir.`;
+        const textMesafeli = `<strong style="color:white; font-size:14px;">MESAFELİ SATIŞ SÖZLEŞMESİ</strong><br><br><b>MADDE 1 - TARAFLAR</b><br><b>SATICI:</b> Bekmez Pişirim Gıda Ltd. Şti.<br><br><b>MADDE 2 - CAYMA HAKKI İSTİSNASI</b><br>Tüketici Mevzuatı gereğince; çabuk bozulabilen, gıda maddesi niteliğindeki malların teslimine ilişkin sözleşmelerde Tüketicinin <b>CAYMA HAKKI BULUNMAMAKTADIR.</b> Ürünlerin size eksiksiz teslimi satıcının sorumluluğundadır.`;
+        const textTeslimat = `<strong style="color:white; font-size:14px;">TESLİMAT ŞARTLARI</strong><br><br><b>1. Teslimat Bölgesi:</b> Kalite standartlarımız gereği, sıcak teslimat sağlayabilmek için maksimum 4 km yarıçapındaki bölgelere hizmet verilmektedir.<br><b>2. Süre:</b> Siparişleriniz ortalama 30-45 dakika içerisinde adresinize ulaştırılır. Olumsuz hava koşulları ve yoğun saatlerde bu süre değişiklik gösterebilir.`;
+        const textIptal = `<strong style="color:white; font-size:14px;">İPTAL VE İADE KOŞULLARI</strong><br><br><b>1. Şartlar:</b> Siparişiniz yalnızca "Kasa Onayı Bekleniyor" aşamasındayken (ilk 3 dakika içerisinde) iptal edilebilir. Sipariş mutfağa iletildiğinde veya yola çıktığında iptal ve iade yapılamaz.`;
         
         const DUKKAN_ENLEM = 36.206278; const DUKKAN_BOYLAM = 36.134472; const MAKS_MESAFE_KM = 4; const GHOST_TIMEOUT_MS = 8 * 60 * 60 * 1000; 
 
@@ -565,17 +586,28 @@
             }
         }
 
-        // YENİ NESİL CANLI ŞİFRE DOĞRULAMA (LIVE VALIDATOR)
+        // OTOMATİK SIFIR SİLİCİ VE NUMARA FORMATLAYICI
+        function FormatTelefon(input) {
+            let val = input.value.replace(/[^0-9]/g, '');
+            if (val.startsWith('0')) { val = val.substring(1); }
+            if (val.length > 10) { val = val.substring(0, 10); }
+            input.value = val;
+            let chk = document.getElementById('chk-telefon');
+            if (chk) chk.value = val;
+        }
+
+        // CANLI ŞİFRE DOĞRULAMA (LIVE VALIDATOR)
         let isPasswordValid = false;
         function CanliSifreKontrolu(val) {
-            let rL = /[a-z]/.test(val);
-            let rU = /[A-Z]/.test(val);
+            let rL = /[a-z]/.test(val) || /[çğıöşü]/.test(val);
+            let rU = /[A-Z]/.test(val) || /[ÇĞİÖŞÜ]/.test(val);
             let rN = /[0-9]/.test(val);
-            let rS = /[^A-Za-z0-9]/.test(val);
+            let rS = /[^A-Za-z0-9çğıöşüÇĞİÖŞÜ]/.test(val);
             let rLen = val.length >= 8;
 
             const updateRule = (id, isValid, text) => {
                 let el = document.getElementById(id);
+                if (!el) return;
                 if (isValid) {
                     el.className = 'rule-item valid';
                     el.innerHTML = `<span class="rule-icon">✅</span> ${text}`;
@@ -593,14 +625,16 @@
 
             isPasswordValid = rL && rU && rN && rS && rLen;
             
-            // Eğer tüm kurallar sağlandıysa ve sözleşme işaretliyse butonu aktif et
+            let rb = document.getElementById('password-rules-box');
+            if (val.length > 0) { rb.style.display = "flex"; } else { rb.style.display = "none"; }
+            
             KayitOnayToggle();
         }
 
         function KayitOnayToggle() {
             let cb = document.getElementById("kayit-onay-cb");
             let btn = document.getElementById("btn-email-verify");
-            // Şifre validasyonu ve Checkbox onayı beraber kontrol ediliyor
+            // Hem şifre gereksinimleri hem de sözleşme kutusu aynı anda sağlanmalı
             if (cb.checked && isPasswordValid) { 
                 btn.disabled = false; btn.style.opacity = "1"; 
             } else { 
@@ -622,10 +656,10 @@
             let passInput = document.getElementById("prof-password").value; 
             let btn = document.getElementById("btn-email-verify");
 
-            if(telInput.length < 10) { OzelUyariGoster("Eksik Numara", "Lütfen 10 haneli numaranızı girin.", "📱"); return; }
+            if(telInput.length < 10) { OzelUyariGoster("Eksik Numara", "Lütfen başında 0 olmadan tam 10 haneli numaranızı girin.", "📱"); return; }
             if(emailInput.length < 5 || !emailInput.includes("@")) { OzelUyariGoster("Eksik E-Posta", "Lütfen geçerli bir e-posta adresi girin.", "📧"); return; }
             
-            let formatliTel = telInput.length === 11 && telInput.startsWith("0") ? telInput : "0" + telInput;
+            let formatliTel = "0" + telInput; // Backend uyumluluğu için 0 eklenir
             let autoPass = passInput; 
             
             btn.innerText = "Sistem Kontrol Ediliyor..."; btn.disabled = true;
@@ -663,7 +697,7 @@
                                 EpostaOnayiniBekle(userCred.user, formatliTel, emailInput);
                             } catch(err) { btn.innerText = "Hesabımı Oluştur"; btn.disabled = false; OzelUyariGoster("Sistem Hatası", "Kayıt yenilenemedi.", "❌"); } return;
                         }
-                        OzelUyariGoster("Giriş Hatası", "Şifreniz veya bilgilerinizde uyuşmazlık var.", "❌"); 
+                        OzelUyariGoster("Giriş Hatası", "Şifreniz veya bilgilerinizde uyuşmazlık var. Daha önce belirlediğiniz şifreyi girin.", "❌");
                         btn.innerText = "Hesabımı Oluştur"; btn.disabled = false;
                     } return;
                 }
@@ -712,7 +746,12 @@
                 await fetch(`${FIREBASE_URL}/SilinmisHesaplar/${formatliTel}.json?auth=${idToken}`, { method: "DELETE" });
             }
 
-            localStorage.setItem("bg_t", formatliTel); document.getElementById("chk-telefon").value = formatliTel;
+            localStorage.setItem("bg_t", formatliTel); 
+            // Profil telefon numarasını +90 formatından dolayı sadece numaraları yazdırıyoruz
+            let displayTel = formatliTel.startsWith("0") ? formatliTel.substring(1) : formatliTel;
+            document.getElementById("prof-telefon").value = displayTel;
+            document.getElementById("chk-telefon").value = displayTel;
+            
             document.getElementById("auth-form-area").style.display = "none"; document.getElementById("dogrulandi-etiketi").style.display = "block"; document.getElementById("profil-aksiyon-butonlari").style.display = "flex"; 
             document.getElementById("btn-email-verify").innerText = "Hesabımı Oluştur"; document.getElementById("prof-telefon").disabled = true; document.getElementById("prof-email").disabled = true; document.getElementById("prof-password").disabled = true;
             ProfiliKaydet(false);
@@ -873,7 +912,6 @@
         function CarkHediyesiniKullan() { HapticTitresim(); let hash = localStorage.getItem("bg_cark_data"); let parsed = CarkVerisiCoz(hash); if(parsed && parsed.odul !== "😔 Pas") { aktifKullanilanCarkOdulu = parsed.odul; OzelUyariGoster("Sepete Eklendi", `Çark hediyeniz siparişinize eklendi!`, "🛒"); CarkDurumunuKontrolEt(); SayfaGoster('sepet'); } }
         function CarkHediyesiIptal() { HapticTitresim(); aktifKullanilanCarkOdulu = null; CarkDurumunuKontrolEt(); SepetEkraniniCiz(); }
 
-        // OTONOM BULUT TEMİZLİĞİ
         async function BuluttanAktifAdisyonuSil() {
             let tel = localStorage.getItem("bg_t"); if(!tel) return;
             try {
@@ -953,7 +991,7 @@
             sepet.forEach(item => { hamToplamFiyat += (item.basePrice * item.quantity); });
             hamToplamFiyat = Math.round(hamToplamFiyat * 100) / 100;
             
-            if (aktifKuponKodu !== "" && hamToplamFiyat < aktifKuponAltLimit) { OzelUyariGoster("Kupon İptal Edildi", `Sepet tutarınız ${aktifKuponAltLimit} TL'nin altına düştüğü için kuponunuz devre dışı bırakıldı.`, "⚠️"); KuponuIptalEt(true); }
+            if (aktifKuponKodu !== "" && hamToplamFiyat < aktifKuponAltLimit) { OzelUyariGoster("Kupon İptal Edildi", `Sepet tutarınız ${aktifKuponAltLimit} TL'nin altına düştüğü için kuponunuz devre dışı bırakıldı.`, "⚠️️"); KuponuIptalEt(true); }
 
             sonOdenecekFiyat = hamToplamFiyat - aktifKuponIndirimTutari; if (sonOdenecekFiyat < 0) sonOdenecekFiyat = 0;
             sonOdenecekFiyat = Math.round(sonOdenecekFiyat * 100) / 100;
@@ -1002,7 +1040,11 @@
             let ki = localStorage.getItem("bg_i"); let kt = localStorage.getItem("bg_t"); let ka = localStorage.getItem("bg_a");
             if(ki) { document.getElementById("chk-isim").value = escapeHTML(ki); if(document.getElementById("prof-isim")) document.getElementById("prof-isim").value = escapeHTML(ki); }
             if(kt) { 
-                document.getElementById("chk-telefon").value = kt; document.getElementById("prof-telefon").value = kt; document.getElementById("prof-telefon").disabled = true; document.getElementById("prof-email").disabled = true; document.getElementById("prof-password").disabled = true;
+                document.getElementById("chk-telefon").value = kt; 
+                let displayTel = kt.startsWith("0") ? kt.substring(1) : kt;
+                document.getElementById("prof-telefon").value = displayTel; 
+                
+                document.getElementById("prof-telefon").disabled = true; document.getElementById("prof-email").disabled = true; document.getElementById("prof-password").disabled = true;
                 document.getElementById("password-rules-box").style.display = "none";
                 document.getElementById("auth-form-area").style.display = "none"; document.getElementById("dogrulandi-etiketi").style.display = "block"; document.getElementById("profil-aksiyon-butonlari").style.display = "flex"; 
             }
