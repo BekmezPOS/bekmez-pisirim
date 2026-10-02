@@ -283,14 +283,17 @@
                 <input type="password" id="prof-password" placeholder="Gizli şifrenizi belirleyin (En az 6 karakter)" maxlength="30" style="margin-bottom: 20px;">
 
                 <div id="kayit-bilgi-kutusu" style="background: rgba(0,0,0,0.5); border: 1px solid var(--border-highlight); padding: 15px; border-radius: 12px; margin-bottom: 20px; font-size: 11px; color: var(--text-muted); line-height: 1.6;">
-                    <strong>Bilgilendirme:</strong>
+                    <strong style="color: var(--primary); font-size: 12px; display: block; margin-bottom: 5px;">Hesap ve Veri Güvenliği (KVKK):</strong>
                     <ul style="margin: 5px 0 10px 15px; padding: 0;">
-                        <li>Kayıt olduğunuzda telefonunuz eşleşir.</li>
-                        <li>Sistemin kötüye kullanımını engellemek amacıyla <strong>yeni açılan hesaplar 7 gün geçmeden silinemez.</strong></li>
+                        <li>Sistemimiz BDDK onaylı altyapılar kullanır, <strong>hiçbir kart bilginiz kaydedilmez.</strong></li>
+                        <li>E-Posta adresiniz yalnızca hesap kurtarma ve dijital fatura (e-arşiv) için kullanılır, 3. şahıslarla paylaşılmaz.</li>
+                        <li>Spam ve sahte siparişleri engellemek için telefonunuz donanım kimliğinizle eşleştirilir.</li>
+                        <li><strong>Hesap Silme Politikası:</strong> Kötü niyetli kullanımı önlemek amacıyla, yeni oluşturulan hesaplar <strong>7 gün</strong> boyunca silinemez.</li>
+                        <li>Hesabınızı sildiğinizde sipariş geçmişiniz, kuponlarınız ve çark haklarınız <strong>kalıcı olarak yok edilir</strong> ve aynı numarayla 7 gün sisteme kayıt olunamaz.</li>
                     </ul>
-                    <div style="display: flex; align-items: flex-start; gap: 10px; margin-top: 10px;">
+                    <div style="display: flex; align-items: flex-start; gap: 10px; margin-top: 15px; padding-top: 10px; border-top: 1px dashed rgba(255,255,255,0.1);">
                         <input type="checkbox" id="kayit-onay-cb" onchange="KayitOnayToggle()" style="min-width: 18px; width: 18px; height: 18px; accent-color: var(--primary); margin-top: 2px;">
-                        <label for="kayit-onay-cb" style="cursor:pointer; font-weight: 600;">Sözleşmeyi ve kuralları okudum, onaylıyorum.</label>
+                        <label for="kayit-onay-cb" style="cursor:pointer; font-weight: 600; font-size: 11px; line-height:1.4;">Aydınlatma Metni'ni, KVKK şartlarını ve Hesap Gizlilik Sözleşmesi'ni okudum, açık rızamla onaylıyorum.</label>
                     </div>
                 </div>
 
@@ -345,6 +348,7 @@
             <div class="popup-drag-handle"></div>
             <div class="popup-header">
                 <h3 id="popup-title" class="popup-title">Ürün Adı</h3>
+                <!-- Z-INDEX HATASI DÜZELTİLDİ: Çıkış butonu artık en üstte -->
                 <button onclick="PopupKapat()" style="background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; z-index: 99;">&times;</button>
             </div>
             <div class="popup-info-box">
@@ -365,6 +369,7 @@
             <div class="popup-drag-handle"></div>
             <div class="popup-header">
                 <h3 class="popup-title">Teslimat ve Ödeme</h3>
+                <!-- Z-INDEX HATASI DÜZELTİLDİ: Çıkış butonu artık en üstte -->
                 <button onclick="CheckoutKapat()" style="background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; z-index: 99;">&times;</button>
             </div>
             <div style="margin-bottom: 20px;">
@@ -382,9 +387,10 @@
                 </select>
             </div>
 
+            <!-- KVKK VE SÖZLEŞMELER EKLENDİ -->
             <div style="margin: 15px 0 25px 0; display: flex; align-items: flex-start; gap: 12px; padding: 0 5px;">
                 <input type="checkbox" id="legal-checkbox" onchange="TogglePayButton()" style="width: 22px; height: 22px; accent-color: var(--primary); margin-top: 2px; cursor: pointer;">
-                <label for="legal-checkbox" style="font-size: 11px; color: var(--text-muted); line-height: 1.5; cursor: pointer;"><a class="legal-link" onclick="AcSozlesme('mesafeli'); event.preventDefault();">Mesafeli Satış Sözleşmesi</a>, <a class="legal-link" onclick="AcSozlesme('teslimat'); event.preventDefault();">Teslimat Şartları</a> ve <a class="legal-link" onclick="AcSozlesme('iptal'); event.preventDefault();">İptal/İade Koşulları</a>'nı okudum ve onaylıyorum.</label>
+                <label for="legal-checkbox" style="font-size: 11px; color: var(--text-muted); line-height: 1.5; cursor: pointer;"><a class="legal-link" onclick="AcSozlesme('kvkk'); event.preventDefault();">KVKK Aydınlatma Metni</a>, <a class="legal-link" onclick="AcSozlesme('mesafeli'); event.preventDefault();">Mesafeli Satış Sözleşmesi</a>, <a class="legal-link" onclick="AcSozlesme('teslimat'); event.preventDefault();">Teslimat Şartları</a> ve <a class="legal-link" onclick="AcSozlesme('iptal'); event.preventDefault();">İptal Koşulları</a>'nı okudum ve onaylıyorum.</label>
             </div>
             <button id="final-submit-btn" class="order-btn shimmer-btn neon-border" disabled style="margin-top: 5px; opacity: 0.5;" onclick="PaketSiparisiGonder()">Sözleşmeyi Onaylayın</button>
         </div>
@@ -518,9 +524,11 @@
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const FIREBASE_URL = "https://bekmezpos-default-rtdb.firebaseio.com";
 
-        const textMesafeli = `<strong style="color:white; font-size:14px;">MADDE 1 - TARAFLAR</strong><br><b>SATICI:</b> Bekmez Pişirim Gıda Ltd. Şti.<br><br><strong style="color:white; font-size:14px;">MADDE 2 - CAYMA HAKKI İSTİSNASI</strong><br>Tüketici Mevzuatı gereğince; çabuk bozulabilen malların teslimine ilişkin sözleşmelerde Tüketicinin CAYMA HAKKI BULUNMAMAKTADIR.`;
-        const textTeslimat = `<strong style="color:white; font-size:14px;">TESLİMAT ŞARTLARI</strong><br><br><b>1. Teslimat Bölgesi:</b> Maksimum 4 km yarıçapındaki bölgelere teslim edilmektedir.<br><b>2. Süre:</b> Ortalama 30-45 dakika içerisinde adresinize teslim edilir.`;
-        const textIptal = `<strong style="color:white; font-size:14px;">İPTAL KOŞULLARI</strong><br><br><b>1. Şartlar:</b> Sipariş ancak mutfağa iletilmeden önce iptal edilebilir.`;
+        // YENİ KURUMSAL METİNLER (KVKK VE SÖZLEŞMELER)
+        const textKVKK = `<strong style="color:white; font-size:14px;">KVKK AYDINLATMA METNİ</strong><br><br><b>1. Veri Sorumlusu:</b> Bekmez Pişirim Gıda Ltd. Şti.<br><b>2. İşlenen Veriler:</b> Ad, soyad, telefon numarası, adres ve sipariş geçmişiniz siparişinizin teslimi amacıyla işlenmektedir.<br><b>3. Veri Güvenliği:</b> Verileriniz sistemimizde uçtan uca şifrelenerek saklanmakta ve üçüncü şahıslarla/kurumlarla kesinlikle paylaşılmamaktadır. Hesabınızı sildiğiniz an tüm verileriniz kalıcı olarak yok edilir.`;
+        const textMesafeli = `<strong style="color:white; font-size:14px;">MESAFELİ SATIŞ SÖZLEŞMESİ</strong><br><br><b>MADDE 1 - TARAFLAR</b><br><b>SATICI:</b> Bekmez Pişirim Gıda Ltd. Şti.<br><br><b>MADDE 2 - CAYMA HAKKI İSTİSNASI</b><br>Tüketici Mevzuatı gereğince; çabuk bozulabilen, gıda maddesi niteliğindeki malların teslimine ilişkin sözleşmelerde Tüketicinin <b>CAYMA HAKKI BULUNMAMAKTADIR.</b> Ürünlerin size eksiksiz teslimi satıcının sorumluluğundadır.`;
+        const textTeslimat = `<strong style="color:white; font-size:14px;">TESLİMAT ŞARTLARI</strong><br><br><b>1. Teslimat Bölgesi:</b> Kalite standartlarımız gereği, sıcak teslimat sağlayabilmek için maksimum 4 km yarıçapındaki bölgelere hizmet verilmektedir.<br><b>2. Süre:</b> Siparişleriniz ortalama 30-45 dakika içerisinde adresinize ulaştırılır. Olumsuz hava koşulları ve yoğun saatlerde bu süre değişiklik gösterebilir.`;
+        const textIptal = `<strong style="color:white; font-size:14px;">İPTAL VE İADE KOŞULLARI</strong><br><br><b>1. Şartlar:</b> Siparişiniz yalnızca "Kasa Onayı Bekleniyor" aşamasındayken (ilk 3 dakika içerisinde) iptal edilebilir. Sipariş mutfağa iletildiğinde veya yola çıktığında iptal ve iade yapılamaz.`;
         
         const DUKKAN_ENLEM = 36.206278; const DUKKAN_BOYLAM = 36.134472; const MAKS_MESAFE_KM = 4; const GHOST_TIMEOUT_MS = 8 * 60 * 60 * 1000; 
 
@@ -1004,7 +1012,7 @@
         function HesaplaVeGuncelle() {
             hamToplamFiyat = 0; sepet.forEach(item => { hamToplamFiyat += (item.basePrice * item.quantity); });
             
-            // KUPON GÜVENLİĞİ: Sepet tutarı düştüğünde kuponu iptal et
+            // KUPON GÜVENLİK YAMASI: Tutarı düşürünce kupon silinir
             if (aktifKuponKodu !== "" && hamToplamFiyat < aktifKuponAltLimit) {
                 OzelUyariGoster("Kupon İptal Edildi", `Sepet tutarınız ${aktifKuponAltLimit} TL'nin altına düştüğü için kuponunuz devre dışı bırakıldı.`, "⚠️");
                 KuponuIptalEt(true);
@@ -1025,8 +1033,23 @@
         }
 
         function SmoothCounter(id, start, end, duration, isCurrency, isKg=false) { let el = document.getElementById(id); if(!el) return; let startTime = null; const step = (timestamp) => { if (!startTime) startTime = timestamp; const progress = Math.min((timestamp - startTime) / duration, 1); const current = progress * (end - start) + start; if (isCurrency) { el.innerText = current.toFixed(2) + " TL"; } else { el.innerText = isKg ? current.toFixed(2) + " KG" : Math.floor(current) + " Adet"; } if (progress < 1) window.requestAnimationFrame(step); }; window.requestAnimationFrame(step); }
-        function AcSozlesme(tip) { HapticTitresim(); let baslik = "", icerik = ""; if (tip === "mesafeli") { baslik = "Mesafeli Satış Sözleşmesi"; icerik = textMesafeli; } else if (tip === "teslimat") { baslik = "Teslimat Şartları"; icerik = textTeslimat; } else if (tip === "iptal") { baslik = "İptal/İade Koşulları"; icerik = textIptal; } document.getElementById("legal-title").innerText = baslik; document.getElementById("legal-body").innerHTML = icerik; let p = document.getElementById("legal-popup"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10); }
+        
+        // HUKUKİ METİNLER (KVKK VE SÖZLEŞMELER) FONKSİYONU
+        function AcSozlesme(tip) { 
+            HapticTitresim(); let baslik = "", icerik = ""; 
+            if (tip === "kvkk") { baslik = "Aydınlatma Metni (KVKK)"; icerik = textKVKK; } 
+            else if (tip === "mesafeli") { baslik = "Mesafeli Satış Sözleşmesi"; icerik = textMesafeli; } 
+            else if (tip === "teslimat") { baslik = "Teslimat Şartları"; icerik = textTeslimat; } 
+            else if (tip === "iptal") { baslik = "İptal/İade Koşulları"; icerik = textIptal; } 
+            document.getElementById("legal-title").innerText = baslik; 
+            document.getElementById("legal-body").innerHTML = icerik; 
+            let p = document.getElementById("legal-popup"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10); 
+        }
         function KapatSozlesme() { let p = document.getElementById("legal-popup"); p.classList.remove("active"); setTimeout(() => p.style.display = "none", 500); }
+        
+        // Checkout X BUTONU YAMASI
+        function CheckoutKapat() { let p = document.getElementById("checkout-popup"); p.classList.remove("active"); setTimeout(() => { p.style.display = "none"; }, 500); }
+        
         function TogglePayButton() { let btn = document.getElementById("final-submit-btn"); let chk = document.getElementById("legal-checkbox"); if(chk && btn) { if(chk.checked) { btn.disabled = false; btn.style.opacity = "1"; btn.innerText = sonOdenecekFiyat.toFixed(2) + " TL Öde"; } else { btn.disabled = true; btn.style.opacity = "0.5"; btn.innerText = "Sözleşmeyi Onaylayın"; } } }
         function GetDistanceKm(lat1, lon1, lat2, lon2) { var R = 6371; var dLat = (lat2 - lat1) * Math.PI / 180; var dLon = (lon2 - lon1) * Math.PI / 180; var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2); var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); return R * c; }
         function BasariEkraniGoster() { let o = document.getElementById("success-overlay"); o.style.display = "flex"; setTimeout(() => o.classList.add("active"), 10); BildirimGonder("Siparişiniz Alındı! ✅", "Bekmez GO: Paketiniz en kısa sürede yola çıkacaktır. Bizi tercih ettiğiniz için teşekkür ederiz."); setTimeout(() => { o.classList.remove("active"); setTimeout(() => { o.style.display = "none"; SayfaGoster('gecmis'); }, 500); }, 3000); }
