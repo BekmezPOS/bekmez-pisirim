@@ -107,7 +107,7 @@
 
     <div id="pwa-fullscreen-prompt" class="pwa-fullscreen-overlay">
         <div class="pwa-content-box">
-            <button class="pwa-close-btn" onclick="CloseFullscreenPrompt()">&times;</button>
+            <button class="pwa-close-btn" onclick="CloseFullscreenPrompt()" style="position:absolute; z-index:99;">&times;</button>
             <div class="pwa-icon-glow"></div>
             <div class="pwa-icon">📱</div>
             <h2 class="pwa-title">Bekmez GO'yu<br><span style="color:var(--primary);">Telefonunuza Kurun</span></h2>
@@ -343,7 +343,10 @@
     <div id="product-popup" class="popup-overlay" onclick="if(event.target === this) PopupKapat();">
         <div class="popup-content">
             <div class="popup-drag-handle"></div>
-            <div class="popup-header"><h3 id="popup-title" class="popup-title">Ürün Adı</h3><button onclick="PopupKapat()" style="background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button></div>
+            <div class="popup-header">
+                <h3 id="popup-title" class="popup-title">Ürün Adı</h3>
+                <button onclick="PopupKapat()" style="background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; z-index: 99;">&times;</button>
+            </div>
             <div class="popup-info-box">
                 <div style="display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.6); padding: 6px; border-radius: 100px; border: 1px solid var(--border-highlight); box-shadow: inset 0 2px 8px rgba(0,0,0,0.5);"><button onclick="PopupIciMiktarDegistir(-1)" style="width: 32px; height: 32px; border-radius: 50%; border: none; background: rgba(255,255,255,0.05); color: white; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s;">-</button><span id="popup-amount" style="color: var(--text-main); font-weight: 900; min-width: 40px; text-align: center; font-size: 14px;">______</span><button onclick="PopupIciMiktarDegistir(1)" style="width: 32px; height: 32px; border-radius: 50%; border: none; background: var(--gradient-fire); color: white; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s;">+</button></div>
                 <span id="popup-price" style="color: var(--primary); font-size: 20px; font-weight: 900; letter-spacing: -1px;">______ TL</span>
@@ -360,7 +363,10 @@
     <div id="checkout-popup" class="popup-overlay" onclick="if(event.target === this) CheckoutKapat();">
         <div class="popup-content">
             <div class="popup-drag-handle"></div>
-            <div class="popup-header"><h3 class="popup-title">Teslimat ve Ödeme</h3><button onclick="CheckoutKapat()" style="background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button></div>
+            <div class="popup-header">
+                <h3 class="popup-title">Teslimat ve Ödeme</h3>
+                <button onclick="CheckoutKapat()" style="background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; z-index: 99;">&times;</button>
+            </div>
             <div style="margin-bottom: 20px;">
                 <input type="text" id="chk-isim" class="checkout-input" placeholder="Adınız Soyadınız" autocomplete="name" maxlength="50">
                 <input type="tel" id="chk-telefon" class="checkout-input" placeholder="Telefon (Profilinizden Onaylayın)" autocomplete="tel" disabled style="opacity:0.6; cursor:not-allowed;">
@@ -398,17 +404,27 @@
     </div>
 
     <div id="confirm-overlay" class="custom-alert-overlay" onclick="KapatConfirmModal(event)"><div class="custom-alert-box" id="confirm-box" style="border-color: var(--danger);"><div class="custom-alert-glow" id="confirm-glow" style="background: var(--danger);"></div><div class="custom-alert-content"><div id="confirm-icon" style="font-size: 55px; margin-bottom: 20px;">❓</div><h3 id="confirm-title" style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Emin misiniz?</h3><p id="confirm-text" style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;"></p><div style="display:flex; gap:10px;"><button onclick="KapatConfirmModal(event, true)" class="alert-btn" style="background: rgba(255,255,255,0.05); color:white; flex:1;">Vazgeç</button><button id="confirm-yes-btn" class="alert-btn" style="background: var(--danger); border-color:transparent; color:white; flex:1;">Evet</button></div></div></div></div>
-    <div id="legal-popup" class="popup-overlay" onclick="if(event.target === this) KapatSozlesme();"><div class="popup-content" style="max-height: 85vh;"><div class="popup-drag-handle"></div><div class="popup-header"><h3 id="legal-title" class="popup-title" style="font-size:18px;">Sözleşme</h3><button onclick="KapatSozlesme()" style="background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); width: 36px; height: 36px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button></div><div id="legal-body" style="color: #A1A1AA; font-size: 12px; line-height: 1.7; text-align: left; overflow-y: auto; max-height: 60vh; padding-right: 5px;"></div></div></div>
+    
+    <div id="legal-popup" class="popup-overlay" onclick="if(event.target === this) KapatSozlesme();">
+        <div class="popup-content" style="max-height: 85vh;">
+            <div class="popup-drag-handle"></div>
+            <div class="popup-header">
+                <h3 id="legal-title" class="popup-title" style="font-size:18px;">Sözleşme</h3>
+                <button onclick="KapatSozlesme()" style="background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); width: 36px; height: 36px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; z-index: 99;">&times;</button>
+            </div>
+            <div id="legal-body" style="color: #A1A1AA; font-size: 12px; line-height: 1.7; text-align: left; overflow-y: auto; max-height: 60vh; padding-right: 5px;"></div>
+        </div>
+    </div>
+    
     <div id="custom-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)"><div class="custom-alert-box" id="custom-alert-box"><div class="custom-alert-glow" id="custom-alert-glow"></div><div class="custom-alert-content"><div id="custom-alert-icon" style="font-size: 55px; margin-bottom: 20px;">⚠️</div><h3 id="custom-alert-title" style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Uyarı</h3><p id="custom-alert-text" style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;"></p><button onclick="KapatUyariModal(event, true)" class="alert-btn">Tamam, Anladım</button></div></div></div>
     <div id="distance-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)"><div class="custom-alert-box"><div class="custom-alert-glow" style="background:var(--primary);"></div><div class="custom-alert-content"><div style="font-size: 55px; margin-bottom: 20px;">🛵</div><h3 style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Menzil Dışındasınız</h3><p style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;">Bekmez GO lezzetlerini size ulaştırabilmek için teslimat ağımızı <b>4 km</b> ile sınırlandırıyoruz.<br><br>Maalesef şu an sıcak teslimat bölgemizin dışındasınız.</p><button onclick="KapatUyariModal(event, true)" class="alert-btn" style="background:var(--primary); border-color:transparent; color:white;">Anladım</button></div></div></div>
-    <div id="success-overlay" class="success-overlay"><div class="success-icon-wrapper"><div class="success-ring"></div><div class="success-circle"><svg class="success-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div></div><div class="success-text">Sipariş İletildi</div><div class="success-subtext">Kasa onayı bekleniyor...</div></div>    <div id="success-overlay" class="success-overlay"><div class="success-icon-wrapper"><div class="success-ring"></div><div class="success-circle"><svg class="success-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div></div><div class="success-text">Sipariş İletildi</div><div class="success-subtext">Kasa onayı bekleniyor...</div></div>
-   <script>
+    <div id="success-overlay" class="success-overlay"><div class="success-icon-wrapper"><div class="success-ring"></div><div class="success-circle"><svg class="success-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div></div><div class="success-text">Sipariş İletildi</div><div class="success-subtext">Kasa onayı bekleniyor...</div></div>
+    <script>
         console.log("%c DUR!", "color: red; font-size: 60px; font-weight: bold; text-shadow: 2px 2px 0 #000;");
         console.log("%c Bu alan geliştiriciler içindir. Buraya gireceğiniz herhangi bir kod (XSS/Enjeksiyon) hesabınızın kalıcı olarak bloke edilmesine sebep olabilir.", "font-size: 18px; font-weight: bold; color: #fff; background: #000; padding: 10px; border-radius: 5px;");
 
         let sepetHatirlaticiTimer = null;
         
-        // --- 1. YENİ: HİLE YAPILAMAYAN GERÇEK SUNUCU SAATİ MOTORU ---
         let serverTimeOffset = 0;
         async function SyncServerTime() {
             try {
@@ -545,7 +561,6 @@
             return maskedName + "@" + parts[1];
         }
 
-        // --- 2. YENİ: PROFİL SEKME GEÇİŞ MOTORU ---
         function ProfilSekmeSec(sekme, btnObj) {
             HapticTitresim();
             document.getElementById('tab-Teslimat').classList.remove('active');
@@ -894,7 +909,6 @@
         }
         function CarkHediyesiIptal() { HapticTitresim(); aktifKullanilanCarkOdulu = null; CarkDurumunuKontrolEt(); SepetEkraniniCiz(); }
 
-        // --- 3. YENİ: İPTAL VE DÜZENLEME MOTORU ---
         function IptalOnaySor() { HapticTitresim(); SoruSor("Siparişi İptal Et", "Siparişinizi iptal etmek istediğinize emin misiniz? İşlem geri alınamaz.", "⚠️", () => { SiparişiGercektenIptalEt(); }, true); }
         
         async function SiparişiGercektenIptalEt() {
@@ -936,11 +950,9 @@
                 let idToken = await authUser.getIdToken(true);
                 let tel = localStorage.getItem("bg_t");
                 
-                // Unity'ye İptal Sinyalini Çak!
                 let iptalPaketi = { islemTuru: "IPTAL", zaman: new Date().toLocaleTimeString(), telefon: tel, uid: authUser.uid };
                 await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}-IPTAL.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(iptalPaketi) });
                 
-                // Yedeği Geri Yükle
                 let savedCart = localStorage.getItem("bg_saved_cart");
                 if (savedCart) { sepet = JSON.parse(savedCart); }
                 
@@ -951,7 +963,6 @@
                 let note = localStorage.getItem("bg_saved_note");
                 if(note) document.getElementById("siparis-notu").value = note;
 
-                // Kilitleri Parçala
                 localStorage.removeItem("bg_active_order_id");
                 localStorage.removeItem("bg_last_status");
                 localStorage.removeItem("bg_order_timestamp");
@@ -992,6 +1003,13 @@
 
         function HesaplaVeGuncelle() {
             hamToplamFiyat = 0; sepet.forEach(item => { hamToplamFiyat += (item.basePrice * item.quantity); });
+            
+            // KUPON GÜVENLİĞİ: Sepet tutarı düştüğünde kuponu iptal et
+            if (aktifKuponKodu !== "" && hamToplamFiyat < aktifKuponAltLimit) {
+                OzelUyariGoster("Kupon İptal Edildi", `Sepet tutarınız ${aktifKuponAltLimit} TL'nin altına düştüğü için kuponunuz devre dışı bırakıldı.`, "⚠️");
+                KuponuIptalEt(true);
+            }
+
             sonOdenecekFiyat = hamToplamFiyat - aktifKuponIndirimTutari;
             if (sonOdenecekFiyat < 0) sonOdenecekFiyat = 0;
 
@@ -1025,7 +1043,7 @@
         function TetiklePwaPrompt() { ManuelUygulamaIndir(); }
 
         window.addEventListener('DOMContentLoaded', () => {
-            SyncServerTime(); // SİSTEM AÇILIR AÇILMAZ SAATİ İNTERNETTEN AL!
+            SyncServerTime();
             
             let st = new Date().getHours(); let m = "Hoş Geldiniz ✨"; 
             if (st >= 5 && st < 11) m = "Günaydın ☀️"; else if (st >= 11 && st < 17) m = "İyi Günler 🌤️"; else if (st >= 17 && st < 22) m = "İyi Akşamlar 🌙"; else m = "İyi Geceler 🌌";
@@ -1074,7 +1092,6 @@
                                 let res = await fetch(urlStr); let d = await res.json();
                                 let tRes = await fetch(taslakUrl); let tD = await tRes.json();
                                 
-                                // GHOST LOCK (HAYALET KİLİT) ENGELİ: Kasa siparişi sildiyse kapıları anında aç!
                                 if ((!d || d.error) && (!tD || tD.error)) {
                                     localStorage.removeItem("bg_active_order_id");
                                     localStorage.removeItem("bg_last_status");
@@ -1333,7 +1350,7 @@
                     HapticTitresim(); aktifKuponKodu = gK; aktifKuponIndirimTutari = d.discountAmount; aktifKuponAltLimit = d.bottomLimit; aktifKuponHedefUrun = aU; 
                     
                     OzelUyariGoster("Onaylandı", `${d.discountAmount} TL indirim uygulandı!`, "✅"); 
-                    BildirimGonder("Kupon Aktif! 🎟️️", `${d.discountAmount} TL değerindeki indiriminiz sepete başarıyla yansıtıldı.`);
+                    BildirimGonder("Kupon Aktif! 🎟", `${d.discountAmount} TL değerindeki indiriminiz sepete başarıyla yansıtıldı.`);
                     
                     HesaplaVeGuncelle(); KuponArayuzunuGuncelle(); 
                 } else { 
@@ -1376,23 +1393,30 @@
             let secilenOdeme = escapeHTML(document.getElementById("odeme-turu-secim").value);
 
             let hV = false; if(is.length < 3) { GosterHataInput("chk-isim"); hV = true; } if(tl.length < 10) { GosterHataInput("chk-telefon"); hV = true; } if(ad.length < 10) { GosterHataInput("chk-adres"); hV = true; }
-            if(hV) { OzelUyariGoster("Eksik", "Ad, telefon veya adres hatalı.", "⚠️️"); return; }
+            if(hV) { OzelUyariGoster("Eksik", "Ad, telefon veya adres hatalı.", "⚠"); return; }
 
             let btn = document.getElementById("final-submit-btn"); btn.disabled = true; btn.classList.add("loading"); btn.innerText = "Konum Bulunuyor...📍";
-
-            if (!navigator.geolocation) { 
-                OzelUyariGoster("Hata", "GPS desteklenmiyor.", "🚫"); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; return; 
-            }
             isProcessingOrder = true;
-            
-            const checkLoc = (hAcc, tOut) => { return new Promise((resolve, reject) => { navigator.geolocation.getCurrentPosition(p => resolve(p), e => reject(e), {enableHighAccuracy: hAcc, timeout: tOut, maximumAge: 0}); }); };
-            checkLoc(true, 10000).catch(() => checkLoc(false, 10000)).then(p => {
-                let ms = GetDistanceKm(DUKKAN_ENLEM, DUKKAN_BOYLAM, p.coords.latitude, p.coords.longitude);
-                if (ms > MAKS_MESAFE_KM) { let do2 = document.getElementById("distance-alert-overlay"); do2.style.display = "flex"; setTimeout(() => do2.classList.add("active"), 10); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; return; }
-                DevamEtPaketGonder(is, tl, ad, secilenOdeme, sepet);
-            }).catch(e => { 
-                OzelUyariGoster("İzin Gerekli", "Konum alınamadı. Tarayıcınızdan konum izni veriniz.", "📍"); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
-            });
+
+            if (navigator.geolocation) { 
+                const checkLoc = () => { return new Promise((resolve, reject) => { navigator.geolocation.getCurrentPosition(p => resolve(p), e => reject(e), {enableHighAccuracy: true, timeout: 10000, maximumAge: 0}); }); };
+                checkLoc().then(p => {
+                    let ms = GetDistanceKm(DUKKAN_ENLEM, DUKKAN_BOYLAM, p.coords.latitude, p.coords.longitude);
+                    if (ms > MAKS_MESAFE_KM) { 
+                        let do2 = document.getElementById("distance-alert-overlay"); 
+                        do2.style.display = "flex"; setTimeout(() => do2.classList.add("active"), 10); 
+                        isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
+                        return; 
+                    }
+                    DevamEtPaketGonder(is, tl, ad, secilenOdeme, sepet);
+                }).catch(e => { 
+                    OzelUyariGoster("Konum Zorunlu 📍", "Sipariş verebilmek için cihazınızın konum (GPS) özelliğinin açık olması ve tarayıcıdan izin vermeniz zorunludur. Aksi takdirde sipariş alınamaz.", "🛑");
+                    isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
+                });
+            } else {
+                OzelUyariGoster("Desteklenmiyor", "Cihazınız konum servisini desteklemediği için sipariş veremezsiniz.", "🛑");
+                isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
+            }
         }
 
         async function DevamEtPaketGonder(isim, tel, adres, odemeTuru, temizSepet) {
