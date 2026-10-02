@@ -789,13 +789,15 @@
         // ==========================================
         // YENİ: WHATSAPP DOĞRULAMA (2. ADIM) MOTORU
         // ==========================================
-       function WhatsappDogrulamasiniBaslat(formatliTel, email, isLogin = false) {
+      function WhatsappDogrulamasiniBaslat(formatliTel, email, isLogin = false) {
             // Rastgele 4 haneli kod üret
             let rastgeleKod = Math.floor(1000 + Math.random() * 9000);
             aktifWhatsappKodu = `BKMZ-${rastgeleKod}`;
             
-            // Numara formata uygun şekilde kaydediliyor
-            aktifWhatsappNumarasi = formatliTel.startsWith("0") ? formatliTel.substring(1) : formatliTel; 
+            // Numaranın başındaki olası '0', '90' veya '+90' gibi şeyleri temizle (Sadece net numarayı bırak)
+            aktifWhatsappNumarasi = formatliTel.replace(/[^0-9]/g, '');
+            if (aktifWhatsappNumarasi.startsWith("0")) aktifWhatsappNumarasi = aktifWhatsappNumarasi.substring(1);
+            if (aktifWhatsappNumarasi.startsWith("90")) aktifWhatsappNumarasi = aktifWhatsappNumarasi.substring(2);
 
             let wpOverlay = document.createElement("div");
             wpOverlay.id = "whatsapp-wait-overlay";
@@ -823,7 +825,8 @@
                         Vazgeç
                     </button>
                     <div id="wp-dinleme-yazisi" style="font-size: 11px; color: var(--warning); margin-top: 15px; font-weight: 600; display: none;">
-                        Mesajınız bekleniyor... Bu ekranı kapatmayın.
+                        Mesajınız bekleniyor...
+                        <div id="wp-debug-log" style="color: #FF3B30; margin-top: 5px;">Sistem dinliyor...</div>
                     </div>
                 </div>
             </div>`;
@@ -834,42 +837,69 @@
 
             if(whatsappInterval) clearInterval(whatsappInterval);
             
-            // YENİ VE KUSURSUZ DİNLEME MOTORU
             whatsappInterval = setInterval(async () => {
+                let debugLabel = document.getElementById("wp-debug-log");
                 try {
-                    // DİKKAT: Auth Token söküldü. URL sonuna tarayıcı önbelleğini kırmak için Zaman Damgası eklendi.
-                    let url = `${FIREBASE_URL}/WhatsappOnayliNumaralar/${aktifWhatsappNumarasi}.json?t=${new Date().getTime()}`;
+                    // Dinlenecek Adres
+                    let url = `${FIREBASE_URL}/WhatsappOnayliNumaralar/${aktifWhatsappNumarasi}.json?t=${Date.now()}`;
                     
-                    let res = await fetch(url, { 
-                        method: 'GET',
-                        headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
-                    });
-                    
+                    let res = await fetch(url, { cache: "no-store" });
                     let data = await res.json();
                     
-                    // Firebase'de veri var mı ve kod oluşturulmuş mu?
-                    if (data && data.kod) {
-                        let gelenKod = String(data.kod).toUpperCase();
-                        let beklenenKod = String(aktifWhatsappKodu).toUpperCase();
+                    if (data) {
+                        // Eğer Firebase'de numara için bir kayıt varsa, ekrana tam olarak ne gördüğünü yazdır (Debug)
+                        let dbDurum = data.onaylandi;
+                        let dbKod = data.kod ? data.kod.toString() : "KOD_YOK";
+                        let expectedKod = aktifWhatsappKodu.toString();
                         
-                        // Automate fazladan boşluk falan attıysa diye includes kullanıyoruz
-                        if (gelenKod.includes(beklenenKod) || beklenenKod.includes(gelenKod)) {
-                            clearInterval(whatsappInterval);
+                        if (debugLabel) {
+                            debugLabel.innerHTML = `Firebase'de Bulunan:<br>Durum: ${dbDurum} | Kod: ${dbKod}<br>Beklenen Kod: ${expectedKod}`;
+                            debugLabel.style.color = "#FACC15"; // Sarı
+                        }
+
+                        // KONTROL 1: Automate durum verisini true veya 1 olarak mı atmış?
+                        let isDurumOk = (dbDurum === true || dbDurum === 1 || dbDurum === "1" || dbDurum === "true");
+                        
+                        // KONTROL 2: Automate kodu doğru atmış mı? (Formatlama hatalarını aşmak için düzleştiriyoruz)
+                        let isKodOk = false;
+                        if (data.kod) {
+                            let cleanDbKod = dbKod.replace(/[^A-Za-z0-9-]/g, '').trim().toUpperCase();
+                            let cleanExpectedKod = expectedKod.replace(/[^A-Za-z0-9-]/g, '').trim().toUpperCase();
                             
-                            // Temizliği arka planda yap (Hata verse de süreci durdurmaz)
+                            // Tam eşleşme veya içerme (substring) kontrolü
+                            if (cleanDbKod === cleanExpectedKod || cleanDbKod.includes(cleanExpectedKod)) {
+                                isKodOk = true;
+                            }
+                        }
+
+                        if (isDurumOk && isKodOk) {
+                            clearInterval(whatsappInterval);
+                            if (debugLabel) {
+                                debugLabel.innerHTML = "EŞLEŞME BAŞARILI! SİSTEME GİRİLİYOR...";
+                                debugLabel.style.color = "#34C759"; // Yeşil
+                            }
+                            
+                            // Firebase temizliği
                             fetch(`${FIREBASE_URL}/WhatsappOnayliNumaralar/${aktifWhatsappNumarasi}.json`, { method: "DELETE" }).catch(()=>{});
                             
-                            // Ekranı kapat
-                            wpOverlay.classList.remove("active"); 
-                            setTimeout(() => wpOverlay.remove(), 400);
-                            
-                            // Müşteriyi içeri al!
-                            BasariliGirisIslemleri(formatliTel, email, isLogin);
+                            setTimeout(() => {
+                                wpOverlay.classList.remove("active"); 
+                                setTimeout(() => wpOverlay.remove(), 400);
+                                BasariliGirisIslemleri(formatliTel, email, isLogin);
+                            }, 1000);
+                        } else {
+                            if (debugLabel && (!isDurumOk || !isKodOk)) {
+                                debugLabel.innerHTML += `<br><span style="color:#FF3B30">Eşleşme Sağlanamadı!</span>`;
+                            }
+                        }
+                    } else {
+                        if (debugLabel) {
+                            debugLabel.innerText = "Firebase'de veri bekleniyor... (Kayıt Bulunamadı)";
+                            debugLabel.style.color = "var(--warning)";
                         }
                     }
                 } catch(e) {
-                    // Hata olursa arka planda yutar, sistemi kilitlemez
-                    console.error("Dinleme devam ediyor...");
+                    if (debugLabel) debugLabel.innerText = "Bağlantı Hatası: " + e.message;
                 }
             }, 3000);
         }
