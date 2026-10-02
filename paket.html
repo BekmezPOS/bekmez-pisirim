@@ -529,6 +529,7 @@
         let emailInterval = null; 
         let whatsappInterval = null; 
         let aktifWhatsappKodu = "";
+        let aktifWhatsappNumarasi = "";
         window.isAddingToCart = false;
 
         let deferredPrompt; let installPromptDismissed = localStorage.getItem('pwa_prompt_dismissed') === 'true';
@@ -637,28 +638,22 @@
         // ==========================================
         firebase.auth().onAuthStateChanged(async (user) => {
             if (user) {
-                // Kullanıcı Auth tarafında var. Peki e-postasını onayladı mı?
                 let bekleyenTel = localStorage.getItem("bg_pending_tel");
                 let bekleyenEmail = localStorage.getItem("bg_pending_email");
                 
                 if (bekleyenTel && bekleyenEmail && user.email === bekleyenEmail) {
-                    await user.reload(); // En güncel onay durumunu çek
+                    await user.reload(); 
                     if (user.emailVerified) {
-                        // Uygulama kapanmış, müşteri maile gitmiş ve onaylamış.
-                        // Harika! O zaman e-posta bekleme menüsünü ve pending durumunu sil.
                         localStorage.removeItem("bg_pending_tel");
                         localStorage.removeItem("bg_pending_email");
-                        localStorage.removeItem("bg_pending_pass"); // Şifreyi de sil (güvenlik)
+                        localStorage.removeItem("bg_pending_pass"); 
                         
                         IptalEtEpostaBekleme();
                         
-                        // Hemen Whatsapp Onayını Patlat!
-                        SayfaGoster('profil'); // Profili aç
+                        SayfaGoster('profil'); 
                         ProfilSekmeSec('Guvenlik', document.getElementById('tab-Guvenlik'));
                         WhatsappDogrulamasiniBaslat(bekleyenTel, bekleyenEmail);
                     } else {
-                        // Uygulama kapanmış geri gelmiş ama e-posta HALA onaylanmamış!
-                        // Tekrar bekleme ekranını göster.
                         EpostaOnayiniBekle(user, bekleyenTel, bekleyenEmail);
                     }
                 }
@@ -715,7 +710,6 @@
                             try {
                                 let userCred = await firebase.auth().createUserWithEmailAndPassword(emailInput, autoPass);
                                 await userCred.user.sendEmailVerification();
-                                // UYGULAMA KAPANMASINA KARŞI MÜHÜR VUR:
                                 localStorage.setItem("bg_pending_tel", formatliTel);
                                 localStorage.setItem("bg_pending_email", emailInput);
                                 localStorage.setItem("bg_pending_pass", autoPass);
@@ -732,7 +726,6 @@
                     let userCred = await firebase.auth().createUserWithEmailAndPassword(emailInput, autoPass);
                     await userCred.user.sendEmailVerification();
                     
-                    // UYGULAMA KAPANMASINA KARŞI MÜHÜR VUR:
                     localStorage.setItem("bg_pending_tel", formatliTel);
                     localStorage.setItem("bg_pending_email", emailInput);
                     localStorage.setItem("bg_pending_pass", autoPass);
@@ -797,9 +790,13 @@
         // YENİ: WHATSAPP DOĞRULAMA (2. ADIM) MOTORU
         // ==========================================
         function WhatsappDogrulamasiniBaslat(formatliTel, email) {
-            // Rastgele 4 haneli kod üret
             let rastgeleKod = Math.floor(1000 + Math.random() * 9000);
             aktifWhatsappKodu = `BKMZ-${rastgeleKod}`;
+            
+            // NUMARAYI KESİN VE TEMİZ BİR ŞEKİLDE INPUT'TAN AL (Garanti Çözüm)
+            let rawNum = document.getElementById("prof-telefon").value.replace(/[^0-9]/g, '');
+            // Başındaki 0'ı atıyoruz
+            aktifWhatsappNumarasi = rawNum.startsWith("0") ? rawNum.substring(1) : rawNum; 
 
             let wpOverlay = document.createElement("div");
             wpOverlay.id = "whatsapp-wait-overlay";
@@ -836,18 +833,16 @@
             document.body.appendChild(wpOverlay);
             setTimeout(() => wpOverlay.classList.add("active"), 10);
 
-            let temizNumara = formatliTel.startsWith("0") ? formatliTel.substring(1) : formatliTel; 
-            
             if(whatsappInterval) clearInterval(whatsappInterval);
             whatsappInterval = setInterval(async () => {
                 try {
                     let idToken = await firebase.auth().currentUser.getIdToken(true);
-                    let res = await fetch(`${FIREBASE_URL}/WhatsappOnayliNumaralar/${temizNumara}.json?auth=${idToken}`);
+                    let res = await fetch(`${FIREBASE_URL}/WhatsappOnayliNumaralar/${aktifWhatsappNumarasi}.json?auth=${idToken}`);
                     let data = await res.json();
                     
                     if (data && data.onaylandi === 1 && data.kod === aktifWhatsappKodu) {
                         clearInterval(whatsappInterval);
-                        await fetch(`${FIREBASE_URL}/WhatsappOnayliNumaralar/${temizNumara}.json?auth=${idToken}`, { method: "DELETE" });
+                        await fetch(`${FIREBASE_URL}/WhatsappOnayliNumaralar/${aktifWhatsappNumarasi}.json?auth=${idToken}`, { method: "DELETE" });
                         
                         wpOverlay.classList.remove("active"); 
                         setTimeout(() => wpOverlay.remove(), 400);
@@ -869,7 +864,9 @@
         function WhatsappMesajiGonder() {
             HapticTitresim();
             document.getElementById("wp-dinleme-yazisi").style.display = "block";
-            let mesaj = `Merhaba Bekmez GO. Hesabımı onaylamak için kodum: ${aktifWhatsappKodu}`;
+            
+            // YENİ: DÜMDÜZ VE TEMİZ BİR FORMAT
+            let mesaj = `[BEKMEZ_GO_ONAY]\nKod: ${aktifWhatsappKodu}\nNumara: ${aktifWhatsappNumarasi}`;
             let wpLink = `https://wa.me/${DUKKAN_WHATSAPP_NUMARASI}?text=${encodeURIComponent(mesaj)}`;
             window.open(wpLink, "_blank");
         }
@@ -892,7 +889,6 @@
         async function BasariliGirisIslemleri(formatliTel, email, isLogin = false) {
             let idToken = await firebase.auth().currentUser.getIdToken(true);
             if (!isLogin) {
-                // VERİTABANINA HESABI (DogrulanmisHesaplar) YAZIYORUZ
                 await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${formatliTel}.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify({ email: email, tarih: new Date().toLocaleString(), kayitZamani: Date.now() }) });
                 await fetch(`${FIREBASE_URL}/SilinmisHesaplar/${formatliTel}.json?auth=${idToken}`, { method: "DELETE" });
             }
@@ -1404,7 +1400,7 @@
             let modlar = [...seciliEkstraIstekler]; if (seciliUrun.isKg) { let tB = baseKgBread + ekstraEkmekKg; if (tB === 0) { if (!modlar.includes("Ekmeksiz")) modlar.push("Ekmeksiz"); } else if (ekstraEkmekKg > 0) { modlar.push("+" + ekstraEkmekKg + " Ek Ekmek"); } else if (ekstraEkmekKg < 0) { modlar.push("Sadece " + tB + " Ekmek"); } } else { if (isSpecial && seciliOzelEkmekTip !== "Normal") modlar.push(seciliOzelEkmekTip); } 
             modlar = [...new Set(modlar)]; if (modlar.length > 0) { tamIsim += " (" + modlar.join(", ") + ")"; } 
             let testIsim = (eklenecekAdet > 1 ? eklenecekAdet + "x " : "") + tamIsim; let newBreadRequired = ExtractBreadTotal(testIsim, seciliUrun.isKg, gercekStokMiktari * eklenecekAdet); let ekmekInfo = tumUrunler.find(u => u.pName && u.pName.trim().toLocaleLowerCase('tr-TR') === ekmekUrunAdi.trim().toLocaleLowerCase('tr-TR')); 
-            if (ekmekInfo) { let cS = (ekmekInfo.stockAmount != null) ? parseFloat((ekmekInfo.stockAmount||0).toString().replace(',', '.')) : ((ekmekInfo.stock != null) ? parseFloat((ekmekInfo.stock||0).toString().replace(',', '.')) : 999); if (isNaN(cS)) cS = 999; let aB = GuncelEkmekIhtiyaci(sepet); if (aB + newBreadRequired > cS) { OzelUyariGoster("Stok Yetersiz", `Ekstra Ekmek için stoğumuz yetersiz!`, "⚠️️"); window.isAddingToCart = false; return; } } 
+            if (ekmekInfo) { let cS = (ekmekInfo.stockAmount != null) ? parseFloat((ekmekInfo.stockAmount||0).toString().replace(',', '.')) : ((ekmekInfo.stock != null) ? parseFloat((ekmekInfo.stock||0).toString().replace(',', '.')) : 999); if (isNaN(cS)) cS = 999; let aB = GuncelEkmekIhtiyaci(sepet); if (aB + newBreadRequired > cS) { OzelUyariGoster("Stok Yetersiz", `Ekstra Ekmek için stoğumuz yetersiz!`, "⚠"); window.isAddingToCart = false; return; } } 
             let sB = seciliUrun.isKg ? seciliFiyat : (seciliFiyat / seciliMiktar); let gB = sB + ekstraEkmekUcreti; let mevcutUrun = sepet.find(u => u.baseName === tamIsim && u.basePrice === gB); 
             
             if(isNaN(gB) || gB < 0 || eklenecekAdet <= 0 || gercekStokMiktari <= 0) { window.isAddingToCart = false; return; }
