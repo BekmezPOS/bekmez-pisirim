@@ -1055,7 +1055,7 @@
 
         async function GetServerTime() { return Date.now(); }
 
-        async function SplashKapatSinematik() { 
+      async function SplashKapatSinematik() { 
             let splash = document.getElementById('splash-screen'); 
             if (splash && splash.style.display !== "none") { 
                 let c = document.getElementById('splash-content'); c.style.transform = 'scale(1.15)'; c.style.opacity = '0'; 
@@ -1069,12 +1069,23 @@
                             try {
                                 let authUser = firebase.auth().currentUser;
                                 let urlStr = `${FIREBASE_URL}/CanliPaketler/${siparisId}.json`;
+                                let taslakUrl = `${FIREBASE_URL}/SiparisTaslaklari/${siparisId}.json`;
                                 if(authUser) {
                                     let idToken = await authUser.getIdToken(true);
                                     urlStr += `?auth=${idToken}`;
+                                    taslakUrl += `?auth=${idToken}`;
                                 }
-                                let res = await fetch(urlStr);
-                                let d = await res.json();
+                                let res = await fetch(urlStr); let d = await res.json();
+                                let tRes = await fetch(taslakUrl); let tD = await tRes.json();
+                                
+                                // GÜVENLİK KİLİDİNİ KIRAN SATIR: Firebase'de sipariş gerçekten yoksa kilidi anında aç!
+                                if ((!d || d.error) && (!tD || tD.error)) {
+                                    localStorage.removeItem("bg_active_order_id");
+                                    localStorage.removeItem("bg_last_status");
+                                    SayfaGoster('urunler');
+                                    return;
+                                }
+
                                 let sipZamani = (d && d.timestamp) ? d.timestamp : null;
                                 let isGhost = sipZamani ? ((Date.now() - sipZamani) > GHOST_TIMEOUT_MS) : false;
                                 if(d && d.durum && !d.durum.includes("İPTAL") && !d.durum.includes("RED") && !d.durum.includes("TESLİM") && !d.durum.includes("AFİYET") && !isGhost) { 
@@ -1458,7 +1469,7 @@
             }
         }
 
-        async function CanliAdisyonCek() {
+       async function CanliAdisyonCek() {
             try {
                 let siparisId = localStorage.getItem("bg_active_order_id");
                 if(!siparisId) { document.getElementById("history-content").innerHTML = `<div class="empty-text">Adisyon yok.<br><br>Aktif bir siparişiniz bulunmamaktadır.</div>`; return; }
@@ -1493,9 +1504,12 @@
                         }
                         return; 
                     } else {
+                        // ÇÖZÜMÜN KALBİ: Sipariş hem canlıda hem taslakta yoksa (Kasadan silinmişse) hayalet kilidi aç!
                         window.isOrderFinished = false; 
                         document.getElementById("history-content").innerHTML = `<div class="empty-text">Aktif bir siparişiniz bulunmuyor.</div>`; 
                         sonCekilenAdisyonHTML = "";
+                        localStorage.removeItem("bg_active_order_id");
+                        localStorage.removeItem("bg_last_status");
                         return;
                     }
                 }
@@ -1506,6 +1520,9 @@
                 
                 if(!bP || isGhost) { 
                     window.isOrderFinished = false; h = `<div class="empty-text">Aktif bir siparişiniz bulunmuyor.</div>`; sonCekilenAdisyonHTML = "";
+                    // ÇÖZÜM: Sipariş Ghost ise veya Firebase çekemediyse kilidi aç.
+                    localStorage.removeItem("bg_active_order_id");
+                    localStorage.removeItem("bg_last_status");
                 } else {
                     let dR = bP.durum ? bP.durum.toUpperCase() : "SİPARİŞ ALINDI 🔔";
                     let durumRenk = "var(--primary)"; let durumBg = "rgba(255,107,0,0.1)"; let durumIkon = "⏳"; let iptalButonuHTML = "";
