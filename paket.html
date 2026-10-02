@@ -1,5 +1,3 @@
-<!-- DİKKAT: Bu sistem sadece güvenilir kaynaklardan yüklenmelidir. -->
-<!-- Sürüm: Enterprise v2.4 (Bulletproof) -->
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -385,6 +383,7 @@
                 </select>
             </div>
 
+            <!-- KVKK VE SÖZLEŞMELER -->
             <div style="margin: 15px 0 25px 0; display: flex; align-items: flex-start; gap: 12px; padding: 0 5px;">
                 <input type="checkbox" id="legal-checkbox" onchange="TogglePayButton()" style="width: 22px; height: 22px; accent-color: var(--primary); margin-top: 2px; cursor: pointer;">
                 <label for="legal-checkbox" style="font-size: 11px; color: var(--text-muted); line-height: 1.5; cursor: pointer;"><a class="legal-link" onclick="AcSozlesme('kvkk'); event.preventDefault();">KVKK Aydınlatma Metni</a>, <a class="legal-link" onclick="AcSozlesme('mesafeli'); event.preventDefault();">Mesafeli Satış Sözleşmesi</a>, <a class="legal-link" onclick="AcSozlesme('teslimat'); event.preventDefault();">Teslimat Şartları</a> ve <a class="legal-link" onclick="AcSozlesme('iptal'); event.preventDefault();">İptal Koşulları</a>'nı okudum ve onaylıyorum.</label>
@@ -511,7 +510,6 @@
         let aktifKullanilanCarkOdulu = null; 
 
         function HapticTitresim() { if(navigator.vibrate) navigator.vibrate(15); }
-        // XSS Koruması
         function escapeHTML(str) { return str ? str.toString().replace(/[&<>'"]/g, function(tag){ return {'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[tag]; }) : ""; }
         function generateUUID() {
             if (crypto && crypto.randomUUID) return crypto.randomUUID();
@@ -529,7 +527,7 @@
                 // Hacker zamanı manuel değiştirirse bu if bloğu patlar ve "0" döner. Düzenleme butonu silinir!
                 if(parts.length === 3 && parts[1] === id && parts[2] === TIME_SALT) return parseInt(parts[0]);
             } catch(e) {}
-            return 0; // Hata durumunda süre anında bitmiş sayılır.
+            return 0; // Hata durumunda 1970 yılına döner, süre anında bitmiş sayılır.
         }
 
         function OzelUyariGoster(baslik, metin, ikon) { document.getElementById("custom-alert-title").innerText = baslik; document.getElementById("custom-alert-text").innerHTML = metin; document.getElementById("custom-alert-icon").innerText = ikon; let p = document.getElementById("custom-alert-overlay"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10); }
@@ -677,8 +675,22 @@
                 CarkDurumunuKontrolEt(); 
             } catch(e) {}
 
+            // BULUT SENKRONİZASYONU YÜKLEMESİ (Hesaba giriş yapıldığında adisyonu geri getir)
+            try {
+                let adisyonRes = await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${formatliTel}/aktifSiparis.json?auth=${idToken}&t=${Date.now()}`);
+                let adisyonData = await adisyonRes.json();
+                if(adisyonData && adisyonData.siparisId) {
+                    localStorage.setItem("bg_active_order_id", adisyonData.siparisId);
+                    localStorage.setItem("bg_order_timestamp", adisyonData.zamanMuhru);
+                    if(adisyonData.odemeTuru) localStorage.setItem("bg_odeme_turu", adisyonData.odemeTuru);
+                }
+            } catch(e) {}
+
             if(isLogin) { OzelUyariGoster("Tekrar Hoş Geldiniz! 👋", "Hesabınıza başarıyla giriş yapıldı.", "✅"); BildirimGonder("Hoş Geldiniz 👋", "Bekmez GO hesabınıza başarıyla giriş yapıldı."); } 
             else { OzelUyariGoster("Hesap Doğrulandı! 🎉", "E-Posta adresiniz ve telefonunuz eşleştirildi.", "✅"); BildirimGonder("Hesap Oluşturuldu 🎉", "Bekmez GO'ya hoş geldiniz! İndirimleri kaçırmayın."); }
+            
+            // Eğer Buluttan Adisyon Çekildiyse Direk Oraya Yönlendir
+            if(localStorage.getItem("bg_active_order_id")) { SayfaGoster('gecmis'); }
         }
 
         function ProfiliKaydet(alertGoster = true) {
@@ -688,11 +700,17 @@
             if(alertGoster) { HapticTitresim(); OzelUyariGoster("Başarılı", "Profil bilgileriniz cihazınıza kaydedildi.", "✅"); }
         }
 
+        // KUSURSUZ ÇIKIŞ TEMİZLİĞİ VE BULUT SENKRONİZASYONU
         function TemizleOturumVerileri() {
             localStorage.removeItem("bg_i"); localStorage.removeItem("bg_t"); localStorage.removeItem("bg_a"); localStorage.removeItem("bg_cark_data"); 
+            localStorage.removeItem("bg_active_order_id"); localStorage.removeItem("bg_order_timestamp"); localStorage.removeItem("bg_last_status"); localStorage.removeItem("bg_odeme_turu");
+            localStorage.removeItem("bg_saved_cart"); localStorage.removeItem("bg_saved_note"); localStorage.removeItem("bg_saved_coupon"); localStorage.removeItem("bg_saved_cark");
+            
             document.getElementById("prof-isim").value = ""; document.getElementById("prof-telefon").value = ""; document.getElementById("prof-email").value = ""; document.getElementById("prof-password").value = ""; document.getElementById("prof-adres").value = "";
             document.getElementById("chk-isim").value = ""; document.getElementById("chk-telefon").value = ""; document.getElementById("chk-adres").value = "";
-            
+            document.getElementById("history-content").innerHTML = `<div class="empty-text">Aktif bir siparişiniz bulunmuyor.</div>`;
+            sonCekilenAdisyonHTML = ""; window.isOrderFinished = false;
+
             document.getElementById("prof-telefon").disabled = false; document.getElementById("prof-email").disabled = false; document.getElementById("prof-password").disabled = false;
             document.getElementById("kayit-onay-cb").checked = false; document.getElementById("btn-email-verify").disabled = true; document.getElementById("btn-email-verify").style.opacity = "0.5"; document.getElementById("btn-email-verify").innerText = "Doğrula ve Kaydol";
             
@@ -807,6 +825,16 @@
         function CarkHediyesiniKullan() { HapticTitresim(); let hash = localStorage.getItem("bg_cark_data"); let parsed = CarkVerisiCoz(hash); if(parsed && parsed.odul !== "😔 Pas") { aktifKullanilanCarkOdulu = parsed.odul; OzelUyariGoster("Sepete Eklendi", `Çark hediyeniz siparişinize eklendi!`, "🛒"); CarkDurumunuKontrolEt(); SayfaGoster('sepet'); } }
         function CarkHediyesiIptal() { HapticTitresim(); aktifKullanilanCarkOdulu = null; CarkDurumunuKontrolEt(); SepetEkraniniCiz(); }
 
+        // OTONOM BULUT TEMİZLİĞİ
+        async function BuluttanAktifAdisyonuSil() {
+            let tel = localStorage.getItem("bg_t"); if(!tel) return;
+            try {
+                let authUser = firebase.auth().currentUser; if(!authUser) return;
+                let idToken = await authUser.getIdToken(true);
+                await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${tel}/aktifSiparis.json?auth=${idToken}`, { method: "DELETE" });
+            } catch(e) {}
+        }
+
         function IptalOnaySor() { HapticTitresim(); SoruSor("Siparişi İptal Et", "Siparişinizi iptal etmek istediğinize emin misiniz? İşlem geri alınamaz.", "⚠️", () => { SiparişiGercektenIptalEt(); }, true); }
         
         async function SiparişiGercektenIptalEt() {
@@ -819,6 +847,7 @@
                 await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}-IPTAL.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(iptalPaketi) });
                 OzelUyariGoster("İptal Ediliyor...", "Siparişiniz iptal ediliyor. Kupon ve ödülleriniz iade edilecek...", "✅");
                 
+                BuluttanAktifAdisyonuSil();
                 localStorage.removeItem("bg_active_order_id"); localStorage.removeItem("bg_last_status"); localStorage.removeItem("bg_order_timestamp");
                 setTimeout(() => { window.location.reload(true); }, 3000);
             } catch(e) {}
@@ -836,6 +865,7 @@
                 let iptalPaketi = { islemTuru: "IPTAL", zaman: new Date().toLocaleTimeString(), telefon: tel, uid: authUser.uid };
                 
                 await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}-IPTAL.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(iptalPaketi) });
+                BuluttanAktifAdisyonuSil();
                 
                 let savedCart = localStorage.getItem("bg_saved_cart"); if (savedCart) { sepet = JSON.parse(savedCart); }
                 aktifKuponKodu = localStorage.getItem("bg_saved_coupon") || ""; aktifKullanilanCarkOdulu = localStorage.getItem("bg_saved_cark") || null;
@@ -869,18 +899,17 @@
             HesaplaVeGuncelle();
         }
 
-        // KURUŞ HATASI (FLOATING POINT) ÇÖZÜMÜ
+        // ZAFİYET ÇÖZÜMÜ: Floating Point (Kuruş) Hatası Giderildi
         function HesaplaVeGuncelle() {
             hamToplamFiyat = 0; 
-            sepet.forEach(item => { 
-                // Math.round ile JavaScript kuruş sapmaları (0.300000000004) engellendi.
-                hamToplamFiyat += Math.round(item.basePrice * item.quantity * 100); 
-            });
-            hamToplamFiyat = hamToplamFiyat / 100;
+            sepet.forEach(item => { hamToplamFiyat += (item.basePrice * item.quantity); });
+            hamToplamFiyat = Math.round(hamToplamFiyat * 100) / 100; // Tam kuruş hesaplama
             
             if (aktifKuponKodu !== "" && hamToplamFiyat < aktifKuponAltLimit) { OzelUyariGoster("Kupon İptal Edildi", `Sepet tutarınız ${aktifKuponAltLimit} TL'nin altına düştüğü için kuponunuz devre dışı bırakıldı.`, "⚠️"); KuponuIptalEt(true); }
 
             sonOdenecekFiyat = hamToplamFiyat - aktifKuponIndirimTutari; if (sonOdenecekFiyat < 0) sonOdenecekFiyat = 0;
+            sonOdenecekFiyat = Math.round(sonOdenecekFiyat * 100) / 100; // Tam kuruş hesaplama
+
             document.getElementById("sepet-tutar").innerText = sonOdenecekFiyat.toFixed(2) + " TL"; document.getElementById("floating-total").innerText = sonOdenecekFiyat.toFixed(2) + " TL";
 
             let eskiFiyatEl = document.getElementById("eski-fiyat-ustu-cizik");
@@ -918,7 +947,7 @@
         window.addEventListener('DOMContentLoaded', () => {
             SyncServerTime();
             let st = new Date().getHours(); let m = "Hoş Geldiniz ✨"; 
-            if (st >= 5 && st < 11) m = "Günaydın ☀️"; else if (st >= 11 && st < 17) m = "İyi Günler 🌤️"; else if (st >= 17 && st < 22) m = "İyi Akşamlar 🌙"; else m = "İyi Geceler 🌌";
+            if (st >= 5 && st < 11) m = "Günaydın ☀️️"; else if (st >= 11 && st < 17) m = "İyi Günler 🌤️"; else if (st >= 17 && st < 22) m = "İyi Akşamlar 🌙"; else m = "İyi Geceler 🌌";
             let ko = document.getElementById("dinamik-karsilama"); if(ko) ko.innerText = m;
             setTimeout(() => { SplashKapatSinematik(); }, 3000);
 
@@ -1103,24 +1132,21 @@
         }
         function TriggerCartBounce() { let cart = document.getElementById("floating-cart"); if(cart) { cart.classList.remove("bounce"); void cart.offsetWidth; cart.classList.add("bounce"); } }
 
-        // ANTİ-SPAM MAKRO KİLİDİ EKLENDİ
+        // ZAFİYET ÇÖZÜMÜ: Makro / Hızlı Tıklama Engeli (State Lock)
+        window.isAddingToCart = false;
         function PopupSepeteEkle() { 
-            if(window.isAddingToCart) return; // SPAM KORUMASI
+            if(window.isAddingToCart) return; 
             if(seciliMiktar <= 0) return; 
-            if(localStorage.getItem("bg_active_order_id")) {
-                OzelUyariGoster("İşlem Engellendi", "Mevcut siparişiniz teslim edilmeden veya iptal edilmeden yeni bir sipariş oluşturamazsınız.", "⏳");
-                PopupKapat();
-                return;
-            }
+            if(localStorage.getItem("bg_active_order_id")) { OzelUyariGoster("İşlem Engellendi", "Mevcut siparişiniz teslim edilmeden veya iptal edilmeden yeni bir sipariş oluşturamazsınız.", "⏳"); PopupKapat(); return; }
 
-            window.isAddingToCart = true; // KİLİTLE
+            window.isAddingToCart = true;
             HapticTitresim(); SessizIzinIste(); 
             let tamIsim = ""; let eklenecekAdet = 1; let gercekStokMiktari = seciliMiktar; let ekstraEkmekUcreti = 0; let pL = (seciliUrun.pName || "").toString().toLocaleLowerCase('tr-TR'); let isSpecial = pL.includes("dürüm") || pL.includes("doner") || pL.includes("kebap"); 
             if (seciliUrun.isKg) { tamIsim = Number(seciliMiktar.toFixed(2)) + " KG " + seciliUrun.pName; eklenecekAdet = 1; if (ekstraEkmekKg > 0 && !seciliEkstraIstekler.includes('Ekmeksiz')) { ekstraEkmekUcreti = ekstraEkmekKg * ekmekBirimFiyati; } } else { tamIsim = seciliUrun.pName; eklenecekAdet = seciliMiktar; gercekStokMiktari = 1; if (isSpecial && seciliOzelEkmekTip === "3 Lavaş") ekstraEkmekUcreti = ekmekBirimFiyati; } 
             let modlar = [...seciliEkstraIstekler]; if (seciliUrun.isKg) { let tB = baseKgBread + ekstraEkmekKg; if (tB === 0) { if (!modlar.includes("Ekmeksiz")) modlar.push("Ekmeksiz"); } else if (ekstraEkmekKg > 0) { modlar.push("+" + ekstraEkmekKg + " Ek Ekmek"); } else if (ekstraEkmekKg < 0) { modlar.push("Sadece " + tB + " Ekmek"); } } else { if (isSpecial && seciliOzelEkmekTip !== "Normal") modlar.push(seciliOzelEkmekTip); } 
             modlar = [...new Set(modlar)]; if (modlar.length > 0) { tamIsim += " (" + modlar.join(", ") + ")"; } 
             let testIsim = (eklenecekAdet > 1 ? eklenecekAdet + "x " : "") + tamIsim; let newBreadRequired = ExtractBreadTotal(testIsim, seciliUrun.isKg, gercekStokMiktari * eklenecekAdet); let ekmekInfo = tumUrunler.find(u => u.pName && u.pName.trim().toLocaleLowerCase('tr-TR') === ekmekUrunAdi.trim().toLocaleLowerCase('tr-TR')); 
-            if (ekmekInfo) { let cS = (ekmekInfo.stockAmount != null) ? parseFloat((ekmekInfo.stockAmount||0).toString().replace(',', '.')) : ((ekmekInfo.stock != null) ? parseFloat((ekmekInfo.stock||0).toString().replace(',', '.')) : 999); if (isNaN(cS)) cS = 999; let aB = GuncelEkmekIhtiyaci(sepet); if (aB + newBreadRequired > cS) { OzelUyariGoster("Stok Yetersiz", `Ekstra Ekmek için stoğumuz yetersiz!`, "⚠️️"); window.isAddingToCart = false; return; } } 
+            if (ekmekInfo) { let cS = (ekmekInfo.stockAmount != null) ? parseFloat((ekmekInfo.stockAmount||0).toString().replace(',', '.')) : ((ekmekInfo.stock != null) ? parseFloat((ekmekInfo.stock||0).toString().replace(',', '.')) : 999); if (isNaN(cS)) cS = 999; let aB = GuncelEkmekIhtiyaci(sepet); if (aB + newBreadRequired > cS) { OzelUyariGoster("Stok Yetersiz", `Ekstra Ekmek için stoğumuz yetersiz!`, "⚠️"); window.isAddingToCart = false; return; } } 
             let sB = seciliUrun.isKg ? seciliFiyat : (seciliFiyat / seciliMiktar); let gB = sB + ekstraEkmekUcreti; let mevcutUrun = sepet.find(u => u.baseName === tamIsim && u.basePrice === gB); 
             
             if(isNaN(gB) || gB < 0 || eklenecekAdet <= 0 || gercekStokMiktari <= 0) { window.isAddingToCart = false; return; }
@@ -1128,7 +1154,7 @@
             if(mevcutUrun) { mevcutUrun.quantity += eklenecekAdet; } else { sepet.push({ baseName: escapeHTML(tamIsim), basePrice: gB, baseStockAmount: gercekStokMiktari, quantity: eklenecekAdet, rawName: escapeHTML(seciliUrun.pName) }); } 
             ShowFloatingPlusOne(); TriggerCartBounce(); 
             
-            setTimeout(() => { PopupKapat(); HesaplaVeGuncelle(); window.isAddingToCart = false; }, 300); // KİLİDİ AÇ
+            setTimeout(() => { PopupKapat(); HesaplaVeGuncelle(); window.isAddingToCart = false; }, 300); 
         }
 
         function SepetMiktarDegistir(index, artisMiktari) { 
@@ -1205,10 +1231,7 @@
         
         function CheckoutPopupAc() { 
             if(sepet.length === 0 && aktifKullanilanCarkOdulu === null) return; 
-            if(localStorage.getItem("bg_active_order_id")) {
-                OzelUyariGoster("Siparişiniz Yolda", "Mevcut siparişiniz teslim edilmeden veya iptal edilmeden yeni bir sipariş oluşturamazsınız.", "🛵");
-                return;
-            }
+            if(localStorage.getItem("bg_active_order_id")) { OzelUyariGoster("Siparişiniz Yolda", "Mevcut siparişiniz teslim edilmeden veya iptal edilmeden yeni bir sipariş oluşturamazsınız.", "🛵"); return; }
             HapticTitresim(); let p = document.getElementById("checkout-popup"); p.style.display = "flex"; setTimeout(() => { p.classList.add("active"); }, 10); TogglePayButton(); 
         }
 
@@ -1220,9 +1243,7 @@
             if(!telControl || telControl.length < 10) { OzelUyariGoster("Telefon Doğrulaması", "Sipariş verebilmek için profil sekmesinden telefonunuzu doğrulamanız zorunludur.", "🛡️"); return; }
 
             let lastOrder = localStorage.getItem("last_ord_t");
-            if(lastOrder && Date.now() - parseInt(lastOrder) < 180000) {
-                OzelUyariGoster("Spam Koruması", "Yeni sipariş vermek için 3 dakika beklemelisiniz.", "⏳"); return;
-            }
+            if(lastOrder && Date.now() - parseInt(lastOrder) < 180000) { OzelUyariGoster("Spam Koruması", "Yeni sipariş vermek için 3 dakika beklemelisiniz.", "⏳"); return; }
 
             HapticTitresim();
             let is = escapeHTML(document.getElementById("chk-isim").value.trim()).substring(0, 50); 
@@ -1236,28 +1257,21 @@
             let btn = document.getElementById("final-submit-btn"); btn.disabled = true; btn.classList.add("loading"); btn.innerText = "Konum Bulunuyor...📍";
             isProcessingOrder = true;
 
-            // KATI GPS VE KANIT GÖNDERİMİ
             if (navigator.geolocation) { 
                 const checkLoc = () => { return new Promise((resolve, reject) => { navigator.geolocation.getCurrentPosition(p => resolve(p), e => reject(e), {enableHighAccuracy: true, timeout: 10000, maximumAge: 0}); }); };
                 checkLoc().then(p => {
-                    let lat = p.coords.latitude;
-                    let lng = p.coords.longitude;
-                    let ms = GetDistanceKm(DUKKAN_ENLEM, DUKKAN_BOYLAM, lat, lng);
+                    let lat = p.coords.latitude; let lng = p.coords.longitude; let ms = GetDistanceKm(DUKKAN_ENLEM, DUKKAN_BOYLAM, lat, lng);
                     
                     if (ms > MAKS_MESAFE_KM) { 
                         let do2 = document.getElementById("distance-alert-overlay"); do2.style.display = "flex"; setTimeout(() => do2.classList.add("active"), 10); 
                         isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; return; 
                     }
-                    
                     DevamEtPaketGonder(is, tl, ad, secilenOdeme, sepet, lat, lng);
                 }).catch(e => { 
                     OzelUyariGoster("Konum Zorunlu 📍", "Sipariş verebilmek için cihazınızın konum (GPS) özelliğinin açık olması ve tarayıcıdan izin vermeniz zorunludur. Aksi takdirde sipariş alınamaz.", "🛑");
                     isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
                 });
-            } else {
-                OzelUyariGoster("Desteklenmiyor", "Cihazınız konum servisini desteklemediği için sipariş veremezsiniz.", "🛑");
-                isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
-            }
+            } else { OzelUyariGoster("Desteklenmiyor", "Cihazınız konum servisini desteklemediği için sipariş veremezsiniz.", "🛑"); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; }
         }
 
         async function DevamEtPaketGonder(isim, tel, adres, odemeTuru, temizSepet, lat = 0, lng = 0) {
@@ -1271,47 +1285,28 @@
                 let benzersizSiparisID = generateUUID();
                 let sunucuyaGidecekSepet = temizSepet.map(u => ({ rawName: u.rawName, tamIsim: (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName, miktar: (u.baseStockAmount * u.quantity) }));
 
-                let taslakVerisi = {
-                    uid: authUser.uid,
-                    telefon: tel,
-                    musteriAd: isim,
-                    adres: adres,
-                    odemeTuru: odemeTuru,
-                    siparisNotu: escapeHTML(document.getElementById("siparis-notu").value.trim()),
-                    kuponKodu: aktifKuponKodu,
-                    carkOdulu: aktifKullanilanCarkOdulu,
-                    sepet: sunucuyaGidecekSepet,
-                    gpsInfo: { latitude: lat, longitude: lng },
-                    timestamp: Date.now(),
-                    durum: "KASA ONAYI BEKLENİYOR ⏳"
-                };
+                let tZaman = Date.now();
+                let zM = ZamanMuhruSifrele(tZaman, benzersizSiparisID);
+
+                let taslakVerisi = { uid: authUser.uid, telefon: tel, musteriAd: isim, adres: adres, odemeTuru: odemeTuru, siparisNotu: escapeHTML(document.getElementById("siparis-notu").value.trim()), kuponKodu: aktifKuponKodu, carkOdulu: aktifKullanilanCarkOdulu, sepet: sunucuyaGidecekSepet, gpsInfo: { latitude: lat, longitude: lng }, timestamp: tZaman, durum: "KASA ONAYI BEKLENİYOR ⏳" };
 
                 let idToken = await authUser.getIdToken(true);
                 await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${benzersizSiparisID}.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(taslakVerisi) });
 
+                // BULUT SENKRONİZASYONUNA YEDEKLEME
+                await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${tel}/aktifSiparis.json?auth=${idToken}`, { 
+                    method: "PUT", body: JSON.stringify({ siparisId: benzersizSiparisID, zamanMuhru: zM, odemeTuru: odemeTuru }) 
+                });
+
                 if (aktifKullanilanCarkOdulu !== null) { localStorage.removeItem("bg_cark_data"); aktifKullanilanCarkOdulu = null; }
 
-                localStorage.setItem("bg_active_order_id", benzersizSiparisID);
-                localStorage.setItem("last_ord_t", Date.now().toString());
-                localStorage.setItem("bg_odeme_turu", odemeTuru);
-                
-                localStorage.setItem("bg_order_timestamp", ZamanMuhruSifrele(GetServerTimeFast(), benzersizSiparisID));
-                localStorage.setItem("bg_saved_cart", JSON.stringify(temizSepet));
-                localStorage.setItem("bg_saved_note", escapeHTML(document.getElementById("siparis-notu").value.trim()));
-                localStorage.setItem("bg_saved_coupon", aktifKuponKodu || "");
-                localStorage.setItem("bg_saved_cark", aktifKullanilanCarkOdulu || "");
+                localStorage.setItem("bg_active_order_id", benzersizSiparisID); localStorage.setItem("last_ord_t", tZaman.toString()); localStorage.setItem("bg_odeme_turu", odemeTuru);
+                localStorage.setItem("bg_order_timestamp", zM); localStorage.setItem("bg_saved_cart", JSON.stringify(temizSepet)); localStorage.setItem("bg_saved_note", escapeHTML(document.getElementById("siparis-notu").value.trim())); localStorage.setItem("bg_saved_coupon", aktifKuponKodu || ""); localStorage.setItem("bg_saved_cark", aktifKullanilanCarkOdulu || "");
 
                 HapticTitresim(); CheckoutKapat(); BasariEkraniGoster();
 
-                if (sepetHatirlaticiTimer) clearTimeout(sepetHatirlaticiTimer);
-                sepet = []; aktifKuponKodu = ""; document.getElementById("siparis-notu").value = "";
-                SepetEkraniniCiz(); HesaplaVeGuncelle(); seciliEkstraIstekler = []; 
-                isProcessingOrder = false;
-
-            } catch (e) {
-                OzelUyariGoster("Hata", "Sipariş iletilemedi, internetinizi kontrol edin.", "📡");
-                isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde";
-            }
+                if (sepetHatirlaticiTimer) clearTimeout(sepetHatirlaticiTimer); sepet = []; aktifKuponKodu = ""; document.getElementById("siparis-notu").value = ""; SepetEkraniniCiz(); HesaplaVeGuncelle(); seciliEkstraIstekler = []; isProcessingOrder = false;
+            } catch (e) { OzelUyariGoster("Hata", "Sipariş iletilemedi, internetinizi kontrol edin.", "📡"); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; }
         }
 
         async function CanliAdisyonCek() {
@@ -1322,67 +1317,33 @@
                 let authUser = firebase.auth().currentUser; if(!authUser) return;
                 let idToken = await authUser.getIdToken(true);
 
-                let r = await fetch(`${FIREBASE_URL}/CanliPaketler/${siparisId}.json?auth=${idToken}&t=${Date.now()}`); 
-                let bP = await r.json();
-
-                let odemeTuru = localStorage.getItem("bg_odeme_turu") || "Kapıda Nakit";
-                let nakitDisiOdeme = !odemeTuru.includes("Nakit");
+                let r = await fetch(`${FIREBASE_URL}/CanliPaketler/${siparisId}.json?auth=${idToken}&t=${Date.now()}`); let bP = await r.json();
+                let odemeTuru = localStorage.getItem("bg_odeme_turu") || "Kapıda Nakit"; let nakitDisiOdeme = !odemeTuru.includes("Nakit");
 
                 if (!bP || bP.error) {
-                    let taslakRes = await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}.json?auth=${idToken}&t=${Date.now()}`);
-                    let taslakData = await taslakRes.json();
+                    let taslakRes = await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}.json?auth=${idToken}&t=${Date.now()}`); let taslakData = await taslakRes.json();
                     
                     if (taslakData && !taslakData.error && taslakData.durum) {
-                        
-                        let rawOrderTs = localStorage.getItem("bg_order_timestamp");
-                        let orderTs = rawOrderTs ? ZamanMuhruCoz(rawOrderTs, siparisId) : GetServerTimeFast();
-
-                        let leftMs = 180000 - (GetServerTimeFast() - orderTs); 
-                        let timeStr = ""; let canEdit = false;
-                        if(leftMs > 0 && orderTs > 0) {
-                            canEdit = true;
-                            let m = Math.floor(leftMs / 60000); let s = Math.floor((leftMs % 60000) / 1000);
-                            timeStr = `${m}:${s < 10 ? '0'+s : s}`;
-                        }
+                        let rawOrderTs = localStorage.getItem("bg_order_timestamp"); let orderTs = rawOrderTs ? ZamanMuhruCoz(rawOrderTs, siparisId) : GetServerTimeFast();
+                        let leftMs = 180000 - (GetServerTimeFast() - orderTs); let timeStr = ""; let canEdit = false;
+                        if(leftMs > 0 && orderTs > 0) { canEdit = true; let m = Math.floor(leftMs / 60000); let s = Math.floor((leftMs % 60000) / 1000); timeStr = `${m}:${s < 10 ? '0'+s : s}`; }
                         
                         let butonlar = "";
-                        if (canEdit) {
-                            if (nakitDisiOdeme) {
-                                butonlar = `<div style="text-align:center; font-size:12px; color:var(--warning); margin-top:20px; font-weight:700;">💳 Nakit dışı ödemeli (IBAN/Kart) siparişlerde iptal ve değişiklik için restoranı arayın.</div>`;
-                            } else {
-                                butonlar = `
-                                <div style="text-align:center; font-size:12px; color:var(--primary); font-weight:800; margin-top:20px;">
-                                    ⏳ Düzenleme için son <span style="font-size:16px;">${timeStr}</span>
-                                </div>
-                                <div style="display:flex; gap:10px; margin-top:10px;">
-                                    <button onclick="IptalOnaySor()" style="flex:1; background:rgba(255,59,48,0.1); border:1px solid rgba(255, 59, 48, 0.5); color:var(--danger); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">İptal Et</button>
-                                    <button onclick="DuzenleOnaySor()" style="flex:1; background:rgba(255, 107, 0, 0.1); border:1px solid var(--primary); color:var(--primary); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">Düzenle</button>
-                                </div>`;
-                            }
-                        } else {
-                            butonlar = `<div style="text-align:center; font-size:11px; color:var(--warning); margin-top:20px; font-weight:700;">🔒 3 dakikalık süre doldu veya zaman manipülasyonu algılandı.</div>`;
-                        }
+                        if (canEdit) { if (nakitDisiOdeme) { butonlar = `<div style="text-align:center; font-size:12px; color:var(--warning); margin-top:20px; font-weight:700;">💳 Nakit dışı ödemeli (IBAN/Kart) siparişlerde iptal ve değişiklik için restoranı arayın.</div>`; } else { butonlar = `<div style="text-align:center; font-size:12px; color:var(--primary); font-weight:800; margin-top:20px;">⏳ Düzenleme için son <span style="font-size:16px;">${timeStr}</span></div><div style="display:flex; gap:10px; margin-top:10px;"><button onclick="IptalOnaySor()" style="flex:1; background:rgba(255,59,48,0.1); border:1px solid rgba(255, 59, 48, 0.5); color:var(--danger); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">İptal Et</button><button onclick="DuzenleOnaySor()" style="flex:1; background:rgba(255, 107, 0, 0.1); border:1px solid var(--primary); color:var(--primary); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">Düzenle</button></div>`; } } else { butonlar = `<div style="text-align:center; font-size:11px; color:var(--warning); margin-top:20px; font-weight:700;">🔒 3 dakikalık süre doldu veya zaman manipülasyonu algılandı.</div>`; }
 
-                        let hBekleme = `
-                        <div class="receipt-card">
-                            <div style="text-align: center; margin-bottom: 15px;">
-                                <div style="font-size:40px; margin-bottom:10px;">⏳</div>
-                                <div style="font-weight: 900; font-size: 20px; color:#1c1c1e;">KASA ONAYI BEKLENİYOR</div>
-                            </div>
-                            ${butonlar}
-                        </div>`;
-                        if (document.getElementById("history-content").innerHTML !== hBekleme) { document.getElementById("history-content").innerHTML = hBekleme; }
-                        return; 
+                        let hBekleme = `<div class="receipt-card"><div style="text-align: center; margin-bottom: 15px;"><div style="font-size:40px; margin-bottom:10px;">⏳</div><div style="font-weight: 900; font-size: 20px; color:#1c1c1e;">KASA ONAYI BEKLENİYOR</div></div>${butonlar}</div>`;
+                        if (document.getElementById("history-content").innerHTML !== hBekleme) { document.getElementById("history-content").innerHTML = hBekleme; } return; 
                     } else {
                         window.isOrderFinished = false; document.getElementById("history-content").innerHTML = `<div class="empty-text">Aktif bir siparişiniz bulunmuyor.</div>`; 
-                        sonCekilenAdisyonHTML = ""; localStorage.removeItem("bg_active_order_id"); localStorage.removeItem("bg_last_status"); return;
+                        sonCekilenAdisyonHTML = ""; localStorage.removeItem("bg_active_order_id"); localStorage.removeItem("bg_last_status"); 
+                        BuluttanAktifAdisyonuSil(); return;
                     }
                 }
 
                 let sipZamani = (bP && bP.timestamp) ? bP.timestamp : null; let isGhost = sipZamani ? ((Date.now() - sipZamani) > GHOST_TIMEOUT_MS) : false; let h = "";
                 if(!bP || isGhost) { 
                     window.isOrderFinished = false; h = `<div class="empty-text">Aktif bir siparişiniz bulunmuyor.</div>`; sonCekilenAdisyonHTML = "";
-                    localStorage.removeItem("bg_active_order_id"); localStorage.removeItem("bg_last_status");
+                    localStorage.removeItem("bg_active_order_id"); localStorage.removeItem("bg_last_status"); BuluttanAktifAdisyonuSil();
                 } else {
                     let dR = bP.durum ? bP.durum.toUpperCase() : "SİPARİŞ ALINDI 🔔";
                     let durumRenk = "var(--primary)"; let durumBg = "rgba(255,107,0,0.1)"; let durumIkon = "⏳"; let iptalButonuHTML = "";
@@ -1390,11 +1351,8 @@
                     let oncekiDurum = localStorage.getItem("bg_last_status") || "";
                     if (dR !== oncekiDurum) { localStorage.setItem("bg_last_status", dR); if (dR.includes("TESLİM") || dR.includes("AFİYET")) { BildirimGonder("Afiyet Olsun! 😋", "Bekmez GO: Siparişiniz teslim edildi. Bizi tercih ettiğiniz için teşekkür ederiz!"); } else if (dR.includes("YOLDA") || dR.includes("KURYE")) { BildirimGonder("Kurye Yola Çıktı! 🛵", "Siparişiniz yola çıktı, gelmek üzere!"); } }
 
-                    let rawOrderTs = localStorage.getItem("bg_order_timestamp");
-                    let orderTs = rawOrderTs ? ZamanMuhruCoz(rawOrderTs, siparisId) : GetServerTimeFast();
-
-                    let leftMs = 180000 - (GetServerTimeFast() - orderTs);
-                    let canEdit = false; let timeStr = ""; let lockMsg = "";
+                    let rawOrderTs = localStorage.getItem("bg_order_timestamp"); let orderTs = rawOrderTs ? ZamanMuhruCoz(rawOrderTs, siparisId) : GetServerTimeFast();
+                    let leftMs = 180000 - (GetServerTimeFast() - orderTs); let canEdit = false; let timeStr = ""; let lockMsg = "";
 
                     if (dR.includes("HAZIRLANIYOR") || dR.includes("SİPARİŞ ALINDI")) { 
                         durumRenk = "var(--primary)"; durumBg = "rgba(255,107,0,0.1)"; durumIkon = "👨‍🍳"; 
@@ -1403,28 +1361,16 @@
                     }
                     else if (dR.includes("PİŞİYOR") || dR.includes("MUTFAK")) { durumRenk = "var(--warning)"; durumBg = "rgba(255, 204, 0, 0.1)"; durumIkon = "🔥"; lockMsg = "Sipariş mutfakta işleme alındı."; }
                     else if (dR.includes("YOLDA") || dR.includes("KURYE") || dR.includes("PAKET")) { durumRenk = "#0A84FF"; durumBg = "rgba(10, 132, 255, 0.1)"; durumIkon = "🛵"; lockMsg = "Kuryemiz yola çıktı."; }
-                    else if (dR.includes("İPTAL") || dR.includes("RED")) { durumRenk = "var(--danger)"; durumBg = "rgba(255, 59, 48, 0.1)"; durumIkon = "❌"; }
+                    else if (dR.includes("İPTAL") || dR.includes("RED")) { durumRenk = "var(--danger)"; durumBg = "rgba(255, 59, 48, 0.1)"; durumIkon = "❌"; BuluttanAktifAdisyonuSil(); }
                     else if (dR.includes("TESLİM") || dR.includes("AFİYET") || dR.includes("TAMAM")) { 
-                        durumRenk = "var(--success)"; durumBg = "rgba(52, 199, 89, 0.1)"; durumIkon = "✅"; 
+                        durumRenk = "var(--success)"; durumBg = "rgba(52, 199, 89, 0.1)"; durumIkon = "✅"; BuluttanAktifAdisyonuSil();
                         if (!window.isOrderFinished) { window.isOrderFinished = true; setTimeout(() => { localStorage.removeItem("bg_last_status"); localStorage.removeItem("bg_active_order_id"); document.getElementById("history-content").innerHTML = `<div class="empty-text">Aktif bir siparişiniz bulunmuyor.</div>`; sonCekilenAdisyonHTML = ""; SayfaGoster('urunler'); OzelUyariGoster("Afiyet Olsun!", "Siparişiniz teslim edildi. Bizi tercih ettiğiniz için teşekkür ederiz 😋", "🎉"); }, 6000); }
                     }
 
-                    if (canEdit) {
-                        if (nakitDisiOdeme) { iptalButonuHTML = `<div style="text-align:center; font-size:12px; color:var(--warning); margin-top:20px; font-weight:700;">💳 Nakit dışı ödemeli (IBAN/Kart) siparişlerde iptal ve değişiklik için restoranı arayın.</div>`; } 
-                        else { iptalButonuHTML = `<div style="text-align:center; font-size:12px; color:var(--primary); font-weight:800; margin-top:20px;">⏳ Düzenleme için son <span style="font-size:16px;">${timeStr}</span></div><div style="display:flex; gap:10px; margin-top:10px;"><button onclick="IptalOnaySor()" style="flex:1; background:rgba(255,59,48,0.1); border:1px solid rgba(255, 59, 48, 0.5); color:var(--danger); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">İptal Et</button><button onclick="DuzenleOnaySor()" style="flex:1; background:rgba(255, 107, 0, 0.1); border:1px solid var(--primary); color:var(--primary); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">Düzenle</button></div>`; }
-                    } else if (!dR.includes("İPTAL") && !dR.includes("TESLİM") && !dR.includes("RED") && !dR.includes("AFİYET")) {
-                        iptalButonuHTML = `<div style="text-align:center; font-size:11px; color:var(--warning); margin-top:15px; font-weight:700;">🔒 ${lockMsg} Artık değişiklik yapılamaz.</div>`;
-                    }
+                    if (canEdit) { if (nakitDisiOdeme) { iptalButonuHTML = `<div style="text-align:center; font-size:12px; color:var(--warning); margin-top:20px; font-weight:700;">💳 Nakit dışı ödemeli (IBAN/Kart) siparişlerde iptal ve değişiklik için restoranı arayın.</div>`; } else { iptalButonuHTML = `<div style="text-align:center; font-size:12px; color:var(--primary); font-weight:800; margin-top:20px;">⏳ Düzenleme için son <span style="font-size:16px;">${timeStr}</span></div><div style="display:flex; gap:10px; margin-top:10px;"><button onclick="IptalOnaySor()" style="flex:1; background:rgba(255,59,48,0.1); border:1px solid rgba(255, 59, 48, 0.5); color:var(--danger); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">İptal Et</button><button onclick="DuzenleOnaySor()" style="flex:1; background:rgba(255, 107, 0, 0.1); border:1px solid var(--primary); color:var(--primary); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">Düzenle</button></div>`; } } else if (!dR.includes("İPTAL") && !dR.includes("TESLİM") && !dR.includes("RED") && !dR.includes("AFİYET")) { iptalButonuHTML = `<div style="text-align:center; font-size:11px; color:var(--warning); margin-top:15px; font-weight:700;">🔒 ${lockMsg} Artık değişiklik yapılamaz.</div>`; }
 
-                    if(dR.includes("İPTAL") || dR.includes("RED")) { 
-                        h = `<div class="empty-text" style="color: var(--danger); border-color: rgba(255, 59, 48, 0.3); background: rgba(255, 59, 48, 0.05); padding: 40px 20px;"><div style="font-size:40px; margin-bottom:15px;">❌</div><strong style="font-size:18px;">İptal Edildi</strong><br><br><span style="font-size:14px; color:#A1A1AA;">${escapeHTML(dR)}</span></div>`; sonCekilenAdisyonHTML = ""; setTimeout(() => { localStorage.removeItem("bg_active_order_id"); }, 5000); 
-                    } else {
-                        h = `<div class="receipt-card"><div style="text-align: center; margin-bottom: 25px;"><div style="font-size:30px; margin-bottom:5px;">${durumIkon}</div><div style="font-weight: 900; font-size: 22px; color:#1c1c1e;">BEKMEZ GO</div><div style="font-size: 14px; font-weight: 800; color:var(--text-muted); margin-top:4px;">PAKET SERVİS</div></div><div class="receipt-header"><span>DURUM</span><span style="color:${durumRenk}; font-weight:900; background:${durumBg}; padding:8px 14px; border-radius:12px; text-align:right;">${escapeHTML(dR)}</span></div>`;
-                        if(bP.siparisler) { bP.siparisler.forEach(u => { h += `<div class="receipt-item"><span>${escapeHTML(u.itemName)}</span><span>${parseFloat(u.itemPrice).toFixed(2)} ₺</span></div>`; }); }
-                        if (bP.siparisNotu) { h += `<div style="margin-top: 20px; padding: 16px; background: rgba(0,0,0,0.03); border-radius:16px; font-size: 13px; font-weight: 600; color:#8e8e93; border: 1px dashed #d1d1d6;">NOT:<br>${escapeHTML(bP.siparisNotu)}</div>`; }
-                        h += `<div class="receipt-total">TOPLAM: <span style="font-size:28px; display:block; margin-top:8px;">${parseFloat(bP.toplamTutar).toFixed(2)} TL</span></div>${iptalButonuHTML}<div style="text-align: center; font-size: 11px; margin-top: 25px; color:#a1a1aa; font-weight: 600;">Bizi tercih ettiğiniz için teşekkür ederiz.</div></div>`;
-                        sonCekilenAdisyonHTML = h; 
-                    }
+                    if(dR.includes("İPTAL") || dR.includes("RED")) { h = `<div class="empty-text" style="color: var(--danger); border-color: rgba(255, 59, 48, 0.3); background: rgba(255, 59, 48, 0.05); padding: 40px 20px;"><div style="font-size:40px; margin-bottom:15px;">❌</div><strong style="font-size:18px;">İptal Edildi</strong><br><br><span style="font-size:14px; color:#A1A1AA;">${escapeHTML(dR)}</span></div>`; sonCekilenAdisyonHTML = ""; setTimeout(() => { localStorage.removeItem("bg_active_order_id"); }, 5000); } 
+                    else { h = `<div class="receipt-card"><div style="text-align: center; margin-bottom: 25px;"><div style="font-size:30px; margin-bottom:5px;">${durumIkon}</div><div style="font-weight: 900; font-size: 22px; color:#1c1c1e;">BEKMEZ GO</div><div style="font-size: 14px; font-weight: 800; color:var(--text-muted); margin-top:4px;">PAKET SERVİS</div></div><div class="receipt-header"><span>DURUM</span><span style="color:${durumRenk}; font-weight:900; background:${durumBg}; padding:8px 14px; border-radius:12px; text-align:right;">${escapeHTML(dR)}</span></div>`; if(bP.siparisler) { bP.siparisler.forEach(u => { h += `<div class="receipt-item"><span>${escapeHTML(u.itemName)}</span><span>${parseFloat(u.itemPrice).toFixed(2)} ₺</span></div>`; }); } if (bP.siparisNotu) { h += `<div style="margin-top: 20px; padding: 16px; background: rgba(0,0,0,0.03); border-radius:16px; font-size: 13px; font-weight: 600; color:#8e8e93; border: 1px dashed #d1d1d6;">NOT:<br>${escapeHTML(bP.siparisNotu)}</div>`; } h += `<div class="receipt-total">TOPLAM: <span style="font-size:28px; display:block; margin-top:8px;">${parseFloat(bP.toplamTutar).toFixed(2)} TL</span></div>${iptalButonuHTML}<div style="text-align: center; font-size: 11px; margin-top: 25px; color:#a1a1aa; font-weight: 600;">Bizi tercih ettiğiniz için teşekkür ederiz.</div></div>`; sonCekilenAdisyonHTML = h; }
                 }
                 if (document.getElementById("history-content").innerHTML !== h) { document.getElementById("history-content").innerHTML = h; }
             } catch(e) {}
