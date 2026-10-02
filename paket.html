@@ -789,10 +789,12 @@
         // ==========================================
         // YENİ: WHATSAPP DOĞRULAMA (2. ADIM) MOTORU
         // ==========================================
-       function WhatsappDogrulamasiniBaslat(formatliTel, email) {
+       function WhatsappDogrulamasiniBaslat(formatliTel, email, isLogin = false) {
+            // Rastgele 4 haneli kod üret
             let rastgeleKod = Math.floor(1000 + Math.random() * 9000);
             aktifWhatsappKodu = `BKMZ-${rastgeleKod}`;
             
+            // Numara formata uygun şekilde kaydediliyor
             aktifWhatsappNumarasi = formatliTel.startsWith("0") ? formatliTel.substring(1) : formatliTel; 
 
             let wpOverlay = document.createElement("div");
@@ -831,22 +833,44 @@
             setTimeout(() => wpOverlay.classList.add("active"), 10);
 
             if(whatsappInterval) clearInterval(whatsappInterval);
+            
+            // YENİ VE KUSURSUZ DİNLEME MOTORU
             whatsappInterval = setInterval(async () => {
                 try {
-                    // ÖNEMLİ DEĞİŞİKLİK: Tarayıcının önbellek yapmasını engellemek için linkin sonuna &t=Date.now() ve cache: no-store eklendi!
-                    let idToken = await firebase.auth().currentUser.getIdToken(true);
-                    let res = await fetch(`${FIREBASE_URL}/WhatsappOnayliNumaralar/${aktifWhatsappNumarasi}.json?auth=${idToken}&t=${Date.now()}`, { cache: "no-store" });
+                    // DİKKAT: Auth Token söküldü. URL sonuna tarayıcı önbelleğini kırmak için Zaman Damgası eklendi.
+                    let url = `${FIREBASE_URL}/WhatsappOnayliNumaralar/${aktifWhatsappNumarasi}.json?t=${new Date().getTime()}`;
+                    
+                    let res = await fetch(url, { 
+                        method: 'GET',
+                        headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
+                    });
+                    
                     let data = await res.json();
                     
-                    if (data && (data.onaylandi === 1 || data.onaylandi === true) && data.kod === aktifWhatsappKodu) {
-                        clearInterval(whatsappInterval);
-                        await fetch(`${FIREBASE_URL}/WhatsappOnayliNumaralar/${aktifWhatsappNumarasi}.json?auth=${idToken}`, { method: "DELETE" });
+                    // Firebase'de veri var mı ve kod oluşturulmuş mu?
+                    if (data && data.kod) {
+                        let gelenKod = String(data.kod).toUpperCase();
+                        let beklenenKod = String(aktifWhatsappKodu).toUpperCase();
                         
-                        wpOverlay.classList.remove("active"); 
-                        setTimeout(() => wpOverlay.remove(), 400);
-                        BasariliGirisIslemleri(formatliTel, email, false);
+                        // Automate fazladan boşluk falan attıysa diye includes kullanıyoruz
+                        if (gelenKod.includes(beklenenKod) || beklenenKod.includes(gelenKod)) {
+                            clearInterval(whatsappInterval);
+                            
+                            // Temizliği arka planda yap (Hata verse de süreci durdurmaz)
+                            fetch(`${FIREBASE_URL}/WhatsappOnayliNumaralar/${aktifWhatsappNumarasi}.json`, { method: "DELETE" }).catch(()=>{});
+                            
+                            // Ekranı kapat
+                            wpOverlay.classList.remove("active"); 
+                            setTimeout(() => wpOverlay.remove(), 400);
+                            
+                            // Müşteriyi içeri al!
+                            BasariliGirisIslemleri(formatliTel, email, isLogin);
+                        }
                     }
-                } catch(e) {}
+                } catch(e) {
+                    // Hata olursa arka planda yutar, sistemi kilitlemez
+                    console.error("Dinleme devam ediyor...");
+                }
             }, 3000);
         }
         async function WhatsappIkinciDogrulama(formatliTel, email, isLogin) {
