@@ -789,15 +789,10 @@
         // ==========================================
         // YENİ: WHATSAPP DOĞRULAMA (2. ADIM) MOTORU
         // ==========================================
-      function WhatsappDogrulamasiniBaslat(formatliTel, email, isLogin = false) {
+     function WhatsappDogrulamasiniBaslat(formatliTel, email, isLogin = false) {
             // Rastgele 4 haneli kod üret
             let rastgeleKod = Math.floor(1000 + Math.random() * 9000);
             aktifWhatsappKodu = `BKMZ-${rastgeleKod}`;
-            
-            // Numaranın başındaki olası '0', '90' veya '+90' gibi şeyleri temizle (Sadece net numarayı bırak)
-            aktifWhatsappNumarasi = formatliTel.replace(/[^0-9]/g, '');
-            if (aktifWhatsappNumarasi.startsWith("0")) aktifWhatsappNumarasi = aktifWhatsappNumarasi.substring(1);
-            if (aktifWhatsappNumarasi.startsWith("90")) aktifWhatsappNumarasi = aktifWhatsappNumarasi.substring(2);
 
             let wpOverlay = document.createElement("div");
             wpOverlay.id = "whatsapp-wait-overlay";
@@ -825,8 +820,7 @@
                         Vazgeç
                     </button>
                     <div id="wp-dinleme-yazisi" style="font-size: 11px; color: var(--warning); margin-top: 15px; font-weight: 600; display: none;">
-                        Mesajınız bekleniyor...
-                        <div id="wp-debug-log" style="color: #FF3B30; margin-top: 5px;">Sistem dinliyor...</div>
+                        Mesajınız bekleniyor... Bu ekranı kapatmayın.
                     </div>
                 </div>
             </div>`;
@@ -838,69 +832,28 @@
             if(whatsappInterval) clearInterval(whatsappInterval);
             
             whatsappInterval = setInterval(async () => {
-                let debugLabel = document.getElementById("wp-debug-log");
                 try {
-                    // Dinlenecek Adres
-                    let url = `${FIREBASE_URL}/WhatsappOnayliNumaralar/${aktifWhatsappNumarasi}.json?t=${Date.now()}`;
+                    // DİKKAT: Artık numara klasörünü değil, KOD (BKMZ-XXXX) klasörünü arıyoruz!
+                    let url = `${FIREBASE_URL}/WhatsappOnayliNumaralar/${aktifWhatsappKodu}.json?t=${new Date().getTime()}`;
                     
                     let res = await fetch(url, { cache: "no-store" });
                     let data = await res.json();
                     
-                    if (data) {
-                        // Eğer Firebase'de numara için bir kayıt varsa, ekrana tam olarak ne gördüğünü yazdır (Debug)
-                        let dbDurum = data.onaylandi;
-                        let dbKod = data.kod ? data.kod.toString() : "KOD_YOK";
-                        let expectedKod = aktifWhatsappKodu.toString();
+                    // Eğer Automate o koda ait dosyayı açmış ve içine onaylandi: 1 yazmışsa...
+                    if (data && (data.onaylandi === 1 || data.onaylandi === true)) {
+                        clearInterval(whatsappInterval);
                         
-                        if (debugLabel) {
-                            debugLabel.innerHTML = `Firebase'de Bulunan:<br>Durum: ${dbDurum} | Kod: ${dbKod}<br>Beklenen Kod: ${expectedKod}`;
-                            debugLabel.style.color = "#FACC15"; // Sarı
-                        }
-
-                        // KONTROL 1: Automate durum verisini true veya 1 olarak mı atmış?
-                        let isDurumOk = (dbDurum === true || dbDurum === 1 || dbDurum === "1" || dbDurum === "true");
+                        // Temizliği yap
+                        fetch(`${FIREBASE_URL}/WhatsappOnayliNumaralar/${aktifWhatsappKodu}.json`, { method: "DELETE" }).catch(()=>{});
                         
-                        // KONTROL 2: Automate kodu doğru atmış mı? (Formatlama hatalarını aşmak için düzleştiriyoruz)
-                        let isKodOk = false;
-                        if (data.kod) {
-                            let cleanDbKod = dbKod.replace(/[^A-Za-z0-9-]/g, '').trim().toUpperCase();
-                            let cleanExpectedKod = expectedKod.replace(/[^A-Za-z0-9-]/g, '').trim().toUpperCase();
-                            
-                            // Tam eşleşme veya içerme (substring) kontrolü
-                            if (cleanDbKod === cleanExpectedKod || cleanDbKod.includes(cleanExpectedKod)) {
-                                isKodOk = true;
-                            }
-                        }
-
-                        if (isDurumOk && isKodOk) {
-                            clearInterval(whatsappInterval);
-                            if (debugLabel) {
-                                debugLabel.innerHTML = "EŞLEŞME BAŞARILI! SİSTEME GİRİLİYOR...";
-                                debugLabel.style.color = "#34C759"; // Yeşil
-                            }
-                            
-                            // Firebase temizliği
-                            fetch(`${FIREBASE_URL}/WhatsappOnayliNumaralar/${aktifWhatsappNumarasi}.json`, { method: "DELETE" }).catch(()=>{});
-                            
-                            setTimeout(() => {
-                                wpOverlay.classList.remove("active"); 
-                                setTimeout(() => wpOverlay.remove(), 400);
-                                BasariliGirisIslemleri(formatliTel, email, isLogin);
-                            }, 1000);
-                        } else {
-                            if (debugLabel && (!isDurumOk || !isKodOk)) {
-                                debugLabel.innerHTML += `<br><span style="color:#FF3B30">Eşleşme Sağlanamadı!</span>`;
-                            }
-                        }
-                    } else {
-                        if (debugLabel) {
-                            debugLabel.innerText = "Firebase'de veri bekleniyor... (Kayıt Bulunamadı)";
-                            debugLabel.style.color = "var(--warning)";
-                        }
+                        // Ekranı kapat
+                        wpOverlay.classList.remove("active"); 
+                        setTimeout(() => wpOverlay.remove(), 400);
+                        
+                        // Müşteriyi içeri al!
+                        BasariliGirisIslemleri(formatliTel, email, isLogin);
                     }
-                } catch(e) {
-                    if (debugLabel) debugLabel.innerText = "Bağlantı Hatası: " + e.message;
-                }
+                } catch(e) {}
             }, 3000);
         }
         async function WhatsappIkinciDogrulama(formatliTel, email, isLogin) {
@@ -912,12 +865,11 @@
             WhatsappDogrulamasiniBaslat(formatliTel, email);
         }
 
-        function WhatsappMesajiGonder() {
+       function WhatsappMesajiGonder() {
             HapticTitresim();
             document.getElementById("wp-dinleme-yazisi").style.display = "block";
             
-            // GÜVENLİK GÜNCELLEMESİ: Artık mesaja numarayı eklemiyoruz, sadece kodu gönderiyoruz. 
-            // Numarayı güvenli bir şekilde doğrudan WhatsApp'ın kendisinden alacağız.
+            // DİKKAT: Artık mesajın içinde numara göndermemize gerek kalmadı!
             let mesaj = `Merhaba Bekmez GO. Hesabımı onaylamak için kodum: ${aktifWhatsappKodu}`;
             let wpLink = `https://wa.me/${DUKKAN_WHATSAPP_NUMARASI}?text=${encodeURIComponent(mesaj)}`;
             window.open(wpLink, "_blank");
