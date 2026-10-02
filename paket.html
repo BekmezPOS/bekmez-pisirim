@@ -1395,7 +1395,6 @@
             }
             HapticTitresim(); let p = document.getElementById("checkout-popup"); p.style.display = "flex"; setTimeout(() => { p.classList.add("active"); }, 10); TogglePayButton(); 
         }
-
         async function PaketSiparisiGonder() {
             if(isProcessingOrder || (sepet.length === 0 && aktifKullanilanCarkOdulu === null)) return;
             if(!document.getElementById("legal-checkbox").checked) { OzelUyariGoster("Sözleşme Onayı", "Sözleşmeleri onaylamanız gerek.", "📝"); return; }
@@ -1433,7 +1432,18 @@
                     }
                     DevamEtPaketGonder(is, tl, ad, secilenOdeme, sepet);
                 }).catch(e => { 
-                    OzelUyariGoster("Konum Zorunlu 📍", "Sipariş verebilmek için cihazınızın konum (GPS) özelliğinin açık olması ve tarayıcıdan izin vermeniz zorunludur. Aksi takdirde sipariş alınamaz.", "🛑");
+                    // YENİ: GPS REDDEDİLİRSE VEYA KAPALIYSA DETAYLI BİLGİ VEREN MOTOR
+                    let hataMesaji = "Konum alınamadı. Lütfen GPS ayarlarınızı kontrol edin.";
+                    
+                    if (e.code === 1) { // PERMISSION_DENIED
+                        hataMesaji = "Tarayıcınızın konum izni kapalı. (Geçmişte 'İzin Verme' demiş olabilirsiniz).<br><br>Lütfen tarayıcı ayarlarından (genellikle adres çubuğundaki kilit 🔒 ikonuna tıklayarak) <b>Konum iznini açın.</b>";
+                    } else if (e.code === 2) { // POSITION_UNAVAILABLE
+                        hataMesaji = "Telefonunuzun GPS (Konum) özelliği kapalı. Lütfen telefonunuzun üst menüsünden Konum'u açıp tekrar deneyin.";
+                    } else if (e.code === 3) { // TIMEOUT
+                        hataMesaji = "Konum bulma süresi zaman aşımına uğradı. Sinyal alamıyoruz. Lütfen telefonunuzun GPS'ini kapatıp açın.";
+                    }
+                    
+                    OzelUyariGoster("Konum Zorunlu 📍", hataMesaji, "🛑");
                     isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
                 });
             } else {
@@ -1441,6 +1451,7 @@
                 isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
             }
         }
+
 
         async function DevamEtPaketGonder(isim, tel, adres, odemeTuru, temizSepet) {
             localStorage.setItem("bg_i", isim); localStorage.setItem("bg_a", adres);
