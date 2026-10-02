@@ -255,11 +255,13 @@
         <div id="profil-teslimat-sekmesi" style="display: block; margin: 0 15px 30px 15px;">
             <div class="premium-input-box">
                 <label>👤 Adınız Soyadınız</label>
-                <input type="text" id="prof-isim" placeholder="Örn: Ahmet Yılmaz" maxlength="50">
+                <!-- ZAFİYET 7 ÇÖZÜMÜ: Profildeki kutu ile Checkout kutusu bağlandı -->
+                <input type="text" id="prof-isim" placeholder="Örn: Ahmet Yılmaz" maxlength="50" onkeyup="document.getElementById('chk-isim').value = this.value">
             </div>
             <div class="premium-input-box">
                 <label>🏠 Açık Adresiniz</label>
-                <textarea id="prof-adres" rows="3" placeholder="Mahalle, Sokak, Kapı No, Kat, Daire..." maxlength="250"></textarea>
+                <!-- ZAFİYET 7 ÇÖZÜMÜ -->
+                <textarea id="prof-adres" rows="3" placeholder="Mahalle, Sokak, Kapı No, Kat, Daire..." maxlength="250" onkeyup="document.getElementById('chk-adres').value = this.value"></textarea>
             </div>
             <button class="order-btn shimmer-btn neon-border" onclick="ProfiliKaydet(true)">Bilgilerimi Kaydet</button>
         </div>
@@ -369,9 +371,10 @@
                 <button onclick="CheckoutKapat()" style="background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; z-index: 99;">&times;</button>
             </div>
             <div style="margin-bottom: 20px;">
-                <input type="text" id="chk-isim" class="checkout-input" placeholder="Adınız Soyadınız" autocomplete="name" maxlength="50">
+                <!-- ZAFİYET 7 ÇÖZÜMÜ: Checkout kutusu ile Profil kutusu bağlandı -->
+                <input type="text" id="chk-isim" class="checkout-input" placeholder="Adınız Soyadınız" autocomplete="name" maxlength="50" onkeyup="document.getElementById('prof-isim').value = this.value">
                 <input type="tel" id="chk-telefon" class="checkout-input" placeholder="Telefon (Profilinizden Onaylayın)" autocomplete="tel" disabled style="opacity:0.6; cursor:not-allowed;">
-                <textarea id="chk-adres" class="checkout-input" rows="3" placeholder="Açık Adresiniz (Mahalle, Sokak, No...)" style="resize:none;" maxlength="250"></textarea>
+                <textarea id="chk-adres" class="checkout-input" rows="3" placeholder="Açık Adresiniz (Mahalle, Sokak, No...)" style="resize:none;" maxlength="250" onkeyup="document.getElementById('prof-adres').value = this.value"></textarea>
             </div>
             
             <div style="font-size:12px; color:var(--text-muted); font-weight:800; margin-bottom:12px; letter-spacing:1px; text-transform: uppercase;">Ödeme Yöntemi:</div>
@@ -493,7 +496,6 @@
         
         const DUKKAN_ENLEM = 36.206278; const DUKKAN_BOYLAM = 36.134472; const MAKS_MESAFE_KM = 4; const GHOST_TIMEOUT_MS = 8 * 60 * 60 * 1000; 
 
-        // KRİPTOGRAFİK GÜVENLİK ANAHTARLARI (Zafiyet 4 Çözümü)
         const CARK_SALT = "BEKMEZ_GO_SECURE_2026"; 
         const TIME_SALT = "BKMZ_TIME_SEAL_X9";
 
@@ -503,7 +505,7 @@
         let seciliUrun = null; let seciliMiktar = 0; let seciliFiyat = 0; let seciliEkstraIstekler = []; let seciliOzelEkmekTip = "Normal"; 
         let baseKgBread = 0; let ekstraEkmekKg = 0; let seciliUrunStok = 999; let oncekiToplamFiyat = 0; let oncekiPopupFiyat = 0; let oncekiPopupMiktar = 0;
         let populerUrunlerListesi = []; let canliAdisyonTimer = null; let sonCekilenAdisyonHTML = ""; let sonKuponVerisi = ""; let isProcessingOrder = false;
-        let emailInterval = null;
+        let emailInterval = null; window.isAddingToCart = false;
 
         let deferredPrompt; let installPromptDismissed = localStorage.getItem('pwa_prompt_dismissed') === 'true';
         window.isOrderFinished = false; 
@@ -518,16 +520,14 @@
             });
         }
         
-        // ZAMAN MÜHRÜ (CRYPTOGRAPHIC TIME SEAL) - ZAFİYET 4 ÇÖZÜMÜ
         function ZamanMuhruSifrele(ts, id) { return btoa(encodeURIComponent(`${ts}|||${id}|||${TIME_SALT}`)); }
         function ZamanMuhruCoz(hash, id) {
             if(!hash) return 0;
             try {
                 let dec = decodeURIComponent(atob(hash)); let parts = dec.split("|||");
-                // Hacker zamanı manuel değiştirirse bu if bloğu patlar ve "0" döner. Düzenleme butonu silinir!
                 if(parts.length === 3 && parts[1] === id && parts[2] === TIME_SALT) return parseInt(parts[0]);
             } catch(e) {}
-            return 0; // Hata durumunda 1970 yılına döner, süre anında bitmiş sayılır.
+            return 0; 
         }
 
         function OzelUyariGoster(baslik, metin, ikon) { document.getElementById("custom-alert-title").innerText = baslik; document.getElementById("custom-alert-text").innerHTML = metin; document.getElementById("custom-alert-icon").innerText = ikon; let p = document.getElementById("custom-alert-overlay"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10); }
@@ -675,7 +675,6 @@
                 CarkDurumunuKontrolEt(); 
             } catch(e) {}
 
-            // BULUT SENKRONİZASYONU YÜKLEMESİ (Hesaba giriş yapıldığında adisyonu geri getir)
             try {
                 let adisyonRes = await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${formatliTel}/aktifSiparis.json?auth=${idToken}&t=${Date.now()}`);
                 let adisyonData = await adisyonRes.json();
@@ -689,7 +688,6 @@
             if(isLogin) { OzelUyariGoster("Tekrar Hoş Geldiniz! 👋", "Hesabınıza başarıyla giriş yapıldı.", "✅"); BildirimGonder("Hoş Geldiniz 👋", "Bekmez GO hesabınıza başarıyla giriş yapıldı."); } 
             else { OzelUyariGoster("Hesap Doğrulandı! 🎉", "E-Posta adresiniz ve telefonunuz eşleştirildi.", "✅"); BildirimGonder("Hesap Oluşturuldu 🎉", "Bekmez GO'ya hoş geldiniz! İndirimleri kaçırmayın."); }
             
-            // Eğer Buluttan Adisyon Çekildiyse Direk Oraya Yönlendir
             if(localStorage.getItem("bg_active_order_id")) { SayfaGoster('gecmis'); }
         }
 
@@ -700,7 +698,6 @@
             if(alertGoster) { HapticTitresim(); OzelUyariGoster("Başarılı", "Profil bilgileriniz cihazınıza kaydedildi.", "✅"); }
         }
 
-        // KUSURSUZ ÇIKIŞ TEMİZLİĞİ VE BULUT SENKRONİZASYONU
         function TemizleOturumVerileri() {
             localStorage.removeItem("bg_i"); localStorage.removeItem("bg_t"); localStorage.removeItem("bg_a"); localStorage.removeItem("bg_cark_data"); 
             localStorage.removeItem("bg_active_order_id"); localStorage.removeItem("bg_order_timestamp"); localStorage.removeItem("bg_last_status"); localStorage.removeItem("bg_odeme_turu");
@@ -825,7 +822,6 @@
         function CarkHediyesiniKullan() { HapticTitresim(); let hash = localStorage.getItem("bg_cark_data"); let parsed = CarkVerisiCoz(hash); if(parsed && parsed.odul !== "😔 Pas") { aktifKullanilanCarkOdulu = parsed.odul; OzelUyariGoster("Sepete Eklendi", `Çark hediyeniz siparişinize eklendi!`, "🛒"); CarkDurumunuKontrolEt(); SayfaGoster('sepet'); } }
         function CarkHediyesiIptal() { HapticTitresim(); aktifKullanilanCarkOdulu = null; CarkDurumunuKontrolEt(); SepetEkraniniCiz(); }
 
-        // OTONOM BULUT TEMİZLİĞİ
         async function BuluttanAktifAdisyonuSil() {
             let tel = localStorage.getItem("bg_t"); if(!tel) return;
             try {
@@ -899,16 +895,15 @@
             HesaplaVeGuncelle();
         }
 
-        // ZAFİYET ÇÖZÜMÜ: Floating Point (Kuruş) Hatası Giderildi
         function HesaplaVeGuncelle() {
             hamToplamFiyat = 0; 
             sepet.forEach(item => { hamToplamFiyat += (item.basePrice * item.quantity); });
-            hamToplamFiyat = Math.round(hamToplamFiyat * 100) / 100; // Tam kuruş hesaplama
+            hamToplamFiyat = Math.round(hamToplamFiyat * 100) / 100;
             
             if (aktifKuponKodu !== "" && hamToplamFiyat < aktifKuponAltLimit) { OzelUyariGoster("Kupon İptal Edildi", `Sepet tutarınız ${aktifKuponAltLimit} TL'nin altına düştüğü için kuponunuz devre dışı bırakıldı.`, "⚠️"); KuponuIptalEt(true); }
 
             sonOdenecekFiyat = hamToplamFiyat - aktifKuponIndirimTutari; if (sonOdenecekFiyat < 0) sonOdenecekFiyat = 0;
-            sonOdenecekFiyat = Math.round(sonOdenecekFiyat * 100) / 100; // Tam kuruş hesaplama
+            sonOdenecekFiyat = Math.round(sonOdenecekFiyat * 100) / 100;
 
             document.getElementById("sepet-tutar").innerText = sonOdenecekFiyat.toFixed(2) + " TL"; document.getElementById("floating-total").innerText = sonOdenecekFiyat.toFixed(2) + " TL";
 
@@ -947,7 +942,7 @@
         window.addEventListener('DOMContentLoaded', () => {
             SyncServerTime();
             let st = new Date().getHours(); let m = "Hoş Geldiniz ✨"; 
-            if (st >= 5 && st < 11) m = "Günaydın ☀️️"; else if (st >= 11 && st < 17) m = "İyi Günler 🌤️"; else if (st >= 17 && st < 22) m = "İyi Akşamlar 🌙"; else m = "İyi Geceler 🌌";
+            if (st >= 5 && st < 11) m = "Günaydın ☀️"; else if (st >= 11 && st < 17) m = "İyi Günler 🌤️"; else if (st >= 17 && st < 22) m = "İyi Akşamlar 🌙"; else m = "İyi Geceler 🌌";
             let ko = document.getElementById("dinamik-karsilama"); if(ko) ko.innerText = m;
             setTimeout(() => { SplashKapatSinematik(); }, 3000);
 
@@ -1132,8 +1127,6 @@
         }
         function TriggerCartBounce() { let cart = document.getElementById("floating-cart"); if(cart) { cart.classList.remove("bounce"); void cart.offsetWidth; cart.classList.add("bounce"); } }
 
-        // ZAFİYET ÇÖZÜMÜ: Makro / Hızlı Tıklama Engeli (State Lock)
-        window.isAddingToCart = false;
         function PopupSepeteEkle() { 
             if(window.isAddingToCart) return; 
             if(seciliMiktar <= 0) return; 
