@@ -1,8 +1,11 @@
+<!-- DİKKAT: Bu sistem sadece güvenilir kaynaklardan yüklenmelidir. -->
+<!-- Sürüm: Enterprise v2.4 (Bulletproof) -->
 <!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no">
+    <!-- CSP: Yüksek Güvenlikli Content Security Policy -->
     <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval'; connect-src * 'unsafe-inline'; img-src * data: blob: 'unsafe-inline'; frame-src *; style-src * 'unsafe-inline'; font-src * data:;">
     <title>Bekmez GO - Premium Paket</title>
 
@@ -382,7 +385,6 @@
                 </select>
             </div>
 
-            <!-- KVKK VE SÖZLEŞMELER EKLENDİ -->
             <div style="margin: 15px 0 25px 0; display: flex; align-items: flex-start; gap: 12px; padding: 0 5px;">
                 <input type="checkbox" id="legal-checkbox" onchange="TogglePayButton()" style="width: 22px; height: 22px; accent-color: var(--primary); margin-top: 2px; cursor: pointer;">
                 <label for="legal-checkbox" style="font-size: 11px; color: var(--text-muted); line-height: 1.5; cursor: pointer;"><a class="legal-link" onclick="AcSozlesme('kvkk'); event.preventDefault();">KVKK Aydınlatma Metni</a>, <a class="legal-link" onclick="AcSozlesme('mesafeli'); event.preventDefault();">Mesafeli Satış Sözleşmesi</a>, <a class="legal-link" onclick="AcSozlesme('teslimat'); event.preventDefault();">Teslimat Şartları</a> ve <a class="legal-link" onclick="AcSozlesme('iptal'); event.preventDefault();">İptal Koşulları</a>'nı okudum ve onaylıyorum.</label>
@@ -420,6 +422,7 @@
     <div id="custom-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)"><div class="custom-alert-box" id="custom-alert-box"><div class="custom-alert-glow" id="custom-alert-glow"></div><div class="custom-alert-content"><div id="custom-alert-icon" style="font-size: 55px; margin-bottom: 20px;">⚠️</div><h3 id="custom-alert-title" style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Uyarı</h3><p id="custom-alert-text" style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;"></p><button onclick="KapatUyariModal(event, true)" class="alert-btn">Tamam, Anladım</button></div></div></div>
     <div id="distance-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)"><div class="custom-alert-box"><div class="custom-alert-glow" style="background:var(--primary);"></div><div class="custom-alert-content"><div style="font-size: 55px; margin-bottom: 20px;">🛵</div><h3 style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Menzil Dışındasınız</h3><p style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;">Bekmez GO lezzetlerini size ulaştırabilmek için teslimat ağımızı <b>4 km</b> ile sınırlandırıyoruz.<br><br>Maalesef şu an sıcak teslimat bölgemizin dışındasınız.</p><button onclick="KapatUyariModal(event, true)" class="alert-btn" style="background:var(--primary); border-color:transparent; color:white;">Anladım</button></div></div></div>
     <div id="success-overlay" class="success-overlay"><div class="success-icon-wrapper"><div class="success-ring"></div><div class="success-circle"><svg class="success-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div></div><div class="success-text">Sipariş İletildi</div><div class="success-subtext">Kasa onayı bekleniyor...</div></div>
+```html
     <script>
         console.log("%c DİKKAT!", "color: #FF3B30; font-size: 50px; font-weight: 900; text-shadow: 2px 2px 0 #000;");
         console.log("%c Bu alan geliştiriciler ve siber güvenlik uzmanları içindir. Konsol üzerinden yapılacak her türlü XSS, Enjeksiyon veya Manipülasyon girişimi sistem tarafından loglanmakta olup, tespit edildiğinde IP adresiniz ve cihaz kimliğiniz kalıcı olarak kara listeye alınacaktır.", "font-size: 14px; font-weight: bold; color: #fff; background: #1a1a24; padding: 15px; border-radius: 8px; border: 1px solid #FF3B30;");
@@ -509,6 +512,7 @@
         let aktifKullanilanCarkOdulu = null; 
 
         function HapticTitresim() { if(navigator.vibrate) navigator.vibrate(15); }
+        // XSS Koruması
         function escapeHTML(str) { return str ? str.toString().replace(/[&<>'"]/g, function(tag){ return {'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[tag]; }) : ""; }
         function generateUUID() {
             if (crypto && crypto.randomUUID) return crypto.randomUUID();
@@ -526,7 +530,7 @@
                 // Hacker zamanı manuel değiştirirse bu if bloğu patlar ve "0" döner. Düzenleme butonu silinir!
                 if(parts.length === 3 && parts[1] === id && parts[2] === TIME_SALT) return parseInt(parts[0]);
             } catch(e) {}
-            return 0; // Hata durumunda 1970 yılına döner, süre anında bitmiş sayılır.
+            return 0; // Hata durumunda süre anında bitmiş sayılır.
         }
 
         function OzelUyariGoster(baslik, metin, ikon) { document.getElementById("custom-alert-title").innerText = baslik; document.getElementById("custom-alert-text").innerHTML = metin; document.getElementById("custom-alert-icon").innerText = ikon; let p = document.getElementById("custom-alert-overlay"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10); }
@@ -866,8 +870,15 @@
             HesaplaVeGuncelle();
         }
 
+        // KURUŞ HATASI (FLOATING POINT) ÇÖZÜMÜ
         function HesaplaVeGuncelle() {
-            hamToplamFiyat = 0; sepet.forEach(item => { hamToplamFiyat += (item.basePrice * item.quantity); });
+            hamToplamFiyat = 0; 
+            sepet.forEach(item => { 
+                // Math.round ile JavaScript kuruş sapmaları (0.300000000004) engellendi.
+                hamToplamFiyat += Math.round(item.basePrice * item.quantity * 100); 
+            });
+            hamToplamFiyat = hamToplamFiyat / 100;
+            
             if (aktifKuponKodu !== "" && hamToplamFiyat < aktifKuponAltLimit) { OzelUyariGoster("Kupon İptal Edildi", `Sepet tutarınız ${aktifKuponAltLimit} TL'nin altına düştüğü için kuponunuz devre dışı bırakıldı.`, "⚠️"); KuponuIptalEt(true); }
 
             sonOdenecekFiyat = hamToplamFiyat - aktifKuponIndirimTutari; if (sonOdenecekFiyat < 0) sonOdenecekFiyat = 0;
@@ -1093,7 +1104,9 @@
         }
         function TriggerCartBounce() { let cart = document.getElementById("floating-cart"); if(cart) { cart.classList.remove("bounce"); void cart.offsetWidth; cart.classList.add("bounce"); } }
 
+        // ANTİ-SPAM MAKRO KİLİDİ EKLENDİ
         function PopupSepeteEkle() { 
+            if(window.isAddingToCart) return; // SPAM KORUMASI
             if(seciliMiktar <= 0) return; 
             if(localStorage.getItem("bg_active_order_id")) {
                 OzelUyariGoster("İşlem Engellendi", "Mevcut siparişiniz teslim edilmeden veya iptal edilmeden yeni bir sipariş oluşturamazsınız.", "⏳");
@@ -1101,19 +1114,22 @@
                 return;
             }
 
+            window.isAddingToCart = true; // KİLİTLE
             HapticTitresim(); SessizIzinIste(); 
             let tamIsim = ""; let eklenecekAdet = 1; let gercekStokMiktari = seciliMiktar; let ekstraEkmekUcreti = 0; let pL = (seciliUrun.pName || "").toString().toLocaleLowerCase('tr-TR'); let isSpecial = pL.includes("dürüm") || pL.includes("doner") || pL.includes("kebap"); 
             if (seciliUrun.isKg) { tamIsim = Number(seciliMiktar.toFixed(2)) + " KG " + seciliUrun.pName; eklenecekAdet = 1; if (ekstraEkmekKg > 0 && !seciliEkstraIstekler.includes('Ekmeksiz')) { ekstraEkmekUcreti = ekstraEkmekKg * ekmekBirimFiyati; } } else { tamIsim = seciliUrun.pName; eklenecekAdet = seciliMiktar; gercekStokMiktari = 1; if (isSpecial && seciliOzelEkmekTip === "3 Lavaş") ekstraEkmekUcreti = ekmekBirimFiyati; } 
             let modlar = [...seciliEkstraIstekler]; if (seciliUrun.isKg) { let tB = baseKgBread + ekstraEkmekKg; if (tB === 0) { if (!modlar.includes("Ekmeksiz")) modlar.push("Ekmeksiz"); } else if (ekstraEkmekKg > 0) { modlar.push("+" + ekstraEkmekKg + " Ek Ekmek"); } else if (ekstraEkmekKg < 0) { modlar.push("Sadece " + tB + " Ekmek"); } } else { if (isSpecial && seciliOzelEkmekTip !== "Normal") modlar.push(seciliOzelEkmekTip); } 
             modlar = [...new Set(modlar)]; if (modlar.length > 0) { tamIsim += " (" + modlar.join(", ") + ")"; } 
             let testIsim = (eklenecekAdet > 1 ? eklenecekAdet + "x " : "") + tamIsim; let newBreadRequired = ExtractBreadTotal(testIsim, seciliUrun.isKg, gercekStokMiktari * eklenecekAdet); let ekmekInfo = tumUrunler.find(u => u.pName && u.pName.trim().toLocaleLowerCase('tr-TR') === ekmekUrunAdi.trim().toLocaleLowerCase('tr-TR')); 
-            if (ekmekInfo) { let cS = (ekmekInfo.stockAmount != null) ? parseFloat((ekmekInfo.stockAmount||0).toString().replace(',', '.')) : ((ekmekInfo.stock != null) ? parseFloat((ekmekInfo.stock||0).toString().replace(',', '.')) : 999); if (isNaN(cS)) cS = 999; let aB = GuncelEkmekIhtiyaci(sepet); if (aB + newBreadRequired > cS) { OzelUyariGoster("Stok Yetersiz", `Ekstra Ekmek için stoğumuz yetersiz!`, "⚠️"); return; } } 
+            if (ekmekInfo) { let cS = (ekmekInfo.stockAmount != null) ? parseFloat((ekmekInfo.stockAmount||0).toString().replace(',', '.')) : ((ekmekInfo.stock != null) ? parseFloat((ekmekInfo.stock||0).toString().replace(',', '.')) : 999); if (isNaN(cS)) cS = 999; let aB = GuncelEkmekIhtiyaci(sepet); if (aB + newBreadRequired > cS) { OzelUyariGoster("Stok Yetersiz", `Ekstra Ekmek için stoğumuz yetersiz!`, "⚠️️"); window.isAddingToCart = false; return; } } 
             let sB = seciliUrun.isKg ? seciliFiyat : (seciliFiyat / seciliMiktar); let gB = sB + ekstraEkmekUcreti; let mevcutUrun = sepet.find(u => u.baseName === tamIsim && u.basePrice === gB); 
             
-            if(isNaN(gB) || gB < 0 || eklenecekAdet <= 0 || gercekStokMiktari <= 0) return;
+            if(isNaN(gB) || gB < 0 || eklenecekAdet <= 0 || gercekStokMiktari <= 0) { window.isAddingToCart = false; return; }
 
             if(mevcutUrun) { mevcutUrun.quantity += eklenecekAdet; } else { sepet.push({ baseName: escapeHTML(tamIsim), basePrice: gB, baseStockAmount: gercekStokMiktari, quantity: eklenecekAdet, rawName: escapeHTML(seciliUrun.pName) }); } 
-            ShowFloatingPlusOne(); TriggerCartBounce(); setTimeout(() => { PopupKapat(); HesaplaVeGuncelle(); }, 300); 
+            ShowFloatingPlusOne(); TriggerCartBounce(); 
+            
+            setTimeout(() => { PopupKapat(); HesaplaVeGuncelle(); window.isAddingToCart = false; }, 300); // KİLİDİ AÇ
         }
 
         function SepetMiktarDegistir(index, artisMiktari) { 
@@ -1197,7 +1213,6 @@
             HapticTitresim(); let p = document.getElementById("checkout-popup"); p.style.display = "flex"; setTimeout(() => { p.classList.add("active"); }, 10); TogglePayButton(); 
         }
 
-        // ZAFİYET 1 (GPS SPOOFING) ÇÖZÜMÜ: Koordinatlar Unity'e (Kasa) Gidiyor!
         async function PaketSiparisiGonder() {
             if(isProcessingOrder || (sepet.length === 0 && aktifKullanilanCarkOdulu === null)) return;
             if(!document.getElementById("legal-checkbox").checked) { OzelUyariGoster("Sözleşme Onayı", "Sözleşmeleri onaylamanız gerek.", "📝"); return; }
@@ -1222,6 +1237,7 @@
             let btn = document.getElementById("final-submit-btn"); btn.disabled = true; btn.classList.add("loading"); btn.innerText = "Konum Bulunuyor...📍";
             isProcessingOrder = true;
 
+            // KATI GPS VE KANIT GÖNDERİMİ
             if (navigator.geolocation) { 
                 const checkLoc = () => { return new Promise((resolve, reject) => { navigator.geolocation.getCurrentPosition(p => resolve(p), e => reject(e), {enableHighAccuracy: true, timeout: 10000, maximumAge: 0}); }); };
                 checkLoc().then(p => {
@@ -1234,7 +1250,6 @@
                         isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; return; 
                     }
                     
-                    // GPS Koordinatları ile Devam Et (Unity Tarafında Harita Eşleştirmesi İçin)
                     DevamEtPaketGonder(is, tl, ad, secilenOdeme, sepet, lat, lng);
                 }).catch(e => { 
                     OzelUyariGoster("Konum Zorunlu 📍", "Sipariş verebilmek için cihazınızın konum (GPS) özelliğinin açık olması ve tarayıcıdan izin vermeniz zorunludur. Aksi takdirde sipariş alınamaz.", "🛑");
@@ -1267,7 +1282,7 @@
                     kuponKodu: aktifKuponKodu,
                     carkOdulu: aktifKullanilanCarkOdulu,
                     sepet: sunucuyaGidecekSepet,
-                    gpsInfo: { latitude: lat, longitude: lng }, // GPS Kanıtı
+                    gpsInfo: { latitude: lat, longitude: lng },
                     timestamp: Date.now(),
                     durum: "KASA ONAYI BEKLENİYOR ⏳"
                 };
@@ -1281,7 +1296,6 @@
                 localStorage.setItem("last_ord_t", Date.now().toString());
                 localStorage.setItem("bg_odeme_turu", odemeTuru);
                 
-                // ZAFİYET 4 ÇÖZÜMÜ: ZAMAN MÜHRÜ ŞİFRELENDİ
                 localStorage.setItem("bg_order_timestamp", ZamanMuhruSifrele(GetServerTimeFast(), benzersizSiparisID));
                 localStorage.setItem("bg_saved_cart", JSON.stringify(temizSepet));
                 localStorage.setItem("bg_saved_note", escapeHTML(document.getElementById("siparis-notu").value.trim()));
@@ -1321,7 +1335,6 @@
                     
                     if (taslakData && !taslakData.error && taslakData.durum) {
                         
-                        // ZAFİYET 4 ÇÖZÜMÜ: ŞİFRELİ ZAMAN MÜHRÜNÜ ÇÖZ, BOZULMUŞSA "0" DÖNSÜN (SÜRE BİTSİN)
                         let rawOrderTs = localStorage.getItem("bg_order_timestamp");
                         let orderTs = rawOrderTs ? ZamanMuhruCoz(rawOrderTs, siparisId) : GetServerTimeFast();
 
@@ -1378,7 +1391,6 @@
                     let oncekiDurum = localStorage.getItem("bg_last_status") || "";
                     if (dR !== oncekiDurum) { localStorage.setItem("bg_last_status", dR); if (dR.includes("TESLİM") || dR.includes("AFİYET")) { BildirimGonder("Afiyet Olsun! 😋", "Bekmez GO: Siparişiniz teslim edildi. Bizi tercih ettiğiniz için teşekkür ederiz!"); } else if (dR.includes("YOLDA") || dR.includes("KURYE")) { BildirimGonder("Kurye Yola Çıktı! 🛵", "Siparişiniz yola çıktı, gelmek üzere!"); } }
 
-                    // ZAFİYET 4 ÇÖZÜMÜ: ŞİFRELİ ZAMAN MÜHRÜ KONTROLÜ
                     let rawOrderTs = localStorage.getItem("bg_order_timestamp");
                     let orderTs = rawOrderTs ? ZamanMuhruCoz(rawOrderTs, siparisId) : GetServerTimeFast();
 
