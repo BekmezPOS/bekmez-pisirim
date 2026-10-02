@@ -443,7 +443,7 @@
     
     <div id="success-overlay" class="success-overlay"><div class="success-icon-wrapper"><div class="success-ring"></div><div class="success-circle"><svg class="success-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div></div><div class="success-text">Sipariş İletildi</div><div class="success-subtext">Kasa onayı bekleniyor...</div></div>
 
-    <script>
+   <script>
         console.log("%c DİKKAT!", "color: #FF3B30; font-size: 50px; font-weight: 900; text-shadow: 2px 2px 0 #000;");
         console.log("%c Bu alan geliştiriciler ve siber güvenlik uzmanları içindir.", "font-size: 14px; font-weight: bold; color: #fff; background: #1a1a24; padding: 15px; border-radius: 8px; border: 1px solid #FF3B30;");
 
@@ -632,6 +632,39 @@
             }
         }
 
+        // ==========================================
+        // YENİDEN BAŞLATMA (BACKGROUND KILL) KURTARMASI
+        // ==========================================
+        firebase.auth().onAuthStateChanged(async (user) => {
+            if (user) {
+                // Kullanıcı Auth tarafında var. Peki e-postasını onayladı mı?
+                let bekleyenTel = localStorage.getItem("bg_pending_tel");
+                let bekleyenEmail = localStorage.getItem("bg_pending_email");
+                
+                if (bekleyenTel && bekleyenEmail && user.email === bekleyenEmail) {
+                    await user.reload(); // En güncel onay durumunu çek
+                    if (user.emailVerified) {
+                        // Uygulama kapanmış, müşteri maile gitmiş ve onaylamış.
+                        // Harika! O zaman e-posta bekleme menüsünü ve pending durumunu sil.
+                        localStorage.removeItem("bg_pending_tel");
+                        localStorage.removeItem("bg_pending_email");
+                        localStorage.removeItem("bg_pending_pass"); // Şifreyi de sil (güvenlik)
+                        
+                        IptalEtEpostaBekleme();
+                        
+                        // Hemen Whatsapp Onayını Patlat!
+                        SayfaGoster('profil'); // Profili aç
+                        ProfilSekmeSec('Guvenlik', document.getElementById('tab-Guvenlik'));
+                        WhatsappDogrulamasiniBaslat(bekleyenTel, bekleyenEmail);
+                    } else {
+                        // Uygulama kapanmış geri gelmiş ama e-posta HALA onaylanmamış!
+                        // Tekrar bekleme ekranını göster.
+                        EpostaOnayiniBekle(user, bekleyenTel, bekleyenEmail);
+                    }
+                }
+            }
+        });
+
         async function YeniNesilKayitOl() {
             if (!isPasswordValid) { OzelUyariGoster("Zayıf Şifre", "Lütfen şifre gereksinimlerinin tamamını karşılayın.", "🔒"); return; }
             await EpostaDogrulamasiBaslat();
@@ -645,6 +678,7 @@
 
             if(telInput.length < 10) { OzelUyariGoster("Eksik Numara", "Lütfen başında 0 olmadan tam 10 haneli numaranızı girin.", "📱"); return; }
             if(emailInput.length < 5 || !emailInput.includes("@")) { OzelUyariGoster("Eksik E-Posta", "Lütfen geçerli bir e-posta adresi girin.", "📧"); return; }
+            if(!emailInput.endsWith("@gmail.com")) { OzelUyariGoster("Sadece Gmail", "Güvenlik gereği sadece @gmail.com uzantılı e-posta adresleri kabul edilmektedir.", "🛑"); return; }
             
             let formatliTel = "0" + telInput; 
             let autoPass = passInput; 
@@ -681,6 +715,11 @@
                             try {
                                 let userCred = await firebase.auth().createUserWithEmailAndPassword(emailInput, autoPass);
                                 await userCred.user.sendEmailVerification();
+                                // UYGULAMA KAPANMASINA KARŞI MÜHÜR VUR:
+                                localStorage.setItem("bg_pending_tel", formatliTel);
+                                localStorage.setItem("bg_pending_email", emailInput);
+                                localStorage.setItem("bg_pending_pass", autoPass);
+                                
                                 EpostaOnayiniBekle(userCred.user, formatliTel, emailInput);
                             } catch(err) { btn.innerText = "Hesabımı Oluştur"; btn.disabled = false; OzelUyariGoster("Sistem Hatası", "Kayıt yenilenemedi.", "❌"); } return;
                         }
@@ -692,6 +731,12 @@
                 try {
                     let userCred = await firebase.auth().createUserWithEmailAndPassword(emailInput, autoPass);
                     await userCred.user.sendEmailVerification();
+                    
+                    // UYGULAMA KAPANMASINA KARŞI MÜHÜR VUR:
+                    localStorage.setItem("bg_pending_tel", formatliTel);
+                    localStorage.setItem("bg_pending_email", emailInput);
+                    localStorage.setItem("bg_pending_pass", autoPass);
+
                     EpostaOnayiniBekle(userCred.user, formatliTel, emailInput);
                 } catch (error) {
                     btn.innerText = "Hesabımı Oluştur"; btn.disabled = false;
@@ -706,17 +751,29 @@
                 await WhatsappIkinciDogrulama(formatliTel, emailInput, true); 
             } else { 
                 await userCred.user.sendEmailVerification(); 
+                
+                localStorage.setItem("bg_pending_tel", formatliTel);
+                localStorage.setItem("bg_pending_email", emailInput);
+                
                 EpostaOnayiniBekle(userCred.user, formatliTel, emailInput); 
             }
         }
 
         function EpostaOnayiniBekle(user, formatliTel, email) {
             let p = document.getElementById("email-wait-overlay"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10);
+            
+            if(emailInterval) clearInterval(emailInterval);
+
             emailInterval = setInterval(async () => {
                 try {
                     await user.reload(); 
                     if (user.emailVerified) {
                         clearInterval(emailInterval);
+                        
+                        localStorage.removeItem("bg_pending_tel");
+                        localStorage.removeItem("bg_pending_email");
+                        localStorage.removeItem("bg_pending_pass");
+
                         p.classList.remove("active"); setTimeout(() => p.style.display = "none", 400);
                         WhatsappDogrulamasiniBaslat(formatliTel, email);
                     }
@@ -726,14 +783,21 @@
 
         function IptalEtEpostaBekleme() {
             if(emailInterval) clearInterval(emailInterval);
-            let p = document.getElementById("email-wait-overlay"); p.classList.remove("active"); setTimeout(() => p.style.display = "none", 400);
-            let btn = document.getElementById("btn-email-verify"); btn.innerText = "Hesabımı Oluştur"; btn.disabled = false;
+            
+            localStorage.removeItem("bg_pending_tel");
+            localStorage.removeItem("bg_pending_email");
+            localStorage.removeItem("bg_pending_pass");
+
+            let p = document.getElementById("email-wait-overlay"); 
+            if(p) { p.classList.remove("active"); setTimeout(() => p.style.display = "none", 400); }
+            let btn = document.getElementById("btn-email-verify"); if(btn) { btn.innerText = "Hesabımı Oluştur"; btn.disabled = false; }
         }
 
         // ==========================================
         // YENİ: WHATSAPP DOĞRULAMA (2. ADIM) MOTORU
         // ==========================================
         function WhatsappDogrulamasiniBaslat(formatliTel, email) {
+            // Rastgele 4 haneli kod üret
             let rastgeleKod = Math.floor(1000 + Math.random() * 9000);
             aktifWhatsappKodu = `BKMZ-${rastgeleKod}`;
 
@@ -750,7 +814,7 @@
                     <div style="font-size: 55px; margin-bottom: 20px;">💬</div>
                     <h3 style="margin: 0 0 14px 0; font-weight: 900; font-size: 20px; color: var(--text-main); letter-spacing:-0.5px;">Son Bir Adım Kaldı!</h3>
                     <p style="color: var(--text-muted); font-size: 13px; font-weight: 600; margin: 0 0 20px 0; line-height: 1.5;">
-                        E-postanız onaylandı. Güvenliğiniz için lütfen telefon numaranızı WhatsApp üzerinden ücretsiz olarak doğrulayın.
+                        E-postanız onaylandı! ✅<br>Güvenliğiniz için lütfen telefon numaranızı WhatsApp üzerinden ücretsiz olarak doğrulayın.
                     </p>
                     <div style="background: rgba(0,0,0,0.5); padding: 15px; border-radius: 12px; border: 1px dashed #25D366; margin-bottom: 20px;">
                         <span style="font-size: 11px; color: #A1A1AA; font-weight: 800; display: block; margin-bottom: 5px;">ONAY KODUNUZ:</span>
@@ -774,6 +838,7 @@
 
             let temizNumara = formatliTel.startsWith("0") ? formatliTel.substring(1) : formatliTel; 
             
+            if(whatsappInterval) clearInterval(whatsappInterval);
             whatsappInterval = setInterval(async () => {
                 try {
                     let idToken = await firebase.auth().currentUser.getIdToken(true);
@@ -821,9 +886,13 @@
             OzelUyariGoster("İptal Edildi", "WhatsApp onayı yapılmadığı için hesap oluşturma işlemi iptal edildi.", "❌");
         }
 
+        // ==========================================
+        // ONAY SONRASI SİSTEME GİRİŞ
+        // ==========================================
         async function BasariliGirisIslemleri(formatliTel, email, isLogin = false) {
             let idToken = await firebase.auth().currentUser.getIdToken(true);
             if (!isLogin) {
+                // VERİTABANINA HESABI (DogrulanmisHesaplar) YAZIYORUZ
                 await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${formatliTel}.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify({ email: email, tarih: new Date().toLocaleString(), kayitZamani: Date.now() }) });
                 await fetch(`${FIREBASE_URL}/SilinmisHesaplar/${formatliTel}.json?auth=${idToken}`, { method: "DELETE" });
             }
@@ -873,6 +942,8 @@
             localStorage.removeItem("bg_active_order_id"); localStorage.removeItem("bg_order_timestamp"); localStorage.removeItem("bg_last_status"); localStorage.removeItem("bg_odeme_turu");
             localStorage.removeItem("bg_saved_cart"); localStorage.removeItem("bg_saved_note"); localStorage.removeItem("bg_saved_coupon"); localStorage.removeItem("bg_saved_cark");
             
+            localStorage.removeItem("bg_pending_tel"); localStorage.removeItem("bg_pending_email"); localStorage.removeItem("bg_pending_pass");
+
             document.getElementById("prof-isim").value = ""; document.getElementById("prof-telefon").value = ""; document.getElementById("prof-email").value = ""; document.getElementById("prof-password").value = ""; document.getElementById("prof-adres").value = "";
             document.getElementById("chk-isim").value = ""; document.getElementById("chk-telefon").value = ""; document.getElementById("chk-adres").value = "";
             document.getElementById("history-content").innerHTML = `<div class="empty-text">Aktif bir siparişiniz bulunmuyor.</div>`;
@@ -1004,7 +1075,7 @@
             } catch(e) {}
         }
 
-        function IptalOnaySor() { HapticTitresim(); SoruSor("Siparişi İptal Et", "Siparişinizi iptal etmek istediğinize emin misiniz? İşlem geri alınamaz.", "⚠️️", () => { SiparişiGercektenIptalEt(); }, true); }
+        function IptalOnaySor() { HapticTitresim(); SoruSor("Siparişi İptal Et", "Siparişinizi iptal etmek istediğinize emin misiniz? İşlem geri alınamaz.", "⚠️", () => { SiparişiGercektenIptalEt(); }, true); }
         
         async function SiparişiGercektenIptalEt() {
             let siparisId = localStorage.getItem("bg_active_order_id"); if(!siparisId) return;
@@ -1333,7 +1404,7 @@
             let modlar = [...seciliEkstraIstekler]; if (seciliUrun.isKg) { let tB = baseKgBread + ekstraEkmekKg; if (tB === 0) { if (!modlar.includes("Ekmeksiz")) modlar.push("Ekmeksiz"); } else if (ekstraEkmekKg > 0) { modlar.push("+" + ekstraEkmekKg + " Ek Ekmek"); } else if (ekstraEkmekKg < 0) { modlar.push("Sadece " + tB + " Ekmek"); } } else { if (isSpecial && seciliOzelEkmekTip !== "Normal") modlar.push(seciliOzelEkmekTip); } 
             modlar = [...new Set(modlar)]; if (modlar.length > 0) { tamIsim += " (" + modlar.join(", ") + ")"; } 
             let testIsim = (eklenecekAdet > 1 ? eklenecekAdet + "x " : "") + tamIsim; let newBreadRequired = ExtractBreadTotal(testIsim, seciliUrun.isKg, gercekStokMiktari * eklenecekAdet); let ekmekInfo = tumUrunler.find(u => u.pName && u.pName.trim().toLocaleLowerCase('tr-TR') === ekmekUrunAdi.trim().toLocaleLowerCase('tr-TR')); 
-            if (ekmekInfo) { let cS = (ekmekInfo.stockAmount != null) ? parseFloat((ekmekInfo.stockAmount||0).toString().replace(',', '.')) : ((ekmekInfo.stock != null) ? parseFloat((ekmekInfo.stock||0).toString().replace(',', '.')) : 999); if (isNaN(cS)) cS = 999; let aB = GuncelEkmekIhtiyaci(sepet); if (aB + newBreadRequired > cS) { OzelUyariGoster("Stok Yetersiz", `Ekstra Ekmek için stoğumuz yetersiz!`, "⚠️"); window.isAddingToCart = false; return; } } 
+            if (ekmekInfo) { let cS = (ekmekInfo.stockAmount != null) ? parseFloat((ekmekInfo.stockAmount||0).toString().replace(',', '.')) : ((ekmekInfo.stock != null) ? parseFloat((ekmekInfo.stock||0).toString().replace(',', '.')) : 999); if (isNaN(cS)) cS = 999; let aB = GuncelEkmekIhtiyaci(sepet); if (aB + newBreadRequired > cS) { OzelUyariGoster("Stok Yetersiz", `Ekstra Ekmek için stoğumuz yetersiz!`, "⚠️️"); window.isAddingToCart = false; return; } } 
             let sB = seciliUrun.isKg ? seciliFiyat : (seciliFiyat / seciliMiktar); let gB = sB + ekstraEkmekUcreti; let mevcutUrun = sepet.find(u => u.baseName === tamIsim && u.basePrice === gB); 
             
             if(isNaN(gB) || gB < 0 || eklenecekAdet <= 0 || gercekStokMiktari <= 0) { window.isAddingToCart = false; return; }
