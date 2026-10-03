@@ -785,7 +785,7 @@
     // ==========================================
     // WHATSAPP DOĞRULAMA (STATE KORUMALI & NATIVE YÖNLENDİRME)
     // ==========================================
-    function WhatsappDogrulamasiniBaslat(formatliTel, email, isLogin = false) {
+   function WhatsappDogrulamasiniBaslat(formatliTel, email, isLogin = false) {
         let kaydedilmisKod = localStorage.getItem("bg_wp_kod");
         if (kaydedilmisKod) {
             aktifWhatsappKodu = kaydedilmisKod;
@@ -847,7 +847,6 @@
                 let res = await fetch(url, { cache: "no-store" });
                 let data = await res.json();
                 
-                // Botun numarayı yakalayamama ihtimaline karşı sadece 'onaylandi: 1' şartı aranıyor
                 if (data && (data.onaylandi === 1 || data.onaylandi === true)) {
                     clearInterval(whatsappInterval);
                     
@@ -856,7 +855,7 @@
                     wpOverlay.classList.remove("active"); 
                     setTimeout(() => wpOverlay.style.display = "none", 400);
                     
-                    // Automate botunun tel numarasını boş gönderme veya gönderme senaryosu
+                    // TELEFON EŞLEŞTİRME KONTROLÜ (TOLERANS TAMAMEN KALDIRILDI)
                     let botGelenNumara = data.tel || data.telefon || "";
                     let gelenTel = botGelenNumara.toString().replace(/[^0-9]/g, "");
                     let formTel = aktifWhatsappNumarasi.replace(/[^0-9]/g, "");
@@ -864,8 +863,8 @@
                     let wpSon10 = gelenTel.slice(-10);
                     let formSon10 = formTel.slice(-10);
                     
-                    // Automate numara çekemese BİLE veya çektiğinde formla uyuşuyorsa giriş izni verilir.
-                    if (gelenTel === "" || (wpSon10 === formSon10 && wpSon10.length === 10)) {
+                    // SADECE VE SADECE NUMARALAR BİREBİR AYNISA KABUL ET
+                    if (wpSon10 === formSon10 && wpSon10.length === 10) {
                         BasariliGirisIslemleri(formatliTel, email, isLogin);
                     } else {
                         let user = firebase.auth().currentUser;
@@ -877,13 +876,17 @@
                         localStorage.removeItem("bg_pending_email");
                         localStorage.removeItem("bg_pending_pass");
                         
-                        OzelUyariGoster("Güvenlik İhlali", "Kayıt formuna girdiğiniz numara ile WhatsApp onayını gönderdiğiniz numara uyuşmuyor. Lütfen formda kendi numaranızı kullanın.", "🚫");
+                        // Kullanıcıya nerede hata yaptığını açıkça gösteren detaylı uyarı
+                        OzelUyariGoster(
+                            "Güvenlik İhlali", 
+                            `Forma girdiğiniz numara ile WhatsApp'tan mesaj atan numara uyuşmuyor!<br><br><b>Formdaki Numara:</b> ${formSon10}<br><b>WhatsApp'tan Gelen:</b> ${wpSon10 || "Numara Okunamadı"}<br><br>İşlem iptal edildi, lütfen kendi numaranızla tekrar kayıt olun.`, 
+                            "🚫"
+                        );
                     }
                 }
             } catch(e) {}
         }, 3000);
     }
-
     async function WhatsappIkinciDogrulama(formatliTel, email, isLogin) {
         if(isLogin) {
             await BasariliGirisIslemleri(formatliTel, email, true);
