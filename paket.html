@@ -785,7 +785,7 @@
     // ==========================================
     // WHATSAPP DOĞRULAMA (STATE KORUMALI & NATIVE YÖNLENDİRME)
     // ==========================================
-   function WhatsappDogrulamasiniBaslat(formatliTel, email, isLogin = false) {
+ function WhatsappDogrulamasiniBaslat(formatliTel, email, isLogin = false) {
         let kaydedilmisKod = localStorage.getItem("bg_wp_kod");
         if (kaydedilmisKod) {
             aktifWhatsappKodu = kaydedilmisKod;
@@ -855,7 +855,7 @@
                     wpOverlay.classList.remove("active"); 
                     setTimeout(() => wpOverlay.style.display = "none", 400);
                     
-                    // TELEFON EŞLEŞTİRME KONTROLÜ (TOLERANS TAMAMEN KALDIRILDI)
+                    // TELEFON EŞLEŞTİRME KONTROLÜ
                     let botGelenNumara = data.tel || data.telefon || "";
                     let gelenTel = botGelenNumara.toString().replace(/[^0-9]/g, "");
                     let formTel = aktifWhatsappNumarasi.replace(/[^0-9]/g, "");
@@ -863,7 +863,6 @@
                     let wpSon10 = gelenTel.slice(-10);
                     let formSon10 = formTel.slice(-10);
                     
-                    // SADECE VE SADECE NUMARALAR BİREBİR AYNISA KABUL ET
                     if (wpSon10 === formSon10 && wpSon10.length === 10) {
                         BasariliGirisIslemleri(formatliTel, email, isLogin);
                     } else {
@@ -876,7 +875,15 @@
                         localStorage.removeItem("bg_pending_email");
                         localStorage.removeItem("bg_pending_pass");
                         
-                        // Kullanıcıya nerede hata yaptığını açıkça gösteren detaylı uyarı
+                        // KİLİTLENMEYİ ÇÖZEN YENİ KOD: Butonu Aktif Et
+                        let btn = document.getElementById("btn-email-verify");
+                        if (btn) {
+                            btn.innerText = "Hesabımı Oluştur";
+                            btn.disabled = false;
+                        }
+                        // Şifre ve Sözleşme onay kutusunun durumunu tekrar kontrol ederek butonu günceller
+                        KayitOnayToggle();
+                        
                         OzelUyariGoster(
                             "Güvenlik İhlali", 
                             `Forma girdiğiniz numara ile WhatsApp'tan mesaj atan numara uyuşmuyor!<br><br><b>Formdaki Numara:</b> ${formSon10}<br><b>WhatsApp'tan Gelen:</b> ${wpSon10 || "Numara Okunamadı"}<br><br>İşlem iptal edildi, lütfen kendi numaranızla tekrar kayıt olun.`, 
