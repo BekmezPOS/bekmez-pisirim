@@ -785,7 +785,7 @@
     // ==========================================
     // WHATSAPP DOĞRULAMA (STATE KORUMALI & NATIVE YÖNLENDİRME)
     // ==========================================
-    function WhatsappDogrulamasiniBaslat(formatliTel, email, isLogin = false) {
+   function WhatsappDogrulamasiniBaslat(formatliTel, email, isLogin = false) {
         let kaydedilmisKod = localStorage.getItem("bg_wp_kod");
         if (kaydedilmisKod) {
             aktifWhatsappKodu = kaydedilmisKod;
@@ -852,14 +852,17 @@
                     wpOverlay.classList.remove("active"); 
                     setTimeout(() => wpOverlay.style.display = "none", 400);
                     
-                    let botGelenNumara = data.tel || data.telefon || "";
-                    let gelenTel = botGelenNumara.toString().replace(/[^0-9]/g, "");
-                    let formTel = aktifWhatsappNumarasi.replace(/[^0-9]/g, "");
+                    // --- YENİ NESİL NUMARA BULMA VE EŞLEŞTİRME ---
+                    // Automate'in gönderdiği tam mesajı alıyoruz
+                    let botMesaji = data.mesaj || data.tel || data.telefon || "";
                     
-                    let wpSon10 = gelenTel.slice(-10);
-                    let formSon10 = formTel.slice(-10);
+                    // JS ile mesajın içindeki "5" ile başlayan 10 haneli numarayı süzüyoruz
+                    let numaraEslesme = botMesaji.toString().match(/5[0-9]{9}/);
+                    let gelenTel = numaraEslesme ? numaraEslesme[0] : "";
+                    let formTel = aktifWhatsappNumarasi.replace(/[^0-9]/g, "").slice(-10);
                     
-                    if (wpSon10 === formSon10 && wpSon10.length === 10) {
+                    // Numaraları birebir kıyaslıyoruz
+                    if (gelenTel === formTel && gelenTel.length === 10) {
                         BasariliGirisIslemleri(formatliTel, email, isLogin);
                     } else {
                         let user = firebase.auth().currentUser;
@@ -878,7 +881,7 @@
                         
                         OzelUyariGoster(
                             "Güvenlik İhlali", 
-                            `Forma girdiğiniz numara ile WhatsApp'tan mesaj atan numara uyuşmuyor!<br><br><b>Formdaki Numara:</b> ${formSon10}<br><b>WhatsApp'tan Gelen:</b> ${wpSon10 || "Numara Okunamadı"}<br><br>İşlem iptal edildi, lütfen kendi numaranızla tekrar kayıt olun.`, 
+                            `Forma girdiğiniz numara ile WhatsApp'tan mesaj atan numara uyuşmuyor!<br><br><b>Formdaki Numara:</b> ${formTel}<br><b>WhatsApp'tan Gelen:</b> ${gelenTel || "Numara Okunamadı"}<br><br>İşlem iptal edildi, lütfen kendi numaranızla tekrar kayıt olun.`, 
                             "🚫"
                         );
                     }
@@ -886,7 +889,6 @@
             } catch(e) {}
         }, 3000);
     }
-
     async function WhatsappIkinciDogrulama(formatliTel, email, isLogin) {
         if(isLogin) {
             await BasariliGirisIslemleri(formatliTel, email, true);
