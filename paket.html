@@ -442,7 +442,6 @@
     <div id="distance-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)"><div class="custom-alert-box"><div class="custom-alert-glow" style="background:var(--primary);"></div><div class="custom-alert-content"><div style="font-size: 55px; margin-bottom: 20px;">🛵</div><h3 style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Menzil Dışındasınız</h3><p style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;">Bekmez GO lezzetlerini size ulaştırabilmek için teslimat ağımızı <b>4 km</b> ile sınırlandırıyoruz.<br><br>Maalesef şu an sıcak teslimat bölgemizin dışındasınız.</p><button onclick="KapatUyariModal(event, true)" class="alert-btn" style="background:var(--primary); border-color:transparent; color:white;">Anladım</button></div></div></div>
     
     <div id="success-overlay" class="success-overlay"><div class="success-icon-wrapper"><div class="success-ring"></div><div class="success-circle"><svg class="success-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div></div><div class="success-text">Sipariş İletildi</div><div class="success-subtext">Kasa onayı bekleniyor...</div></div>
-
    <script>
         console.log("%c DİKKAT!", "color: #FF3B30; font-size: 50px; font-weight: 900; text-shadow: 2px 2px 0 #000;");
         console.log("%c Bu alan geliştiriciler ve siber güvenlik uzmanları içindir.", "font-size: 14px; font-weight: bold; color: #fff; background: #1a1a24; padding: 15px; border-radius: 8px; border: 1px solid #FF3B30;");
@@ -787,13 +786,12 @@
         }
 
         // ==========================================
-        // YENİ: WHATSAPP DOĞRULAMA (2. ADIM) MOTORU
+        // GÜNCELLENMİŞ WHATSAPP DOĞRULAMA (Eşleşme Katılaştırıldı & APP Geçiş Eklendi)
         // ==========================================
-       function WhatsappDogrulamasiniBaslat(formatliTel, email, isLogin = false) {
+        function WhatsappDogrulamasiniBaslat(formatliTel, email, isLogin = false) {
             let rastgeleKod = Math.floor(1000 + Math.random() * 9000);
             aktifWhatsappKodu = `BKMZ-${rastgeleKod}`;
             
-            // Kayıt olunan numaranın sadece rakamlarını al (Eşleştirme için)
             aktifWhatsappNumarasi = formatliTel.replace(/[^0-9]/g, '');
             if (aktifWhatsappNumarasi.startsWith("0")) aktifWhatsappNumarasi = aktifWhatsappNumarasi.substring(1);
             if (aktifWhatsappNumarasi.startsWith("90")) aktifWhatsappNumarasi = aktifWhatsappNumarasi.substring(2);
@@ -844,25 +842,25 @@
                     if (data && (data.onaylandi === 1 || data.onaylandi === true)) {
                         clearInterval(whatsappInterval);
                         
-                        // Kodu veritabanından temizle
                         fetch(`${FIREBASE_URL}/WhatsappOnayliNumaralar/${aktifWhatsappKodu}.json`, { method: "DELETE" }).catch(()=>{});
                         
-                        // Ekranı kapat
                         wpOverlay.classList.remove("active"); 
                         setTimeout(() => wpOverlay.remove(), 400);
                         
-                        // GÜVENLİK KONTROLÜ: Gelen Numara Eşleşiyor mu?
-                        let gelenTel = data.tel ? data.tel.toString() : "";
+                        // KATILAŞTIRILMIŞ NUMARA KONTROLÜ
+                        let gelenTel = data.tel ? data.tel.toString().replace(/[^0-9]/g, "") : "";
+                        let formTel = aktifWhatsappNumarasi.replace(/[^0-9]/g, "");
                         
-                        if (gelenTel.includes(aktifWhatsappNumarasi) || aktifWhatsappNumarasi.includes(gelenTel)) {
-                            // Eşleşti, İçeri Al
+                        let wpSon10 = gelenTel.slice(-10);
+                        let formSon10 = formTel.slice(-10);
+                        
+                        if (wpSon10 === formSon10 && wpSon10.length === 10) {
                             BasariliGirisIslemleri(formatliTel, email, isLogin);
                         } else {
-                            // EŞLEŞMEDİ! Hesabı iptal et ve hata ver.
                             let user = firebase.auth().currentUser;
                             if (user) { await user.delete(); }
                             firebase.auth().signOut();
-                            OzelUyariGoster("Güvenlik İhlali", "Giriş yapmak istediğiniz numara ile WhatsApp'tan mesaj atan numara eşleşmedi. İşlem iptal edildi.", "🚫");
+                            OzelUyariGoster("Güvenlik İhlali", "Kayıt formuna girdiğiniz numara ile WhatsApp onayını gönderdiğiniz numara uyuşmuyor. Lütfen formda kendi numaranızı kullanın.", "🚫");
                         }
                     }
                 } catch(e) {}
@@ -880,9 +878,23 @@
         function WhatsappMesajiGonder() {
             HapticTitresim();
             document.getElementById("wp-dinleme-yazisi").style.display = "block";
+            
             let mesaj = `Merhaba Bekmez GO. Hesabımı onaylamak için kodum: ${aktifWhatsappKodu}`;
-            let wpLink = `https://wa.me/${DUKKAN_WHATSAPP_NUMARASI}?text=${encodeURIComponent(mesaj)}`;
-            window.open(wpLink, "_blank");
+            let wpLink = `whatsapp://send?phone=${DUKKAN_WHATSAPP_NUMARASI}&text=${encodeURIComponent(mesaj)}`;
+            
+            // Gizli link ile sayfayı yenilemeden uygulamaya geçiş yap.
+            let gizliLink = document.createElement("a");
+            gizliLink.href = wpLink;
+            document.body.appendChild(gizliLink);
+            gizliLink.click();
+            document.body.removeChild(gizliLink);
+
+            // Uygulama yüklü değilse fallback
+            setTimeout(() => {
+                if (document.visibilityState === "visible") {
+                    window.location.href = `https://wa.me/${DUKKAN_WHATSAPP_NUMARASI}?text=${encodeURIComponent(mesaj)}`;
+                }
+            }, 1000);
         }
 
         function IptalEtWhatsappBekleme() {
@@ -897,9 +909,6 @@
             OzelUyariGoster("İptal Edildi", "WhatsApp onayı yapılmadığı için işlem iptal edildi.", "❌");
         }
 
-        // ==========================================
-        // ONAY SONRASI SİSTEME GİRİŞ
-        // ==========================================
         async function BasariliGirisIslemleri(formatliTel, email, isLogin = false) {
             let idToken = await firebase.auth().currentUser.getIdToken(true);
             if (!isLogin) {
