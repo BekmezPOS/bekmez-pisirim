@@ -789,7 +789,10 @@
         // ==========================================
         // YENİ: WHATSAPP DOĞRULAMA (2. ADIM) MOTORU
         // ==========================================
-     function WhatsappDogrulamasiniBaslat(formatliTel, email, isLogin = false) {
+    let whatsappInterval = null;
+        let aktifWhatsappKodu = "";
+        
+        function WhatsappDogrulamasiniBaslat(formatliTel, email, isLogin = false) {
             // Rastgele 4 haneli kod üret
             let rastgeleKod = Math.floor(1000 + Math.random() * 9000);
             aktifWhatsappKodu = `BKMZ-${rastgeleKod}`;
@@ -833,17 +836,17 @@
             
             whatsappInterval = setInterval(async () => {
                 try {
-                    // DİKKAT: Artık numara klasörünü değil, KOD (BKMZ-XXXX) klasörünü arıyoruz!
+                    // DİKKAT: Artık Firebase'de telefon numarasını değil, KODU (Örn: BKMZ-1234) arıyoruz!
                     let url = `${FIREBASE_URL}/WhatsappOnayliNumaralar/${aktifWhatsappKodu}.json?t=${new Date().getTime()}`;
                     
                     let res = await fetch(url, { cache: "no-store" });
                     let data = await res.json();
                     
-                    // Eğer Automate o koda ait dosyayı açmış ve içine onaylandi: 1 yazmışsa...
-                    if (data && (data.onaylandi === 1 || data.onaylandi === true)) {
+                    // Automate kodu bulup klasör açmış ve içine onaylandi: 1 yazmışsa:
+                    if (data && (data.onaylandi === 1 || data.onaylandi === true || data.onaylandi === "1")) {
                         clearInterval(whatsappInterval);
                         
-                        // Temizliği yap
+                        // Temizliği yap (Kullanılan kodu veritabanından sil)
                         fetch(`${FIREBASE_URL}/WhatsappOnayliNumaralar/${aktifWhatsappKodu}.json`, { method: "DELETE" }).catch(()=>{});
                         
                         // Ekranı kapat
@@ -856,7 +859,7 @@
                 } catch(e) {}
             }, 3000);
         }
-        async function WhatsappIkinciDogrulama(formatliTel, email, isLogin) {
+       async function WhatsappIkinciDogrulama(formatliTel, email, isLogin) {
             let idToken = await firebase.auth().currentUser.getIdToken(true);
             if(isLogin) {
                 await BasariliGirisIslemleri(formatliTel, email, true);
@@ -865,17 +868,17 @@
             WhatsappDogrulamasiniBaslat(formatliTel, email);
         }
 
-       function WhatsappMesajiGonder() {
+      function WhatsappMesajiGonder() {
             HapticTitresim();
             document.getElementById("wp-dinleme-yazisi").style.display = "block";
             
-            // DİKKAT: Artık mesajın içinde numara göndermemize gerek kalmadı!
+            // SADECE KOD GİDİYOR (Telefon numarası metinden çıkartıldı)
             let mesaj = `Merhaba Bekmez GO. Hesabımı onaylamak için kodum: ${aktifWhatsappKodu}`;
             let wpLink = `https://wa.me/${DUKKAN_WHATSAPP_NUMARASI}?text=${encodeURIComponent(mesaj)}`;
             window.open(wpLink, "_blank");
         }
 
-        function IptalEtWhatsappBekleme() {
+       function IptalEtWhatsappBekleme() {
             if(whatsappInterval) clearInterval(whatsappInterval);
             let wpOverlay = document.getElementById("whatsapp-wait-overlay");
             if (wpOverlay) { wpOverlay.classList.remove("active"); setTimeout(() => wpOverlay.remove(), 400); }
