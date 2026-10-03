@@ -891,13 +891,13 @@
         WhatsappDogrulamasiniBaslat(formatliTel, email);
     }
 
-    function WhatsappMesajiGonder() {
+  function WhatsappMesajiGonder() {
         HapticTitresim();
         let dinlemeYazisi = document.getElementById("wp-dinleme-yazisi");
         if (dinlemeYazisi) dinlemeYazisi.style.display = "block";
         
-        // ZAFİYET KAPATILDI: Mesajın içine numarayı eklemiyoruz! Sadece BKMZ kodu gidiyor.
-        let mesaj = "Merhaba Bekmez GO. Hesabımı onaylamak için kodum: " + aktifWhatsappKodu;
+        // Numarayı WhatsApp mesajına GERİ EKLİYORUZ. En garantili yöntem bu.
+        let mesaj = "Merhaba Bekmez GO. Hesabımı onaylamak için kodum: " + aktifWhatsappKodu + " Numaram: " + aktifWhatsappNumarasi;
         let url = `https://wa.me/${DUKKAN_WHATSAPP_NUMARASI}?text=${encodeURIComponent(mesaj)}`;
 
         localStorage.setItem("bg_wp_waiting", "true");
