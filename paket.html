@@ -443,7 +443,7 @@
     
     <div id="success-overlay" class="success-overlay"><div class="success-icon-wrapper"><div class="success-ring"></div><div class="success-circle"><svg class="success-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div></div><div class="success-text">Sipariş İletildi</div><div class="success-subtext">Kasa onayı bekleniyor...</div></div>
     
-   <script>
+  <script>
     console.log("%c DİKKAT!", "color: #FF3B30; font-size: 50px; font-weight: 900; text-shadow: 2px 2px 0 #000;");
     console.log("%c Bu alan geliştiriciler ve siber güvenlik uzmanları içindir.", "font-size: 14px; font-weight: bold; color: #fff; background: #1a1a24; padding: 15px; border-radius: 8px; border: 1px solid #FF3B30;");
 
@@ -785,7 +785,7 @@
     // ==========================================
     // WHATSAPP DOĞRULAMA (STATE KORUMALI & NATIVE YÖNLENDİRME)
     // ==========================================
- function WhatsappDogrulamasiniBaslat(formatliTel, email, isLogin = false) {
+    function WhatsappDogrulamasiniBaslat(formatliTel, email, isLogin = false) {
         let kaydedilmisKod = localStorage.getItem("bg_wp_kod");
         if (kaydedilmisKod) {
             aktifWhatsappKodu = kaydedilmisKod;
@@ -805,13 +805,10 @@
             wpOverlay.id = "whatsapp-wait-overlay";
             wpOverlay.className = "custom-alert-overlay";
             wpOverlay.style.zIndex = "9999999";
-            wpOverlay.style.display = "flex";
             document.body.appendChild(wpOverlay);
-        } else {
-            wpOverlay.style.display = "flex";
         }
         
-        let wpHtml = `
+        wpOverlay.innerHTML = `
         <div class="custom-alert-box" style="border-color: #25D366;">
             <div class="custom-alert-glow" style="background: #25D366;"></div>
             <div class="custom-alert-content">
@@ -831,12 +828,12 @@
                     Vazgeç
                 </button>
                 <div id="wp-dinleme-yazisi" style="font-size: 11px; color: var(--warning); margin-top: 15px; font-weight: 600; display: none;">
-                    Mesajınız bekleniyor... Bu ekranı kapatmayın.
+                    Onayınız bekleniyor... Geri dönüp bu ekranda bekleyin.
                 </div>
             </div>
         </div>`;
         
-        wpOverlay.innerHTML = wpHtml;
+        wpOverlay.style.display = "flex";
         setTimeout(() => wpOverlay.classList.add("active"), 10);
 
         if(whatsappInterval) clearInterval(whatsappInterval);
@@ -855,7 +852,6 @@
                     wpOverlay.classList.remove("active"); 
                     setTimeout(() => wpOverlay.style.display = "none", 400);
                     
-                    // TELEFON EŞLEŞTİRME KONTROLÜ
                     let botGelenNumara = data.tel || data.telefon || "";
                     let gelenTel = botGelenNumara.toString().replace(/[^0-9]/g, "");
                     let formTel = aktifWhatsappNumarasi.replace(/[^0-9]/g, "");
@@ -870,19 +866,15 @@
                         if (user) { await user.delete().catch(()=>{}); }
                         firebase.auth().signOut();
                         
+                        localStorage.removeItem("bg_wp_waiting");
                         localStorage.removeItem("bg_wp_kod");
                         localStorage.removeItem("bg_pending_tel");
                         localStorage.removeItem("bg_pending_email");
                         localStorage.removeItem("bg_pending_pass");
                         
-                        // KİLİTLENMEYİ ÇÖZEN YENİ KOD: Butonu Aktif Et
                         let btn = document.getElementById("btn-email-verify");
-                        if (btn) {
-                            btn.innerText = "Hesabımı Oluştur";
-                            btn.disabled = false;
-                        }
-                        // Şifre ve Sözleşme onay kutusunun durumunu tekrar kontrol ederek butonu günceller
-                        KayitOnayToggle();
+                        if (btn) { btn.innerText = "Hesabımı Oluştur"; btn.disabled = false; }
+                        if (typeof KayitOnayToggle === "function") KayitOnayToggle();
                         
                         OzelUyariGoster(
                             "Güvenlik İhlali", 
@@ -894,6 +886,7 @@
             } catch(e) {}
         }, 3000);
     }
+
     async function WhatsappIkinciDogrulama(formatliTel, email, isLogin) {
         if(isLogin) {
             await BasariliGirisIslemleri(formatliTel, email, true);
@@ -904,24 +897,14 @@
 
     function WhatsappMesajiGonder() {
         HapticTitresim();
-        document.getElementById("wp-dinleme-yazisi").style.display = "block";
+        let dinlemeYazisi = document.getElementById("wp-dinleme-yazisi");
+        if (dinlemeYazisi) dinlemeYazisi.style.display = "block";
         
         let mesaj = "Merhaba Bekmez GO. Hesabımı onaylamak için kodum: " + aktifWhatsappKodu + " Numaram: " + aktifWhatsappNumarasi;
-        
-        let intentLink = `intent://send?phone=${DUKKAN_WHATSAPP_NUMARASI}&text=${encodeURIComponent(mesaj)}#Intent;scheme=whatsapp;package=com.whatsapp;end;`;
-        
-        let gizliLink = document.createElement("a");
-        gizliLink.href = intentLink;
-        document.body.appendChild(gizliLink);
-        gizliLink.click();
-        document.body.removeChild(gizliLink);
+        let url = `https://wa.me/${DUKKAN_WHATSAPP_NUMARASI}?text=${encodeURIComponent(mesaj)}`;
 
-        setTimeout(() => {
-            if (document.visibilityState === "visible") {
-                // _blank kullanıldı, ana sayfa yenilenmeyecek
-                window.open(`https://wa.me/${DUKKAN_WHATSAPP_NUMARASI}?text=${encodeURIComponent(mesaj)}`, '_blank');
-            }
-        }, 1000);
+        localStorage.setItem("bg_wp_waiting", "true");
+        window.location.href = url;
     }
 
     function IptalEtWhatsappBekleme() {
@@ -930,6 +913,7 @@
         if (wpOverlay) { wpOverlay.classList.remove("active"); setTimeout(() => wpOverlay.style.display = "none", 400); }
         let btn = document.getElementById("btn-email-verify"); btn.innerText = "Hesabımı Oluştur"; btn.disabled = false;
         
+        localStorage.removeItem("bg_wp_waiting");
         localStorage.removeItem("bg_wp_kod");
         localStorage.removeItem("bg_pending_tel");
         localStorage.removeItem("bg_pending_email");
@@ -943,11 +927,27 @@
 
     async function BasariliGirisIslemleri(formatliTel, email, isLogin = false) {
         let idToken = await firebase.auth().currentUser.getIdToken(true);
-        if (!isLogin) {
-            await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${formatliTel}.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify({ email: email, tarih: new Date().toLocaleString(), kayitZamani: Date.now() }) });
-            await fetch(`${FIREBASE_URL}/SilinmisHesaplar/${formatliTel}.json?auth=${idToken}`, { method: "DELETE" });
-        }
+        
+        try {
+            let dbKontrol = await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${formatliTel}.json?auth=${idToken}`);
+            let dbData = await dbKontrol.json();
 
+            if (!dbData || !dbData.email) {
+                await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${formatliTel}.json?auth=${idToken}`, { 
+                    method: "PUT", 
+                    body: JSON.stringify({ email: email, tarih: new Date().toLocaleString(), kayitZamani: Date.now() }) 
+                });
+            } else {
+                await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${formatliTel}.json?auth=${idToken}`, { 
+                    method: "PATCH", 
+                    body: JSON.stringify({ sonGiris: new Date().toLocaleString() }) 
+                });
+            }
+            
+            await fetch(`${FIREBASE_URL}/SilinmisHesaplar/${formatliTel}.json?auth=${idToken}`, { method: "DELETE" });
+        } catch (error) { console.error("Firebase Yazma Hatası:", error); }
+
+        localStorage.removeItem("bg_wp_waiting");
         localStorage.removeItem("bg_wp_kod");
         localStorage.removeItem("bg_pending_tel");
         localStorage.removeItem("bg_pending_email");
@@ -958,9 +958,18 @@
         document.getElementById("prof-telefon").value = displayTel;
         document.getElementById("chk-telefon").value = displayTel;
         
-        document.getElementById("auth-form-area").style.display = "none"; document.getElementById("dogrulandi-etiketi").style.display = "block"; document.getElementById("profil-aksiyon-butonlari").style.display = "flex"; 
-        document.getElementById("btn-email-verify").innerText = "Hesabımı Oluştur"; document.getElementById("prof-telefon").disabled = true; document.getElementById("prof-email").disabled = true; document.getElementById("prof-password").disabled = true;
+        document.getElementById("auth-form-area").style.display = "none"; 
+        document.getElementById("dogrulandi-etiketi").style.display = "block"; 
+        document.getElementById("profil-aksiyon-butonlari").style.display = "flex"; 
+        
+        let btn = document.getElementById("btn-email-verify");
+        if(btn) { btn.innerText = "Hesabımı Oluştur"; btn.disabled = true; }
+        
+        document.getElementById("prof-telefon").disabled = true; 
+        document.getElementById("prof-email").disabled = true; 
+        document.getElementById("prof-password").disabled = true;
         let rb = document.getElementById("password-rules-box"); if(rb) rb.style.display = "none";
+        
         ProfiliKaydet(false);
 
         try {
@@ -980,8 +989,13 @@
             }
         } catch(e) {}
 
-        if(isLogin) { OzelUyariGoster("Tekrar Hoş Geldiniz! 👋", "Hesabınıza başarıyla giriş yapıldı.", "✅"); BildirimGonder("Hoş Geldiniz 👋", "Bekmez GO hesabınıza başarıyla giriş yapıldı."); } 
-        else { OzelUyariGoster("Hesap Doğrulandı! 🎉", "E-Posta adresiniz ve WhatsApp onayınız tamamlandı.", "✅"); BildirimGonder("Hesap Oluşturuldu 🎉", "Bekmez GO'ya hoş geldiniz! İndirimleri kaçırmayın."); }
+        if(isLogin) { 
+            OzelUyariGoster("Tekrar Hoş Geldiniz! 👋", "Hesabınıza başarıyla giriş yapıldı.", "✅"); 
+            BildirimGonder("Hoş Geldiniz 👋", "Bekmez GO hesabınıza başarıyla giriş yapıldı."); 
+        } else { 
+            OzelUyariGoster("Hesap Doğrulandı! 🎉", "E-Posta adresiniz ve WhatsApp onayınız tamamlandı.", "✅"); 
+            BildirimGonder("Hesap Oluşturuldu 🎉", "Bekmez GO'ya hoş geldiniz! İndirimleri kaçırmayın."); 
+        }
         
         if(localStorage.getItem("bg_active_order_id")) { SayfaGoster('gecmis'); }
     }
@@ -998,8 +1012,11 @@
         localStorage.removeItem("bg_active_order_id"); localStorage.removeItem("bg_order_timestamp"); localStorage.removeItem("bg_last_status"); localStorage.removeItem("bg_odeme_turu");
         localStorage.removeItem("bg_saved_cart"); localStorage.removeItem("bg_saved_note"); localStorage.removeItem("bg_saved_coupon"); localStorage.removeItem("bg_saved_cark");
         
+        localStorage.removeItem("bg_wp_waiting");
         localStorage.removeItem("bg_wp_kod");
-        localStorage.removeItem("bg_pending_tel"); localStorage.removeItem("bg_pending_email"); localStorage.removeItem("bg_pending_pass");
+        localStorage.removeItem("bg_pending_tel"); 
+        localStorage.removeItem("bg_pending_email"); 
+        localStorage.removeItem("bg_pending_pass");
 
         document.getElementById("prof-isim").value = ""; document.getElementById("prof-telefon").value = ""; document.getElementById("prof-email").value = ""; document.getElementById("prof-password").value = ""; document.getElementById("prof-adres").value = "";
         document.getElementById("chk-isim").value = ""; document.getElementById("chk-telefon").value = ""; document.getElementById("chk-adres").value = "";
@@ -1242,10 +1259,24 @@
 
     window.addEventListener('DOMContentLoaded', async () => {
         SyncServerTime();
-        let st = new Date().getHours(); let m = "Hoş Geldiniz ✨"; 
-        if (st >= 5 && st < 11) m = "Günaydın ☀"; else if (st >= 11 && st < 17) m = "İyi Günler 🌤️"; else if (st >= 17 && st < 22) m = "İyi Akşamlar 🌙"; else m = "İyi Geceler 🌌";
-        let ko = document.getElementById("dinamik-karsilama"); if(ko) ko.innerText = m;
-        setTimeout(() => { SplashKapatSinematik(); }, 3000);
+        
+        let isWaitingWp = localStorage.getItem("bg_wp_waiting");
+        let pTel = localStorage.getItem("bg_pending_tel");
+        let pMail = localStorage.getItem("bg_pending_email");
+
+        if (isWaitingWp === "true" && pTel && pMail) {
+            let splash = document.getElementById('splash-screen');
+            if (splash) { splash.style.display = 'none'; splash.style.opacity = '0'; }
+            
+            SayfaGoster('profil');
+            ProfilSekmeSec('Guvenlik', document.getElementById('tab-Guvenlik'));
+            WhatsappDogrulamasiniBaslat(pTel, pMail);
+        } else {
+            let st = new Date().getHours(); let m = "Hoş Geldiniz ✨"; 
+            if (st >= 5 && st < 11) m = "Günaydın ☀️"; else if (st >= 11 && st < 17) m = "İyi Günler 🌤️"; else if (st >= 17 && st < 22) m = "İyi Akşamlar 🌙"; else m = "İyi Geceler 🌌";
+            let ko = document.getElementById("dinamik-karsilama"); if(ko) ko.innerText = m;
+            setTimeout(() => { SplashKapatSinematik(); }, 3000);
+        }
 
         let ki = localStorage.getItem("bg_i"); let kt = localStorage.getItem("bg_t"); let ka = localStorage.getItem("bg_a");
         if(ki) { document.getElementById("chk-isim").value = escapeHTML(ki); if(document.getElementById("prof-isim")) document.getElementById("prof-isim").value = escapeHTML(ki); }
