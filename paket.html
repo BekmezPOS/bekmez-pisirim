@@ -785,7 +785,7 @@
     // ==========================================
     // WHATSAPP DOĞRULAMA (STATE KORUMALI & NATIVE YÖNLENDİRME)
     // ==========================================
-   function WhatsappDogrulamasiniBaslat(formatliTel, email, isLogin = false) {
+ function WhatsappDogrulamasiniBaslat(formatliTel, email, isLogin = false) {
         let kaydedilmisKod = localStorage.getItem("bg_wp_kod");
         if (kaydedilmisKod) {
             aktifWhatsappKodu = kaydedilmisKod;
@@ -846,22 +846,16 @@
                 
                 if (data && (data.onaylandi === 1 || data.onaylandi === true)) {
                     clearInterval(whatsappInterval);
-                    
                     fetch(`${FIREBASE_URL}/WhatsappOnayliNumaralar/${aktifWhatsappKodu}.json`, { method: "DELETE" }).catch(()=>{});
                     
                     wpOverlay.classList.remove("active"); 
                     setTimeout(() => wpOverlay.style.display = "none", 400);
                     
-                    // --- YENİ NESİL NUMARA BULMA VE EŞLEŞTİRME ---
-                    // Automate'in gönderdiği tam mesajı alıyoruz
-                    let botMesaji = data.mesaj || data.tel || data.telefon || "";
-                    
-                    // JS ile mesajın içindeki "5" ile başlayan 10 haneli numarayı süzüyoruz
-                    let numaraEslesme = botMesaji.toString().match(/5[0-9]{9}/);
-                    let gelenTel = numaraEslesme ? numaraEslesme[0] : "";
+                    // AUTOMATE'İN GÖNDERDİĞİ NUMARAYI KONTROL ET
+                    let botGelenNumara = data.tel || data.telefon || "";
+                    let gelenTel = botGelenNumara.toString().replace(/[^0-9]/g, "").slice(-10);
                     let formTel = aktifWhatsappNumarasi.replace(/[^0-9]/g, "").slice(-10);
                     
-                    // Numaraları birebir kıyaslıyoruz
                     if (gelenTel === formTel && gelenTel.length === 10) {
                         BasariliGirisIslemleri(formatliTel, email, isLogin);
                     } else {
@@ -902,13 +896,13 @@
         let dinlemeYazisi = document.getElementById("wp-dinleme-yazisi");
         if (dinlemeYazisi) dinlemeYazisi.style.display = "block";
         
-        let mesaj = "Merhaba Bekmez GO. Hesabımı onaylamak için kodum: " + aktifWhatsappKodu + " Numaram: " + aktifWhatsappNumarasi;
+        // ZAFİYET KAPATILDI: Mesajın içine numarayı eklemiyoruz! Sadece BKMZ kodu gidiyor.
+        let mesaj = "Merhaba Bekmez GO. Hesabımı onaylamak için kodum: " + aktifWhatsappKodu;
         let url = `https://wa.me/${DUKKAN_WHATSAPP_NUMARASI}?text=${encodeURIComponent(mesaj)}`;
 
         localStorage.setItem("bg_wp_waiting", "true");
         window.location.href = url;
     }
-
     function IptalEtWhatsappBekleme() {
         if(whatsappInterval) clearInterval(whatsappInterval);
         let wpOverlay = document.getElementById("whatsapp-wait-overlay");
