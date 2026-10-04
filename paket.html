@@ -851,16 +851,11 @@ function WhatsappDogrulamasiniBaslat(formatliTel, email, isLogin = false) {
                     wpOverlay.classList.remove("active"); 
                     setTimeout(() => wpOverlay.style.display = "none", 400);
                     
-                    // --- ZEKİ NUMARA AYIKLAMA (Automate'ten gelen ham metni parçalar) ---
-                    let botMesaji = data.tel || data.mesaj || data.telefon || "";
+                    // REHBER KONTROLLÜ %100 GÜVENLİ NUMARA KIYASLAMASI
+                    let wpGercekTel = data.gercekTel ? data.gercekTel.toString().slice(-10) : "";
+                    let formTel = aktifWhatsappNumarasi.slice(-10);
                     
-                    // JavaScript ile mesajın içindeki "5" ile başlayan 10 haneli numarayı süzüyoruz
-                    let numaraEslesme = botMesaji.toString().match(/5[0-9]{9}/);
-                    let gelenTel = numaraEslesme ? numaraEslesme[0] : "";
-                    let formTel = aktifWhatsappNumarasi.replace(/[^0-9]/g, "").slice(-10);
-                    
-                    // Numaraları birebir kıyaslıyoruz
-                    if (gelenTel === formTel && gelenTel.length === 10) {
+                    if (wpGercekTel === formTel && wpGercekTel.length === 10) {
                         BasariliGirisIslemleri(formatliTel, email, isLogin);
                     } else {
                         let user = firebase.auth().currentUser;
@@ -879,7 +874,7 @@ function WhatsappDogrulamasiniBaslat(formatliTel, email, isLogin = false) {
                         
                         OzelUyariGoster(
                             "Güvenlik İhlali", 
-                            `Forma girdiğiniz numara ile WhatsApp'tan mesaj atan numara uyuşmuyor!<br><br><b>Formdaki Numara:</b> ${formTel}<br><b>WhatsApp'tan Gelen:</b> ${gelenTel || "Numara Bulunamadı"}<br><br>İşlem iptal edildi, lütfen kendi numaranızla tekrar kayıt olun.`, 
+                            `Forma girdiğiniz numara ile WhatsApp hesabınız uyuşmuyor!<br><br><b>Formdaki Numara:</b> ${formTel}<br><b>WhatsApp'taki Numara:</b> ${wpGercekTel || "Saptanamadı"}<br><br>İşlem iptal edildi, lütfen kendi numaranızla işlem yapın.`, 
                             "🚫"
                         );
                     }
@@ -895,13 +890,12 @@ function WhatsappDogrulamasiniBaslat(formatliTel, email, isLogin = false) {
         WhatsappDogrulamasiniBaslat(formatliTel, email);
     }
 
-  function WhatsappMesajiGonder() {
+ function WhatsappMesajiGonder() {
         HapticTitresim();
         let dinlemeYazisi = document.getElementById("wp-dinleme-yazisi");
         if (dinlemeYazisi) dinlemeYazisi.style.display = "block";
         
-        // Numarayı WhatsApp mesajına GERİ EKLİYORUZ. En garantili yöntem bu.
-        let mesaj = "Merhaba Bekmez GO. Hesabımı onaylamak için kodum: " + aktifWhatsappKodu + " Numaram: " + aktifWhatsappNumarasi;
+        let mesaj = "Merhaba Bekmez GO. Hesabımı onaylamak için kodum: " + aktifWhatsappKodu;
         let url = `https://wa.me/${DUKKAN_WHATSAPP_NUMARASI}?text=${encodeURIComponent(mesaj)}`;
 
         localStorage.setItem("bg_wp_waiting", "true");
