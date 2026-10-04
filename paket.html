@@ -478,7 +478,6 @@
     <div id="custom-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)"><div class="custom-alert-box" id="custom-alert-box"><div class="custom-alert-glow" id="custom-alert-glow"></div><div class="custom-alert-content"><div id="custom-alert-icon" style="font-size: 55px; margin-bottom: 20px;">⚠️</div><h3 id="custom-alert-title" style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Uyarı</h3><p id="custom-alert-text" style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;"></p><button onclick="KapatUyariModal(event, true)" class="alert-btn">Tamam, Anladım</button></div></div></div>
     
     <div id="distance-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)"><div class="custom-alert-box"><div class="custom-alert-glow" style="background:var(--primary);"></div><div class="custom-alert-content"><div style="font-size: 55px; margin-bottom: 20px;">🛵</div><h3 style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Menzil Dışındasınız</h3><p style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;">Bekmez GO lezzetlerini size ulaştırabilmek için teslimat ağımızı <b>4 km</b> ile sınırlandırıyoruz.<br><br>Maalesef şu an sıcak teslimat bölgemizin dışındasınız.</p><button onclick="KapatUyariModal(event, true)" class="alert-btn" style="background:var(--primary); border-color:transparent; color:white;">Anladım</button></div></div></div>
-    
     <div id="success-overlay" class="success-overlay"><div class="success-icon-wrapper"><div class="success-ring"></div><div class="success-circle"><svg class="success-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div></div><div class="success-text">Sipariş İletildi</div><div class="success-subtext">Kasa onayı bekleniyor...</div></div>
     <script>
     console.log("%c DİKKAT!", "color: #FF3B30; font-size: 50px; font-weight: 900; text-shadow: 2px 2px 0 #000;");
@@ -927,7 +926,7 @@
     }
 
     // ==========================================
-    // %100 GÜVENLİ HİBRİT WHATSAPP DOĞRULAMA
+    // %100 GÜVENLİ WHATSAPP DOĞRULAMA (YENİ SİSTEM)
     // ==========================================
     function WhatsappDogrulamasiniBaslat(formatliTel, email, isLogin = false) {
         let kaydedilmisKod = localStorage.getItem("bg_wp_kod");
@@ -982,6 +981,7 @@
 
         if(whatsappInterval) clearInterval(whatsappInterval);
         
+        // --- ZEKİ NUMARA VE ONAY SORGULAYICISI (MÜŞTERİ FİKRİ) ---
         whatsappInterval = setInterval(async () => {
             try {
                 let url = `${FIREBASE_URL}/WhatsappOnayliNumaralar/${aktifWhatsappKodu}.json?t=${new Date().getTime()}`;
@@ -992,13 +992,18 @@
                     clearInterval(whatsappInterval);
                     fetch(`${FIREBASE_URL}/WhatsappOnayliNumaralar/${aktifWhatsappKodu}.json`, { method: "DELETE" }).catch(()=>{});
                     
-                    wpOverlay.classList.remove("active"); 
-                    setTimeout(() => wpOverlay.style.display = "none", 400);
+                    if (wpOverlay) { wpOverlay.classList.remove("active"); setTimeout(() => wpOverlay.style.display = "none", 400); }
                     
-                    // REHBER KONTROLLÜ %100 GÜVENLİ NUMARA KIYASLAMASI
-                    let wpGercekTel = data.gercekTel ? data.gercekTel.toString().slice(-10) : "";
+                    // Automate, "Arif 0536..." içindeki Arif'i sildi ve bize sadece rakamları yolladı.
+                    let hamGercekTel = data.gercekTel ? data.gercekTel.toString() : "";
+                    
+                    // 1. Formdaki Numara (HTML'e girilen)
                     let formTel = aktifWhatsappNumarasi.slice(-10);
                     
+                    // 2. Automate'in bulduğu rakamların son 10 hanesi
+                    let wpGercekTel = hamGercekTel.slice(-10);
+                    
+                    // KESİN KARŞILAŞTIRMA (X RAKAMI = X RAKAMI MI?)
                     if (wpGercekTel === formTel && wpGercekTel.length === 10) {
                         BasariliGirisIslemleri(formatliTel, email, isLogin);
                     } else {
@@ -1018,7 +1023,10 @@
                         
                         OzelUyariGoster(
                             "Güvenlik İhlali", 
-                            `Forma girdiğiniz numara ile WhatsApp hesabınız uyuşmuyor!<br><br><b>Formdaki Numara:</b> ${formTel}<br><b>WhatsApp'taki Numara:</b> ${wpGercekTel || "Saptanamadı"}<br><br>İşlem iptal edildi, lütfen kendi numaranızla işlem yapın.`, 
+                            `Sistem sahte veya uyuşmayan bir işlem tespit etti.<br><br>
+                            <b>Sizin Girdiğiniz:</b> ${formTel}<br>
+                            <b>Tespit Edilen:</b> ${wpGercekTel || "Gizli/Numarasız"}<br><br>
+                            Lütfen kendi gerçek numaranızla giriş yapınız.`, 
                             "🚫"
                         );
                     }
@@ -1040,7 +1048,8 @@
         let dinlemeYazisi = document.getElementById("wp-dinleme-yazisi");
         if (dinlemeYazisi) dinlemeYazisi.style.display = "block";
         
-        // ZAFİYET KAPATILDI: Mesajın içine numarayı BİZ EKLEMİYORUZ.
+        // ZAFİYET KAPATILDI: Mesajın içine numarayı BİZ EKLEMİYORUZ. 
+        // Kullanıcının ne yazdığı zerre umrumuzda değil, Automate doğrudan bildirimin başlığına bakacak.
         let mesaj = "Merhaba Bekmez GO. Hesabımı onaylamak için kodum: " + aktifWhatsappKodu;
         let url = `https://wa.me/${DUKKAN_WHATSAPP_NUMARASI}?text=${encodeURIComponent(mesaj)}`;
 
@@ -1431,7 +1440,6 @@
         let ki = localStorage.getItem("bg_i"); let kt = localStorage.getItem("bg_t"); let ka = localStorage.getItem("bg_a");
         
         if (kt) { 
-            // KULLANICI ZATEN GİRİŞ YAPMIŞSA YENİ ARAYÜZÜ AÇ
             ProfilArayuzunuGuncelle(true, ki || "");
             
             let displayTel = kt.startsWith("0") ? kt.substring(1) : kt;
@@ -1454,7 +1462,6 @@
                 }
             } catch(e) {}
         } else {
-            // GİRİŞ YAPMAMIŞ (MİSAFİR) İSE FORMLARI GÖSTER
             ProfilArayuzunuGuncelle(false);
         }
         
