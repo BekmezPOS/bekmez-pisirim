@@ -478,8 +478,9 @@
     <div id="custom-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)"><div class="custom-alert-box" id="custom-alert-box"><div class="custom-alert-glow" id="custom-alert-glow"></div><div class="custom-alert-content"><div id="custom-alert-icon" style="font-size: 55px; margin-bottom: 20px;">⚠️</div><h3 id="custom-alert-title" style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Uyarı</h3><p id="custom-alert-text" style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;"></p><button onclick="KapatUyariModal(event, true)" class="alert-btn">Tamam, Anladım</button></div></div></div>
     
     <div id="distance-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)"><div class="custom-alert-box"><div class="custom-alert-glow" style="background:var(--primary);"></div><div class="custom-alert-content"><div style="font-size: 55px; margin-bottom: 20px;">🛵</div><h3 style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Menzil Dışındasınız</h3><p style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;">Bekmez GO lezzetlerini size ulaştırabilmek için teslimat ağımızı <b>4 km</b> ile sınırlandırıyoruz.<br><br>Maalesef şu an sıcak teslimat bölgemizin dışındasınız.</p><button onclick="KapatUyariModal(event, true)" class="alert-btn" style="background:var(--primary); border-color:transparent; color:white;">Anladım</button></div></div></div>
+    
     <div id="success-overlay" class="success-overlay"><div class="success-icon-wrapper"><div class="success-ring"></div><div class="success-circle"><svg class="success-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div></div><div class="success-text">Sipariş İletildi</div><div class="success-subtext">Kasa onayı bekleniyor...</div></div>
-    <script>
+<script>
     console.log("%c DİKKAT!", "color: #FF3B30; font-size: 50px; font-weight: 900; text-shadow: 2px 2px 0 #000;");
     console.log("%c Bu alan geliştiriciler ve siber güvenlik uzmanları içindir.", "font-size: 14px; font-weight: bold; color: #fff; background: #1a1a24; padding: 15px; border-radius: 8px; border: 1px solid #FF3B30;");
 
@@ -701,23 +702,36 @@
 
         try {
             let userCred = await firebase.auth().signInWithEmailAndPassword(email, pass);
-            let idToken = await userCred.user.getIdToken(true);
+            let user = userCred.user;
             
-            let res = await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar.json?auth=${idToken}`);
-            let allUsers = await res.json();
-            let foundTel = "";
-            
-            if(allUsers) {
-                for(let tel in allUsers) {
-                    if(allUsers[tel].email && allUsers[tel].email.toLowerCase() === email) { foundTel = tel; break; }
-                }
+            // ÇÖZÜM 1: Numarayı doğrudan şifreli Auth profilinden çekiyoruz (Veritabanına ihtiyaç yok)
+            let foundTel = user.displayName;
+
+            // Eğer profil boşsa (eski kayıt olmuşsanız), mecburen veritabanında arıyoruz
+            if (!foundTel || foundTel.length < 10) {
+                let idToken = await user.getIdToken(true);
+                try {
+                    let res = await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar.json?auth=${idToken}`);
+                    let allUsers = await res.json();
+                    if (allUsers && !allUsers.error) {
+                        for(let tel in allUsers) {
+                            if(allUsers[tel].email && allUsers[tel].email.toLowerCase() === email) {
+                                foundTel = tel;
+                                await user.updateProfile({ displayName: foundTel }); // Bulmuşken profile kazıyalım
+                                break;
+                            }
+                        }
+                    }
+                } catch(err) {}
             }
             
-            if(foundTel !== "") {
+            if(foundTel && foundTel.length >= 10) {
                 await BasariliGirisIslemleri(foundTel, email, true);
             } else {
                 firebase.auth().signOut();
-                OzelUyariGoster("Kayıt Yarım Kalmış", "Hesap kurulumunuz yarım kalmış. Lütfen 'Kayıt Ol' sekmesinden yeniden işlem yapın.", "❌");
+                // ZEKİCE ÇÖZÜM: Numarayı Firebase izinleri yüzünden bulamazsa, "Kayıt Ol" ekranına atar
+                OzelUyariGoster("Güvenlik Güncellemesi", "Sistem güvenliği nedeniyle telefon numaranız eşleşmedi.<br><br>Lütfen <b>Kayıt Ol</b> sekmesine geçip Numaranızı, E-postanızı ve Şifrenizi yazarak işlem yapın. Hesabınız otomatik olarak eşleşecektir.", "🛡️");
+                AuthModuDegistir('register');
             }
         } catch(e) {
             OzelUyariGoster("Giriş Başarısız", "Şifreniz veya E-Postanız hatalı. Lütfen tekrar deneyin.", "❌");
@@ -871,7 +885,9 @@
             } catch (error) {
                 if (error.code === 'auth/email-already-in-use') { 
                     try {
+                        // ÇÖZÜM 3: Müşteri "Giriş" yapamayıp "Kayıt Ol" ekranından denerse sistemi anında yakalayıp içeri alıyoruz!
                         let userCred = await firebase.auth().signInWithEmailAndPassword(emailInput, autoPass);
+                        await userCred.user.updateProfile({ displayName: formatliTel }); 
                         await handleVerifiedUser(userCred, formatliTel, emailInput);
                     } catch(loginErr) {
                         btn.innerText = "Hesabımı Oluştur"; btn.disabled = false;
@@ -1079,7 +1095,13 @@
     // YENİ UI GÜNCELLEMELERİNİ DE İÇEREN GİRİŞ VE ÇIKIŞ FONKSİYONLARI
     // ==========================================
     async function BasariliGirisIslemleri(formatliTel, email, isLogin = false) {
-        let idToken = await firebase.auth().currentUser.getIdToken(true);
+        let user = firebase.auth().currentUser;
+        let idToken = await user.getIdToken(true);
+        
+        // ÇÖZÜM 2: Müşteri her onaylandığında telefon numarası Firebase Kimliğine kalıcı olarak yazılır!
+        if (user && user.displayName !== formatliTel) {
+            await user.updateProfile({ displayName: formatliTel }).catch(()=>{});
+        }
         
         try {
             let dbKontrol = await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${formatliTel}.json?auth=${idToken}`);
