@@ -553,8 +553,7 @@
     <div id="distance-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)"><div class="custom-alert-box"><div class="custom-alert-glow" style="background:var(--primary);"></div><div class="custom-alert-content"><div style="font-size: 55px; margin-bottom: 20px;">🛵</div><h3 style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Menzil Dışındasınız</h3><p style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;">Bekmez GO lezzetlerini size ulaştırabilmek için teslimat ağımızı <b>4 km</b> ile sınırlandırıyoruz.<br><br>Maalesef şu an sıcak teslimat bölgemizin dışındasınız.</p><button onclick="KapatUyariModal(event, true)" class="alert-btn ripple-element" style="background:var(--primary); border-color:transparent; color:white; overflow:hidden;">Anladım</button></div></div></div>
     
     <div id="success-overlay" class="success-overlay"><div class="success-icon-wrapper"><div class="success-ring"></div><div class="success-circle"><svg class="success-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div></div><div class="success-text">Sipariş İletildi</div><div class="success-subtext">Kasa onayı bekleniyor...</div></div>
-
-   <script>
+    <script>
     // ==========================================
     // SİBER GÜVENLİK KALKANLARI VE ŞİFRELEME (PREMIUM SECURITY)
     // ==========================================
@@ -616,10 +615,6 @@
         }
         let i = 0; j = 0;
         for (let y = 0; y < 256; y++) {
-            i = (i + 1) % 256; j = (j + s[i]) % 256;
-            x = s[i]; s[i] = s[j]; s[j] = x;
-        }
-        for (let y = 0; y < text.length; y++) {
             i = (i + 1) % 256; j = (j + s[i]) % 256;
             x = s[i]; s[i] = s[j]; s[j] = x;
             res += String.fromCharCode(text.charCodeAt(y) ^ s[(s[i] + s[j]) % 256]);
@@ -705,7 +700,7 @@
     let sepetHatirlaticiTimer = null;
     let serverTimeOffset = 0;
     
-    // Boş Ekran İllüstrasyonları (Premium SVG'ler)
+    // YENİ: Boş Ekran İllüstrasyonları (Premium SVG'ler)
     const emptyCartSVG = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1.003 1.003 0 0 0 20 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>`;
     const emptyCouponSVG = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 6h-2.18c.11-.31.18-.65.18-1a2.996 2.996 0 0 0-5.5-1.65l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/></svg>`;
     const emptyHistorySVG = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 17H6v-2h12v2zm0-4H6v-2h12v2zm0-4H6V7h12v2zM3 22l1.5-1.5L6 22l1.5-1.5L9 22l1.5-1.5L12 22l1.5-1.5L15 22l1.5-1.5L18 22l1.5-1.5L21 22V2l-1.5 1.5L18 2l-1.5 1.5L15 2l-1.5 1.5L12 2l-1.5 1.5L9 2l-1.5 1.5L6 2 4.5 3.5 3 2v20z"/></svg>`;
@@ -815,7 +810,7 @@
     let baseKgBread = 0; let ekstraEkmekKg = 0; let seciliUrunStok = 999; let oncekiToplamFiyat = 0; let oncekiPopupFiyat = 0; let oncekiPopupMiktar = 0;
     
     let populerUrunlerListesi = []; let aktifAdisyonDinleyiciRef = null; let menuDinleyiciRef = null; let sonCekilenAdisyonHTML = ""; let sonKuponVerisi = ""; let isProcessingOrder = false;
-    let adisyonSayacInterval = null; // Canlı Kronometre Motoru
+    let adisyonSayacInterval = null; // YENİ: Kronometre için global değişken
     
     let emailInterval = null; 
     let whatsappInterval = null; 
@@ -1319,7 +1314,7 @@
             } else { OzelUyariGoster("Hata", "Oturum bağlantısı kopmuş, lütfen tekrar giriş yapın.", "🔌"); }
         }, true);
     }
-   async function CarkPopupAc() {
+    async function CarkPopupAc() {
         HapticTitresim(); SessizIzinIste(); let tel = SecureOku("bg_t");
         if (!tel || tel.length < 10) { OzelUyariGoster("Hesap Doğrulaması Şart", "Çarkıfelek sistemini kullanabilmek için hesabınızı doğrulamalısınız.", "🛡"); SayfaGoster('profil'); return; }
 
@@ -1339,6 +1334,7 @@
     }
     function CarkPopupKapat() { let p = document.getElementById("cark-popup"); p.classList.remove("active"); setTimeout(() => p.style.display = "none", 500); }
 
+    // YENİ: Pas Bug Çözümü ve Spinner Animasyonu
     async function CarkCevir() {
         HapticTitresim(); let tel = SecureOku("bg_t"); if (!tel || tel.length < 10) return; 
         let btn = document.getElementById("cark-cevir-btn"); 
@@ -1361,10 +1357,12 @@
             setTimeout(async () => {
                 let kazanilanOdul = CARK_ODULLERI[kazananIndex]; let sTimeN = await GetServerTimeFast(); let bitisZamani = sTimeN + (7 * 24 * 60 * 60 * 1000);
                 
+                // BUG FIX: "Pas" gelirse veritabanına hediye olarak kaydetmiyoruz.
                 if(kazanilanOdul !== "😔 Pas") {
                     SecureKaydet("bg_cark_data", btoa(encodeURIComponent(`${kazanilanOdul}|||${bitisZamani}|||${CARK_SALT}|||${tel}`)));
                     await fetch(`${FIREBASE_URL}/CarkKullanimlari/${tel}.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify({ odul: kazanilanOdul, bitis: bitisZamani, zaman: new Date().toLocaleString() }) });
                 } else {
+                    // Pas geldiği için sadece bitiş zamanını yazıp, ödül bilgisini Pas olarak kilitliyoruz.
                     SecureKaydet("bg_cark_data", btoa(encodeURIComponent(`😔 Pas|||${bitisZamani}|||${CARK_SALT}|||${tel}`)));
                     await fetch(`${FIREBASE_URL}/CarkKullanimlari/${tel}.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify({ odul: "😔 Pas", bitis: bitisZamani, zaman: new Date().toLocaleString() }) });
                 }
@@ -1398,6 +1396,7 @@
             let kalanGun = Math.ceil((parsed.bitis - sTime) / (1000 * 60 * 60 * 24));
             bannerDesc.innerText = `Sonraki çark hakkına ${kalanGun} gün var.`; bannerDesc.style.color = "var(--warning)";
             
+            // BUG FIX UI: "Pas" geldiyse hediye kutusunu ASLA gösterme.
             if(parsed.odul && parsed.odul !== "😔 Pas" && aktifKullanilanCarkOdulu === null) {
                 hediyeKutusu.style.display = "block"; document.getElementById("kazanilan-odul-yazi").innerText = escapeHTML(parsed.odul); document.getElementById("kazanilan-sure-yazi").innerText = `Kalan Süre: ${kalanGun} Gün`;
             } else { hediyeKutusu.style.display = "none"; }
@@ -1726,7 +1725,9 @@
         PopupUIYenile(true); 
     }
 
-   function UrunPopupAc(index) { 
+    let isPopupOpening = false;
+
+    function UrunPopupAc(index) { 
         if(isPopupOpening) return; 
         isPopupOpening = true; 
 
@@ -1739,11 +1740,9 @@
             if (GetKategoriAd(seciliUrun) === "İçecek" || GetKategoriAd(seciliUrun) === "Ekstra") { cA.style.display = "none"; } else if (seciliUrun.isKg) { hI = `<div class="p-sec-title">İstemediğiniz Malzemeler:</div><div class="p-btn-row"><button class="ingredient-btn" onclick="EkstraIstekToggle(this, 'Zerzavatsız')">Zerzavatsız</button><button class="ingredient-btn" id="btn-ekmeksiz" onclick="EkstraIstekToggle(this, 'Ekmeksiz')">Ekmeksiz</button><button class="ingredient-btn" onclick="EkstraIstekToggle(this, 'Domatessiz')">Domatessiz</button></div><div class="p-counter-box"><span class="p-c-label">Ekstra Ekmek Adeti:</span><div class="p-c-ctrls"><button class="p-c-btn" onclick="EkmekSayaciDegistir(-1)">-</button><span id="ekmek-sayac" class="p-c-val">${baseKgBread}</span><button class="p-c-btn" onclick="EkmekSayaciDegistir(1)">+</button></div></div>`; cA.style.display = "block"; } else if (iS) { hI = `<div class="p-sec-title">Ekmek Seçimi:</div><div class="p-btn-row"><button class="bread-btn" id="ekmek-1.5" onclick="OzelEkmekSec('1.5 Lavaş', this)">1.5 Lavaş</button><button class="bread-btn active" id="ekmek-normal" onclick="OzelEkmekSec('Normal', this)">Normal (2)</button><button class="bread-btn" id="ekmek-3" onclick="OzelEkmekSec('3 Lavaş', this)">3 Lavaş</button></div><div class="p-sec-title">İstemediğiniz Malzemeler:</div><div class="p-btn-row" style="margin-bottom:0;"><button class="ingredient-btn" onclick="EkstraIstekToggle(this, 'Soğansız')">Soğansız</button><button class="ingredient-btn" onclick="EkstraIstekToggle(this, 'Domatessiz')">Domatessiz</button><button class="ingredient-btn" onclick="EkstraIstekToggle(this, 'Acısı İçinde')">Acısı İçinde</button></div>`; cA.style.display = "block"; } else { cA.style.display = "none"; } 
             cA.innerHTML = hI; let pu = document.getElementById("product-popup"); pu.style.display = "flex"; setTimeout(() => { pu.classList.add("active"); }, 10); 
             
-            // Başarılı olduğunda kilidi anında aç
             setTimeout(() => { isPopupOpening = false; }, 300);
             
         } catch (e) { 
-            // Hata olursa kilidi yine de aç, sonsuz döngüde kalmasın
             isPopupOpening = false; 
         }
     }
@@ -1758,7 +1757,15 @@
 
     function OzelEkmekSec(tip, btnObj) { HapticTitresim(); seciliOzelEkmekTip = tip; document.querySelectorAll('.bread-btn').forEach(b => b.classList.remove('active')); btnObj.classList.add('active'); PopupUIYenile(true); }
     function PopupSifirla() { HapticTitresim(); seciliMiktar = seciliUrun.isKg ? 1 : 1; seciliFiyat = UnityFiyatiniHesapla(seciliUrun, seciliMiktar); document.querySelectorAll(".ingredient-btn.active").forEach(b => b.classList.remove("active")); seciliEkstraIstekler = []; seciliOzelEkmekTip = "Normal"; document.querySelectorAll('.bread-btn').forEach(b => b.classList.remove('active')); let normalBtn = document.getElementById("ekmek-normal"); if(normalBtn) normalBtn.classList.add('active'); baseKgBread = seciliUrun.isKg ? 4 : 0; ekstraEkmekKg = 0; let sayacObj = document.getElementById("ekmek-sayac"); if(sayacObj) sayacObj.innerText = baseKgBread; PopupUIYenile(true); }
-    function PopupKapat() { let pu = document.getElementById("product-popup"); pu.classList.remove("active"); setTimeout(() => { pu.style.display = "none"; isPopupOpening = false; }, 500); }
+    
+    function PopupKapat() { 
+        let pu = document.getElementById("product-popup"); 
+        pu.classList.remove("active"); 
+        setTimeout(() => { 
+            pu.style.display = "none"; 
+            isPopupOpening = false; 
+        }, 500); 
+    }
 
     function PopupUIYenile(animasyonlu) { 
         try {
@@ -2049,7 +2056,7 @@
                             let sayacEl = document.getElementById("adisyon-geri-sayim");
                             if (guncelLeftMs <= 0) {
                                 clearInterval(adisyonSayacInterval);
-                                AdisyonuGercekZamanliDinle(); 
+                                AdisyonuGercekZamanliDinle(); // Süre bitince arayüzü kilitlemek için yeniden tetikle
                             } else {
                                 let m = Math.floor(guncelLeftMs / 60000); 
                                 let s = Math.floor((guncelLeftMs % 60000) / 1000); 
