@@ -1876,7 +1876,7 @@
         HapticTitresim(); let p = document.getElementById("checkout-popup"); p.style.display = "flex"; setTimeout(() => { p.classList.add("active"); }, 10); TogglePayButton(); 
     }
 
-    async function PaketSiparisiGonder() {
+   async function PaketSiparisiGonder() {
         if(isProcessingOrder || (sepet.length === 0 && aktifKullanilanCarkOdulu === null)) return;
         if(!document.getElementById("legal-checkbox").checked) { OzelUyariGoster("Sözleşme Onayı", "Sözleşmeleri onaylamanız gerek.", "📝"); return; }
         
@@ -1900,12 +1900,13 @@
 
         let btn = document.getElementById("final-submit-btn"); btn.disabled = true; btn.classList.add("loading"); 
         
-        // YENİ: Premium Bekleme Animasyonu
-        btn.innerHTML = `<div class="spinner-small"></div> Konum Bulunuyor...📍`;
+        btn.innerHTML = `<div class="spinner-small"></div> Konum Aranıyor...📍`;
         isProcessingOrder = true;
 
         if (navigator.geolocation) { 
-            const checkLoc = () => { return new Promise((resolve, reject) => { navigator.geolocation.getCurrentPosition(p => resolve(p), e => reject(e), {enableHighAccuracy: true, timeout: 10000, maximumAge: 0}); }); };
+            // YENİ: Bekleme süresi 20 saniyeye (20000) çıkarıldı.
+            const checkLoc = () => { return new Promise((resolve, reject) => { navigator.geolocation.getCurrentPosition(p => resolve(p), e => reject(e), {enableHighAccuracy: true, timeout: 20000, maximumAge: 0}); }); };
+            
             checkLoc().then(p => {
                 let lat = p.coords.latitude; let lng = p.coords.longitude; let ms = GetDistanceKm(DUKKAN_ENLEM, DUKKAN_BOYLAM, lat, lng);
                 
@@ -1915,10 +1916,19 @@
                 }
                 DevamEtPaketGonder(is, tl, ad, secilenOdeme, sepet, lat, lng);
             }).catch(e => { 
-                OzelUyariGoster("Konum Zorunlu 📍", "Sipariş verebilmek için cihazınızın konum (GPS) özelliğinin açık olması ve tarayıcıdan izin vermeniz zorunludur. Aksi takdirde sipariş alınamaz.", "🛑");
+                // YENİ: Akıllı Hata Tespit Sistemi
+                let hataMesaji = "Konum alınamadı, lütfen cihazınızın GPS'ini kontrol edin.";
+                if(e.code === 1) hataMesaji = "Tarayıcınızın konum izni kapalı veya reddedilmiş! Lütfen adres çubuğundaki kilit (🔒) simgesine tıklayıp konum iznine 'İzin Ver' deyin.";
+                else if(e.code === 2) hataMesaji = "Cihazınızın GPS sinyali şu an alınamıyor. Lütfen açık bir alana geçin veya GPS'i açıp kapatın.";
+                else if(e.code === 3) hataMesaji = "Konum bulma süresi doldu. Kapalı bir alandaysanız GPS sinyaliniz zayıf olabilir.";
+
+                OzelUyariGoster("Konum Hatası 📍", hataMesaji, "🛑");
                 isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = `${sonOdenecekFiyat.toFixed(2)} TL Öde`; 
             });
-        } else { OzelUyariGoster("Desteklenmiyor", "Cihazınız konum servisini desteklemediği için sipariş veremezsiniz.", "🛑"); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = `${sonOdenecekFiyat.toFixed(2)} TL Öde`; }
+        } else { 
+            OzelUyariGoster("Desteklenmiyor", "Cihazınız konum servisini desteklemiyor.", "🛑"); 
+            isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = `${sonOdenecekFiyat.toFixed(2)} TL Öde`; 
+        }
     }
 
     async function DevamEtPaketGonder(isim, tel, adres, odemeTuru, temizSepet, lat = 0, lng = 0) {
