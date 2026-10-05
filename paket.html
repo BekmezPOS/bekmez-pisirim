@@ -1645,41 +1645,45 @@
 
     function KuponKopyala(kod) { HapticTitresim(); navigator.clipboard.writeText(kod).then(() => { OzelUyariGoster("Kopyalandı", `Kupon kodu (${kod}) kopyalandı! Sepetinizde kullanabilirsiniz.`, "📋"); }); }
     
-    async function KuponSorgula() { 
-        let iE = document.getElementById("coupon-code"); let gK = escapeHTML(iE.value.trim().toUpperCase()); let b = document.getElementById("coupon-apply-btn"); 
-        if(gK === "") { OzelUyariGoster("Boş Kod", "Lütfen bir kod giriniz.", "⚠"); return; } 
+   async function KuponSorgula() { 
+    let iE = document.getElementById("coupon-code"); let gK = escapeHTML(iE.value.trim().toUpperCase()); let b = document.getElementById("coupon-apply-btn"); 
+    if(gK === "") { OzelUyariGoster("Boş Kod", "Lütfen bir kod giriniz.", "⚠"); return; } 
 
-        let tries = parseInt(SecureOku("cpn_try") || "0");
-        let blockTime = parseInt(SecureOku("cpn_blk") || "0");
-        if(Date.now() < blockTime) { OzelUyariGoster("Engellendi", "Çok fazla hatalı deneme yaptınız. 15 Dakika sonra tekrar deneyin.", "🚫"); return; }
-        if(tries >= 5) { SecureKaydet("cpn_blk", Date.now() + (15*60000)); OzelUyariGoster("Kilitlendi", "5 Hatalı deneme sebebiyle kupon sistemi 15 dk kilitlendi.", "🔒"); return; }
+    let tries = parseInt(SecureOku("cpn_try") || "0");
+    let blockTime = parseInt(SecureOku("cpn_blk") || "0");
+    if(Date.now() < blockTime) { OzelUyariGoster("Engellendi", "Çok fazla hatalı deneme yaptınız. 15 Dakika sonra tekrar deneyin.", "🚫"); return; }
+    if(tries >= 5) { SecureKaydet("cpn_blk", Date.now() + (15*60000)); OzelUyariGoster("Kilitlendi", "5 Hatalı deneme sebebiyle kupon sistemi 15 dk kilitlendi.", "🔒"); return; }
 
-        b.innerText = "Bekleyin..."; b.disabled = true; 
+    b.innerText = "Bekleyin..."; b.disabled = true; 
+    
+    try {
+        let res = await fetch(`${FIREBASE_URL}/Kuponlar/${gK}.json?t=${Date.now()}`);
+        let d = await res.json();
+        b.disabled = false; b.innerText = "Uygula";
         
-        try {
-            let res = await fetch(`${FIREBASE_URL}/Kuponlar/${gK}.json?t=${Date.now()}`);
-            let d = await res.json();
-            b.disabled = false; b.innerText = "Uygula";
-            if(d && d.discountAmount > 0) { 
-                SecureSil("cpn_try"); 
-                if (d.isAppCoupon !== true) { KuponuIptalEt(true); OzelUyariGoster("Sadece Mağazada", "Bu kupon sadece restoran içi siparişlerde geçerlidir.", "🚫"); return; }
-                let aU = (d.targetProduct && d.targetProduct !== "") ? d.targetProduct : "Herşey"; let uS = false; let hM = ""; 
-                if(aU === "Herşey") { uS = true; } else { let aV = sepet.some(u => u.rawName.toLocaleLowerCase('tr-TR') === aU.toLocaleLowerCase('tr-TR')); let bV = sepet.some(u => u.rawName.toLocaleLowerCase('tr-TR') !== aU.toLocaleLowerCase('tr-TR')); if (!aV) { hM = `'${escapeHTML(aU)}' sepette yok.`; } else if (bV) { hM = `Sadece '${escapeHTML(aU)}' almalısınız.`; } else { uS = true; } } 
-                if(!uS) { KuponuIptalEt(true); OzelUyariGoster("Şart Sağlanmadı", hM, "🛍"); return; } 
-                if (hamToplamFiyat < d.bottomLimit) { KuponuIptalEt(true); OzelUyariGoster("Tutar Yetersiz", `Alt limit ${d.bottomLimit} TL.`, "🛒"); return; } 
-                HapticTitresim(); aktifKuponKodu = gK; aktifKuponIndirimTutari = d.discountAmount; aktifKuponAltLimit = d.bottomLimit; aktifKuponHedefUrun = aU; 
-                
-                OzelUyariGoster("Onaylandı", `${d.discountAmount} TL indirim uygulandı!`, "✅"); 
-                BildirimGonder("Kupon Aktif! 🎟", `${d.discountAmount} TL değerindeki indiriminiz sepete başarıyla yansıtıldı.`);
-                
-                HesaplaVeGuncelle(); KuponArayuzunuGuncelle(); 
-            } else { 
-                SecureKaydet("cpn_try", tries + 1);
-                KuponuIptalEt(true); OzelUyariGoster("Geçersiz", `Hatalı veya süresi dolmuş kod. (${5 - tries} hakkınız kaldı)`, "❌"); 
-            } 
-        } catch(e) { b.disabled = false; b.innerText = "Uygula"; OzelUyariGoster("Hata", "Bağlantı hatası.", "📡"); }
-    }
-
+        // Sadece okuma yapıyoruz, limiti KASA (Unity) sipariş onaylanınca düşecek!
+        if(d && d.discountAmount > 0 && d.remainingUses > 0) { 
+            SecureSil("cpn_try"); 
+            if (d.isAppCoupon !== true) { KuponuIptalEt(true); OzelUyariGoster("Sadece Mağazada", "Bu kupon sadece restoran içi siparişlerde geçerlidir.", "🚫"); return; }
+            let aU = (d.targetProduct && d.targetProduct !== "") ? d.targetProduct : "Herşey"; let uS = false; let hM = ""; 
+            
+            if(aU === "Herşey") { uS = true; } else { let aV = sepet.some(u => u.rawName.toLocaleLowerCase('tr-TR') === aU.toLocaleLowerCase('tr-TR')); let bV = sepet.some(u => u.rawName.toLocaleLowerCase('tr-TR') !== aU.toLocaleLowerCase('tr-TR')); if (!aV) { hM = `'${escapeHTML(aU)}' sepette yok.`; } else if (bV) { hM = `Sadece '${escapeHTML(aU)}' almalısınız.`; } else { uS = true; } } 
+            
+            if(!uS) { KuponuIptalEt(true); OzelUyariGoster("Şart Sağlanmadı", hM, "🛍"); return; } 
+            if (hamToplamFiyat < d.bottomLimit) { KuponuIptalEt(true); OzelUyariGoster("Tutar Yetersiz", `Alt limit ${d.bottomLimit} TL.`, "🛒"); return; } 
+            
+            HapticTitresim(); aktifKuponKodu = gK; aktifKuponIndirimTutari = d.discountAmount; aktifKuponAltLimit = d.bottomLimit; aktifKuponHedefUrun = aU; 
+            
+            OzelUyariGoster("Onaylandı", `${d.discountAmount} TL indirim uygulandı!`, "✅"); 
+            BildirimGonder("Kupon Aktif! 🎟", `${d.discountAmount} TL değerindeki indiriminiz sepete başarıyla yansıtıldı.`);
+            
+            HesaplaVeGuncelle(); KuponArayuzunuGuncelle(); 
+        } else { 
+            SecureKaydet("cpn_try", tries + 1);
+            KuponuIptalEt(true); OzelUyariGoster("Geçersiz", `Hatalı, tükenmiş veya süresi dolmuş kod. (${5 - tries} hakkınız kaldı)`, "❌"); 
+        } 
+    } catch(e) { b.disabled = false; b.innerText = "Uygula"; OzelUyariGoster("Hata", "Bağlantı hatası.", "📡"); }
+}
     function KuponuIptalEt(sM = false) { if(!sM) HapticTitresim(); aktifKuponKodu = ""; aktifKuponIndirimTutari = 0; aktifKuponAltLimit = 0; aktifKuponHedefUrun = "Herşey"; let iE = document.getElementById("coupon-code"); if(iE) iE.value = ""; KuponArayuzunuGuncelle(); if(!sM) HesaplaVeGuncelle(); }
     function KuponArayuzunuGuncelle() { let b = document.getElementById("coupon-apply-btn"); let m = document.getElementById("coupon-message"); let iE = document.getElementById("coupon-code"); if(aktifKuponIndirimTutari > 0) { b.style.background = "var(--danger)"; b.style.color = "white"; b.innerText = "İptal Et"; b.onclick = () => KuponuIptalEt(false); if(iE) { iE.disabled = true; iE.style.opacity = "0.6"; } m.innerHTML = `<span style="color: var(--success);">✓ ${aktifKuponIndirimTutari} TL İndirim!</span>`; } else { b.style.background = "rgba(255,255,255,0.05)"; b.style.color = "var(--text-main)"; b.innerText = "Uygula"; b.onclick = KuponSorgula; if(iE) { iE.disabled = false; iE.style.opacity = "1"; } m.innerHTML = ""; } }
     function GosterHataInput(id) { let el = document.getElementById(id); if(el) { el.classList.remove("input-error"); void el.offsetWidth; el.classList.add("input-error"); setTimeout(() => el.classList.remove("input-error"), 500); } }
