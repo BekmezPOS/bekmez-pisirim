@@ -12,9 +12,10 @@
     <meta name="theme-color" content="#FF6B00">
     <link rel="apple-touch-icon" href="icon-192.png">
 
-    <!-- FİREBASE SİSTEMİ -->
+    <!-- FİREBASE SİSTEMİ VE APP CHECK GÜVENLİK KALKANI -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app-check.js"></script>
 
     <style>
         :root{--bg-dark:#000;--bg-gradient:radial-gradient(circle at top, #111114 0%, #000 100%);--surface:rgba(24, 24, 28, 0.65);--surface-solid:#151518;--surface-hover:rgba(40, 40, 45, 0.8);--border:rgba(255, 255, 255, 0.06);--border-light:rgba(255, 255, 255, 0.03);--border-highlight:rgba(255, 255, 255, 0.12);--text-main:#fff;--text-muted:#8a8a93;--primary:#FF6B00;--gradient-fire:linear-gradient(135deg, #FF6B00 0%, #FF9500 100%);--gradient-gold:linear-gradient(135deg, #FACC15 0%, #D97706 100%);--primary-glow:rgba(255, 107, 0, 0.25);--primary-light:rgba(255, 107, 0, 0.12);--success:#34C759;--danger:#FF3B30;--warning:#FFCC00;}
@@ -355,7 +356,7 @@
                 </div>
                 <div style="display: flex; gap: 12px; margin-top: 25px;">
                     <button onclick="SadeceCikisYap()" style="flex: 1; background: rgba(255, 204, 0, 0.1); border: 1px solid rgba(255,204,0,0.3); color: var(--warning); padding: 14px; border-radius: 14px; font-weight: 700; cursor: pointer; transition: 0.3s;">🚪 Çıkış</button>
-                    <button onclick="HesabiTamamenSil()" style="flex: 1; background: rgba(255, 59, 48, 0.1); border: 1px solid rgba(255,59,48,0.3); color: var(--danger); padding: 14px; border-radius: 14px; font-weight: 700; cursor: pointer; transition: 0.3s;">🗑️️ Hesabı Sil</button>
+                    <button onclick="HesabiTamamenSil()" style="flex: 1; background: rgba(255, 59, 48, 0.1); border: 1px solid rgba(255,59,48,0.3); color: var(--danger); padding: 14px; border-radius: 14px; font-weight: 700; cursor: pointer; transition: 0.3s;">🗑 Hesabı Sil</button>
                 </div>
             </div>
         </div>
@@ -479,7 +480,7 @@
     
     <div id="success-overlay" class="success-overlay"><div class="success-icon-wrapper"><div class="success-ring"></div><div class="success-circle"><svg class="success-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div></div><div class="success-text">Sipariş İletildi</div><div class="success-subtext">Kasa onayı bekleniyor...</div></div>
   <script>
-   // ==========================================
+      // ==========================================
     // SİBER GÜVENLİK KALKANLARI VE ŞİFRELEME (PREMIUM SECURITY)
     // ==========================================
     console.log("%c DİKKAT!", "color: #FF3B30; font-size: 50px; font-weight: 900; text-shadow: 2px 2px 0 #000;");
@@ -660,10 +661,10 @@
     };
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     
-    // === APP CHECK (RECAPTCHA BOT KALKANI) ===
+    // === RECAPTCHA ENTERPRISE BOT KALKANI (APP CHECK) ===
     const appCheck = firebase.appCheck();
     appCheck.activate(
-      '6Lf0BeAtAAAAAI7lhircOnou6jygHl5SCcMgGiaZ',
+      new firebase.appCheck.ReCaptchaEnterpriseProvider('6Lf0BeAtAAAAAI7lhircOnou6jygHl5SCcMgGiaZ'),
       true // Otomatik token yenileme aktif
     );
     // =========================================
