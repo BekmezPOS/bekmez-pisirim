@@ -674,7 +674,9 @@
     let tumUrunler = []; let aktifKategori = 'Ana Yemek'; let sonMenuVerisi = ""; let sonMenuVersiyonu = "";
     let seciliUrun = null; let seciliMiktar = 0; let seciliFiyat = 0; let seciliEkstraIstekler = []; let seciliOzelEkmekTip = "Normal"; 
     let baseKgBread = 0; let ekstraEkmekKg = 0; let seciliUrunStok = 999; let oncekiToplamFiyat = 0; let oncekiPopupFiyat = 0; let oncekiPopupMiktar = 0;
-    let populerUrunlerListesi = []; let canliAdisyonTimer = null; let sonCekilenAdisyonHTML = ""; let sonKuponVerisi = ""; let isProcessingOrder = false;
+    
+    // KOTA VE SİSTEM PERFORMANS DEĞİŞKENLERİ
+    let populerUrunlerListesi = []; let aktifAdisyonDinleyiciRef = null; let menuDinleyiciRef = null; let sonCekilenAdisyonHTML = ""; let sonKuponVerisi = ""; let isProcessingOrder = false;
     
     let emailInterval = null; 
     let whatsappInterval = null; 
@@ -1415,7 +1417,7 @@
         if(ki) { let pI = document.getElementById("prof-isim"); let cI = document.getElementById("chk-isim"); if(pI) pI.value = escapeHTML(ki); if(cI) cI.value = escapeHTML(ki); }
         if(ka) { let pA = document.getElementById("prof-adres"); let cA = document.getElementById("chk-adres"); if(pA) pA.value = escapeHTML(ka); if(cA) cA.value = escapeHTML(ka); }
 
-        CanliMenuCek(true); setInterval(() => CanliMenuCek(false), 10000); 
+        CanliMenuCek(true); MenuyuGercekZamanliDinle(); 
         setInterval(() => { if(document.getElementById("opportunities-container").style.display === "block") { KuponlariCek(); CarkDurumunuKontrolEt(); } }, 5000);
     });
 
@@ -1447,7 +1449,7 @@
     }
 
     function SayfaGoster(s) {
-        HapticTitresim(); SessizIzinIste(); if(canliAdisyonTimer) { clearInterval(canliAdisyonTimer); canliAdisyonTimer = null; }
+        HapticTitresim(); SessizIzinIste(); if (aktifAdisyonDinleyiciRef) { aktifAdisyonDinleyiciRef.off(); aktifAdisyonDinleyiciRef = null; }
         document.getElementById("menu-container").style.display = "none"; document.getElementById("cart-container").style.display = "none"; document.getElementById("profile-container").style.display = "none"; document.getElementById("history-container").style.display = "none"; document.getElementById("opportunities-container").style.display = "none"; document.getElementById("floating-cart").style.display = "none";
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active')); 
 
@@ -1457,7 +1459,7 @@
         else if (s === 'sepet') { document.getElementById("cart-container").style.display = "block"; SepetEkraniniCiz(); } 
         else if (s === 'profil') { document.getElementById("profile-container").style.display = "block"; } 
         else if (s === 'firsatlar') { document.getElementById("opportunities-container").style.display = "block"; KuponlariCek(); CarkDurumunuKontrolEt(); } 
-        else if (s === 'gecmis') { document.getElementById("history-container").style.display = "block"; sonCekilenAdisyonHTML = ""; CanliAdisyonCek(); canliAdisyonTimer = setInterval(CanliAdisyonCek, 2000); } 
+        else if (s === 'gecmis') { document.getElementById("history-container").style.display = "block"; sonCekilenAdisyonHTML = ""; AdisyonuGercekZamanliDinle(); } 
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -1661,7 +1663,6 @@
         let d = await res.json();
         b.disabled = false; b.innerText = "Uygula";
         
-        // Sadece okuma yapıyoruz, limiti KASA (Unity) sipariş onaylanınca düşecek!
         if(d && d.discountAmount > 0 && d.remainingUses > 0) { 
             SecureSil("cpn_try"); 
             if (d.isAppCoupon !== true) { KuponuIptalEt(true); OzelUyariGoster("Sadece Mağazada", "Bu kupon sadece restoran içi siparişlerde geçerlidir.", "🚫"); return; }
@@ -1684,6 +1685,7 @@
         } 
     } catch(e) { b.disabled = false; b.innerText = "Uygula"; OzelUyariGoster("Hata", "Bağlantı hatası.", "📡"); }
 }
+
     function KuponuIptalEt(sM = false) { if(!sM) HapticTitresim(); aktifKuponKodu = ""; aktifKuponIndirimTutari = 0; aktifKuponAltLimit = 0; aktifKuponHedefUrun = "Herşey"; let iE = document.getElementById("coupon-code"); if(iE) iE.value = ""; KuponArayuzunuGuncelle(); if(!sM) HesaplaVeGuncelle(); }
     function KuponArayuzunuGuncelle() { let b = document.getElementById("coupon-apply-btn"); let m = document.getElementById("coupon-message"); let iE = document.getElementById("coupon-code"); if(aktifKuponIndirimTutari > 0) { b.style.background = "var(--danger)"; b.style.color = "white"; b.innerText = "İptal Et"; b.onclick = () => KuponuIptalEt(false); if(iE) { iE.disabled = true; iE.style.opacity = "0.6"; } m.innerHTML = `<span style="color: var(--success);">✓ ${aktifKuponIndirimTutari} TL İndirim!</span>`; } else { b.style.background = "rgba(255,255,255,0.05)"; b.style.color = "var(--text-main)"; b.innerText = "Uygula"; b.onclick = KuponSorgula; if(iE) { iE.disabled = false; iE.style.opacity = "1"; } m.innerHTML = ""; } }
     function GosterHataInput(id) { let el = document.getElementById(id); if(el) { el.classList.remove("input-error"); void el.offsetWidth; el.classList.add("input-error"); setTimeout(() => el.classList.remove("input-error"), 500); } }
@@ -1772,19 +1774,48 @@
         } catch (e) { OzelUyariGoster("Hata", "Sipariş iletilemedi, internetinizi kontrol edin.", "📡"); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; }
     }
 
-    async function CanliAdisyonCek() {
+    // === 1. MENÜ DİNLEYİCİ (0 Ping, Sıfır Kota İsrafı) ===
+    function MenuyuGercekZamanliDinle() {
+        menuDinleyiciRef = firebase.database().ref('MenuVersion');
+        menuDinleyiciRef.on('value', async (snapshot) => {
+            let vD = snapshot.val();
+            if (vD && vD.v != sonMenuVersiyonu) {
+                sonMenuVersiyonu = vD.v;
+                await CanliMenuCek(false); 
+            }
+        });
+    }
+
+    // === 2. ADİSYON DİNLEYİCİ (Sadece aktif sipariş varken çalışır) ===
+    function AdisyonuGercekZamanliDinle() {
+        let siparisId = SecureOku("bg_active_order_id");
+        if (!siparisId) {
+            document.getElementById("history-content").innerHTML = `<div class="empty-text">Adisyon yok.<br><br>Aktif bir siparişiniz bulunmamaktadır.</div>`;
+            return;
+        }
+        
+        // Varsa eski dinleyiciyi temizle
+        if (aktifAdisyonDinleyiciRef) aktifAdisyonDinleyiciRef.off();
+        
+        // Kasa'daki durumu saniyesinde dinle
+        aktifAdisyonDinleyiciRef = firebase.database().ref(`CanliPaketler/${siparisId}`);
+        aktifAdisyonDinleyiciRef.on('value', async (snapshot) => {
+            let bP = snapshot.val();
+            await AdisyonEkraniGuncelle(bP, siparisId);
+        });
+    }
+
+    // === 3. ADİSYON ARAYÜZ (UI) MOTORU ===
+    async function AdisyonEkraniGuncelle(bP, siparisId) {
         try {
-            let siparisId = SecureOku("bg_active_order_id");
-            if(!siparisId) { document.getElementById("history-content").innerHTML = `<div class="empty-text">Adisyon yok.<br><br>Aktif bir siparişiniz bulunmamaktadır.</div>`; return; }
-            
             let authUser = firebase.auth().currentUser; if(!authUser) return;
             let idToken = await authUser.getIdToken(true);
-
-            let r = await fetch(`${FIREBASE_URL}/CanliPaketler/${siparisId}.json?auth=${idToken}&t=${Date.now()}`); let bP = await r.json();
-            let odemeTuru = SecureOku("bg_odeme_turu") || "Kapıda Nakit"; let nakitDisiOdeme = !odemeTuru.includes("Nakit");
+            let odemeTuru = SecureOku("bg_odeme_turu") || "Kapıda Nakit"; 
+            let nakitDisiOdeme = !odemeTuru.includes("Nakit");
 
             if (!bP || bP.error) {
-                let taslakRes = await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}.json?auth=${idToken}&t=${Date.now()}`); let taslakData = await taslakRes.json();
+                let taslakRes = await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}.json?auth=${idToken}&t=${Date.now()}`); 
+                let taslakData = await taslakRes.json();
                 
                 if (taslakData && !taslakData.error && taslakData.durum) {
                     let rawOrderTs = SecureOku("bg_order_timestamp"); 
