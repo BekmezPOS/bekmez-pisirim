@@ -480,6 +480,7 @@
     <div id="distance-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)"><div class="custom-alert-box"><div class="custom-alert-glow" style="background:var(--primary);"></div><div class="custom-alert-content"><div style="font-size: 55px; margin-bottom: 20px;">🛵</div><h3 style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Menzil Dışındasınız</h3><p style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;">Bekmez GO lezzetlerini size ulaştırabilmek için teslimat ağımızı <b>4 km</b> ile sınırlandırıyoruz.<br><br>Maalesef şu an sıcak teslimat bölgemizin dışındasınız.</p><button onclick="KapatUyariModal(event, true)" class="alert-btn" style="background:var(--primary); border-color:transparent; color:white;">Anladım</button></div></div></div>
     
     <div id="success-overlay" class="success-overlay"><div class="success-icon-wrapper"><div class="success-ring"></div><div class="success-circle"><svg class="success-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div></div><div class="success-text">Sipariş İletildi</div><div class="success-subtext">Kasa onayı bekleniyor...</div></div>
+
     <script>
     // ==========================================
     // SİBER GÜVENLİK KALKANLARI VE ŞİFRELEME (PREMIUM SECURITY)
@@ -662,16 +663,18 @@
     };
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     
+    // =========================================
     // === RECAPTCHA ENTERPRISE BOT KALKANI (APP CHECK) ===
+    // DİKKAT: Firebase v8 için resmi Enterprise Provider sınıfı kullanıldı!
+    // =========================================
     const appCheck = firebase.appCheck();
     appCheck.activate(
-      '6LfaV-AtAAAAAGqAbPWGYWxmlGfQNasMlne4iHne', // SENİN ORİJİNAL ENTERPRISE ANAHTARIN!
+      new firebase.appCheck.ReCaptchaEnterpriseProvider('6LfaV-AtAAAAAGqAbPWGYWxmlGfQNasMlne4iHne'),
       true // Otomatik token yenileme aktif
     );
 
     // =========================================
     // KÜRESEL FETCH KÖPRÜSÜ (REST API AppCheck Vizesi)
-    // Ürün bulunamadı hatasını çözen, veri çekerken kalkanı aşan sistem
     // =========================================
     const orjinalFetch = window.fetch;
     window.fetch = async function(...args) {
