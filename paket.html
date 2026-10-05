@@ -12,9 +12,10 @@
     <meta name="theme-color" content="#FF6B00">
     <link rel="apple-touch-icon" href="icon-192.png">
 
-    <!-- FİREBASE SİSTEMİ VE APP CHECK GÜVENLİK KALKANI -->
+  <!-- FİREBASE SİSTEMİ VE APP CHECK GÜVENLİK KALKANI -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script> <!-- EKSİK OLAN BUYDU -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app-check.js"></script>
 
     <style>
@@ -661,10 +662,10 @@
     };
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     
-    // === RECAPTCHA ENTERPRISE BOT KALKANI (APP CHECK) ===
+   // === RECAPTCHA ENTERPRISE BOT KALKANI (APP CHECK) ===
     const appCheck = firebase.appCheck();
     appCheck.activate(
-      new firebase.appCheck.ReCaptchaEnterpriseProvider('6Lf0BeAtAAAAAI7lhircOnou6jygHl5SCcMgGiaZ'),
+      '6Lf0BeAtAAAAAI7lhircOnou6jygHl5SCcMgGiaZ',
       true // Otomatik token yenileme aktif
     );
     // =========================================
