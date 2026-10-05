@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no">
+    <!-- CSP: Yüksek Güvenlikli Content Security Policy -->
     <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval'; connect-src * 'unsafe-inline'; img-src * data: blob: 'unsafe-inline'; frame-src *; style-src * 'unsafe-inline'; font-src * data:;">
     <title>Bekmez GO - Premium Paket</title>
 
@@ -39,19 +40,44 @@
         .coupon-card{display:flex;align-items:stretch;background:linear-gradient(135deg,rgba(255,107,0,0.1) 0%,rgba(255,149,0,0.05) 100%);border:1px solid rgba(255,107,0,0.2);border-radius:16px;margin-bottom:12px;overflow:hidden;opacity:0;animation:cardEntrance 0.6s cubic-bezier(0.175,0.885,0.32,1.275) forwards;box-shadow:0 8px 15px rgba(0,0,0,0.2);}.c-left{background:var(--gradient-fire);color:white;padding:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:90px;border-right:2px dashed rgba(255,255,255,0.4);position:relative;}.c-left::before{content:'';position:absolute;top:-8px;right:-8px;width:16px;height:16px;background:var(--bg-dark);border-radius:50%;}.c-left::after{content:'';position:absolute;bottom:-8px;right:-8px;width:16px;height:16px;background:var(--bg-dark);border-radius:50%;}.c-discount{font-size:24px;font-weight:900;line-height:1;margin-bottom:4px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3));}.c-type{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;}.c-right{padding:15px;flex:1;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;text-align:left;}.c-title{font-size:14px;font-weight:800;color:var(--text-main);margin-bottom:6px;}.c-code{font-size:11px;color:var(--primary);font-weight:800;margin-bottom:10px;letter-spacing:1px;background:rgba(255,107,0,0.1);padding:4px 8px;border-radius:6px;border:1px solid rgba(255,107,0,0.2);}.c-limit{font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:12px;}.c-btn{background:rgba(255,107,0,0.15);color:var(--primary);border:1px solid var(--primary);padding:10px 14px;border-radius:100px;font-weight:800;font-size:13px;cursor:pointer;transition:0.3s;text-align:center;width:100%;}.c-btn:active{background:var(--primary);color:white;transform:scale(0.95);box-shadow:0 4px 15px var(--primary-glow);}
         .shimmer-btn{position:relative;overflow:hidden;}.shimmer-btn::after{content:'';position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(to right,transparent,rgba(255,255,255,0.3),transparent);transform:skewX(-25deg);animation:shimmer 5s infinite cubic-bezier(0.16,1,0.3,1);}@keyframes shimmer{0%,50%{left:-100%;}100%{left:200%;}}
         .neon-border{position:relative;}.neon-border::before{content:'';position:absolute;top:-2px;left:-2px;right:-2px;bottom:-2px;background:linear-gradient(90deg,#FF6B00,#FACC15,#FF6B00,#FACC15);background-size:300% 100%;border-radius:inherit;z-index:-1;animation:neonFlow 3s linear infinite;opacity:0.5;filter:blur(5px);transition:opacity 0.3s;}.neon-border:active::before{opacity:0.8;filter:blur(8px);}@keyframes neonFlow{0%{background-position:0% 0%;}100%{background-position:300% 0%;}}@keyframes floatUpFade{0%{opacity:0;transform:translate(-50%,-20%) scale(0.8);}20%{opacity:1;transform:translate(-50%,-50%) scale(1.05);}80%{opacity:1;transform:translate(-50%,-70%) scale(1);}100%{opacity:0;transform:translate(-50%,-90%) scale(0.9);}}
+        
+        /* RIPPLE EFEKTİ (DOKUNMATİK SU DALGASI) */
+        .ripple-element { position: relative; overflow: hidden; cursor: pointer; }
+        .ripple-span { position: absolute; border-radius: 50%; transform: scale(0); animation: ripple-anim 0.6s linear; background: rgba(255, 255, 255, 0.3); pointer-events: none; }
+        @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
+        
+        /* BOŞ DURUM İLLÜSTRASYONLARI EKLENDİ */
+        .empty-state-box { text-align: center; padding: 40px 20px; background: rgba(25,25,30,0.8); border-radius: 24px; border: 1px dashed var(--border-highlight); display: flex; flex-direction: column; align-items: center; justify-content: center; grid-column: 1 / -1; }
+        .empty-state-box svg { width: 64px; height: 64px; opacity: 0.2; margin-bottom: 15px; color: var(--text-muted); }
+        .empty-state-box p { color: var(--text-muted); font-weight: 700; font-size: 14px; margin: 0; letter-spacing: -0.3px; }
+
         .search-container{padding:15px 15px 5px 15px;position:relative;}.search-input{width:100%;background:rgba(25,25,30,0.9);border:1px solid var(--border-highlight);color:var(--text-main);padding:14px 15px 14px 45px;border-radius:20px;font-size:14px;font-weight:600;font-family:inherit;transition:0.4s cubic-bezier(0.16,1,0.3,1);box-shadow:inset 0 2px 10px rgba(0,0,0,0.3),0 5px 15px rgba(0,0,0,0.2);}.search-input:focus{outline:none;border-color:var(--primary);background:var(--surface-solid);box-shadow:inset 0 2px 5px rgba(0,0,0,0.5),0 0 0 2px var(--primary-light),0 10px 25px rgba(0,0,0,0.5);transform:translateY(-2px);}.search-input::placeholder{color:#52525B;font-weight:500;}.search-icon{position:absolute;left:30px;top:56%;transform:translateY(-50%);font-size:18px;color:#52525B;transition:color 0.3s;}.search-input:focus ~ .search-icon{color:var(--primary);}
         .category-tabs{display:flex;gap:8px;padding:10px 15px 20px 15px;overflow-x:auto;scrollbar-width:none;}.tab-btn{background:linear-gradient(135deg,rgba(35,35,40,0.9) 0%,rgba(25,25,30,0.9) 100%);border:1px solid var(--border-highlight);font-size:13px;font-weight:700;color:var(--text-muted);padding:10px 20px;cursor:pointer;border-radius:100px;transition:0.4s cubic-bezier(0.16,1,0.3,1);white-space:nowrap;display:flex;align-items:center;gap:6px;box-shadow:0 2px 10px rgba(0,0,0,0.2);}.tab-btn.active{color:#fff;background:var(--gradient-fire);border:1px solid transparent;box-shadow:0 6px 15px var(--primary-glow),inset 0 1px 1px rgba(255,255,255,0.2);transform:translateY(-2px);}
         @keyframes cardEntrance{0%{opacity:0;transform:translateY(40px) scale(0.9);}100%{opacity:1;transform:translateY(0) scale(1);}}
-        .grid-container{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:0 15px 25px 15px;}.product-card{opacity:0;animation:cardEntrance 0.6s cubic-bezier(0.175,0.885,0.32,1.275) forwards;background:linear-gradient(145deg,rgba(30,30,35,0.9) 0%,rgba(15,15,20,0.95) 100%);border:1px solid rgba(255,255,255,0.05);border-top:1px solid rgba(255,255,255,0.1);border-radius:24px;padding:16px 12px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:space-between;transition:0.4s cubic-bezier(0.16,1,0.3,1);cursor:pointer;position:relative;overflow:hidden;box-shadow:0 8px 20px rgba(0,0,0,0.4),inset 0 1px 1px rgba(255,255,255,0.05);}.product-card:active{transform:scale(0.93) translateY(2px);background:linear-gradient(145deg,rgba(20,20,25,0.95) 0%,rgba(10,10,15,1) 100%);border-color:rgba(255,94,0,0.3);box-shadow:0 4px 10px rgba(0,0,0,0.6),inset 0 2px 10px rgba(0,0,0,0.5);}.popular-badge{position:absolute;top:12px;right:12px;background:var(--gradient-gold);color:#000;font-size:8px;font-weight:900;padding:4px 8px;border-radius:10px;box-shadow:0 2px 10px rgba(250,204,21,0.3);z-index:5;letter-spacing:0.5px;text-transform:uppercase;}.product-icon-wrapper{width:60px;height:60px;border-radius:50%;background:linear-gradient(145deg,#1f1f25,#141419);display:flex;align-items:center;justify-content:center;margin-bottom:12px;border:1px solid rgba(255,255,255,0.02);position:relative;box-shadow:6px 6px 12px #070709,-6px -6px 12px #23232b,inset 0px 2px 4px rgba(255,94,0,0.1);transition:transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275);}.product-card:active .product-icon-wrapper{transform:scale(0.9);box-shadow:inset 6px 6px 12px #070709,inset -6px -6px 12px #23232b;}.product-icon{font-size:26px;z-index:2;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.6));}.product-name{font-size:14px;font-weight:800;color:var(--text-main);margin-bottom:12px;line-height:1.3;letter-spacing:-0.3px;min-height:36px;display:flex;align-items:center;justify-content:center;text-shadow:0 2px 4px rgba(0,0,0,0.5);}.product-price-badge{background:rgba(0,0,0,0.4);color:var(--text-main);padding:8px 12px;border-radius:100px;font-weight:800;font-size:13px;border:1px solid var(--border-highlight);width:100%;box-shadow:inset 0 2px 5px rgba(0,0,0,0.5),0 2px 8px rgba(0,0,0,0.2);letter-spacing:0.5px;transition:all 0.4s cubic-bezier(0.16,1,0.3,1);}.product-card:active .product-price-badge{background:var(--gradient-fire);color:white;border-color:transparent;box-shadow:0 6px 15px var(--primary-glow),inset 0 1px 1px rgba(255,255,255,0.3);}.empty-text{grid-column:1 / -1;text-align:center;color:var(--text-muted);padding:50px 0;font-weight:700;font-size:14px;background:rgba(25,25,30,0.8);border-radius:24px;border:1px dashed var(--border-highlight);letter-spacing:-0.3px;}
+        .grid-container{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:0 15px 25px 15px;}.product-card{opacity:0;animation:cardEntrance 0.6s cubic-bezier(0.175,0.885,0.32,1.275) forwards;background:linear-gradient(145deg,rgba(30,30,35,0.9) 0%,rgba(15,15,20,0.95) 100%);border:1px solid rgba(255,255,255,0.05);border-top:1px solid rgba(255,255,255,0.1);border-radius:24px;padding:16px 12px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:space-between;transition:0.4s cubic-bezier(0.16,1,0.3,1);cursor:pointer;position:relative;overflow:hidden;box-shadow:0 8px 20px rgba(0,0,0,0.4),inset 0 1px 1px rgba(255,255,255,0.05);}.product-card:active{transform:scale(0.93) translateY(2px);background:linear-gradient(145deg,rgba(20,20,25,0.95) 0%,rgba(10,10,15,1) 100%);border-color:rgba(255,94,0,0.3);box-shadow:0 4px 10px rgba(0,0,0,0.6),inset 0 2px 10px rgba(0,0,0,0.5);}.popular-badge{position:absolute;top:12px;right:12px;background:var(--gradient-gold);color:#000;font-size:8px;font-weight:900;padding:4px 8px;border-radius:10px;box-shadow:0 2px 10px rgba(250,204,21,0.3);z-index:5;letter-spacing:0.5px;text-transform:uppercase;}.product-icon-wrapper{width:60px;height:60px;border-radius:50%;background:linear-gradient(145deg,#1f1f25,#141419);display:flex;align-items:center;justify-content:center;margin-bottom:12px;border:1px solid rgba(255,255,255,0.02);position:relative;box-shadow:6px 6px 12px #070709,-6px -6px 12px #23232b,inset 0px 2px 4px rgba(255,94,0,0.1);transition:transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275);}.product-card:active .product-icon-wrapper{transform:scale(0.9);box-shadow:inset 6px 6px 12px #070709,inset -6px -6px 12px #23232b;}.product-icon{font-size:26px;z-index:2;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.6));}.product-name{font-size:14px;font-weight:800;color:var(--text-main);margin-bottom:12px;line-height:1.3;letter-spacing:-0.3px;min-height:36px;display:flex;align-items:center;justify-content:center;text-shadow:0 2px 4px rgba(0,0,0,0.5);}.product-price-badge{background:rgba(0,0,0,0.4);color:var(--text-main);padding:8px 12px;border-radius:100px;font-weight:800;font-size:13px;border:1px solid var(--border-highlight);width:100%;box-shadow:inset 0 2px 5px rgba(0,0,0,0.5),0 2px 8px rgba(0,0,0,0.2);letter-spacing:0.5px;transition:all 0.4s cubic-bezier(0.16,1,0.3,1);}.product-card:active .product-price-badge{background:var(--gradient-fire);color:white;border-color:transparent;box-shadow:0 6px 15px var(--primary-glow),inset 0 1px 1px rgba(255,255,255,0.3);}
+        
         .skeleton-card{background:rgba(30,30,35,0.8);border:1px solid var(--border-light);border-radius:24px;padding:16px 12px;display:flex;flex-direction:column;align-items:center;position:relative;overflow:hidden;}.skeleton-card::after{content:"";position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.03),transparent);transform:translateX(-100%);animation:skeletonShimmer 2s infinite ease-in-out;}@keyframes skeletonShimmer{100%{transform:translateX(100%);}}.skel-icon{width:60px;height:60px;border-radius:50%;background:rgba(0,0,0,0.4);margin-bottom:12px;box-shadow:inset 0 2px 8px rgba(0,0,0,0.5);}.skel-text{width:85%;height:14px;border-radius:6px;background:rgba(255,255,255,0.03);margin-bottom:10px;}.skel-text.short{width:55%;margin-bottom:24px;}.skel-btn{width:100%;height:36px;border-radius:100px;background:rgba(0,0,0,0.3);}
+        
+        /* DİĞER EKRANLAR İÇİN İSKELET YÜKLEYİCİ (YENİ) */
+        .skeleton-block { background:rgba(30,30,35,0.8); border:1px solid var(--border-light); border-radius:16px; padding:20px; position:relative; overflow:hidden; margin: 0 15px 15px 15px; }
+        .skeleton-block::after { content:""; position:absolute; top:0; left:0; width:100%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.03),transparent); transform:translateX(-100%); animation:skeletonShimmer 2s infinite ease-in-out; }
+
         .secure-footer{margin-top:40px;padding:20px 15px 40px 15px;border-top:1px solid rgba(255,255,255,0.05);text-align:center;opacity:0;transform:translateY(20px);animation:fadeUpFooter 1s cubic-bezier(0.16,1,0.3,1) forwards 0.5s;}@keyframes fadeUpFooter{to{opacity:1;transform:translateY(0);}}.footer-text{font-size:11px;color:var(--text-muted);line-height:1.8;margin-top:15px;}
         @keyframes cartBounce{0%,100%{transform:translateX(-50%) scale(1);}50%{transform:translateX(-50%) scale(1.05) translateY(-3px);box-shadow:0 30px 40px rgba(255,94,0,0.4),inset 0 2px 4px rgba(255,255,255,0.5);}}.floating-cart.bounce{animation:cartBounce 0.4s cubic-bezier(0.175,0.885,0.32,1.275);}
         .floating-cart{position:fixed;bottom:calc(75px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);width:calc(100% - 30px);max-width:400px;height:60px;background:linear-gradient(135deg,rgba(255,107,0,0.95),rgba(220,45,0,0.95));backdrop-filter:blur(15px);border-radius:100px;display:flex;align-items:center;justify-content:space-between;padding:0 8px 0 24px;font-size:15px;font-weight:800;color:white;box-shadow:0 15px 30px rgba(255,94,0,0.4),inset 0 2px 4px rgba(255,255,255,0.3);z-index:100;cursor:pointer;transition:all 0.4s cubic-bezier(0.16,1,0.3,1);border:1px solid rgba(255,255,255,0.15);}.floating-cart:active{transform:translateX(-50%) scale(0.95) translateY(2px);box-shadow:0 8px 15px rgba(255,94,0,0.3),inset 0 2px 8px rgba(0,0,0,0.2);}.floating-btn{background:#fff;color:var(--primary);padding:12px 20px;border-radius:100px;font-size:14px;font-weight:900;box-shadow:0 6px 15px rgba(0,0,0,0.2);letter-spacing:-0.3px;}
         .page-title{font-size:24px;font-weight:900;margin:15px 15px 25px 15px;color:var(--text-main);letter-spacing:-1px;text-shadow:0 2px 10px rgba(0,0,0,0.8);}
         .cart-item{background:linear-gradient(145deg,rgba(30,30,35,0.8) 0%,rgba(15,15,20,0.9) 100%);padding:16px;border-radius:24px;margin:0 15px 15px 15px;display:flex;align-items:center;justify-content:space-between;border:1px solid rgba(255,255,255,0.05);border-top:1px solid rgba(255,255,255,0.1);gap:12px;box-shadow:0 8px 20px rgba(0,0,0,0.3),inset 0 1px 1px rgba(255,255,255,0.05);}.cart-item-details{flex:1;}.cart-item-name{font-size:14px;font-weight:700;margin-bottom:6px;color:var(--text-main);line-height:1.4;letter-spacing:-0.3px;text-shadow:0 2px 4px rgba(0,0,0,0.5);}.cart-item-price{color:var(--primary);font-weight:800;font-size:14px;letter-spacing:0.5px;}.cart-controls{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,0.6);border-radius:100px;padding:6px;border:1px solid var(--border-highlight);box-shadow:inset 0 2px 8px rgba(0,0,0,0.5);}.cart-btn{background:var(--surface-solid);color:var(--text-main);border:1px solid var(--border);width:32px;height:32px;font-size:18px;font-weight:600;cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all 0.3s cubic-bezier(0.16,1,0.3,1);box-shadow:0 2px 6px rgba(0,0,0,0.3);}.cart-btn:active{background:var(--gradient-fire);color:white;transform:scale(0.85);border-color:transparent;box-shadow:0 2px 10px var(--primary-glow);}.cart-amount{font-size:14px;font-weight:800;color:var(--text-main);min-width:24px;text-align:center;}
         .input-error{border-color:var(--danger) !important;box-shadow:0 0 10px rgba(255,59,48,0.3) !important;animation:inputShake 0.4s cubic-bezier(0.36,0.07,0.19,0.97) both;}@keyframes inputShake{0%,100%{transform:translateX(0);}20%,60%{transform:translateX(-5px);}40%,80%{transform:translateX(5px);}}
-        .note-input,.checkout-input{width:calc(100% - 30px);margin:5px 15px 20px 15px;background:rgba(25,25,30,0.9);border:1px solid var(--border-highlight);color:var(--text-main);padding:16px;border-radius:20px;font-family:inherit;font-size:14px;font-weight:600;box-sizing:border-box;transition:0.4s cubic-bezier(0.16,1,0.3,1);box-shadow:inset 0 2px 8px rgba(0,0,0,0.4),0 5px 20px rgba(0,0,0,0.2);}.note-input:focus,.checkout-input:focus{outline:none;border-color:var(--primary);background:var(--surface-solid);box-shadow:inset 0 2px 5px rgba(0,0,0,0.5),0 0 0 2px var(--primary-light),0 10px 30px rgba(0,0,0,0.5);transform:translateY(-2px);}.note-input::placeholder,.checkout-input::placeholder{color:#52525B;}.checkout-input{margin:0 0 12px 0;width:100%; height: 60px;}
+        
+        /* TEXTAREA TAŞMA HATASI ÇÖZÜMÜ */
+        .note-input, .checkout-input{width:calc(100% - 30px);margin:5px 15px 20px 15px;background:rgba(25,25,30,0.9);border:1px solid var(--border-highlight);color:var(--text-main);padding:16px;border-radius:20px;font-family:inherit;font-size:14px;font-weight:600;box-sizing:border-box;transition:0.4s cubic-bezier(0.16,1,0.3,1);box-shadow:inset 0 2px 8px rgba(0,0,0,0.4),0 5px 20px rgba(0,0,0,0.2);}
+        .note-input:focus, .checkout-input:focus{outline:none;border-color:var(--primary);background:var(--surface-solid);box-shadow:inset 0 2px 5px rgba(0,0,0,0.5),0 0 0 2px var(--primary-light),0 10px 30px rgba(0,0,0,0.5);transform:translateY(-2px);}
+        .note-input::placeholder, .checkout-input::placeholder{color:#52525B;}
+        .checkout-input{margin:0 0 12px 0;width:100%; height: 60px;}
+        textarea.checkout-input, textarea.premium-input { padding-top: 28px !important; line-height: 1.5; }
+        
         select.checkout-input { appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 1rem center; background-size: 1em; padding-top: 16px !important; }
+        
         .order-panel{margin:20px 15px 30px 15px;background:linear-gradient(145deg,rgba(30,30,35,0.9) 0%,rgba(15,15,20,0.95) 100%);padding:20px;border-radius:28px;border:1px solid rgba(255,255,255,0.05);border-top:1px solid rgba(255,255,255,0.15);box-shadow:0 20px 40px rgba(0,0,0,0.5),inset 0 1px 1px rgba(255,255,255,0.05);}.order-btn{background:var(--success);color:white;border:none;padding:18px;font-size:15px;font-weight:800;border-radius:100px;width:100%;cursor:pointer;box-shadow:0 10px 20px rgba(52,199,89,0.4),inset 0 2px 4px rgba(255,255,255,0.3);transition:all 0.4s cubic-bezier(0.16,1,0.3,1);letter-spacing:0.5px; display: flex; align-items: center; justify-content: center;}.order-btn:active{transform:scale(0.95) translateY(2px);box-shadow:0 5px 10px rgba(52,199,89,0.3),inset 0 2px 6px rgba(0,0,0,0.2);}.order-btn.loading{background:#52525B; cursor:not-allowed;box-shadow:none;transform:none;}.order-btn:disabled{background:#52525B;cursor:not-allowed;box-shadow:none;transform:none;color:#a1a1aa;}
         .popup-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:2000;display:none;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity 0.4s cubic-bezier(0.16,1,0.3,1);}.popup-overlay.active{opacity:1;pointer-events:auto;}.popup-content{background:linear-gradient(180deg,#1a1a24 0%,#070709 100%);width:100%;border-top-left-radius:32px;border-top-right-radius:32px;padding:15px 20px 30px 20px;transform:translateY(100%);transition:transform 0.5s cubic-bezier(0.175,0.885,0.32,1.275);border-top:1px solid rgba(255,255,255,0.1);box-shadow:0 -20px 60px rgba(0,0,0,0.8);max-height:90vh;overflow-y:auto;position:relative;}.popup-overlay.active .popup-content{transform:translateY(0);}.popup-drag-handle{width:40px;height:5px;background:rgba(255,255,255,0.15);border-radius:10px;margin:0 auto 25px auto;}.popup-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:25px;}.popup-title{font-size:20px;font-weight:900;color:var(--text-main);line-height:1.2;letter-spacing:-0.5px;text-shadow:0 2px 8px rgba(0,0,0,0.5);}.popup-info-box{background:rgba(0,0,0,0.5);padding:12px 16px;border-radius:20px;border:1px solid var(--border-highlight);display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;box-shadow:inset 0 2px 10px rgba(0,0,0,0.6);}
         .p-sec-title{font-size:11px;color:var(--text-muted);font-weight:800;margin-bottom:10px;letter-spacing:1px;text-transform:uppercase;}.p-btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}.p-counter-box{display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,0.5);padding:10px 14px;border-radius:16px;border:1px solid var(--border-highlight);box-shadow:inset 0 2px 8px rgba(0,0,0,0.5);margin-bottom:10px;}.p-c-label{font-size:13px;font-weight:800;color:var(--text-main);}.p-c-ctrls{display:flex;align-items:center;gap:10px;}.p-c-btn{background:rgba(255,255,255,0.05);color:white;border:1px solid rgba(255,255,255,0.1);width:32px;height:32px;border-radius:50%;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:0.3s;box-shadow:0 2px 4px rgba(0,0,0,0.2);cursor:pointer;}.p-c-val{font-weight:900;font-size:16px;color:var(--primary);min-width:24px;text-align:center;}
@@ -63,7 +89,7 @@
         .pwa-fullscreen-overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.9);backdrop-filter:blur(15px);z-index:9999999;display:none;align-items:center;justify-content:center;opacity:0;transition:opacity 0.5s ease;padding:20px;box-sizing:border-box;}.pwa-fullscreen-overlay.active{opacity:1;}.pwa-close-btn{position:absolute;top:20px;right:20px;background:rgba(255,255,255,0.05);color:var(--text-muted);border:1px solid rgba(255,255,255,0.1);width:40px;height:40px;border-radius:50%;font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:0.3s cubic-bezier(0.16,1,0.3,1);box-shadow:0 4px 15px rgba(0,0,0,0.3);z-index:5;}.pwa-close-btn:active{transform:scale(0.9);background:rgba(255,255,255,0.15);color:#fff;}.pwa-content-box{background:linear-gradient(180deg,#1a1a24 0%,#070709 100%);padding:40px 25px;border-radius:32px;text-align:center;width:100%;max-width:360px;border:1px solid rgba(255,255,255,0.1);box-shadow:0 30px 80px rgba(0,0,0,0.8);position:relative;overflow:hidden;transform:translateY(30px) scale(0.95);transition:transform 0.6s cubic-bezier(0.175,0.885,0.32,1.275);}.pwa-fullscreen-overlay.active .pwa-content-box{transform:translateY(0) scale(1);}.pwa-icon-glow{position:absolute;width:200px;height:200px;background:var(--primary);border-radius:50%;filter:blur(100px);opacity:0.2;top:-40px;left:50%;transform:translateX(-50%);z-index:0;pointer-events:none;}.pwa-icon{font-size:65px;margin-bottom:20px;position:relative;z-index:1;filter:drop-shadow(0 10px 20px rgba(0,0,0,0.5));animation:floatUpAndDown 4s ease-in-out infinite;}@keyframes floatUpAndDown{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}.pwa-title{font-size:24px;font-weight:900;color:var(--text-main);margin-bottom:12px;line-height:1.2;letter-spacing:-0.5px;position:relative;z-index:1;text-shadow:0 4px 8px rgba(0,0,0,0.5);}.pwa-desc{font-size:14px;font-weight:500;color:var(--text-muted);margin-bottom:30px;line-height:1.5;position:relative;z-index:1;}.pwa-main-btn{background:var(--gradient-fire);color:white;border:none;padding:18px;font-size:15px;font-weight:800;border-radius:100px;width:100%;cursor:pointer;box-shadow:0 15px 30px var(--primary-glow),inset 0 2px 4px rgba(255,255,255,0.3);transition:all 0.4s cubic-bezier(0.16,1,0.3,1);letter-spacing:0.5px;position:relative;z-index:1;}.pwa-main-btn:active{transform:scale(0.95);box-shadow:0 8px 15px var(--primary-glow);}
         .legal-link{color:var(--primary);text-decoration:underline;cursor:pointer;font-weight:700;transition:0.2s;}.legal-link:active{color:white;}
         
-        /* ÇARK SİSTEMİ GÜNCELLEMELERİ */
+        /* ÇARK SİSTEMİ GÜNCELLEMELERİ (HİZALAMA) */
         .premium-cark-banner { background: linear-gradient(135deg, #111114 0%, #1a1a24 100%); border: 1px solid var(--border-highlight); border-radius: 20px; margin: 0 15px 20px 15px; padding: 20px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 2px 5px rgba(255,255,255,0.05); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .premium-cark-banner:active { transform: scale(0.95); }
         .premium-cark-banner::before { content: ''; position: absolute; right: -10px; bottom: -20px; width:80px; height:80px; background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23FF6B00" opacity="0.15"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>') no-repeat center; background-size:contain; transform: rotate(-15deg); }
@@ -90,7 +116,6 @@
         .premium-toggle-btn { flex: 1; background: transparent; border: none; color: #a1a1aa; padding: 14px 0; font-weight: 700; font-size: 14px; position: relative; z-index: 1; cursor: pointer; transition: color 0.3s ease; }
         .premium-toggle-btn.active { color: white; }
         
-        /* İÇ İÇE GEÇMEYİ ÖNLEYEN YENİ INPUT SİSTEMİ */
         .premium-input-group { position: relative; margin-bottom: 22px; z-index: 1; display: flex; align-items: center; }
         .premium-input { width: 100%; height: 60px; background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 24px 16px 8px 16px; color: white; font-size: 15px; font-weight: 600; transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1); outline: none; box-sizing: border-box; }
         .premium-input:focus { background: rgba(255, 107, 0, 0.03); border-color: var(--primary); box-shadow: 0 0 0 4px rgba(255, 107, 0, 0.15), inset 0 0 10px rgba(255, 107, 0, 0.05); }
@@ -107,14 +132,14 @@
         .premium-dash-tab.active { background: rgba(255, 107, 0, 0.08); border-color: rgba(255,107,0,0.3); color: var(--primary); }
         .premium-dash-tab svg { width:18px; height:18px; fill:currentColor; }
         
-        /* GÜVENLİK ROZETİ (YENİ) */
+        /* GÜVENLİK ROZETİ (PULSE EFEKTİ) */
         .verified-shield { background: linear-gradient(135deg, rgba(52, 199, 89, 0.15) 0%, rgba(5, 150, 105, 0.05) 100%); border: 1px solid rgba(52, 199, 89, 0.3); border-radius: 20px; padding: 25px 20px; text-align: center; margin-bottom: 20px; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(52, 199, 89, 0.1); }
         .verified-shield::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(52, 199, 89, 0.1) 0%, transparent 60%); animation: pulseShield 4s infinite alternate ease-in-out; pointer-events: none; }
         @keyframes pulseShield { 0% { transform: scale(0.8); opacity: 0.5; } 100% { transform: scale(1.1); opacity: 1; } }
         .verified-icon { width: 50px; height: 50px; background: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px auto; box-shadow: 0 5px 15px rgba(52, 199, 89, 0.5), inset 0 2px 5px rgba(255,255,255,0.4); position: relative; z-index: 2; }
         .verified-icon svg { width: 26px; height: 26px; color: white; }
         
-        /* ASKERİ GÜVENLİK BİLGİSİ (YENİ) */
+        /* ASKERİ GÜVENLİK BİLGİSİ (UI/UX) */
         .military-security-badge { display:flex; align-items:center; gap:12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); padding: 12px 16px; border-radius: 12px; margin-top: 20px; position: relative; z-index: 2;}
         .military-security-badge svg { width:24px; height:24px; color: var(--success); filter:drop-shadow(0 0 5px rgba(52,199,89,0.4)); flex-shrink: 0;}
         .military-security-badge div { display:flex; flex-direction:column; text-align:left; }
@@ -133,38 +158,38 @@
 </head>
 <body>
     <nav class="bottom-nav">
-        <button class="nav-item active" id="nav-urunler" onclick="SayfaGoster('urunler')">
+        <button class="nav-item active ripple-element" id="nav-urunler" onclick="SayfaGoster('urunler')">
             <span class="icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M11 2v20c-5.07-.5-9-4.79-9-10s3.93-9.5 9-10zm2 0v8h9c-.46-4.17-3.83-7.54-8-8v.01zm0 10v10c4.17-.46 7.54-3.83 8-8h-8z"/></svg></span><span>Menü</span>
         </button>
-        <button class="nav-item" id="nav-firsatlar" onclick="SayfaGoster('firsatlar')">
+        <button class="nav-item ripple-element" id="nav-firsatlar" onclick="SayfaGoster('firsatlar')">
             <span class="icon" style="filter: grayscale(0);"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M20 6h-2.18c.11-.31.18-.65.18-1a2.996 2.996 0 0 0-5.5-1.65l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/></svg></span><span style="color:var(--primary);">Fırsatlar</span>
         </button>
-        <button class="nav-item" id="nav-sepet" onclick="SayfaGoster('sepet')">
+        <button class="nav-item ripple-element" id="nav-sepet" onclick="SayfaGoster('sepet')">
             <span class="icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1.003 1.003 0 0 0 20 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg></span><span>Sepet</span><div class="nav-badge" id="nav-sepet-badge">0</div>
         </button>
-        <button class="nav-item" id="nav-gecmis" onclick="SayfaGoster('gecmis')">
+        <button class="nav-item ripple-element" id="nav-gecmis" onclick="SayfaGoster('gecmis')">
             <span class="icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M18 17H6v-2h12v2zm0-4H6v-2h12v2zm0-4H6V7h12v2zM3 22l1.5-1.5L6 22l1.5-1.5L9 22l1.5-1.5L12 22l1.5-1.5L15 22l1.5-1.5L18 22l1.5-1.5L21 22V2l-1.5 1.5L18 2l-1.5 1.5L15 2l-1.5 1.5L12 2l-1.5 1.5L9 2l-1.5 1.5L6 2 4.5 3.5 3 2v20z"/></svg></span><span>Adisyon</span>
         </button>
-        <button class="nav-item" id="nav-profil" onclick="SayfaGoster('profil')">
+        <button class="nav-item ripple-element" id="nav-profil" onclick="SayfaGoster('profil')">
             <span class="icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></span><span>Profil</span>
         </button>
     </nav>
 
     <div id="pwa-fullscreen-prompt" class="pwa-fullscreen-overlay">
         <div class="pwa-content-box">
-            <button class="pwa-close-btn" onclick="CloseFullscreenPrompt()" style="position:absolute; z-index:99;">&times;</button>
+            <button class="pwa-close-btn ripple-element" onclick="CloseFullscreenPrompt()" style="position:absolute; z-index:99;">&times;</button>
             <div class="pwa-icon-glow"></div>
             <div class="pwa-icon">📱</div>
             <h2 class="pwa-title">Bekmez GO'yu<br><span style="color:var(--primary);">Telefonunuza Kurun</span></h2>
             <p class="pwa-desc">Sıra beklemeden paket siparişi verin, kuponları kaçırmayın ve lezzete tek tıkla ulaşın.</p>
-            <button class="pwa-main-btn shimmer-btn neon-border" onclick="TetiklePwaPrompt()">Uygulamayı İndir</button>
+            <button class="pwa-main-btn shimmer-btn neon-border ripple-element" onclick="TetiklePwaPrompt()">Uygulamayı İndir</button>
             <p style="font-size:11px; color:var(--text-muted); margin-top:20px; font-weight:600;">*Cihazınızda yer kaplamaz, anında kurulur.</p>
         </div>
     </div>
 
     <div id="pwa-install-banner" style="display:none; background: var(--gradient-fire); padding: 10px 15px; color: white; align-items: center; justify-content: space-between; z-index: 99; position: relative; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px; box-shadow: 0 5px 15px rgba(255,107,0,0.3); margin-top: -1px;">
         <div style="display:flex; align-items:center; gap:10px;"><span style="font-size:18px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3));">📱</span><span style="font-weight: 700; font-size: 12px; line-height: 1.3;">Tek tıkla sipariş için<br>uygulamamızı indirin!</span></div>
-        <button onclick="ManuelUygulamaIndir()" style="background: white; color: var(--primary); border: none; padding: 6px 14px; border-radius: 100px; font-weight: 800; font-size: 12px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">İndir</button>
+        <button class="ripple-element" onclick="ManuelUygulamaIndir()" style="background: white; color: var(--primary); border: none; padding: 6px 14px; border-radius: 100px; font-weight: 800; font-size: 12px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">İndir</button>
     </div>
 
     <div class="embers-container">
@@ -204,13 +229,13 @@
     <div id="menu-container">
         <div class="search-container">
             <span class="search-icon">🔍</span>
-            <input type="text" id="search-input" class="search-input" placeholder="Ne yemek istersiniz?" onkeyup="UrunAra()">
+            <input type="text" id="search-input" class="search-input" placeholder="Ne yemek istersiniz?" onkeyup="UrunAra()" oninput="ZararliKarakterTemizle(this)">
         </div>
         <div class="category-tabs" id="kategori-sekmeleri" style="display: none;">
-            <button class="tab-btn active" id="tab-AnaYemek" onclick="KategoriSec('Ana Yemek', this);">🥩 Ana Yemek</button>
-            <button class="tab-btn" id="tab-İçecek" onclick="KategoriSec('İçecek', this);">🥤 İçecek</button>
-            <button class="tab-btn" id="tab-Ekstra" onclick="KategoriSec('Ekstra', this);">🍟 Ekstra</button>
-            <button class="tab-btn" id="tab-Arama" style="display:none; color:var(--success); border-color:transparent; background: rgba(16, 185, 129, 0.15);">🔍 Sonuçlar</button>
+            <button class="tab-btn active ripple-element" id="tab-AnaYemek" onclick="KategoriSec('Ana Yemek', this);">🥩 Ana Yemek</button>
+            <button class="tab-btn ripple-element" id="tab-İçecek" onclick="KategoriSec('İçecek', this);">🥤 İçecek</button>
+            <button class="tab-btn ripple-element" id="tab-Ekstra" onclick="KategoriSec('Ekstra', this);">🍟 Ekstra</button>
+            <button class="tab-btn ripple-element" id="tab-Arama" style="display:none; color:var(--success); border-color:transparent; background: rgba(16, 185, 129, 0.15);">🔍 Sonuçlar</button>
         </div>
 
         <div id="menu-grid" class="grid-container">
@@ -239,7 +264,7 @@
     <!-- FIRSATLAR VE ÇARK -->
     <div id="opportunities-container" style="display: none;">
         <h2 class="page-title">Fırsatlar ve Şans</h2>
-        <div id="cark-banner" class="premium-cark-banner" onclick="CarkPopupAc()">
+        <div id="cark-banner" class="premium-cark-banner ripple-element" onclick="CarkPopupAc()">
             <div class="c-b-content">
                 <div class="c-b-title">🎰 Haftalık Şans Çarkı</div>
                 <div class="c-b-desc" id="cark-banner-desc">Sürpriz hediyeler seni bekliyor!</div>
@@ -254,10 +279,12 @@
                     <div style="font-size:16px; font-weight:900; color:white; margin-bottom:4px;" id="kazanilan-odul-yazi">1 Lt Kola</div>
                     <div style="font-size:11px; color:rgba(255,255,255,0.6); font-weight:600;" id="kazanilan-sure-yazi">Kalan Süre: 7 Gün</div>
                 </div>
-                <button onclick="CarkHediyesiniKullan()" style="background:var(--success); color:white; border:none; padding:10px 15px; border-radius:100px; font-weight:800; box-shadow:0 4px 15px rgba(52,199,89,0.4); cursor:pointer;">Kullan</button>
+                <button class="ripple-element" onclick="CarkHediyesiniKullan()" style="background:var(--success); color:white; border:none; padding:10px 15px; border-radius:100px; font-weight:800; box-shadow:0 4px 15px rgba(52,199,89,0.4); cursor:pointer;">Kullan</button>
             </div>
         </div>
-        <div id="firsatlar-list" style="padding: 0 15px 25px 15px;"><div class="empty-text">Kuponlar aranıyor...</div></div>
+        <div id="firsatlar-list" style="padding: 0 15px 25px 15px;">
+            <div class="skeleton-block"></div>
+        </div>
     </div>
 
     <!-- SEPET -->
@@ -270,11 +297,11 @@
         <div id="cart-items-list"></div>
         <div id="cart-note-section" style="display: none;">
             <div id="coupon-box" style="display: flex; gap: 8px; margin: 0 15px 20px 15px;">
-                <input type="text" id="coupon-code" style="flex: 1; background: rgba(25, 25, 30, 0.9); border: 1px dashed var(--border-highlight); color: var(--text-main); padding: 16px 20px; border-radius: 20px; font-size: 14px; font-weight: 800; text-transform: uppercase; font-family: inherit; box-shadow: inset 0 2px 8px rgba(0,0,0,0.3); transition: 0.3s;" placeholder="KUPON KODU" onkeydown="if(event.key === 'Enter') KuponSorgula()">
-                <button id="coupon-apply-btn" style="background: rgba(255,255,255,0.05); color: var(--text-main); border: 1px solid var(--border-highlight); border-radius: 20px; padding: 0 24px; font-weight: 800; font-size: 14px; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.2);" onclick="KuponSorgula()">Uygula</button>
+                <input type="text" id="coupon-code" style="flex: 1; background: rgba(25, 25, 30, 0.9); border: 1px dashed var(--border-highlight); color: var(--text-main); padding: 16px 20px; border-radius: 20px; font-size: 14px; font-weight: 800; text-transform: uppercase; font-family: inherit; box-shadow: inset 0 2px 8px rgba(0,0,0,0.3); transition: 0.3s;" placeholder="KUPON KODU" onkeydown="if(event.key === 'Enter') KuponSorgula()" oninput="ZararliKarakterTemizle(this)">
+                <button id="coupon-apply-btn" class="ripple-element" style="background: rgba(255,255,255,0.05); color: var(--text-main); border: 1px solid var(--border-highlight); border-radius: 20px; padding: 0 24px; font-weight: 800; font-size: 14px; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.2);" onclick="KuponSorgula()">Uygula</button>
             </div>
             <div id="coupon-message" style="font-size: 13px; font-weight: 700; margin: -5px 15px 20px 20px;"></div>
-            <textarea id="siparis-notu" class="note-input" rows="3" placeholder="Özel bir isteğiniz var mı? (Acı bol olsun vb.)" maxlength="150"></textarea>
+            <textarea id="siparis-notu" class="note-input premium-input" rows="3" placeholder="Özel bir isteğiniz var mı? (Acı bol olsun vb.)" maxlength="150" oninput="ZararliKarakterTemizle(this)"></textarea>
         </div>
         <div class="order-panel" id="alt-panel" style="display: none;">
             <div style="display: flex; justify-content: space-between; margin-bottom: 25px; align-items: center;">
@@ -284,7 +311,7 @@
                     <span id="sepet-tutar" style="color: var(--text-main); font-size: 32px; font-weight: 900; letter-spacing: -1.5px; text-shadow: 0 2px 8px rgba(0,0,0,0.5);">0.00 TL</span>
                 </div>
             </div>
-            <button class="order-btn shimmer-btn neon-border" id="checkout-btn" onclick="CheckoutPopupAc();">Teslimat ve Ödeme</button>
+            <button class="order-btn shimmer-btn neon-border ripple-element" id="checkout-btn" onclick="CheckoutPopupAc();">Teslimat ve Ödeme</button>
         </div>
     </div>
 
@@ -299,8 +326,8 @@
         <div id="auth-wrapper" class="premium-glass-card fade-up-enter">
             <div class="premium-toggle-box">
                 <div class="premium-toggle-bg" id="auth-toggle-slider"></div>
-                <button class="premium-toggle-btn active" onclick="AuthModuDegistir('login')">Giriş Yap</button>
-                <button class="premium-toggle-btn" onclick="AuthModuDegistir('register')">Kayıt Ol</button>
+                <button class="premium-toggle-btn active ripple-element" onclick="AuthModuDegistir('login')">Giriş Yap</button>
+                <button class="premium-toggle-btn ripple-element" onclick="AuthModuDegistir('register')">Kayıt Ol</button>
             </div>
 
             <!-- GİRİŞ FORMU -->
@@ -313,13 +340,13 @@
                     <input type="password" id="login-pass" class="premium-input" placeholder=" " required autocomplete="off">
                     <label class="premium-label">Şifre</label>
                 </div>
-                <button onclick="GirisYapTetikle()" class="premium-submit-btn" style="margin-top: 15px;">Giriş Yap</button>
+                <button onclick="GirisYapTetikle()" class="premium-submit-btn ripple-element" style="margin-top: 15px;">Giriş Yap</button>
             </div>
 
             <!-- KAYIT FORMU -->
             <div id="register-form-area" class="auth-form" style="display: none;">
                 <div class="premium-input-group">
-                    <input type="text" id="prof-isim" class="premium-input" placeholder=" " required autocomplete="off" onkeyup="document.getElementById('chk-isim').value = this.value">
+                    <input type="text" id="prof-isim" class="premium-input" placeholder=" " required autocomplete="off" oninput="ZararliKarakterTemizle(this)" onkeyup="document.getElementById('chk-isim').value = this.value">
                     <label class="premium-label">Ad Soyad</label>
                 </div>
                 <div class="premium-input-group">
@@ -352,7 +379,7 @@
                     </span>
                 </label>
 
-                <button id="btn-email-verify" onclick="YeniNesilKayitOl()" class="premium-submit-btn" style="margin-top: 25px;" disabled>Hesabımı Oluştur</button>
+                <button id="btn-email-verify" onclick="YeniNesilKayitOl()" class="premium-submit-btn ripple-element" style="margin-top: 25px;" disabled>Hesabımı Oluştur</button>
             </div>
             
             <div class="military-security-badge" id="auth-security-badge">
@@ -367,20 +394,20 @@
         <!-- KULLANICI EVRENİ (DASHBOARD) -->
         <div id="dashboard-wrapper" class="premium-glass-card fade-up-enter" style="display: none;">
             <div class="premium-dash-tabs">
-                <button class="premium-dash-tab active" id="tab-Teslimat" onclick="DashboardSekmeSec('Teslimat')">
+                <button class="premium-dash-tab active ripple-element" id="tab-Teslimat" onclick="DashboardSekmeSec('Teslimat')">
                     <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg> Teslimat Adresi
                 </button>
-                <button class="premium-dash-tab" id="tab-Guvenlik" onclick="DashboardSekmeSec('Guvenlik')">
+                <button class="premium-dash-tab ripple-element" id="tab-Guvenlik" onclick="DashboardSekmeSec('Guvenlik')">
                     <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg> Güvenlik Merkezi
                 </button>
             </div>
 
             <div id="dash-teslimat-alani" class="dash-content active fade-up-enter">
                 <div class="premium-input-group" style="margin-top: 10px;">
-                    <textarea id="prof-adres" class="premium-input" placeholder=" " rows="4" style="padding-top: 24px; resize: none; height:100px;" required onkeyup="document.getElementById('chk-adres').value = this.value"></textarea>
+                    <textarea id="prof-adres" class="premium-input" placeholder=" " rows="4" style="padding-top: 28px !important; resize: none; height:100px;" required oninput="ZararliKarakterTemizle(this)" onkeyup="document.getElementById('chk-adres').value = this.value"></textarea>
                     <label class="premium-label" style="top: 30px;">Detaylı Teslimat Adresiniz</label>
                 </div>
-                <button onclick="ProfiliKaydet()" class="premium-submit-btn">Adresi Güncelle</button>
+                <button onclick="ProfiliKaydet()" class="premium-submit-btn ripple-element">Adresi Güncelle</button>
             </div>
 
             <div id="dash-guvenlik-alani" class="dash-content" style="display: none;">
@@ -390,8 +417,8 @@
                     <div style="color: #a1a1aa; font-size: 13px; font-weight: 500; line-height: 1.5;">Kimliğiniz doğrulandı ve verileriniz Google sunucularında <b style="color:white;">uçtan uca şifrelenerek</b> koruma altına alındı.</div>
                 </div>
                 <div style="display: flex; gap: 12px; margin-top: 25px;">
-                    <button onclick="SadeceCikisYap()" style="flex: 1; background: rgba(255, 204, 0, 0.1); border: 1px solid rgba(255,204,0,0.3); color: var(--warning); padding: 14px; border-radius: 14px; font-weight: 700; cursor: pointer; transition: 0.3s;">Çıkış Yap</button>
-                    <button onclick="HesabiTamamenSil()" style="flex: 1; background: rgba(255, 59, 48, 0.1); border: 1px solid rgba(255,59,48,0.3); color: var(--danger); padding: 14px; border-radius: 14px; font-weight: 700; cursor: pointer; transition: 0.3s;">Hesabı Sil</button>
+                    <button onclick="SadeceCikisYap()" class="ripple-element" style="flex: 1; background: rgba(255, 204, 0, 0.1); border: 1px solid rgba(255,204,0,0.3); color: var(--warning); padding: 14px; border-radius: 14px; font-weight: 700; cursor: pointer; transition: 0.3s; overflow:hidden; position:relative;">Çıkış Yap</button>
+                    <button onclick="HesabiTamamenSil()" class="ripple-element" style="flex: 1; background: rgba(255, 59, 48, 0.1); border: 1px solid rgba(255,59,48,0.3); color: var(--danger); padding: 14px; border-radius: 14px; font-weight: 700; cursor: pointer; transition: 0.3s; overflow:hidden; position:relative;">Hesabı Sil</button>
                 </div>
             </div>
         </div>
@@ -400,11 +427,13 @@
     <!-- GEÇMİŞ (Adisyon) -->
     <div id="history-container" style="display: none;">
         <h2 class="page-title">Canlı Adisyon</h2>
-        <div id="history-content"></div>
+        <div id="history-content">
+            <div class="skeleton-block"></div>
+        </div>
     </div>
 
     <!-- YÜZEN SEPET & POPUPLAR -->
-    <div id="floating-cart" class="floating-cart neon-border" onclick="SayfaGoster('sepet')" style="display: none;">
+    <div id="floating-cart" class="floating-cart neon-border ripple-element" onclick="SayfaGoster('sepet')" style="display: none;">
         <div style="display: flex; align-items: center; gap: 12px;"><span style="font-size: 22px;">🛒</span><span style="font-size: 15px; font-weight:900;">Sepeti Gör</span></div>
         <div class="floating-btn" id="floating-total">0.00 TL</div>
     </div>
@@ -424,7 +453,7 @@
                 </div>
             </div>
             <p id="cark-durum-metni" style="color:var(--text-muted); font-weight:700; font-size:14px; margin-bottom:20px;">Sadece 7 günde 1 kez çevirebilirsin.</p>
-            <button id="cark-cevir-btn" class="order-btn shimmer-btn neon-border" onclick="CarkCevir()">Şansımı Dene!</button>
+            <button id="cark-cevir-btn" class="order-btn shimmer-btn neon-border ripple-element" onclick="CarkCevir()">Şansımı Dene!</button>
         </div>
     </div>
 
@@ -434,7 +463,7 @@
             <div class="popup-drag-handle"></div>
             <div class="popup-header">
                 <h3 id="popup-title" class="popup-title">Ürün Adı</h3>
-                <button onclick="PopupKapat()" style="background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; z-index: 99;">&times;</button>
+                <button class="ripple-element" onclick="PopupKapat()" style="background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; z-index: 99; overflow:hidden;">&times;</button>
             </div>
             <div class="popup-info-box">
                 <div style="display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.6); padding: 6px; border-radius: 100px; border: 1px solid var(--border-highlight); box-shadow: inset 0 2px 8px rgba(0,0,0,0.5);"><button onclick="PopupIciMiktarDegistir(-1)" style="width: 32px; height: 32px; border-radius: 50%; border: none; background: rgba(255,255,255,0.05); color: white; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s;">-</button><span id="popup-amount" style="color: var(--text-main); font-weight: 900; min-width: 40px; text-align: center; font-size: 14px;">______</span><button onclick="PopupIciMiktarDegistir(1)" style="width: 32px; height: 32px; border-radius: 50%; border: none; background: var(--gradient-fire); color: white; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s;">+</button></div>
@@ -442,8 +471,8 @@
             </div>
             <div id="popup-custom-area" style="display: none; margin-bottom: 20px;"></div>
             <div style="display: flex; gap: 10px;">
-                <button onclick="PopupSifirla()" style="flex: 1; background: rgba(255,255,255,0.05); color: var(--text-main); border: 1px solid var(--border-highlight); border-radius: 100px; font-weight: 800; font-size: 13px; cursor: pointer; padding: 12px 0;">Sıfırla</button>
-                <button id="popup-add-btn" class="shimmer-btn" onclick="PopupSepeteEkle()" style="flex: 2; background: var(--gradient-fire); color: white; border: none; border-radius: 100px; font-weight: 800; font-size: 14px; cursor: pointer; padding: 14px 0; box-shadow: 0 10px 20px var(--primary-glow);">Sepete Ekle</button>
+                <button class="ripple-element" onclick="PopupSifirla()" style="flex: 1; background: rgba(255,255,255,0.05); color: var(--text-main); border: 1px solid var(--border-highlight); border-radius: 100px; font-weight: 800; font-size: 13px; cursor: pointer; padding: 12px 0; overflow:hidden;">Sıfırla</button>
+                <button id="popup-add-btn" class="shimmer-btn ripple-element" onclick="PopupSepeteEkle()" style="flex: 2; background: var(--gradient-fire); color: white; border: none; border-radius: 100px; font-weight: 800; font-size: 14px; cursor: pointer; padding: 14px 0; box-shadow: 0 10px 20px var(--primary-glow);">Sepete Ekle</button>
             </div>
         </div>
     </div>
@@ -454,20 +483,20 @@
             <div class="popup-drag-handle"></div>
             <div class="popup-header">
                 <h3 class="popup-title">Teslimat ve Ödeme</h3>
-                <button onclick="CheckoutKapat()" style="background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; z-index: 99;">&times;</button>
+                <button class="ripple-element" onclick="CheckoutKapat()" style="background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; z-index: 99; overflow:hidden;">&times;</button>
             </div>
             <div style="margin-bottom: 20px;">
-                <input type="text" id="chk-isim" class="checkout-input" placeholder="Adınız Soyadınız" autocomplete="name" maxlength="50" onkeyup="document.getElementById('prof-isim').value = this.value">
+                <input type="text" id="chk-isim" class="checkout-input premium-input" placeholder="Adınız Soyadınız" autocomplete="name" maxlength="50" oninput="ZararliKarakterTemizle(this)" onkeyup="document.getElementById('prof-isim').value = this.value">
                 <div class="input-group" style="margin-bottom: 12px; position:relative; display:flex; align-items:center;">
                     <span class="input-icon-left" style="position:absolute; left:15px; font-size: 13px; font-weight: 900; z-index: 10;">🇹🇷 +90</span>
-                    <input type="tel" id="chk-telefon" class="checkout-input" placeholder="Profilinizden Onaylayın" autocomplete="tel" disabled style="padding-left: 75px; opacity:0.6; cursor:not-allowed; margin-bottom:0;">
+                    <input type="tel" id="chk-telefon" class="checkout-input premium-input" placeholder="Profilinizden Onaylayın" autocomplete="tel" disabled style="padding-left: 75px; opacity:0.6; cursor:not-allowed; margin-bottom:0;">
                 </div>
-                <textarea id="chk-adres" class="checkout-input" rows="3" placeholder="Açık Adresiniz (Mahalle, Sokak, No...)" style="resize:none; padding-top:20px; height:80px;" maxlength="250" onkeyup="document.getElementById('prof-adres').value = this.value"></textarea>
+                <textarea id="chk-adres" class="checkout-input premium-input" rows="3" placeholder="Açık Adresiniz (Mahalle, Sokak, No...)" style="resize:none; padding-top:28px !important; height:100px;" maxlength="250" oninput="ZararliKarakterTemizle(this)" onkeyup="document.getElementById('prof-adres').value = this.value"></textarea>
             </div>
             
             <div style="font-size:12px; color:var(--text-muted); font-weight:800; margin-bottom:12px; letter-spacing:1px; text-transform: uppercase;">Ödeme Yöntemi:</div>
             <div style="margin-bottom: 20px; position:relative;">
-                <select id="odeme-turu-secim" class="checkout-input" style="padding: 16px; width: 100%; margin-bottom: 0;">
+                <select id="odeme-turu-secim" class="checkout-input premium-input" style="padding: 16px; width: 100%; margin-bottom: 0;">
                     <option value="Kapıda Nakit">Kapıda Nakit</option>
                     <option value="Kapıda Kredi Kartı">Kapıda Kredi Kartı</option>
                     <option value="Havale/EFT">IBAN'a Havale/EFT</option>
@@ -488,7 +517,7 @@
                 </div>
             </div>
 
-            <button id="final-submit-btn" class="order-btn shimmer-btn neon-border" disabled style="opacity: 0.5;" onclick="PaketSiparisiGonder()">Sözleşmeyi Onaylayın</button>
+            <button id="final-submit-btn" class="order-btn shimmer-btn neon-border ripple-element" disabled style="opacity: 0.5;" onclick="PaketSiparisiGonder()">Sözleşmeyi Onaylayın</button>
         </div>
     </div>
 
@@ -500,29 +529,30 @@
                 <div class="spinner"></div>
                 <h3 style="margin: 0 0 14px 0; font-weight: 900; font-size: 20px; color: var(--text-main); letter-spacing:-0.5px;">E-Postanızı Kontrol Edin</h3>
                 <p style="color: var(--text-muted); font-size: 13px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;">Girdiğiniz adrese bir doğrulama linki gönderdik. <br><br><span style="color:white; font-weight:800;">Lütfen mailinize gidip linke tıklayın.</span> Biz bu ekranda tıkladığınızı otomatik anlayacağız...</p>
-                <button onclick="IptalEtEpostaBekleme(true)" class="alert-btn" style="background: rgba(255,255,255,0.05); color:white;">Vazgeç</button>
+                <button onclick="IptalEtEpostaBekleme(true)" class="alert-btn ripple-element" style="background: rgba(255,255,255,0.05); color:white; overflow:hidden;">Vazgeç</button>
             </div>
         </div>
     </div>
 
-    <div id="confirm-overlay" class="custom-alert-overlay" onclick="KapatConfirmModal(event)"><div class="custom-alert-box" id="confirm-box" style="border-color: var(--danger);"><div class="custom-alert-glow" id="confirm-glow" style="background: var(--danger);"></div><div class="custom-alert-content"><div id="confirm-icon" style="font-size: 55px; margin-bottom: 20px;">❓</div><h3 id="confirm-title" style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Emin misiniz?</h3><p id="confirm-text" style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;"></p><div style="display:flex; gap:10px;"><button onclick="KapatConfirmModal(event, true)" class="alert-btn" style="background: rgba(255,255,255,0.05); color:white; flex:1;">Vazgeç</button><button id="confirm-yes-btn" class="alert-btn" style="background: var(--danger); border-color:transparent; color:white; flex:1;">Evet</button></div></div></div></div>
+    <div id="confirm-overlay" class="custom-alert-overlay" onclick="KapatConfirmModal(event)"><div class="custom-alert-box" id="confirm-box" style="border-color: var(--danger);"><div class="custom-alert-glow" id="confirm-glow" style="background: var(--danger);"></div><div class="custom-alert-content"><div id="confirm-icon" style="font-size: 55px; margin-bottom: 20px;">❓</div><h3 id="confirm-title" style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Emin misiniz?</h3><p id="confirm-text" style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;"></p><div style="display:flex; gap:10px;"><button onclick="KapatConfirmModal(event, true)" class="alert-btn ripple-element" style="background: rgba(255,255,255,0.05); color:white; flex:1; overflow:hidden;">Vazgeç</button><button id="confirm-yes-btn" class="alert-btn ripple-element" style="background: var(--danger); border-color:transparent; color:white; flex:1; overflow:hidden;">Evet</button></div></div></div></div>
     
     <div id="legal-popup" class="popup-overlay" onclick="if(event.target === this) KapatSozlesme();">
         <div class="popup-content" style="max-height: 85vh;">
             <div class="popup-drag-handle"></div>
             <div class="popup-header">
                 <h3 id="legal-title" class="popup-title" style="font-size:18px;">Sözleşme</h3>
-                <button onclick="KapatSozlesme()" style="background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); width: 36px; height: 36px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; z-index: 99;">&times;</button>
+                <button class="ripple-element" onclick="KapatSozlesme()" style="background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); width: 36px; height: 36px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; z-index: 99; overflow:hidden;">&times;</button>
             </div>
             <div id="legal-body" style="color: #A1A1AA; font-size: 12px; line-height: 1.7; text-align: left; overflow-y: auto; max-height: 60vh; padding-right: 5px;"></div>
         </div>
     </div>
     
-    <div id="custom-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)"><div class="custom-alert-box" id="custom-alert-box"><div class="custom-alert-glow" id="custom-alert-glow"></div><div class="custom-alert-content"><div id="custom-alert-icon" style="font-size: 55px; margin-bottom: 20px;">⚠️</div><h3 id="custom-alert-title" style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Uyarı</h3><p id="custom-alert-text" style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;"></p><button onclick="KapatUyariModal(event, true)" class="alert-btn">Tamam, Anladım</button></div></div></div>
+    <div id="custom-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)"><div class="custom-alert-box" id="custom-alert-box"><div class="custom-alert-glow" id="custom-alert-glow"></div><div class="custom-alert-content"><div id="custom-alert-icon" style="font-size: 55px; margin-bottom: 20px;">⚠️</div><h3 id="custom-alert-title" style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Uyarı</h3><p id="custom-alert-text" style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;"></p><button onclick="KapatUyariModal(event, true)" class="alert-btn ripple-element" style="overflow:hidden;">Tamam, Anladım</button></div></div></div>
     
-    <div id="distance-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)"><div class="custom-alert-box"><div class="custom-alert-glow" style="background:var(--primary);"></div><div class="custom-alert-content"><div style="font-size: 55px; margin-bottom: 20px;">🛵</div><h3 style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Menzil Dışındasınız</h3><p style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;">Bekmez GO lezzetlerini size ulaştırabilmek için teslimat ağımızı <b>4 km</b> ile sınırlandırıyoruz.<br><br>Maalesef şu an sıcak teslimat bölgemizin dışındasınız.</p><button onclick="KapatUyariModal(event, true)" class="alert-btn" style="background:var(--primary); border-color:transparent; color:white;">Anladım</button></div></div></div>
+    <div id="distance-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)"><div class="custom-alert-box"><div class="custom-alert-glow" style="background:var(--primary);"></div><div class="custom-alert-content"><div style="font-size: 55px; margin-bottom: 20px;">🛵</div><h3 style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Menzil Dışındasınız</h3><p style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;">Bekmez GO lezzetlerini size ulaştırabilmek için teslimat ağımızı <b>4 km</b> ile sınırlandırıyoruz.<br><br>Maalesef şu an sıcak teslimat bölgemizin dışındasınız.</p><button onclick="KapatUyariModal(event, true)" class="alert-btn ripple-element" style="background:var(--primary); border-color:transparent; color:white; overflow:hidden;">Anladım</button></div></div></div>
     
     <div id="success-overlay" class="success-overlay"><div class="success-icon-wrapper"><div class="success-ring"></div><div class="success-circle"><svg class="success-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div></div><div class="success-text">Sipariş İletildi</div><div class="success-subtext">Kasa onayı bekleniyor...</div></div>
+
     <script>
     // ==========================================
     // SİBER GÜVENLİK KALKANLARI VE ŞİFRELEME (PREMIUM SECURITY)
@@ -587,10 +617,6 @@
         for (let y = 0; y < 256; y++) {
             i = (i + 1) % 256; j = (j + s[i]) % 256;
             x = s[i]; s[i] = s[j]; s[j] = x;
-        }
-        for (let y = 0; y < text.length; y++) {
-            i = (i + 1) % 256; j = (j + s[i]) % 256;
-            x = s[i]; s[i] = s[j]; s[j] = x;
             res += String.fromCharCode(text.charCodeAt(y) ^ s[(s[i] + s[j]) % 256]);
         }
         return btoa(encodeURIComponent(res));
@@ -632,12 +658,39 @@
     }
     function SecureSil(anahtar) { localStorage.removeItem(anahtar); }
 
-    // 5. XSS (HTML INJECTION) KALKANI
+    // 5. CANLI ZARARLI KARAKTER TEMİZLEYİCİ (ANTI-XSS)
+    function ZararliKarakterTemizle(el) {
+        // Klavyeden basıldığı an script veya HTML tagi sızdırmasını engeller
+        el.value = el.value.replace(/[<>\\/{}\[\]]/g, '');
+    }
+
     function escapeHTML(str) { 
         return str ? str.toString().replace(/[&<>'"]/g, function(tag){ 
             return {'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[tag]; 
         }) : ""; 
     }
+
+    // YENİ: DOKUNMATİK SU DALGASI (RIPPLE EFFECT) FİZİK MOTORU
+    document.addEventListener('click', function(e) {
+        let target = e.target.closest('.ripple-element');
+        if (!target) return;
+        
+        let rect = target.getBoundingClientRect();
+        let x = e.clientX - rect.left;
+        let y = e.clientY - rect.top;
+        
+        let ripple = document.createElement('span');
+        ripple.className = 'ripple-span';
+        ripple.style.left = x + 'px';
+        ripple.style.top = y + 'px';
+        
+        let size = Math.max(rect.width, rect.height);
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.marginLeft = ripple.style.marginTop = -(size / 2) + 'px';
+        
+        target.appendChild(ripple);
+        setTimeout(() => { ripple.remove(); }, 600);
+    });
 
     // ==========================================
     // SİSTEM DEĞİŞKENLERİ VE AYARLAR
@@ -647,6 +700,11 @@
     let sepetHatirlaticiTimer = null;
     let serverTimeOffset = 0;
     
+    // YENİ: Boş Ekran İllüstrasyonları (Premium SVG'ler)
+    const emptyCartSVG = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1.003 1.003 0 0 0 20 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>`;
+    const emptyCouponSVG = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 6h-2.18c.11-.31.18-.65.18-1a2.996 2.996 0 0 0-5.5-1.65l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/></svg>`;
+    const emptyHistorySVG = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 17H6v-2h12v2zm0-4H6v-2h12v2zm0-4H6V7h12v2zM3 22l1.5-1.5L6 22l1.5-1.5L9 22l1.5-1.5L12 22l1.5-1.5L15 22l1.5-1.5L18 22l1.5-1.5L21 22V2l-1.5 1.5L18 2l-1.5 1.5L15 2l-1.5 1.5L12 2l-1.5 1.5L9 2l-1.5 1.5L6 2 4.5 3.5 3 2v20z"/></svg>`;
+
     async function SyncServerTime() {
         try {
             let st = Date.now();
@@ -829,7 +887,7 @@
         if(seciliAlan) { seciliAlan.style.display = "block"; setTimeout(() => seciliAlan.classList.add("fade-up-enter"), 10); }
     }
 
-    // YENİ: Dinamik, Müşteri İsmine Özel Selamlama
+    // YENİ: Dinamik İsim Karşılaması Motoru
     function ProfilArayuzunuGuncelle(isLoggedIn, userName = "") {
         let anaBaslik = document.getElementById("profil-ana-baslik");
         let altBaslik = document.getElementById("profil-alt-baslik");
@@ -837,7 +895,7 @@
         let dashboardWrapper = document.getElementById("dashboard-wrapper");
 
         if (isLoggedIn) {
-            let kisaAd = userName && userName.trim() !== "" ? userName.split(' ')[0] : "Müşterimiz";
+            let kisaAd = userName && userName.trim() !== "" ? userName.trim().split(' ')[0] : "Müşterimiz";
             if(anaBaslik) anaBaslik.innerHTML = `Hoş Geldin, <span style="color:var(--primary);">${escapeHTML(kisaAd)}</span> ✨`;
             if(altBaslik) altBaslik.innerText = "Sipariş adresini ve hesap ayarlarını yönetebilirsin.";
             if(authWrapper) authWrapper.style.display = "none";
@@ -1213,7 +1271,7 @@
         let inputs = ["prof-isim", "prof-telefon", "prof-email", "prof-password", "prof-adres", "chk-isim", "chk-telefon", "chk-adres", "login-email", "login-pass"];
         inputs.forEach(id => { let el = document.getElementById(id); if(el) el.value = ""; });
         
-        document.getElementById("history-content").innerHTML = `<div class="empty-text">Aktif bir siparişiniz bulunmuyor.</div>`;
+        document.getElementById("history-content").innerHTML = `<div class="empty-state-box">${emptyHistorySVG}<p>Aktif bir siparişiniz bulunmuyor.</p></div>`;
         sonCekilenAdisyonHTML = ""; window.isOrderFinished = false;
 
         let cb = document.getElementById("kayit-onay-cb"); if(cb) cb.checked = false;
@@ -1279,9 +1337,11 @@
     }
     function CarkPopupKapat() { let p = document.getElementById("cark-popup"); p.classList.remove("active"); setTimeout(() => p.style.display = "none", 500); }
 
+    // YENİ: Pas Bug Çözümü ve Spinner Animasyonu
     async function CarkCevir() {
         HapticTitresim(); let tel = SecureOku("bg_t"); if (!tel || tel.length < 10) return; 
-        let btn = document.getElementById("cark-cevir-btn"); btn.disabled = true; 
+        let btn = document.getElementById("cark-cevir-btn"); 
+        btn.disabled = true; 
         btn.innerHTML = `<div class="spinner-small"></div> Çevriliyor...`;
 
         try {
@@ -1293,17 +1353,20 @@
             }
 
             let cark = document.getElementById("cark-element");
-            let kazananIndex = Math.floor(Math.random() * 5); let hedefAci = (5 * 360) + (360 - (kazananIndex * 72) - 36); cark.style.transform = `rotate(${hedefAci}deg)`;
+            let kazananIndex = Math.floor(Math.random() * 5); 
+            // Matematiksel Hizalama Düzeltmesi (İbre her zaman dilimin tam ortasında durur)
+            let hedefAci = (5 * 360) + (360 - (kazananIndex * 72) - 36); 
+            cark.style.transform = `rotate(${hedefAci}deg)`;
 
             setTimeout(async () => {
                 let kazanilanOdul = CARK_ODULLERI[kazananIndex]; let sTimeN = await GetServerTimeFast(); let bitisZamani = sTimeN + (7 * 24 * 60 * 60 * 1000);
                 
-                // YENİ: Pas Hata Kontrolü! "Pas" gelirse veritabanına hediye olarak kaydetmez.
+                // BUG FIX: "Pas" gelirse veritabanına hediye olarak kaydetmiyoruz.
                 if(kazanilanOdul !== "😔 Pas") {
                     SecureKaydet("bg_cark_data", btoa(encodeURIComponent(`${kazanilanOdul}|||${bitisZamani}|||${CARK_SALT}|||${tel}`)));
                     await fetch(`${FIREBASE_URL}/CarkKullanimlari/${tel}.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify({ odul: kazanilanOdul, bitis: bitisZamani, zaman: new Date().toLocaleString() }) });
                 } else {
-                    // Pas geldiği için sadece bitiş zamanını yazar, ödül bilgisini Pas olarak kilitleriz (çarkı bir daha çevirmesin diye)
+                    // Pas geldiği için sadece bitiş zamanını yazıp, ödül bilgisini Pas olarak kilitliyoruz.
                     SecureKaydet("bg_cark_data", btoa(encodeURIComponent(`😔 Pas|||${bitisZamani}|||${CARK_SALT}|||${tel}`)));
                     await fetch(`${FIREBASE_URL}/CarkKullanimlari/${tel}.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify({ odul: "😔 Pas", bitis: bitisZamani, zaman: new Date().toLocaleString() }) });
                 }
@@ -1337,7 +1400,7 @@
             let kalanGun = Math.ceil((parsed.bitis - sTime) / (1000 * 60 * 60 * 24));
             bannerDesc.innerText = `Sonraki çark hakkına ${kalanGun} gün var.`; bannerDesc.style.color = "var(--warning)";
             
-            // YENİ: "Pas" geldiyse hediye kutusunu ASLA gösterme.
+            // BUG FIX UI: "Pas" geldiyse hediye kutusunu ASLA gösterme.
             if(parsed.odul && parsed.odul !== "😔 Pas" && aktifKullanilanCarkOdulu === null) {
                 hediyeKutusu.style.display = "block"; document.getElementById("kazanilan-odul-yazi").innerText = escapeHTML(parsed.odul); document.getElementById("kazanilan-sure-yazi").innerText = `Kalan Süre: ${kalanGun} Gün`;
             } else { hediyeKutusu.style.display = "none"; }
@@ -1407,7 +1470,11 @@
         container.innerHTML = ""; let carkUyari = document.getElementById("aktif-hediye-uyari");
         
         if(aktifKullanilanCarkOdulu !== null) { carkUyari.style.display = "block"; document.getElementById("sepet-hediye-yazi").innerText = `Çark Hediyesi (${escapeHTML(aktifKullanilanCarkOdulu)}) eklendi!`; } else { carkUyari.style.display = "none"; }
-        if (sepet.length === 0 && aktifKullanilanCarkOdulu === null) { container.innerHTML = `<div class="empty-text">Sepetiniz şu an boş 🛒</div>`; panel.style.display = "none"; notSection.style.display = "none"; document.getElementById("floating-cart").style.display = "none"; return; }
+        if (sepet.length === 0 && aktifKullanilanCarkOdulu === null) { 
+            // YENİ: Sepet Boş İllüstrasyonu
+            container.innerHTML = `<div class="empty-state-box">${emptyCartSVG}<p>Sepetiniz şu an boş</p></div>`; 
+            panel.style.display = "none"; notSection.style.display = "none"; document.getElementById("floating-cart").style.display = "none"; return; 
+        }
 
         panel.style.display = "block"; notSection.style.display = "block"; document.getElementById("floating-cart").style.display = "flex";
 
@@ -1449,7 +1516,7 @@
     }
     function KapatSozlesme() { let p = document.getElementById("legal-popup"); p.classList.remove("active"); setTimeout(() => p.style.display = "none", 500); }
     function CheckoutKapat() { let p = document.getElementById("checkout-popup"); p.classList.remove("active"); setTimeout(() => { p.style.display = "none"; }, 500); }
-    function TogglePayButton() { let btn = document.getElementById("final-submit-btn"); let chk = document.getElementById("legal-checkbox"); if(chk && btn) { if(chk.checked) { btn.disabled = false; btn.style.opacity = "1"; btn.innerText = sonOdenecekFiyat.toFixed(2) + " TL Öde"; } else { btn.disabled = true; btn.style.opacity = "0.5"; btn.innerText = "Sözleşmeyi Onaylayın"; } } }
+    function TogglePayButton() { let btn = document.getElementById("final-submit-btn"); let chk = document.getElementById("legal-checkbox"); if(chk && btn) { if(chk.checked) { btn.disabled = false; btn.style.opacity = "1"; btn.innerHTML = `${sonOdenecekFiyat.toFixed(2)} TL Öde`; } else { btn.disabled = true; btn.style.opacity = "0.5"; btn.innerText = "Sözleşmeyi Onaylayın"; } } }
     function GetDistanceKm(lat1, lon1, lat2, lon2) { var R = 6371; var dLat = (lat2 - lat1) * Math.PI / 180; var dLon = (lon2 - lon1) * Math.PI / 180; var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2); var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); return R * c; }
     function BasariEkraniGoster() { let o = document.getElementById("success-overlay"); o.style.display = "flex"; setTimeout(() => o.classList.add("active"), 10); BildirimGonder("Siparişiniz Alındı! ✅", "Bekmez GO: Paketiniz en kısa sürede yola çıkacaktır. Bizi tercih ettiğiniz için teşekkür ederiz."); setTimeout(() => { o.classList.remove("active"); setTimeout(() => { o.style.display = "none"; SayfaGoster('gecmis'); }, 3000); }, 3000); }
 
@@ -1597,7 +1664,7 @@
 
     function EkranaUrunleriCiz(urunListesi) {
         const gridContainer = document.getElementById("menu-grid"); gridContainer.innerHTML = ""; gridContainer.style.display = "grid";
-        if(urunListesi.length === 0) { gridContainer.innerHTML = `<div class="empty-text">Ürün bulunamadı 🔍</div>`; return; }
+        if(urunListesi.length === 0) { gridContainer.innerHTML = `<div class="empty-state-box">${emptyCartSVG}<p>Ürün bulunamadı</p></div>`; return; }
 
         let history = {}; try { let r = SecureOku('bg_phist'); if(r) history = JSON.parse(r); } catch(e) { }
 
@@ -1614,7 +1681,7 @@
 
                 let kartOpaklik = stokSifirMi ? "opacity: 0.5; filter: grayscale(1);" : ""; let isPopular = ur.pName ? populerUrunlerListesi.includes(ur.pName) : false; let popularBadgeHTML = (isPopular && !stokSifirMi) ? `<div class="popular-badge">🔥 POPÜLER</div>` : "";
 
-                gridContainer.innerHTML += `<div class="product-card" style="${kartOpaklik} animation-delay: ${i * 0.05}s;" onclick="${clickAction}">${popularBadgeHTML}<div class="product-icon-wrapper"><div class="product-icon">${icon}</div></div><div class="product-name">${escapeHTML(ur.pName)}</div><div class="product-price-badge">${badgeStr}</div></div>`;
+                gridContainer.innerHTML += `<div class="product-card ripple-element" style="${kartOpaklik} animation-delay: ${i * 0.05}s;" onclick="${clickAction}">${popularBadgeHTML}<div class="product-icon-wrapper"><div class="product-icon">${icon}</div></div><div class="product-name">${escapeHTML(ur.pName)}</div><div class="product-price-badge">${badgeStr}</div></div>`;
             } catch(e) {}
         });
     }
@@ -1729,18 +1796,18 @@
         try {
             let mR = await fetch(`${FIREBASE_URL}/Kuponlar.json?t=${Date.now()}`);
             let data = await mR.json(); let list = document.getElementById("firsatlar-list");
-            if (!data) { list.innerHTML = `<div class="empty-text">Şu an aktif bir kampanya bulunmuyor 😔</div>`; return; }
+            if (!data) { list.innerHTML = `<div class="empty-state-box">${emptyCouponSVG}<p>Aktif kampanya bulunmuyor 😔</p></div>`; return; }
             let yeniVeri = JSON.stringify(data); if (sonKuponVerisi === yeniVeri) return; sonKuponVerisi = yeniVeri;
             list.innerHTML = ""; let hasKupon = false;
             for (let key in data) {
                 let k = data[key];
                 if (k.discountAmount && k.isAppCoupon === true) {
                     hasKupon = true;
-                    list.innerHTML += `<div class="coupon-card"><div class="c-left"><span class="c-discount">${k.discountAmount}₺</span><span class="c-type">İNDİRİM</span></div><div class="c-right"><div class="c-title">${k.targetProduct && k.targetProduct !== "Herşey" ? escapeHTML(k.targetProduct) + " için geçerli!" : "Tüm menüde geçerli!"}</div><div class="c-code">${escapeHTML(key)}</div><div class="c-limit">Alt Limit: ${k.bottomLimit} TL</div><div class="c-btn" onclick="KuponKopyala('${escapeHTML(key)}')">Kodu Kopyala</div></div></div>`;
+                    list.innerHTML += `<div class="coupon-card ripple-element"><div class="c-left"><span class="c-discount">${k.discountAmount}₺</span><span class="c-type">İNDİRİM</span></div><div class="c-right"><div class="c-title">${k.targetProduct && k.targetProduct !== "Herşey" ? escapeHTML(k.targetProduct) + " için geçerli!" : "Tüm menüde geçerli!"}</div><div class="c-code">${escapeHTML(key)}</div><div class="c-limit">Alt Limit: ${k.bottomLimit} TL</div><div class="c-btn" onclick="KuponKopyala('${escapeHTML(key)}')">Kodu Kopyala</div></div></div>`;
                 }
             }
-            if (!hasKupon) list.innerHTML = `<div class="empty-text">Şu an aktif bir kampanya bulunmuyor 😔</div>`;
-        } catch (e) { document.getElementById("firsatlar-list").innerHTML = `<div class="empty-text">Kuponlar yüklenemedi.</div>`; }
+            if (!hasKupon) list.innerHTML = `<div class="empty-state-box">${emptyCouponSVG}<p>Aktif kampanya bulunmuyor 😔</p></div>`;
+        } catch (e) { document.getElementById("firsatlar-list").innerHTML = `<div class="empty-state-box">${emptyCouponSVG}<p>Kuponlar yüklenemedi.</p></div>`; }
     }
 
     function KuponKopyala(kod) { HapticTitresim(); navigator.clipboard.writeText(kod).then(() => { OzelUyariGoster("Kopyalandı", `Kupon kodu (${kod}) kopyalandı! Sepetinizde kullanabilirsiniz.`, "📋"); }); }
@@ -1754,7 +1821,7 @@
     if(Date.now() < blockTime) { OzelUyariGoster("Engellendi", "Çok fazla hatalı deneme yaptınız. 15 Dakika sonra tekrar deneyin.", "🚫"); return; }
     if(tries >= 5) { SecureKaydet("cpn_blk", Date.now() + (15*60000)); OzelUyariGoster("Kilitlendi", "5 Hatalı deneme sebebiyle kupon sistemi 15 dk kilitlendi.", "🔒"); return; }
 
-    b.innerHTML = `<div class="spinner-small"></div>`; b.disabled = true; 
+    b.innerHTML = `<div class="spinner-small" style="margin-right:0;"></div>`; b.disabled = true; 
     
     try {
         let res = await fetch(`${FIREBASE_URL}/Kuponlar/${gK}.json?t=${Date.now()}`);
@@ -1819,7 +1886,9 @@
         if(hV) { OzelUyariGoster("Eksik", "Ad, telefon veya adres hatalı.", "⚠"); return; }
 
         let btn = document.getElementById("final-submit-btn"); btn.disabled = true; btn.classList.add("loading"); 
-        btn.innerHTML = `<div class="spinner-small"></div> Konum Bulunuyor...`;
+        
+        // YENİ: Premium Bekleme Animasyonu
+        btn.innerHTML = `<div class="spinner-small"></div> Konum Bulunuyor...📍`;
         isProcessingOrder = true;
 
         if (navigator.geolocation) { 
@@ -1829,14 +1898,14 @@
                 
                 if (ms > MAKS_MESAFE_KM) { 
                     let do2 = document.getElementById("distance-alert-overlay"); do2.style.display = "flex"; setTimeout(() => do2.classList.add("active"), 10); 
-                    isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; return; 
+                    isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = `${sonOdenecekFiyat.toFixed(2)} TL Öde`; return; 
                 }
                 DevamEtPaketGonder(is, tl, ad, secilenOdeme, sepet, lat, lng);
             }).catch(e => { 
                 OzelUyariGoster("Konum Zorunlu 📍", "Sipariş verebilmek için cihazınızın konum (GPS) özelliğinin açık olması ve tarayıcıdan izin vermeniz zorunludur. Aksi takdirde sipariş alınamaz.", "🛑");
-                isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; 
+                isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = `${sonOdenecekFiyat.toFixed(2)} TL Öde`; 
             });
-        } else { OzelUyariGoster("Desteklenmiyor", "Cihazınız konum servisini desteklemediği için sipariş veremezsiniz.", "🛑"); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; }
+        } else { OzelUyariGoster("Desteklenmiyor", "Cihazınız konum servisini desteklemediği için sipariş veremezsiniz.", "🛑"); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = `${sonOdenecekFiyat.toFixed(2)} TL Öde`; }
     }
 
     async function DevamEtPaketGonder(isim, tel, adres, odemeTuru, temizSepet, lat = 0, lng = 0) {
@@ -1847,7 +1916,7 @@
 
         try {
             let authUser = firebase.auth().currentUser;
-            if (!authUser) { OzelUyariGoster("Hata", "Oturum bulunamadı, lütfen çıkış yapıp tekrar giriş yapın.", "🔒"); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; return; }
+            if (!authUser) { OzelUyariGoster("Hata", "Oturum bulunamadı, lütfen çıkış yapıp tekrar giriş yapın.", "🔒"); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = `${sonOdenecekFiyat.toFixed(2)} TL Öde`; return; }
 
             let benzersizSiparisID = generateUUID();
             let sunucuyaGidecekSepet = temizSepet.map(u => ({ rawName: u.rawName, tamIsim: (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName, miktar: (u.baseStockAmount * u.quantity) }));
@@ -1872,7 +1941,7 @@
             HapticTitresim(); CheckoutKapat(); BasariEkraniGoster();
 
             if (sepetHatirlaticiTimer) clearTimeout(sepetHatirlaticiTimer); sepet = []; aktifKuponKodu = ""; document.getElementById("siparis-notu").value = ""; SepetEkraniniCiz(); HesaplaVeGuncelle(); seciliEkstraIstekler = []; isProcessingOrder = false;
-        } catch (e) { OzelUyariGoster("Hata", "Sipariş iletilemedi, internetinizi kontrol edin.", "📡"); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = sonOdenecekFiyat.toFixed(2) + " TL Öde"; }
+        } catch (e) { OzelUyariGoster("Hata", "Sipariş iletilemedi, internetinizi kontrol edin.", "📡"); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = `${sonOdenecekFiyat.toFixed(2)} TL Öde`; }
     }
 
     // === 1. MENÜ DİNLEYİCİ (0 Ping, Sıfır Kota İsrafı) ===
@@ -1891,7 +1960,7 @@
     function AdisyonuGercekZamanliDinle() {
         let siparisId = SecureOku("bg_active_order_id");
         if (!siparisId) {
-            document.getElementById("history-content").innerHTML = `<div class="empty-text">Adisyon yok.<br><br>Aktif bir siparişiniz bulunmamaktadır.</div>`;
+            document.getElementById("history-content").innerHTML = `<div class="empty-state-box">${emptyHistorySVG}<p>Aktif bir siparişiniz bulunmuyor.</p></div>`;
             return;
         }
         
@@ -1924,12 +1993,12 @@
                     if(leftMs > 0 && orderTs > 0) { canEdit = true; let m = Math.floor(leftMs / 60000); let s = Math.floor((leftMs % 60000) / 1000); timeStr = `${m}:${s < 10 ? '0'+s : s}`; }
                     
                     let butonlar = "";
-                    if (canEdit) { if (nakitDisiOdeme) { butonlar = `<div style="text-align:center; font-size:12px; color:var(--warning); margin-top:20px; font-weight:700;">💳 Nakit dışı ödemeli (IBAN/Kart) siparişlerde iptal ve değişiklik için restoranı arayın.</div>`; } else { butonlar = `<div style="text-align:center; font-size:12px; color:var(--primary); font-weight:800; margin-top:20px;">⏳ Düzenleme için son <span style="font-size:16px;">${timeStr}</span></div><div style="display:flex; gap:10px; margin-top:10px;"><button onclick="IptalOnaySor()" style="flex:1; background:rgba(255,59,48,0.1); border:1px solid rgba(255, 59, 48, 0.5); color:var(--danger); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">İptal Et</button><button onclick="DuzenleOnaySor()" style="flex:1; background:rgba(255, 107, 0, 0.1); border:1px solid var(--primary); color:var(--primary); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">Düzenle</button></div>`; } } else { butonlar = `<div style="text-align:center; font-size:11px; color:var(--warning); margin-top:20px; font-weight:700;">🔒 3 dakikalık süre doldu veya zaman manipülasyonu algılandı.</div>`; }
+                    if (canEdit) { if (nakitDisiOdeme) { butonlar = `<div style="text-align:center; font-size:12px; color:var(--warning); margin-top:20px; font-weight:700;">💳 Nakit dışı ödemeli (IBAN/Kart) siparişlerde iptal ve değişiklik için restoranı arayın.</div>`; } else { butonlar = `<div style="text-align:center; font-size:12px; color:var(--primary); font-weight:800; margin-top:20px;">⏳ Düzenleme için son <span style="font-size:16px;">${timeStr}</span></div><div style="display:flex; gap:10px; margin-top:10px;"><button class="ripple-element" onclick="IptalOnaySor()" style="flex:1; background:rgba(255,59,48,0.1); border:1px solid rgba(255, 59, 48, 0.5); color:var(--danger); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">İptal Et</button><button class="ripple-element" onclick="DuzenleOnaySor()" style="flex:1; background:rgba(255, 107, 0, 0.1); border:1px solid var(--primary); color:var(--primary); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">Düzenle</button></div>`; } } else { butonlar = `<div style="text-align:center; font-size:11px; color:var(--warning); margin-top:20px; font-weight:700;">🔒 3 dakikalık süre doldu veya zaman manipülasyonu algılandı.</div>`; }
 
-                    let hBekleme = `<div class="receipt-card"><div style="text-align: center; margin-bottom: 15px;"><div style="font-size:40px; margin-bottom:10px;">⏳</div><div style="font-weight: 900; font-size: 20px; color:#1c1c1e;">KASA ONAYI BEKLENİYOR</div></div>${butonlar}</div>`;
+                    let hBekleme = `<div class="receipt-card"><div style="text-align: center; margin-bottom: 15px;"><div class="spinner" style="border-top-color:var(--primary); width:35px; height:35px; border-width:4px;"></div><div style="font-weight: 900; font-size: 20px; color:#1c1c1e;">KASA ONAYI BEKLENİYOR</div></div>${butonlar}</div>`;
                     if (document.getElementById("history-content").innerHTML !== hBekleme) { document.getElementById("history-content").innerHTML = hBekleme; } return; 
                 } else {
-                    window.isOrderFinished = false; document.getElementById("history-content").innerHTML = `<div class="empty-text">Aktif bir siparişiniz bulunmuyor.</div>`; 
+                    window.isOrderFinished = false; document.getElementById("history-content").innerHTML = `<div class="empty-state-box">${emptyHistorySVG}<p>Aktif bir siparişiniz bulunmuyor.</p></div>`; 
                     sonCekilenAdisyonHTML = ""; SecureSil("bg_active_order_id"); SecureSil("bg_last_status"); 
                     BuluttanAktifAdisyonuSil(); return;
                 }
@@ -1937,7 +2006,7 @@
 
             let sipZamani = (bP && bP.timestamp) ? bP.timestamp : null; let isGhost = sipZamani ? ((Date.now() - sipZamani) > GHOST_TIMEOUT_MS) : false; let h = "";
             if(!bP || isGhost) { 
-                window.isOrderFinished = false; h = `<div class="empty-text">Aktif bir siparişiniz bulunmuyor.</div>`; sonCekilenAdisyonHTML = "";
+                window.isOrderFinished = false; h = `<div class="empty-state-box">${emptyHistorySVG}<p>Aktif bir siparişiniz bulunmuyor.</p></div>`; sonCekilenAdisyonHTML = "";
                 SecureSil("bg_active_order_id"); SecureSil("bg_last_status"); BuluttanAktifAdisyonuSil();
             } else {
                 let dR = bP.durum ? bP.durum.toUpperCase() : "SİPARİŞ ALINDI 🔔";
@@ -1959,10 +2028,10 @@
                 else if (dR.includes("İPTAL") || dR.includes("RED")) { durumRenk = "var(--danger)"; durumBg = "rgba(255, 59, 48, 0.1)"; durumIkon = "❌"; BuluttanAktifAdisyonuSil(); }
                 else if (dR.includes("TESLİM") || dR.includes("AFİYET") || dR.includes("TAMAM")) { 
                     durumRenk = "var(--success)"; durumBg = "rgba(52, 199, 89, 0.1)"; durumIkon = "✅"; BuluttanAktifAdisyonuSil();
-                    if (!window.isOrderFinished) { window.isOrderFinished = true; setTimeout(() => { SecureSil("bg_last_status"); SecureSil("bg_active_order_id"); document.getElementById("history-content").innerHTML = `<div class="empty-text">Aktif bir siparişiniz bulunmuyor.</div>`; sonCekilenAdisyonHTML = ""; SayfaGoster('urunler'); OzelUyariGoster("Afiyet Olsun!", "Siparişiniz teslim edildi. Bizi tercih ettiğiniz için teşekkür ederiz 😋", "🎉"); }, 6000); }
+                    if (!window.isOrderFinished) { window.isOrderFinished = true; setTimeout(() => { SecureSil("bg_last_status"); SecureSil("bg_active_order_id"); document.getElementById("history-content").innerHTML = `<div class="empty-state-box">${emptyHistorySVG}<p>Aktif bir siparişiniz bulunmuyor.</p></div>`; sonCekilenAdisyonHTML = ""; SayfaGoster('urunler'); OzelUyariGoster("Afiyet Olsun!", "Siparişiniz teslim edildi. Bizi tercih ettiğiniz için teşekkür ederiz 😋", "🎉"); }, 6000); }
                 }
 
-                if (canEdit) { if (nakitDisiOdeme) { iptalButonuHTML = `<div style="text-align:center; font-size:12px; color:var(--warning); margin-top:20px; font-weight:700;">💳 Nakit dışı ödemeli (IBAN/Kart) siparişlerde iptal ve değişiklik için restoranı arayın.</div>`; } else { iptalButonuHTML = `<div style="text-align:center; font-size:12px; color:var(--primary); font-weight:800; margin-top:20px;">⏳ Düzenleme için son <span style="font-size:16px;">${timeStr}</span></div><div style="display:flex; gap:10px; margin-top:10px;"><button onclick="IptalOnaySor()" style="flex:1; background:rgba(255,59,48,0.1); border:1px solid rgba(255, 59, 48, 0.5); color:var(--danger); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">İptal Et</button><button onclick="DuzenleOnaySor()" style="flex:1; background:rgba(255, 107, 0, 0.1); border:1px solid var(--primary); color:var(--primary); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">Düzenle</button></div>`; } } else if (!dR.includes("İPTAL") && !dR.includes("TESLİM") && !dR.includes("RED") && !dR.includes("AFİYET")) { iptalButonuHTML = `<div style="text-align:center; font-size:11px; color:var(--warning); margin-top:15px; font-weight:700;">🔒 ${lockMsg} Artık değişiklik yapılamaz.</div>`; }
+                if (canEdit) { if (nakitDisiOdeme) { iptalButonuHTML = `<div style="text-align:center; font-size:12px; color:var(--warning); margin-top:20px; font-weight:700;">💳 Nakit dışı ödemeli (IBAN/Kart) siparişlerde iptal ve değişiklik için restoranı arayın.</div>`; } else { iptalButonuHTML = `<div style="text-align:center; font-size:12px; color:var(--primary); font-weight:800; margin-top:20px;">⏳ Düzenleme için son <span style="font-size:16px;">${timeStr}</span></div><div style="display:flex; gap:10px; margin-top:10px;"><button class="ripple-element" onclick="IptalOnaySor()" style="flex:1; background:rgba(255,59,48,0.1); border:1px solid rgba(255, 59, 48, 0.5); color:var(--danger); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">İptal Et</button><button class="ripple-element" onclick="DuzenleOnaySor()" style="flex:1; background:rgba(255, 107, 0, 0.1); border:1px solid var(--primary); color:var(--primary); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">Düzenle</button></div>`; } } else if (!dR.includes("İPTAL") && !dR.includes("TESLİM") && !dR.includes("RED") && !dR.includes("AFİYET")) { iptalButonuHTML = `<div style="text-align:center; font-size:11px; color:var(--warning); margin-top:15px; font-weight:700;">🔒 ${lockMsg} Artık değişiklik yapılamaz.</div>`; }
 
                 if(dR.includes("İPTAL") || dR.includes("RED")) { h = `<div class="empty-text" style="color: var(--danger); border-color: rgba(255, 59, 48, 0.3); background: rgba(255, 59, 48, 0.05); padding: 40px 20px;"><div style="font-size:40px; margin-bottom:15px;">❌</div><strong style="font-size:18px;">İptal Edildi</strong><br><br><span style="font-size:14px; color:#A1A1AA;">${escapeHTML(dR)}</span></div>`; sonCekilenAdisyonHTML = ""; setTimeout(() => { SecureSil("bg_active_order_id"); }, 5000); } 
                 else { h = `<div class="receipt-card"><div style="text-align: center; margin-bottom: 25px;"><div style="font-size:30px; margin-bottom:5px;">${durumIkon}</div><div style="font-weight: 900; font-size: 22px; color:#1c1c1e;">BEKMEZ GO</div><div style="font-size: 14px; font-weight: 800; color:var(--text-muted); margin-top:4px;">PAKET SERVİS</div></div><div class="receipt-header"><span>DURUM</span><span style="color:${durumRenk}; font-weight:900; background:${durumBg}; padding:8px 14px; border-radius:12px; text-align:right;">${escapeHTML(dR)}</span></div>`; if(bP.siparisler) { bP.siparisler.forEach(u => { h += `<div class="receipt-item"><span>${escapeHTML(u.itemName)}</span><span>${parseFloat(u.itemPrice).toFixed(2)} ₺</span></div>`; }); } if (bP.siparisNotu) { h += `<div style="margin-top: 20px; padding: 16px; background: rgba(0,0,0,0.03); border-radius:16px; font-size: 13px; font-weight: 600; color:#8e8e93; border: 1px dashed #d1d1d6;">NOT:<br>${escapeHTML(bP.siparisNotu)}</div>`; } h += `<div class="receipt-total">TOPLAM: <span style="font-size:28px; display:block; margin-top:8px;">${parseFloat(bP.toplamTutar).toFixed(2)} TL</span></div>${iptalButonuHTML}<div style="text-align: center; font-size: 11px; margin-top: 25px; color:#a1a1aa; font-weight: 600;">Bizi tercih ettiğiniz için teşekkür ederiz.</div></div>`; sonCekilenAdisyonHTML = h; }
