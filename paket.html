@@ -15,7 +15,7 @@
   <!-- FİREBASE SİSTEMİ VE APP CHECK GÜVENLİK KALKANI -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script> <!-- EKSİK OLAN BUYDU -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script> 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app-check.js"></script>
 
     <style>
@@ -480,8 +480,8 @@
     <div id="distance-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)"><div class="custom-alert-box"><div class="custom-alert-glow" style="background:var(--primary);"></div><div class="custom-alert-content"><div style="font-size: 55px; margin-bottom: 20px;">🛵</div><h3 style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Menzil Dışındasınız</h3><p style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;">Bekmez GO lezzetlerini size ulaştırabilmek için teslimat ağımızı <b>4 km</b> ile sınırlandırıyoruz.<br><br>Maalesef şu an sıcak teslimat bölgemizin dışındasınız.</p><button onclick="KapatUyariModal(event, true)" class="alert-btn" style="background:var(--primary); border-color:transparent; color:white;">Anladım</button></div></div></div>
     
     <div id="success-overlay" class="success-overlay"><div class="success-icon-wrapper"><div class="success-ring"></div><div class="success-circle"><svg class="success-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div></div><div class="success-text">Sipariş İletildi</div><div class="success-subtext">Kasa onayı bekleniyor...</div></div>
-  <script>
-      // ==========================================
+    <script>
+    // ==========================================
     // SİBER GÜVENLİK KALKANLARI VE ŞİFRELEME (PREMIUM SECURITY)
     // ==========================================
     console.log("%c DİKKAT!", "color: #FF3B30; font-size: 50px; font-weight: 900; text-shadow: 2px 2px 0 #000;");
@@ -662,12 +662,34 @@
     };
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     
-   // === RECAPTCHA ENTERPRISE BOT KALKANI (APP CHECK) ===
+    // === RECAPTCHA ENTERPRISE BOT KALKANI (APP CHECK) ===
     const appCheck = firebase.appCheck();
     appCheck.activate(
       '6Lf0BeAtAAAAAI7lhircOnou6jygHl5SCcMgGiaZ',
       true // Otomatik token yenileme aktif
     );
+
+    // =========================================
+    // KÜRESEL FETCH KÖPRÜSÜ (REST API AppCheck Vizesi)
+    // Ürün bulunamadı hatasını çözen, veri çekerken kalkanı aşan sistem
+    // =========================================
+    const orjinalFetch = window.fetch;
+    window.fetch = async function(...args) {
+        let url = args[0];
+        let options = args[1] || {};
+        
+        if (typeof url === 'string' && url.includes("firebaseio.com")) {
+            try {
+                let tokenRes = await appCheck.getToken(false);
+                if (tokenRes && tokenRes.token) {
+                    options.headers = options.headers || {};
+                    options.headers['X-Firebase-AppCheck'] = tokenRes.token;
+                    args[1] = options;
+                }
+            } catch(e) { console.warn("AppCheck Kalkanı Vizesi Alınamadı:", e); }
+        }
+        return orjinalFetch.apply(this, args);
+    };
     // =========================================
 
     const FIREBASE_URL = "https://bekmezpos-default-rtdb.firebaseio.com";
