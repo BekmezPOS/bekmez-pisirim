@@ -479,7 +479,7 @@
     
     <div id="success-overlay" class="success-overlay"><div class="success-icon-wrapper"><div class="success-ring"></div><div class="success-circle"><svg class="success-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div></div><div class="success-text">Sipariş İletildi</div><div class="success-subtext">Kasa onayı bekleniyor...</div></div>
   <script>
-    // ==========================================
+   // ==========================================
     // SİBER GÜVENLİK KALKANLARI VE ŞİFRELEME (PREMIUM SECURITY)
     // ==========================================
     console.log("%c DİKKAT!", "color: #FF3B30; font-size: 50px; font-weight: 900; text-shadow: 2px 2px 0 #000;");
@@ -520,7 +520,7 @@
             for (let i = 0; i < str.length; i++) {
                 let char = str.charCodeAt(i);
                 hash = ((hash << 5) - hash) + char;
-                hash = hash & hash; // 32-bit integer'a zorla
+                hash = hash & hash; 
             }
             return Math.abs(hash).toString(16);
         } catch(e) { return "BKMZ_FALLBACK_ID_99"; }
@@ -651,6 +651,7 @@
         }
     }
 
+    // === FIREBASE YAPILANDIRMASI ===
     const firebaseConfig = {
         apiKey: "AIzaSyC8WLup5zoOmFBcFJkflo7J-XJjQEK_jr8", authDomain: "bekmezpos.firebaseapp.com",
         databaseURL: "https://bekmezpos-default-rtdb.firebaseio.com", projectId: "bekmezpos",
@@ -658,6 +659,15 @@
         appId: "1:1013709760225:web:ec71341cb6cdcce9fbf9a0", measurementId: "G-BXKNH6B49K"
     };
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    
+    // === APP CHECK (RECAPTCHA BOT KALKANI) ===
+    const appCheck = firebase.appCheck();
+    appCheck.activate(
+      '6Lf0BeAtAAAAAI7lhircOnou6jygHl5SCcMgGiaZ',
+      true // Otomatik token yenileme aktif
+    );
+    // =========================================
+
     const FIREBASE_URL = "https://bekmezpos-default-rtdb.firebaseio.com";
 
     const textKVKK = `<strong style="color:white; font-size:14px;">KVKK AYDINLATMA METNİ</strong><br><br><b>1. Veri Sorumlusu:</b> Bekmez Pişirim Gıda Ltd. Şti.<br><b>2. İşlenen Veriler:</b> Ad, soyad, telefon numarası, adres ve sipariş geçmişiniz siparişinizin teslimi amacıyla işlenmektedir.<br><b>3. Veri Güvenliği:</b> Verileriniz sistemimizde uçtan uca şifrelenerek saklanmakta ve üçüncü şahıslarla/kurumlarla kesinlikle paylaşılmamaktadır. Hesabınızı sildiğiniz an tüm verileriniz kalıcı olarak yok edilir.`;
@@ -1794,10 +1804,8 @@
             return;
         }
         
-        // Varsa eski dinleyiciyi temizle
         if (aktifAdisyonDinleyiciRef) aktifAdisyonDinleyiciRef.off();
         
-        // Kasa'daki durumu saniyesinde dinle
         aktifAdisyonDinleyiciRef = firebase.database().ref(`CanliPaketler/${siparisId}`);
         aktifAdisyonDinleyiciRef.on('value', async (snapshot) => {
             let bP = snapshot.val();
