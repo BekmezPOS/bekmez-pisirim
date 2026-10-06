@@ -1394,23 +1394,25 @@
     function IptalOnaySor() { HapticTitresim(); SoruSor("Siparişi İptal Et", "Siparişinizi iptal etmek istediğinize emin misiniz? İşlem geri alınamaz.", "⚠️", () => { SiparişiGercektenIptalEt(); }, true); }
     
     // YENİ PATCH METODLU İPTAL FONKSİYONU
-    async function SiparişiGercektenIptalEt() {
+   async function SiparişiGercektenIptalEt() {
         let siparisId = SecureOku("bg_active_order_id"); if(!siparisId) return;
-        if(aktifSayacInterval) clearInterval(aktifSayacInterval);
+        if(aktifSayacInterval) clearInterval(aktifSayacInterval); // SAYAÇ DONMA ÇÖZÜMÜ
         
         try {
             let authUser = firebase.auth().currentUser; if(!authUser) return;
             let idToken = await authUser.getIdToken(true); 
 
-            // YENİ DÜĞÜM AÇMAK YERİNE ORJİNAL SİPARİŞİ PATCH İLE GÜNCELLİYORUZ
+            // Unity'nin görebilmesi için doğrudan CanliPaketler'e İPTAL bilgisini PATCH atıyoruz
             await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}.json?auth=${idToken}`, { 
                 method: "PATCH", 
-                body: JSON.stringify({ durum: "İPTAL EDİLDİ ❌", iptalZamani: Date.now() }) 
+                body: JSON.stringify({ durum: "İPTAL EDİLDİ ❌" }) 
             });
-            
-            await fetch(`${FIREBASE_URL}/CanliPaketler/${siparisId}.json?auth=${idToken}`, { method: "DELETE" });
+            await fetch(`${FIREBASE_URL}/CanliPaketler/${siparisId}.json?auth=${idToken}`, { 
+                method: "PATCH", 
+                body: JSON.stringify({ durum: "İPTAL EDİLDİ ❌" }) 
+            });
 
-            OzelUyariGoster("İptal Ediliyor...", "Siparişiniz iptal ediliyor. Kupon ve ödülleriniz iade edilecek...", "✅");
+            OzelUyariGoster("İptal Edildi", "Siparişiniz başarıyla iptal edildi.", "✅");
             
             BuluttanAktifAdisyonuSil();
             SecureSil("bg_active_order_id"); SecureSil("bg_last_status"); SecureSil("bg_order_timestamp");
@@ -1423,21 +1425,23 @@
     }
 
     // YENİ PATCH METODLU DÜZENLE FONKSİYONU
-    async function SiparisiDuzenleVeSepeteDon() {
+  async function SiparisiDuzenleVeSepeteDon() {
         let siparisId = SecureOku("bg_active_order_id"); if(!siparisId) return;
-        if(aktifSayacInterval) clearInterval(aktifSayacInterval);
+        if(aktifSayacInterval) clearInterval(aktifSayacInterval); // SAYAÇ DONMA ÇÖZÜMÜ
         
         try {
             let authUser = firebase.auth().currentUser; if(!authUser) return;
             let idToken = await authUser.getIdToken(true); 
             
-            // YENİ DÜĞÜM AÇMAK YERİNE ORJİNAL SİPARİŞİ PATCH İLE GÜNCELLİYORUZ
+            // Unity'nin görebilmesi için doğrudan CanliPaketler'e İPTAL bilgisini PATCH atıyoruz
             await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}.json?auth=${idToken}`, { 
                 method: "PATCH", 
-                body: JSON.stringify({ durum: "İPTAL EDİLDİ ❌", iptalZamani: Date.now() }) 
+                body: JSON.stringify({ durum: "İPTAL EDİLDİ ❌" }) 
             });
-            
-            await fetch(`${FIREBASE_URL}/CanliPaketler/${siparisId}.json?auth=${idToken}`, { method: "DELETE" });
+            await fetch(`${FIREBASE_URL}/CanliPaketler/${siparisId}.json?auth=${idToken}`, { 
+                method: "PATCH", 
+                body: JSON.stringify({ durum: "İPTAL EDİLDİ ❌" }) 
+            });
 
             BuluttanAktifAdisyonuSil();
             
@@ -1861,7 +1865,7 @@
     function KuponuIptalEt(sM = false) { if(!sM) HapticTitresim(); aktifKuponKodu = ""; aktifKuponIndirimTutari = 0; aktifKuponAltLimit = 0; aktifKuponHedefUrun = "Herşey"; let iE = document.getElementById("coupon-code"); if(iE) iE.value = ""; KuponArayuzunuGuncelle(); if(!sM) HesaplaVeGuncelle(); }
     function KuponArayuzunuGuncelle() { let b = document.getElementById("coupon-apply-btn"); let m = document.getElementById("coupon-message"); let iE = document.getElementById("coupon-code"); if(aktifKuponIndirimTutari > 0) { b.style.background = "var(--danger)"; b.style.color = "white"; b.innerText = "İptal Et"; b.onclick = () => KuponuIptalEt(false); if(iE) { iE.disabled = true; iE.style.opacity = "0.6"; } m.innerHTML = `<span style="color: var(--success);">✓ ${aktifKuponIndirimTutari} TL İndirim!</span>`; } else { b.style.background = "rgba(255,255,255,0.05)"; b.style.color = "var(--text-main)"; b.innerText = "Uygula"; b.onclick = KuponSorgula; if(iE) { iE.disabled = false; iE.style.opacity = "1"; } m.innerHTML = ""; } }
     
-   async function PaketSiparisiGonder() {
+  async function PaketSiparisiGonder() {
         if(isProcessingOrder || (sepet.length === 0 && aktifKullanilanCarkOdulu === null)) return;
         if(!document.getElementById("legal-checkbox").checked) { OzelUyariGoster("Sözleşme Onayı", "Sözleşmeleri onaylamanız gerek.", "📝"); return; }
         
@@ -1884,7 +1888,6 @@
         if(hV) { OzelUyariGoster("Eksik", "Ad, telefon veya adres hatalı.", "⚠"); return; }
 
         let btn = document.getElementById("final-submit-btn"); btn.disabled = true; btn.classList.add("loading"); 
-        
         btn.innerHTML = `<div class="spinner-small"></div> Sipariş İletiliyor...`;
         isProcessingOrder = true;
 
@@ -1894,29 +1897,22 @@
             checkLoc().then(p => {
                 let lat = p.coords.latitude; let lng = p.coords.longitude; let ms = GetDistanceKm(DUKKAN_ENLEM, DUKKAN_BOYLAM, lat, lng);
                 if (ms > MAKS_MESAFE_KM) { 
-                    // DÜZELTME 1: MENZİL İÇİN DİREKT REDDETMEK YERİNE ESNEK ONAY (DISTANCE OVERLAY)
-                    let do2 = document.getElementById("distance-alert-overlay"); 
-                    do2.style.display = "flex"; setTimeout(() => do2.classList.add("active"), 10); 
-                    
-                    let distBtn = document.getElementById("distance-continue-btn");
-                    if(distBtn) {
-                        distBtn.onclick = () => {
-                            KapatUyariModal({target: do2}, true);
-                            DevamEtPaketGonder(is, tl, ad, secilenOdeme, sepet, lat, lng);
-                        };
-                    }
+                    // SIFIR TAVİZ: Menzil Dışıysa Kesin Engelle
+                    OzelUyariGoster("Menzil Dışındasınız", `Sıcak teslimat yapabilmek için sınırımız <b>${MAKS_MESAFE_KM} km</b>'dir. Maalesef bu alanın dışında olduğunuz için siparişinizi alamıyoruz.`, "🛵");
                     isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = `${sonOdenecekFiyat.toFixed(2)} TL Öde`; 
                     return; 
                 }
                 DevamEtPaketGonder(is, tl, ad, secilenOdeme, sepet, lat, lng);
             }).catch(e => { 
-                DevamEtPaketGonder(is, tl, ad, secilenOdeme, sepet, 0, 0);
+                // SIFIR TAVİZ: Konum izni yoksa Kesin Engelle
+                OzelUyariGoster("Konum Bulunamadı", "Sipariş verebilmek için cihazınızın <b>Konum (GPS) servisini açmalı</b> ve tarayıcıdan izin vermelisiniz.", "📍");
+                isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = `${sonOdenecekFiyat.toFixed(2)} TL Öde`;
             });
         } else { 
-            DevamEtPaketGonder(is, tl, ad, secilenOdeme, sepet, 0, 0);
+            OzelUyariGoster("Desteklenmiyor", "Cihazınız konum servisini desteklemiyor.", "❌");
+            isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = `${sonOdenecekFiyat.toFixed(2)} TL Öde`;
         }
     }
-
     async function DevamEtPaketGonder(isim, tel, adres, odemeTuru, temizSepet, lat = 0, lng = 0) {
         SecureKaydet("bg_i", isim); SecureKaydet("bg_a", adres);
         let btn = document.getElementById("final-submit-btn"); 
@@ -1964,20 +1960,46 @@
         });
     }
 
-    function AdisyonuGercekZamanliDinle() {
+   function AdisyonuGercekZamanliDinle() {
         let siparisId = SecureOku("bg_active_order_id");
         if (!siparisId) {
             document.getElementById("history-content").innerHTML = `<div class="empty-state-box">${emptyHistorySVG}<p>Aktif bir siparişiniz bulunmuyor.</p></div>`;
             return;
         }
         
-        if (aktifAdisyonDinleyiciRef) aktifAdisyonDinleyiciRef.off();
+        // Ekrana yükleniyor animasyonunu koy
+        document.getElementById("history-content").innerHTML = `<div class="skeleton-block"></div>`;
         
-        aktifAdisyonDinleyiciRef = firebase.database().ref(`CanliPaketler/${siparisId}`);
-        aktifAdisyonDinleyiciRef.on('value', async (snapshot) => {
-            let bP = snapshot.val();
-            await AdisyonEkraniGuncelle(bP, siparisId);
-        });
+        let denemeSayisi = 0;
+        let tryListen = () => {
+            let authUser = firebase.auth().currentUser;
+            if(!authUser) {
+                denemeSayisi++;
+                if(denemeSayisi > 10) { // 5 saniye bekler, hala auth yoksa sonsuz döngüyü kırar
+                    document.getElementById("history-content").innerHTML = `<div class="empty-state-box"><p>Oturum bağlantısı kurulamadı. Lütfen sayfayı yenileyin.</p></div>`;
+                    return;
+                }
+                setTimeout(tryListen, 500); 
+                return;
+            }
+            
+            if (aktifAdisyonDinleyiciRef) aktifAdisyonDinleyiciRef.off();
+            aktifAdisyonDinleyiciRef = firebase.database().ref(`CanliPaketler/${siparisId}`);
+            
+            aktifAdisyonDinleyiciRef.on('value', async (snapshot) => {
+                let bP = snapshot.val();
+                try {
+                    await AdisyonEkraniGuncelle(bP, siparisId);
+                } catch(e) {
+                    console.error("Güncelleme Hatası:", e);
+                    document.getElementById("history-content").innerHTML = `<div class="empty-state-box"><p>Sipariş verisi alınırken bir hata oluştu.</p></div>`;
+                }
+            }, (error) => {
+                // Veritabanı okuma izni reddedilirse iskeletin donmasını engeller
+                document.getElementById("history-content").innerHTML = `<div class="empty-state-box"><p>Siparişe erişim sağlanamadı veya iptal edildi.</p></div>`;
+            });
+        };
+        tryListen();
     }
 
     function BaslatAdisyonSayaci(orderTs, canEdit, nakitDisiOdeme) {
