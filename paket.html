@@ -2003,7 +2003,7 @@
         }
     }
 
-    async function AdisyonEkraniGuncelle(bP, siparisId) {
+   async function AdisyonEkraniGuncelle(bP, siparisId) {
         try {
             let authUser = firebase.auth().currentUser; if(!authUser) return;
             let idToken = await authUser.getIdToken(true);
@@ -2033,7 +2033,6 @@
 
                     let hBekleme = `<div class="receipt-card"><div style="text-align: center; margin-bottom: 15px;"><div class="spinner" style="border-top-color:var(--primary); width:35px; height:35px; border-width:4px;"></div><div style="font-weight: 900; font-size: 20px; color:#1c1c1e;">KASA ONAYI BEKLENİYOR</div></div>${butonlar}</div>`;
                     
-                    // DÜZELTME 3: HTML'i sadece durum değiştiğinde güncelliyoruz. Böylece sayaç dom tarafından silinmiyor.
                     if (window.sonRenderEdilenDurum !== "KASA_ONAYI") { 
                         document.getElementById("history-content").innerHTML = hBekleme; 
                         window.sonRenderEdilenDurum = "KASA_ONAYI";
@@ -2042,6 +2041,17 @@
                     BaslatAdisyonSayaci(orderTs, canEdit, nakitDisiOdeme);
                     return; 
                 } else {
+                    // DÜZELTME 1: Kasa, siparişi taslaklardan sildiğinde CanlıPaketler'e geçmesi için ona 60 saniyelik bir opsiyon (Sipariş İşleniyor ekranı) tanıyoruz. Eskiden silindiğini görüp direkt HTML'den kaldırıyordu.
+                    let gecenSure = GetServerTimeFast() - orderTs;
+                    if (orderTs > 0 && gecenSure < 60000) {
+                        let hGecis = `<div class="receipt-card"><div style="text-align: center; margin-bottom: 15px;"><div class="spinner" style="border-top-color:var(--primary); width:35px; height:35px; border-width:4px;"></div><div style="font-weight: 900; font-size: 20px; color:#1c1c1e;">SİPARİŞ İŞLENİYOR</div><div style="font-size:12px; color:#a1a1aa; margin-top:8px;">Kasa kaydı oluşturuluyor...</div></div></div>`;
+                        if (window.sonRenderEdilenDurum !== "GECIS_BEKLEME") { 
+                            document.getElementById("history-content").innerHTML = hGecis; 
+                            window.sonRenderEdilenDurum = "GECIS_BEKLEME";
+                        }
+                        return;
+                    }
+
                     window.isOrderFinished = false; window.sonRenderEdilenDurum = "";
                     document.getElementById("history-content").innerHTML = `<div class="empty-state-box">${emptyHistorySVG}<p>Aktif bir siparişiniz bulunmuyor.</p></div>`; 
                     sonCekilenAdisyonHTML = ""; SecureSil("bg_active_order_id"); SecureSil("bg_last_status"); 
@@ -2058,7 +2068,8 @@
                 window.isOrderFinished = false; window.sonRenderEdilenDurum = ""; h = `<div class="empty-state-box">${emptyHistorySVG}<p>Aktif bir siparişiniz bulunmuyor.</p></div>`; sonCekilenAdisyonHTML = "";
                 SecureSil("bg_active_order_id"); SecureSil("bg_last_status"); BuluttanAktifAdisyonuSil();
             } else {
-                let dR = bP.durum ? bP.durum.toUpperCase() : "SİPARİŞ ALINDI 🔔";
+                // DÜZELTME 2: Unity durumu null dönerse diye zorunlu string tipine çevirildi
+                let dR = bP.durum ? String(bP.durum).toUpperCase() : "SİPARİŞ ALINDI 🔔";
                 let durumRenk = "var(--primary)"; let durumBg = "rgba(255,107,0,0.1)"; let durumIkon = "⏳"; let iptalButonuHTML = "";
                 
                 let oncekiDurum = SecureOku("bg_last_status") || "";
@@ -2096,15 +2107,28 @@
                 } 
                 else { 
                     h = `<div class="receipt-card"><div style="text-align: center; margin-bottom: 25px;"><div style="font-size:30px; margin-bottom:5px;">${durumIkon}</div><div style="font-weight: 900; font-size: 22px; color:#1c1c1e;">BEKMEZ GO</div><div style="font-size: 14px; font-weight: 800; color:var(--text-muted); margin-top:4px;">PAKET SERVİS</div></div><div class="receipt-header"><span>DURUM</span><span style="color:${durumRenk}; font-weight:900; background:${durumBg}; padding:8px 14px; border-radius:12px; text-align:right;">${escapeHTML(dR)}</span></div>`; 
-                    if(bP.siparisler) { bP.siparisler.forEach(u => { h += `<div class="receipt-item"><span>${escapeHTML(u.itemName)}</span><span>${parseFloat(u.itemPrice).toFixed(2)} ₺</span></div>`; }); } 
+                    
+                    // DÜZELTME 3: Unity'nin ürünleri Array yerine Dictionary (Object) olarak gönderme ihtimaline karşı çökme önleyici koruma
+                    if(bP.siparisler) { 
+                        let itemsArray = Array.isArray(bP.siparisler) ? bP.siparisler : Object.values(bP.siparisler);
+                        itemsArray.forEach(u => { 
+                            let pName = u.itemName || u.tamIsim || "Ürün";
+                            let pPrice = u.itemPrice || u.fiyat || 0;
+                            h += `<div class="receipt-item"><span>${escapeHTML(pName)}</span><span>${parseFloat(pPrice).toFixed(2)} ₺</span></div>`; 
+                        }); 
+                    } 
                     if (bP.siparisNotu) { h += `<div style="margin-top: 20px; padding: 16px; background: rgba(0,0,0,0.03); border-radius:16px; font-size: 13px; font-weight: 600; color:#8e8e93; border: 1px dashed #d1d1d6;">NOT:<br>${escapeHTML(bP.siparisNotu)}</div>`; } 
-                    h += `<div class="receipt-total">TOPLAM: <span style="font-size:28px; display:block; margin-top:8px;">${parseFloat(bP.toplamTutar).toFixed(2)} TL</span></div>${iptalButonuHTML}<div style="text-align: center; font-size: 11px; margin-top: 25px; color:#a1a1aa; font-weight: 600;">Bizi tercih ettiğiniz için teşekkür ederiz.</div></div>`; 
+                    
+                    // DÜZELTME 4: Eğer Unity toplam tutarı boş gönderirse sistemin NaN vererek çökmesini önleme
+                    let tTutar = parseFloat(bP.toplamTutar || 0);
+                    if(isNaN(tTutar)) tTutar = 0;
+                    
+                    h += `<div class="receipt-total">TOPLAM: <span style="font-size:28px; display:block; margin-top:8px;">${tTutar.toFixed(2)} TL</span></div>${iptalButonuHTML}<div style="text-align: center; font-size: 11px; margin-top: 25px; color:#a1a1aa; font-weight: 600;">Bizi tercih ettiğiniz için teşekkür ederiz.</div></div>`; 
                     sonCekilenAdisyonHTML = h; 
                 }
             }
             
-            // DÜZELTME 4: Burada da aynı şekilde sadece durum değiştiğinde DOM manipülasyonu yapıyoruz.
-            let kontrolDurumu = (bP && bP.durum) ? bP.durum : "BOS";
+            let kontrolDurumu = (bP && bP.durum) ? String(bP.durum) : "BOS";
             if (window.sonRenderEdilenDurum !== kontrolDurumu) { 
                 document.getElementById("history-content").innerHTML = h; 
                 window.sonRenderEdilenDurum = kontrolDurumu;
@@ -2112,7 +2136,13 @@
             
             BaslatAdisyonSayaci(orderTs, canEdit, nakitDisiOdeme);
             
-        } catch(e) {}
+        } catch(e) {
+            console.error("Adisyon Ekrani Çökme Koruması: ", e);
+            // EĞER SISTEM YİNE DE ÇÖKERSE, İSKELET YÜKLEYİCİ (BUZLU CAM) YERİNE HATA MESAJI GÖSTERİR
+            if (document.getElementById("history-content").innerHTML.includes("skeleton-block")) {
+                document.getElementById("history-content").innerHTML = `<div class="empty-state-box" style="border-color:var(--danger);"><p style="color:var(--danger);">Bağlantı hatası oluştu, ancak siparişiniz alındı.</p></div>`;
+            }
+        }
     }
 </script>
 </body>
