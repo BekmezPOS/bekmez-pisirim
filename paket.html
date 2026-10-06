@@ -1398,7 +1398,7 @@
     function IptalOnaySor() { HapticTitresim(); SoruSor("Siparişi İptal Et", "Siparişinizi iptal etmek istediğinize emin misiniz? İşlem geri alınamaz.", "⚠️", () => { SiparişiGercektenIptalEt(); }, true); }
     
     // GÜNCELLENDİ: Unity'nin algılaması için sipariş doğrudan CanliPaketler'den SİLİNİYOR (DELETE)
-    async function SiparişiGercektenIptalEt() {
+   async function SiparişiGercektenIptalEt() {
         let siparisId = SecureOku("bg_active_order_id"); if(!siparisId) return;
         try {
             let authUser = firebase.auth().currentUser; if(!authUser) return;
@@ -1408,18 +1408,19 @@
             let tel = telInput ? telInput.value.replace(/[^0-9]/g, '') : SecureOku("bg_t");
             if (!tel) tel = SecureOku("bg_t");
 
-            let iptalPaketi = { islemTuru: "IPTAL", zaman: new Date().toLocaleTimeString(), telefon: tel, uid: authUser.uid };
+            let iptalPaketi = { durum: "İPTAL EDİLDİ (Müşteri)", islemTuru: "IPTAL", zaman: new Date().toLocaleTimeString() };
 
-            // Siparişi geçmiş veritabanında iptal olarak güncelle
-            await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}-IPTAL.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(iptalPaketi) });
+            // DÜZELTME 1: Yeni bir "-IPTAL" ID'si açmak yerine mevcut siparişi PATCH ile güncelliyoruz
+            await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}.json?auth=${idToken}`, { method: "PATCH", body: JSON.stringify(iptalPaketi) });
             
-            // UNITY SİLME KOMUTU (Siparişi Unity ekranından düşürür)
+            // UNITY SİLME KOMUTU
             await fetch(`${FIREBASE_URL}/CanliPaketler/${siparisId}.json?auth=${idToken}`, { method: "DELETE" });
 
             OzelUyariGoster("İptal Ediliyor...", "Siparişiniz iptal ediliyor. Kupon ve ödülleriniz iade edilecek...", "✅");
             
             BuluttanAktifAdisyonuSil();
             SecureSil("bg_active_order_id"); SecureSil("bg_last_status"); SecureSil("bg_order_timestamp");
+            window.sonRenderEdilenDurum = ""; // Ekran sıfırlaması için
             setTimeout(() => { window.location.reload(true); }, 3000);
         } catch(e) {}
     }
@@ -1429,14 +1430,15 @@
     }
 
     // GÜNCELLENDİ: Unity'nin algılaması için sipariş doğrudan CanliPaketler'den SİLİNİYOR (DELETE)
-    async function SiparisiDuzenleVeSepeteDon() {
+   async function SiparisiDuzenleVeSepeteDon() {
         let siparisId = SecureOku("bg_active_order_id"); if(!siparisId) return;
         try {
             let authUser = firebase.auth().currentUser; if(!authUser) return;
             let idToken = await authUser.getIdToken(true); let tel = SecureOku("bg_t");
-            let iptalPaketi = { islemTuru: "IPTAL", zaman: new Date().toLocaleTimeString(), telefon: tel, uid: authUser.uid };
+            let iptalPaketi = { durum: "İPTAL EDİLDİ (Düzenleme)", islemTuru: "IPTAL", zaman: new Date().toLocaleTimeString() };
             
-            await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}-IPTAL.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(iptalPaketi) });
+            // DÜZELTME 2: Mevcut siparişi PATCH ile güncelliyoruz
+            await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}.json?auth=${idToken}`, { method: "PATCH", body: JSON.stringify(iptalPaketi) });
             
             // UNITY SİLME KOMUTU
             await fetch(`${FIREBASE_URL}/CanliPaketler/${siparisId}.json?auth=${idToken}`, { method: "DELETE" });
@@ -1449,6 +1451,7 @@
             let note = SecureOku("bg_saved_note"); if(note) document.getElementById("siparis-notu").value = note;
 
             SecureSil("bg_active_order_id"); SecureSil("bg_last_status"); SecureSil("bg_order_timestamp");
+            window.sonRenderEdilenDurum = ""; // Ekran sıfırlaması için
             
             OzelUyariGoster("Düzenleme Modu Aktif", "Eski siparişiniz iptal edildi ve ürünler sepete eklendi. Değişiklik yapıp tekrar sipariş verebilirsiniz.", "🛒");
             SayfaGoster('sepet');
@@ -1893,7 +1896,7 @@
         if (navigator.geolocation) { 
             const checkLoc = () => { return new Promise((resolve, reject) => { navigator.geolocation.getCurrentPosition(p => resolve(p), e => reject(e), {enableHighAccuracy: true, timeout: 10000, maximumAge: 0}); }); };
             
-            checkLoc().then(p => {
+           checkLoc().then(p => {
                 let lat = p.coords.latitude; let lng = p.coords.longitude; let ms = GetDistanceKm(DUKKAN_ENLEM, DUKKAN_BOYLAM, lat, lng);
                 if (ms > MAKS_MESAFE_KM) { 
                     let do2 = document.getElementById("distance-alert-overlay"); do2.style.display = "flex"; setTimeout(() => do2.classList.add("active"), 10); 
@@ -1901,7 +1904,10 @@
                 }
                 DevamEtPaketGonder(is, tl, ad, secilenOdeme, sepet, lat, lng);
             }).catch(e => { 
-                DevamEtPaketGonder(is, tl, ad, secilenOdeme, sepet, 0, 0);
+                // DÜZELTME 5: Konum alınamazsa işlemi zorla durdurup kullanıcıyı uyarıyoruz.
+                OzelUyariGoster("Konum Hatası", "Teslimat bölgemizde olduğunuzu doğrulamamız için tarayıcı ayarlarından konum izni vermeniz zorunludur.", "📍");
+                isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = `${sonOdenecekFiyat.toFixed(2)} TL Öde`;
+                return;
             });
         } else { 
             DevamEtPaketGonder(is, tl, ad, secilenOdeme, sepet, 0, 0);
@@ -2007,7 +2013,6 @@
             let rawOrderTs = SecureOku("bg_order_timestamp"); 
             let parsedTs = rawOrderTs ? ZamanMuhruCoz(rawOrderTs, siparisId) : 0;
             
-            // FIX 2: Geri sayım sayacının dondurucu hatasını giderme (Firebase ana saatini baz alır)
             let orderTs = parsedTs;
             if (orderTs === 0 && bP && bP.timestamp) orderTs = bP.timestamp;
 
@@ -2028,14 +2033,17 @@
 
                     let hBekleme = `<div class="receipt-card"><div style="text-align: center; margin-bottom: 15px;"><div class="spinner" style="border-top-color:var(--primary); width:35px; height:35px; border-width:4px;"></div><div style="font-weight: 900; font-size: 20px; color:#1c1c1e;">KASA ONAYI BEKLENİYOR</div></div>${butonlar}</div>`;
                     
-                    if (document.getElementById("history-content").innerHTML !== hBekleme) { 
+                    // DÜZELTME 3: HTML'i sadece durum değiştiğinde güncelliyoruz. Böylece sayaç dom tarafından silinmiyor.
+                    if (window.sonRenderEdilenDurum !== "KASA_ONAYI") { 
                         document.getElementById("history-content").innerHTML = hBekleme; 
+                        window.sonRenderEdilenDurum = "KASA_ONAYI";
                     } 
                     
                     BaslatAdisyonSayaci(orderTs, canEdit, nakitDisiOdeme);
                     return; 
                 } else {
-                    window.isOrderFinished = false; document.getElementById("history-content").innerHTML = `<div class="empty-state-box">${emptyHistorySVG}<p>Aktif bir siparişiniz bulunmuyor.</p></div>`; 
+                    window.isOrderFinished = false; window.sonRenderEdilenDurum = "";
+                    document.getElementById("history-content").innerHTML = `<div class="empty-state-box">${emptyHistorySVG}<p>Aktif bir siparişiniz bulunmuyor.</p></div>`; 
                     sonCekilenAdisyonHTML = ""; SecureSil("bg_active_order_id"); SecureSil("bg_last_status"); 
                     BuluttanAktifAdisyonuSil(); return;
                 }
@@ -2047,7 +2055,7 @@
             let isGhost = sipZamani ? ((Date.now() - sipZamani) > GHOST_TIMEOUT_MS) : false; 
             let h = "";
             if(!bP || isGhost) { 
-                window.isOrderFinished = false; h = `<div class="empty-state-box">${emptyHistorySVG}<p>Aktif bir siparişiniz bulunmuyor.</p></div>`; sonCekilenAdisyonHTML = "";
+                window.isOrderFinished = false; window.sonRenderEdilenDurum = ""; h = `<div class="empty-state-box">${emptyHistorySVG}<p>Aktif bir siparişiniz bulunmuyor.</p></div>`; sonCekilenAdisyonHTML = "";
                 SecureSil("bg_active_order_id"); SecureSil("bg_last_status"); BuluttanAktifAdisyonuSil();
             } else {
                 let dR = bP.durum ? bP.durum.toUpperCase() : "SİPARİŞ ALINDI 🔔";
@@ -2068,7 +2076,7 @@
                 else if (dR.includes("İPTAL") || dR.includes("RED")) { durumRenk = "var(--danger)"; durumBg = "rgba(255, 59, 48, 0.1)"; durumIkon = "❌"; BuluttanAktifAdisyonuSil(); }
                 else if (dR.includes("TESLİM") || dR.includes("AFİYET") || dR.includes("TAMAM")) { 
                     durumRenk = "var(--success)"; durumBg = "rgba(52, 199, 89, 0.1)"; durumIkon = "✅"; BuluttanAktifAdisyonuSil();
-                    if (!window.isOrderFinished) { window.isOrderFinished = true; setTimeout(() => { SecureSil("bg_last_status"); SecureSil("bg_active_order_id"); document.getElementById("history-content").innerHTML = `<div class="empty-state-box">${emptyHistorySVG}<p>Aktif bir siparişiniz bulunmuyor.</p></div>`; sonCekilenAdisyonHTML = ""; SayfaGoster('urunler'); OzelUyariGoster("Afiyet Olsun!", "Siparişiniz teslim edildi. Bizi tercih ettiğiniz için teşekkür ederiz 😋", "🎉"); }, 6000); }
+                    if (!window.isOrderFinished) { window.isOrderFinished = true; setTimeout(() => { SecureSil("bg_last_status"); SecureSil("bg_active_order_id"); document.getElementById("history-content").innerHTML = `<div class="empty-state-box">${emptyHistorySVG}<p>Aktif bir siparişiniz bulunmuyor.</p></div>`; sonCekilenAdisyonHTML = ""; window.sonRenderEdilenDurum = ""; SayfaGoster('urunler'); OzelUyariGoster("Afiyet Olsun!", "Siparişiniz teslim edildi. Bizi tercih ettiğiniz için teşekkür ederiz 😋", "🎉"); }, 6000); }
                 }
 
                 if (canEdit) { 
@@ -2095,8 +2103,11 @@
                 }
             }
             
-            if (document.getElementById("history-content").innerHTML !== h) { 
+            // DÜZELTME 4: Burada da aynı şekilde sadece durum değiştiğinde DOM manipülasyonu yapıyoruz.
+            let kontrolDurumu = (bP && bP.durum) ? bP.durum : "BOS";
+            if (window.sonRenderEdilenDurum !== kontrolDurumu) { 
                 document.getElementById("history-content").innerHTML = h; 
+                window.sonRenderEdilenDurum = kontrolDurumu;
             }
             
             BaslatAdisyonSayaci(orderTs, canEdit, nakitDisiOdeme);
