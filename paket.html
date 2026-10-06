@@ -12,15 +12,13 @@
     <meta name="theme-color" content="#FF6B00">
     <link rel="apple-touch-icon" href="icon-192.png">
 
-    <!-- FİREBASE 10 COMPAT SÜRÜMÜ VE APP CHECK GÜVENLİK KALKANI -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script> 
-    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-check-compat.js"></script>
+    <!-- FİREBASE SİSTEMİ -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
     <style>
         :root{--bg-dark:#000;--bg-gradient:radial-gradient(circle at top, #111114 0%, #000 100%);--surface:rgba(24, 24, 28, 0.65);--surface-solid:#151518;--surface-hover:rgba(40, 40, 45, 0.8);--border:rgba(255, 255, 255, 0.06);--border-light:rgba(255, 255, 255, 0.03);--border-highlight:rgba(255, 255, 255, 0.12);--text-main:#fff;--text-muted:#8a8a93;--primary:#FF6B00;--gradient-fire:linear-gradient(135deg, #FF6B00 0%, #FF9500 100%);--gradient-gold:linear-gradient(135deg, #FACC15 0%, #D97706 100%);--primary-glow:rgba(255, 107, 0, 0.25);--primary-light:rgba(255, 107, 0, 0.12);--success:#34C759;--danger:#FF3B30;--warning:#FFCC00;}
-        *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}html{scroll-behavior:smooth;overscroll-behavior-y:none;}body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-dark);background-image:var(--bg-gradient);color:var(--text-main);margin:0;padding:0;padding-bottom:calc(110px + env(safe-area-inset-bottom));overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;min-height:100vh;position:relative;user-select:none;-webkit-user-select:none;}input,textarea,select{user-select:auto;-webkit-user-select:auto; outline:none;}::-webkit-scrollbar{display:none;}
+        *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}html{scroll-behavior:smooth;overscroll-behavior-y:none;}body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-dark);background-image:var(--bg-gradient);color:var(--text-main);margin:0;padding:0;padding-bottom:calc(110px + env(safe-area-inset-bottom));overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;min-height:100vh;position:relative;user-select:none;-webkit-user-select:none;}input,textarea,select{user-select:auto;-webkit-user-select:auto;}::-webkit-scrollbar{display:none;}
         .embers-container{position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:0;overflow:hidden;}.ember{position:absolute;bottom:-20px;background:var(--primary);border-radius:50%;filter:blur(2px);opacity:0;animation:floatUp ease-in infinite;}@keyframes floatUp{0%{transform:translateY(0) translateX(0) scale(1);opacity:0;}20%{opacity:0.6;}80%{opacity:0.3;}100%{transform:translateY(-100vh) translateX(30px) scale(0.4);opacity:0;}}.ember:nth-child(1){left:10%;width:4px;height:4px;animation-duration:9s;animation-delay:0s;}.ember:nth-child(2){left:30%;width:5px;height:5px;animation-duration:12s;animation-delay:2s;background:#FF9500;}.ember:nth-child(3){left:50%;width:3px;height:3px;animation-duration:8s;animation-delay:1s;}.ember:nth-child(4){left:75%;width:6px;height:6px;animation-duration:14s;animation-delay:4s;filter:blur(3px);}.ember:nth-child(5){left:85%;width:4px;height:4px;animation-duration:10s;animation-delay:0.5s;}
         .app-header,#menu-container,#cart-container,#history-container,#profile-container,#opportunities-container{position:relative;z-index:10;}
         #splash-screen{position:fixed;top:0;left:0;width:100%;height:100%;background-color:var(--bg-dark);z-index:999999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.8s ease;overflow:hidden;}.aura-bg{position:absolute;width:500px;height:500px;background:var(--primary);border-radius:50%;filter:blur(180px);opacity:0.12;animation:auraPulse 5s infinite alternate ease-in-out;z-index:1;}@keyframes auraPulse{0%{transform:scale(0.8);opacity:0.08;}100%{transform:scale(1.1);opacity:0.15;}}#splash-content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;transition:transform 0.8s cubic-bezier(0.16,1,0.3,1),opacity 0.6s ease;width:100%;}
@@ -64,15 +62,9 @@
         .page-title{font-size:24px;font-weight:900;margin:15px 15px 25px 15px;color:var(--text-main);letter-spacing:-1px;text-shadow:0 2px 10px rgba(0,0,0,0.8);}
         .cart-item{background:linear-gradient(145deg,rgba(30,30,35,0.8) 0%,rgba(15,15,20,0.9) 100%);padding:16px;border-radius:24px;margin:0 15px 15px 15px;display:flex;align-items:center;justify-content:space-between;border:1px solid rgba(255,255,255,0.05);border-top:1px solid rgba(255,255,255,0.1);gap:12px;box-shadow:0 8px 20px rgba(0,0,0,0.3),inset 0 1px 1px rgba(255,255,255,0.05);}.cart-item-details{flex:1;}.cart-item-name{font-size:14px;font-weight:700;margin-bottom:6px;color:var(--text-main);line-height:1.4;letter-spacing:-0.3px;text-shadow:0 2px 4px rgba(0,0,0,0.5);}.cart-item-price{color:var(--primary);font-weight:800;font-size:14px;letter-spacing:0.5px;}.cart-controls{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,0.6);border-radius:100px;padding:6px;border:1px solid var(--border-highlight);box-shadow:inset 0 2px 8px rgba(0,0,0,0.5);}.cart-btn{background:var(--surface-solid);color:var(--text-main);border:1px solid var(--border);width:32px;height:32px;font-size:18px;font-weight:600;cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all 0.3s cubic-bezier(0.16,1,0.3,1);box-shadow:0 2px 6px rgba(0,0,0,0.3);}.cart-btn:active{background:var(--gradient-fire);color:white;transform:scale(0.85);border-color:transparent;box-shadow:0 2px 10px var(--primary-glow);}.cart-amount{font-size:14px;font-weight:800;color:var(--text-main);min-width:24px;text-align:center;}
         .input-error{border-color:var(--danger) !important;box-shadow:0 0 10px rgba(255,59,48,0.3) !important;animation:inputShake 0.4s cubic-bezier(0.36,0.07,0.19,0.97) both;}@keyframes inputShake{0%,100%{transform:translateX(0);}20%,60%{transform:translateX(-5px);}40%,80%{transform:translateX(5px);}}
-        
-        .note-input, .checkout-input{width:calc(100% - 30px);margin:5px 15px 20px 15px;background:rgba(25,25,30,0.9);border:1px solid var(--border-highlight);color:var(--text-main);padding:16px;border-radius:20px;font-family:inherit;font-size:14px;font-weight:600;box-sizing:border-box;transition:0.4s cubic-bezier(0.16,1,0.3,1);box-shadow:inset 0 2px 8px rgba(0,0,0,0.4),0 5px 20px rgba(0,0,0,0.2);}
-        .note-input:focus, .checkout-input:focus{outline:none;border-color:var(--primary);background:var(--surface-solid);box-shadow:inset 0 2px 5px rgba(0,0,0,0.5),0 0 0 2px var(--primary-light),0 10px 30px rgba(0,0,0,0.5);transform:translateY(-2px);}
-        .note-input::placeholder, .checkout-input::placeholder{color:#52525B;}
-        .checkout-input{margin:0 0 12px 0;width:100%; height: 60px;}
-        textarea.checkout-input, textarea.premium-input { padding-top: 28px !important; line-height: 1.5; }
-        select.checkout-input { appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 1rem center; background-size: 1em; padding-top: 16px !important; }
-        
-        .order-panel{margin:20px 15px 30px 15px;background:linear-gradient(145deg,rgba(30,30,35,0.9) 0%,rgba(15,15,20,0.95) 100%);padding:20px;border-radius:28px;border:1px solid rgba(255,255,255,0.05);border-top:1px solid rgba(255,255,255,0.15);box-shadow:0 20px 40px rgba(0,0,0,0.5),inset 0 1px 1px rgba(255,255,255,0.05);}.order-btn{background:var(--success);color:white;border:none;padding:18px;font-size:15px;font-weight:800;border-radius:100px;width:100%;cursor:pointer;box-shadow:0 10px 20px rgba(52,199,89,0.4),inset 0 2px 4px rgba(255,255,255,0.3);transition:all 0.4s cubic-bezier(0.16,1,0.3,1);letter-spacing:0.5px; display: flex; align-items: center; justify-content: center;}.order-btn:active{transform:scale(0.95) translateY(2px);box-shadow:0 5px 10px rgba(52,199,89,0.3),inset 0 2px 6px rgba(0,0,0,0.2);}.order-btn.loading{background:#52525B; cursor:not-allowed;box-shadow:none;transform:none;}.order-btn:disabled{background:#52525B;cursor:not-allowed;box-shadow:none;transform:none;color:#a1a1aa;}
+        .note-input,.checkout-input{width:calc(100% - 30px);margin:5px 15px 20px 15px;background:rgba(25,25,30,0.9);border:1px solid var(--border-highlight);color:var(--text-main);padding:16px;border-radius:20px;font-family:inherit;font-size:14px;font-weight:600;box-sizing:border-box;transition:0.4s cubic-bezier(0.16,1,0.3,1);box-shadow:inset 0 2px 8px rgba(0,0,0,0.4),0 5px 20px rgba(0,0,0,0.2);}.note-input:focus,.checkout-input:focus{outline:none;border-color:var(--primary);background:var(--surface-solid);box-shadow:inset 0 2px 5px rgba(0,0,0,0.5),0 0 0 2px var(--primary-light),0 10px 30px rgba(0,0,0,0.5);transform:translateY(-2px);}.note-input::placeholder,.checkout-input::placeholder{color:#52525B;}.checkout-input{margin:0 0 12px 0;width:100%;}
+        select.checkout-input { appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 1rem center; background-size: 1em; }
+        .order-panel{margin:20px 15px 30px 15px;background:linear-gradient(145deg,rgba(30,30,35,0.9) 0%,rgba(15,15,20,0.95) 100%);padding:20px;border-radius:28px;border:1px solid rgba(255,255,255,0.05);border-top:1px solid rgba(255,255,255,0.15);box-shadow:0 20px 40px rgba(0,0,0,0.5),inset 0 1px 1px rgba(255,255,255,0.05);}.order-btn{background:var(--success);color:white;border:none;padding:18px;font-size:15px;font-weight:800;border-radius:100px;width:100%;cursor:pointer;box-shadow:0 10px 20px rgba(52,199,89,0.4),inset 0 2px 4px rgba(255,255,255,0.3);transition:all 0.4s cubic-bezier(0.16,1,0.3,1);letter-spacing:0.5px;}.order-btn:active{transform:scale(0.95) translateY(2px);box-shadow:0 5px 10px rgba(52,199,89,0.3),inset 0 2px 6px rgba(0,0,0,0.2);}.order-btn.loading{background:#52525B;cursor:not-allowed;box-shadow:none;transform:none;}.order-btn:disabled{background:#52525B;cursor:not-allowed;box-shadow:none;transform:none;color:#a1a1aa;}
         .popup-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:2000;display:none;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity 0.4s cubic-bezier(0.16,1,0.3,1);}.popup-overlay.active{opacity:1;pointer-events:auto;}.popup-content{background:linear-gradient(180deg,#1a1a24 0%,#070709 100%);width:100%;border-top-left-radius:32px;border-top-right-radius:32px;padding:15px 20px 30px 20px;transform:translateY(100%);transition:transform 0.5s cubic-bezier(0.175,0.885,0.32,1.275);border-top:1px solid rgba(255,255,255,0.1);box-shadow:0 -20px 60px rgba(0,0,0,0.8);max-height:90vh;overflow-y:auto;position:relative;}.popup-overlay.active .popup-content{transform:translateY(0);}.popup-drag-handle{width:40px;height:5px;background:rgba(255,255,255,0.15);border-radius:10px;margin:0 auto 25px auto;}.popup-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:25px;}.popup-title{font-size:20px;font-weight:900;color:var(--text-main);line-height:1.2;letter-spacing:-0.5px;text-shadow:0 2px 8px rgba(0,0,0,0.5);}.popup-info-box{background:rgba(0,0,0,0.5);padding:12px 16px;border-radius:20px;border:1px solid var(--border-highlight);display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;box-shadow:inset 0 2px 10px rgba(0,0,0,0.6);}
         .p-sec-title{font-size:11px;color:var(--text-muted);font-weight:800;margin-bottom:10px;letter-spacing:1px;text-transform:uppercase;}.p-btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}.p-counter-box{display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,0.5);padding:10px 14px;border-radius:16px;border:1px solid var(--border-highlight);box-shadow:inset 0 2px 8px rgba(0,0,0,0.5);margin-bottom:10px;}.p-c-label{font-size:13px;font-weight:800;color:var(--text-main);}.p-c-ctrls{display:flex;align-items:center;gap:10px;}.p-c-btn{background:rgba(255,255,255,0.05);color:white;border:1px solid rgba(255,255,255,0.1);width:32px;height:32px;border-radius:50%;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:0.3s;box-shadow:0 2px 4px rgba(0,0,0,0.2);cursor:pointer;}.p-c-val{font-weight:900;font-size:16px;color:var(--primary);min-width:24px;text-align:center;}
         .ingredient-btn{background:rgba(255,255,255,0.03);color:var(--text-main);border:1px solid var(--border-highlight);padding:10px 4px;border-radius:12px;font-weight:700;font-size:11px;cursor:pointer;flex:1 1 calc(33.333% - 8px);transition:all 0.3s;box-shadow:0 2px 8px rgba(0,0,0,0.2);text-align:center;}.ingredient-btn.active{background:linear-gradient(to bottom,var(--primary-light),rgba(255,94,0,0.05));color:var(--primary);border-color:rgba(255,94,0,0.4);box-shadow:inset 0 0 15px rgba(255,94,0,0.15),0 2px 10px rgba(255,94,0,0.1);}
@@ -85,21 +77,20 @@
         
         .premium-cark-banner { background: linear-gradient(135deg, #111114 0%, #1a1a24 100%); border: 1px solid var(--border-highlight); border-radius: 20px; margin: 0 15px 20px 15px; padding: 20px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 2px 5px rgba(255,255,255,0.05); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .premium-cark-banner:active { transform: scale(0.95); }
-        .premium-cark-banner::before { content: ''; position: absolute; right: -10px; bottom: -20px; width:80px; height:80px; background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23FF6B00" opacity="0.15"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>') no-repeat center; background-size:contain; transform: rotate(-15deg); }
+        .premium-cark-banner::before { content: '🎰'; position: absolute; right: -10px; bottom: -20px; font-size: 80px; opacity: 0.15; transform: rotate(-15deg); }
         .premium-cark-banner .c-b-content { position: relative; z-index: 2; }
         .c-b-title { color: var(--primary); font-size: 18px; font-weight: 900; margin-bottom: 5px; text-shadow: 0 2px 10px var(--primary-glow); }
         .c-b-desc { color: var(--text-muted); font-size: 13px; font-weight: 600; }
         .c-b-btn { background: var(--gradient-fire); color: white; padding: 10px 20px; border-radius: 100px; font-weight: 800; font-size: 13px; box-shadow: 0 4px 15px var(--primary-glow); position: relative; z-index: 2; }
         .cark-kutu { width: 280px; height: 280px; border-radius: 50%; border: 8px solid #1a1a24; box-shadow: 0 0 40px rgba(255, 107, 0, 0.4), inset 0 0 20px rgba(0,0,0,0.8); position: relative; overflow: hidden; margin: 0 auto 30px auto; transition: transform 4s cubic-bezier(0.1, 0.7, 0.1, 1); background: conic-gradient( #FF6B00 0deg 72deg, #151518 72deg 144deg, #FACC15 144deg 216deg, #23232b 216deg 288deg, #FF9500 288deg 360deg ); }
         .cark-ok { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 35px solid white; z-index: 10; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6)); }
-        .cark-dilim-yazi { position: absolute; top: 50%; left: 50%; width: 50%; height: 40px; margin-top: -20px; transform-origin: 0% 50%; font-size: 12px; font-weight: 800; color: white; display: flex; align-items: center; justify-content: flex-end; padding-right: 25px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); box-sizing: border-box; }
+        .cark-dilim-yazi { position: absolute; top: 50%; left: 50%; width: 50%; height: 20px; margin-top: -10px; transform-origin: 0% 50%; font-size: 13px; font-weight: 900; color: white; text-align: right; padding-right: 15px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: flex-end; }
         .cark-dilim-yazi span { display: inline-block; transform: scale(-1, -1); }
         .aktif-hediye-kart { background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.05) 100%); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 16px; padding: 15px; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
-        
         .spinner { border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 20px auto; }
-        .spinner-small { width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-right: 8px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+        /* YENİ PREMIUM ARAYÜZ SİSTEMİ EKLENTİSİ */
         .premium-page-container { padding: 20px 15px; max-width: 500px; margin: 0 auto; font-family: inherit; }
         .premium-glass-card { background: rgba(20, 20, 25, 0.45); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 28px; padding: 30px 20px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1); position: relative; overflow: hidden; }
         .premium-glass-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,107,0,0.03) 0%, transparent 60%); pointer-events: none; z-index: 0; }
@@ -107,35 +98,19 @@
         .premium-toggle-bg { position: absolute; width: calc(50% - 6px); height: calc(100% - 12px); background: linear-gradient(135deg, var(--primary), #e65c00); border-radius: 12px; transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); box-shadow: 0 4px 15px rgba(255, 107, 0, 0.3); }
         .premium-toggle-btn { flex: 1; background: transparent; border: none; color: #a1a1aa; padding: 14px 0; font-weight: 700; font-size: 14px; position: relative; z-index: 1; cursor: pointer; transition: color 0.3s ease; }
         .premium-toggle-btn.active { color: white; }
-        
         .premium-input-group { position: relative; margin-bottom: 22px; z-index: 1; display: flex; align-items: center; }
-        .premium-input { width: 100%; height: 60px; background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 24px 16px 8px 16px; color: white; font-size: 15px; font-weight: 600; transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1); outline: none; box-sizing: border-box; }
+        .premium-input { width: 100%; background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 20px 16px 10px 16px; color: white; font-size: 15px; font-weight: 600; transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1); outline: none; box-sizing: border-box; }
         .premium-input:focus { background: rgba(255, 107, 0, 0.03); border-color: var(--primary); box-shadow: 0 0 0 4px rgba(255, 107, 0, 0.15), inset 0 0 10px rgba(255, 107, 0, 0.05); }
         .premium-label { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #8e8e93; font-size: 14px; font-weight: 500; transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1); pointer-events: none; letter-spacing: 0.3px; }
-        .premium-input:focus ~ .premium-label, .premium-input:not(:placeholder-shown) ~ .premium-label { top: 16px; font-size: 11px; font-weight: 700; color: var(--primary); letter-spacing: 0.5px; }
+        .premium-input:focus ~ .premium-label, .premium-input:not(:placeholder-shown) ~ .premium-label { top: 12px; font-size: 11px; font-weight: 700; color: var(--primary); letter-spacing: 0.5px; }
         .premium-input:disabled { opacity: 0.5; cursor: not-allowed; }
-        
-        .premium-submit-btn { width: 100%; background: linear-gradient(135deg, var(--primary) 0%, #d85600 100%); color: white; border: none; padding: 18px; border-radius: 16px; font-weight: 800; font-size: 15px; cursor: pointer; box-shadow: 0 8px 25px rgba(255, 107, 0, 0.4), inset 0 2px 0 rgba(255,255,255,0.2); transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1); z-index: 1; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .premium-submit-btn { width: 100%; background: linear-gradient(135deg, var(--primary) 0%, #d85600 100%); color: white; border: none; padding: 18px; border-radius: 16px; font-weight: 800; font-size: 15px; cursor: pointer; box-shadow: 0 8px 25px rgba(255, 107, 0, 0.4), inset 0 2px 0 rgba(255,255,255,0.2); transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1); z-index: 1; position: relative; overflow: hidden; }
         .premium-submit-btn:active { transform: scale(0.97); box-shadow: 0 4px 15px rgba(255, 107, 0, 0.3); }
         .premium-submit-btn:disabled { background: #2c2c2e; box-shadow: none; color: #636366; transform: none; cursor: not-allowed; opacity:1; }
-        
         .premium-dash-tabs { display: flex; gap: 12px; margin-bottom: 25px; z-index: 1; position: relative; }
-        .premium-dash-tab { flex: 1; padding: 14px 10px; background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.05); border-radius: 14px; color: #a1a1aa; font-weight: 700; font-size: 13px; transition: all 0.3s; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .premium-dash-tab { flex: 1; padding: 14px 10px; background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.05); border-radius: 14px; color: #a1a1aa; font-weight: 700; font-size: 13px; transition: all 0.3s; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
         .premium-dash-tab.active { background: rgba(255, 107, 0, 0.08); border-color: rgba(255,107,0,0.3); color: var(--primary); }
-        .premium-dash-tab svg { width:18px; height:18px; fill:currentColor; }
-        
-        .verified-shield { background: linear-gradient(135deg, rgba(52, 199, 89, 0.15) 0%, rgba(5, 150, 105, 0.05) 100%); border: 1px solid rgba(52, 199, 89, 0.3); border-radius: 20px; padding: 25px 20px; text-align: center; margin-bottom: 20px; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(52, 199, 89, 0.1); }
-        .verified-shield::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(52, 199, 89, 0.1) 0%, transparent 60%); animation: pulseShield 4s infinite alternate ease-in-out; pointer-events: none; }
-        @keyframes pulseShield { 0% { transform: scale(0.8); opacity: 0.5; } 100% { transform: scale(1.1); opacity: 1; } }
-        .verified-icon { width: 50px; height: 50px; background: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px auto; box-shadow: 0 5px 15px rgba(52, 199, 89, 0.5), inset 0 2px 5px rgba(255,255,255,0.4); position: relative; z-index: 2; }
-        .verified-icon svg { width: 26px; height: 26px; color: white; }
-        
-        .military-security-badge { display:flex; align-items:center; gap:12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); padding: 12px 16px; border-radius: 12px; margin-top: 20px; position: relative; z-index: 2;}
-        .military-security-badge svg { width:24px; height:24px; color: var(--success); filter:drop-shadow(0 0 5px rgba(52,199,89,0.4)); flex-shrink: 0;}
-        .military-security-badge div { display:flex; flex-direction:column; text-align:left; }
-        .military-security-badge strong { font-size:11px; color:#fff; letter-spacing:0.5px; text-transform:uppercase; margin-bottom:2px;}
-        .military-security-badge span { font-size:10px; color:var(--text-muted); line-height: 1.3;}
-
+        .verified-shield { background: rgba(52, 199, 89, 0.1); border: 1px solid rgba(52, 199, 89, 0.2); border-radius: 16px; padding: 20px; text-align: center; margin-bottom: 20px; }
         .fade-up-enter { animation: fadeUpEnter 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
         @keyframes fadeUpEnter { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         .modern-checkbox-container { display: flex; align-items: flex-start; position: relative; cursor: pointer; user-select: none; margin-bottom: 20px; z-index: 1; }
@@ -144,45 +119,42 @@
         .modern-checkbox-container input:checked ~ .checkmark { background-color: var(--primary); border-color: var(--primary); }
         .checkmark:after { content: ""; position: absolute; display: none; left: 6px; top: 2px; width: 5px; height: 10px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg); }
         .modern-checkbox-container input:checked ~ .checkmark:after { display: block; }
-        
-        /* DEBUG BUTONU VE RAPOR KUTUSU EKLENDİ */
-        .debug-report-box { margin: 15px; padding: 12px; background: rgba(255,59,48,0.1); border: 1px dashed var(--danger); border-radius: 12px; font-family: monospace; font-size: 11px; color: #ff8585; text-align: left; }
     </style>
 </head>
 <body>
     <nav class="bottom-nav">
         <button class="nav-item active" id="nav-urunler" onclick="SayfaGoster('urunler')">
-            <span class="icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M11 2v20c-5.07-.5-9-4.79-9-10s3.93-9.5 9-10zm2 0v8h9c-.46-4.17-3.83-7.54-8-8v.01zm0 10v10c4.17-.46 7.54-3.83 8-8h-8z"/></svg></span><span>Menü</span>
+            <span class="icon">🥩</span><span>Menü</span>
         </button>
         <button class="nav-item" id="nav-firsatlar" onclick="SayfaGoster('firsatlar')">
-            <span class="icon" style="filter: grayscale(0);"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M20 6h-2.18c.11-.31.18-.65.18-1a2.996 2.996 0 0 0-5.5-1.65l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/></svg></span><span style="color:var(--primary);">Fırsatlar</span>
+            <span class="icon" style="filter: grayscale(0);">🎁</span><span style="color:var(--primary);">Fırsatlar</span>
         </button>
         <button class="nav-item" id="nav-sepet" onclick="SayfaGoster('sepet')">
-            <span class="icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1.003 1.003 0 0 0 20 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg></span><span>Sepet</span><div class="nav-badge" id="nav-sepet-badge">0</div>
+            <span class="icon">🛒</span><span>Sepet</span><div class="nav-badge" id="nav-sepet-badge">0</div>
         </button>
         <button class="nav-item" id="nav-gecmis" onclick="SayfaGoster('gecmis')">
-            <span class="icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M18 17H6v-2h12v2zm0-4H6v-2h12v2zm0-4H6V7h12v2zM3 22l1.5-1.5L6 22l1.5-1.5L9 22l1.5-1.5L12 22l1.5-1.5L15 22l1.5-1.5L18 22l1.5-1.5L21 22V2l-1.5 1.5L18 2l-1.5 1.5L15 2l-1.5 1.5L12 2l-1.5 1.5L9 2l-1.5 1.5L6 2 4.5 3.5 3 2v20z"/></svg></span><span>Adisyon</span>
+            <span class="icon">🧾</span><span>Adisyon</span>
         </button>
         <button class="nav-item" id="nav-profil" onclick="SayfaGoster('profil')">
-            <span class="icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></span><span>Profil</span>
+            <span class="icon">👤</span><span>Profil</span>
         </button>
     </nav>
 
     <div id="pwa-fullscreen-prompt" class="pwa-fullscreen-overlay">
         <div class="pwa-content-box">
-            <button class="pwa-close-btn ripple-element" onclick="CloseFullscreenPrompt()" style="position:absolute; z-index:99;">&times;</button>
+            <button class="pwa-close-btn" onclick="CloseFullscreenPrompt()" style="position:absolute; z-index:99;">&times;</button>
             <div class="pwa-icon-glow"></div>
             <div class="pwa-icon">📱</div>
             <h2 class="pwa-title">Bekmez GO'yu<br><span style="color:var(--primary);">Telefonunuza Kurun</span></h2>
             <p class="pwa-desc">Sıra beklemeden paket siparişi verin, kuponları kaçırmayın ve lezzete tek tıkla ulaşın.</p>
-            <button class="pwa-main-btn shimmer-btn neon-border ripple-element" onclick="TetiklePwaPrompt()">Uygulamayı İndir</button>
+            <button class="pwa-main-btn shimmer-btn neon-border" onclick="TetiklePwaPrompt()">Uygulamayı İndir</button>
             <p style="font-size:11px; color:var(--text-muted); margin-top:20px; font-weight:600;">*Cihazınızda yer kaplamaz, anında kurulur.</p>
         </div>
     </div>
 
     <div id="pwa-install-banner" style="display:none; background: var(--gradient-fire); padding: 10px 15px; color: white; align-items: center; justify-content: space-between; z-index: 99; position: relative; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px; box-shadow: 0 5px 15px rgba(255,107,0,0.3); margin-top: -1px;">
         <div style="display:flex; align-items:center; gap:10px;"><span style="font-size:18px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3));">📱</span><span style="font-weight: 700; font-size: 12px; line-height: 1.3;">Tek tıkla sipariş için<br>uygulamamızı indirin!</span></div>
-        <button class="ripple-element" onclick="ManuelUygulamaIndir()" style="background: white; color: var(--primary); border: none; padding: 6px 14px; border-radius: 100px; font-weight: 800; font-size: 12px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">İndir</button>
+        <button onclick="ManuelUygulamaIndir()" style="background: white; color: var(--primary); border: none; padding: 6px 14px; border-radius: 100px; font-weight: 800; font-size: 12px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">İndir</button>
     </div>
 
     <div class="embers-container">
@@ -225,10 +197,10 @@
             <input type="text" id="search-input" class="search-input" placeholder="Ne yemek istersiniz?" onkeyup="UrunAra()" oninput="ZararliKarakterTemizle(this)">
         </div>
         <div class="category-tabs" id="kategori-sekmeleri" style="display: none;">
-            <button class="tab-btn active ripple-element" id="tab-AnaYemek" onclick="KategoriSec('Ana Yemek', this);">🥩 Ana Yemek</button>
-            <button class="tab-btn ripple-element" id="tab-İçecek" onclick="KategoriSec('İçecek', this);">🥤 İçecek</button>
-            <button class="tab-btn ripple-element" id="tab-Ekstra" onclick="KategoriSec('Ekstra', this);">🍟 Ekstra</button>
-            <button class="tab-btn ripple-element" id="tab-Arama" style="display:none; color:var(--success); border-color:transparent; background: rgba(16, 185, 129, 0.15);">🔍 Sonuçlar</button>
+            <button class="tab-btn active" id="tab-AnaYemek" onclick="KategoriSec('Ana Yemek', this);">🥩 Ana Yemek</button>
+            <button class="tab-btn" id="tab-İçecek" onclick="KategoriSec('İçecek', this);">🥤 İçecek</button>
+            <button class="tab-btn" id="tab-Ekstra" onclick="KategoriSec('Ekstra', this);">🍟 Ekstra</button>
+            <button class="tab-btn" id="tab-Arama" style="display:none; color:var(--success); border-color:transparent; background: rgba(16, 185, 129, 0.15);">🔍 Sonuçlar</button>
         </div>
 
         <div id="menu-grid" class="grid-container">
@@ -257,7 +229,7 @@
     <!-- FIRSATLAR VE ÇARK -->
     <div id="opportunities-container" style="display: none;">
         <h2 class="page-title">Fırsatlar ve Şans</h2>
-        <div id="cark-banner" class="premium-cark-banner ripple-element" onclick="CarkPopupAc()">
+        <div id="cark-banner" class="premium-cark-banner" onclick="CarkPopupAc()">
             <div class="c-b-content">
                 <div class="c-b-title">🎰 Haftalık Şans Çarkı</div>
                 <div class="c-b-desc" id="cark-banner-desc">Sürpriz hediyeler seni bekliyor!</div>
@@ -272,12 +244,10 @@
                     <div style="font-size:16px; font-weight:900; color:white; margin-bottom:4px;" id="kazanilan-odul-yazi">1 Lt Kola</div>
                     <div style="font-size:11px; color:rgba(255,255,255,0.6); font-weight:600;" id="kazanilan-sure-yazi">Kalan Süre: 7 Gün</div>
                 </div>
-                <button class="ripple-element" onclick="CarkHediyesiniKullan()" style="background:var(--success); color:white; border:none; padding:10px 15px; border-radius:100px; font-weight:800; box-shadow:0 4px 15px rgba(52,199,89,0.4); cursor:pointer;">Kullan</button>
+                <button onclick="CarkHediyesiniKullan()" style="background:var(--success); color:white; border:none; padding:10px 15px; border-radius:100px; font-weight:800; box-shadow:0 4px 15px rgba(52,199,89,0.4); cursor:pointer;">Kullan</button>
             </div>
         </div>
-        <div id="firsatlar-list" style="padding: 0 15px 25px 15px;">
-            <div class="skeleton-block"></div>
-        </div>
+        <div id="firsatlar-list" style="padding: 0 15px 25px 15px;"><div class="empty-text">Kuponlar aranıyor...</div></div>
     </div>
 
     <!-- SEPET -->
@@ -290,11 +260,11 @@
         <div id="cart-items-list"></div>
         <div id="cart-note-section" style="display: none;">
             <div id="coupon-box" style="display: flex; gap: 8px; margin: 0 15px 20px 15px;">
-                <input type="text" id="coupon-code" style="flex: 1; background: rgba(25, 25, 30, 0.9); border: 1px dashed var(--border-highlight); color: var(--text-main); padding: 16px 20px; border-radius: 20px; font-size: 14px; font-weight: 800; text-transform: uppercase; font-family: inherit; box-shadow: inset 0 2px 8px rgba(0,0,0,0.3); transition: 0.3s;" placeholder="KUPON KODU" onkeydown="if(event.key === 'Enter') KuponSorgula()" oninput="ZararliKarakterTemizle(this)">
-                <button id="coupon-apply-btn" class="ripple-element" style="background: rgba(255,255,255,0.05); color: var(--text-main); border: 1px solid var(--border-highlight); border-radius: 20px; padding: 0 24px; font-weight: 800; font-size: 14px; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.2);" onclick="KuponSorgula()">Uygula</button>
+                <input type="text" id="coupon-code" style="flex: 1; background: rgba(25, 25, 30, 0.9); border: 1px dashed var(--border-highlight); color: var(--text-main); padding: 16px 20px; border-radius: 20px; font-size: 14px; font-weight: 800; text-transform: uppercase; font-family: inherit; box-shadow: inset 0 2px 8px rgba(0,0,0,0.3); transition: 0.3s;" placeholder="KUPON KODU" onkeydown="if(event.key === 'Enter') KuponSorgula()">
+                <button id="coupon-apply-btn" style="background: rgba(255,255,255,0.05); color: var(--text-main); border: 1px solid var(--border-highlight); border-radius: 20px; padding: 0 24px; font-weight: 800; font-size: 14px; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.2);" onclick="KuponSorgula()">Uygula</button>
             </div>
             <div id="coupon-message" style="font-size: 13px; font-weight: 700; margin: -5px 15px 20px 20px;"></div>
-            <textarea id="siparis-notu" class="note-input premium-input" rows="3" placeholder="Özel bir isteğiniz var mı? (Acı bol olsun vb.)" maxlength="150" oninput="ZararliKarakterTemizle(this)"></textarea>
+            <textarea id="siparis-notu" class="note-input" rows="3" placeholder="Özel bir isteğiniz var mı? (Acı bol olsun vb.)" maxlength="150"></textarea>
         </div>
         <div class="order-panel" id="alt-panel" style="display: none;">
             <div style="display: flex; justify-content: space-between; margin-bottom: 25px; align-items: center;">
@@ -304,7 +274,7 @@
                     <span id="sepet-tutar" style="color: var(--text-main); font-size: 32px; font-weight: 900; letter-spacing: -1.5px; text-shadow: 0 2px 8px rgba(0,0,0,0.5);">0.00 TL</span>
                 </div>
             </div>
-            <button class="order-btn shimmer-btn neon-border ripple-element" id="checkout-btn" onclick="CheckoutPopupAc();">Teslimat ve Ödeme</button>
+            <button class="order-btn shimmer-btn neon-border" id="checkout-btn" onclick="CheckoutPopupAc();">Teslimat ve Ödeme</button>
         </div>
     </div>
 
@@ -319,8 +289,8 @@
         <div id="auth-wrapper" class="premium-glass-card fade-up-enter">
             <div class="premium-toggle-box">
                 <div class="premium-toggle-bg" id="auth-toggle-slider"></div>
-                <button class="premium-toggle-btn active ripple-element" onclick="AuthModuDegistir('login')">Giriş Yap</button>
-                <button class="premium-toggle-btn ripple-element" onclick="AuthModuDegistir('register')">Kayıt Ol</button>
+                <button class="premium-toggle-btn active" onclick="AuthModuDegistir('login')">Giriş Yap</button>
+                <button class="premium-toggle-btn" onclick="AuthModuDegistir('register')">Kayıt Ol</button>
             </div>
 
             <!-- GİRİŞ FORMU -->
@@ -333,17 +303,17 @@
                     <input type="password" id="login-pass" class="premium-input" placeholder=" " required autocomplete="off">
                     <label class="premium-label">Şifre</label>
                 </div>
-                <button onclick="GirisYapTetikle()" class="premium-submit-btn ripple-element" style="margin-top: 15px;">Giriş Yap</button>
+                <button onclick="GirisYapTetikle()" class="premium-submit-btn" style="margin-top: 15px;">Giriş Yap</button>
             </div>
 
             <!-- KAYIT FORMU -->
             <div id="register-form-area" class="auth-form" style="display: none;">
                 <div class="premium-input-group">
-                    <input type="text" id="prof-isim" class="premium-input" placeholder=" " required autocomplete="off" oninput="ZararliKarakterTemizle(this)" onkeyup="document.getElementById('chk-isim').value = this.value">
+                    <input type="text" id="prof-isim" class="premium-input" placeholder=" " required autocomplete="off" onkeyup="document.getElementById('chk-isim').value = this.value">
                     <label class="premium-label">Ad Soyad</label>
                 </div>
                 <div class="premium-input-group">
-                    <span style="position: absolute; left: 16px; top: 22px; color: var(--text-main); font-weight: 900; font-size: 15px; z-index: 2;">+90</span>
+                    <span style="position: absolute; left: 16px; top: 16px; color: var(--text-main); font-weight: 900; font-size: 15px; z-index: 2;">+90</span>
                     <input type="tel" id="prof-telefon" class="premium-input" placeholder=" " required autocomplete="off" style="padding-left: 55px;" oninput="FormatTelefon(this)">
                     <label class="premium-label" style="left: 55px;">Telefon Numarası</label>
                 </div>
@@ -372,64 +342,50 @@
                     </span>
                 </label>
 
-                <button id="btn-email-verify" onclick="YeniNesilKayitOl()" class="premium-submit-btn ripple-element" style="margin-top: 25px;" disabled>Hesabımı Oluştur</button>
-            </div>
-            
-            <div class="military-security-badge" id="auth-security-badge">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
-                <div>
-                    <strong>Google Security ile Korunuyor</strong>
-                    <span>Bilgileriniz uçtan uca AES-256 ile şifrelenmektedir.</span>
-                </div>
+                <button id="btn-email-verify" onclick="YeniNesilKayitOl()" class="premium-submit-btn" style="margin-top: 25px;" disabled>Hesabımı Oluştur</button>
             </div>
         </div>
 
         <!-- KULLANICI EVRENİ (DASHBOARD) -->
         <div id="dashboard-wrapper" class="premium-glass-card fade-up-enter" style="display: none;">
             <div class="premium-dash-tabs">
-                <button class="premium-dash-tab active ripple-element" id="tab-Teslimat" onclick="DashboardSekmeSec('Teslimat')">
-                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg> Teslimat Adresi
-                </button>
-                <button class="premium-dash-tab ripple-element" id="tab-Guvenlik" onclick="DashboardSekmeSec('Guvenlik')">
-                    <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg> Güvenlik Merkezi
-                </button>
+                <button class="premium-dash-tab active" id="tab-Teslimat" onclick="DashboardSekmeSec('Teslimat')"><span style="font-size:18px;">📍</span> Adres</button>
+                <button class="premium-dash-tab" id="tab-Guvenlik" onclick="DashboardSekmeSec('Guvenlik')"><span style="font-size:18px;">🛡️</span> Güvenlik</button>
             </div>
 
             <div id="dash-teslimat-alani" class="dash-content active fade-up-enter">
                 <div class="premium-input-group" style="margin-top: 10px;">
-                    <textarea id="prof-adres" class="premium-input" placeholder=" " rows="4" style="padding-top: 28px !important; resize: none; height:100px;" required oninput="ZararliKarakterTemizle(this)" onkeyup="document.getElementById('chk-adres').value = this.value"></textarea>
-                    <label class="premium-label" style="top: 30px;">Detaylı Teslimat Adresiniz</label>
+                    <textarea id="prof-adres" class="premium-input" placeholder=" " rows="4" style="padding-top: 24px; resize: none;" required onkeyup="document.getElementById('chk-adres').value = this.value"></textarea>
+                    <label class="premium-label" style="top: 24px;">Detaylı Teslimat Adresiniz</label>
                 </div>
-                <button onclick="ProfiliKaydet()" class="premium-submit-btn ripple-element">Adresi Güncelle</button>
+                <button onclick="ProfiliKaydet()" class="premium-submit-btn">Adresi Güncelle</button>
             </div>
 
             <div id="dash-guvenlik-alani" class="dash-content" style="display: none;">
                 <div class="verified-shield">
-                    <div class="verified-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-                    <div style="color: white; font-weight: 900; font-size: 18px; margin-bottom: 6px;">Tam Doğrulanmış Hesap</div>
-                    <div style="color: #a1a1aa; font-size: 13px; font-weight: 500; line-height: 1.5;">Kimliğiniz doğrulandı ve verileriniz Google sunucularında <b style="color:white;">uçtan uca şifrelenerek</b> koruma altına alındı.</div>
+                    <div style="font-size: 32px; margin-bottom: 8px;">✅</div>
+                    <div style="color: white; font-weight: 800; font-size: 16px; margin-bottom: 4px;">Tam Doğrulanmış Hesap</div>
+                    <div style="color: #8e8e93; font-size: 12px; font-weight: 500;">Sistemlerimizde %100 güvenli olarak kayıtlısınız.</div>
                 </div>
                 <div style="display: flex; gap: 12px; margin-top: 25px;">
-                    <button onclick="SadeceCikisYap()" class="ripple-element" style="flex: 1; background: rgba(255, 204, 0, 0.1); border: 1px solid rgba(255,204,0,0.3); color: var(--warning); padding: 14px; border-radius: 14px; font-weight: 700; cursor: pointer; transition: 0.3s; overflow:hidden; position:relative;">Çıkış Yap</button>
-                    <button onclick="HesabiTamamenSil()" class="ripple-element" style="flex: 1; background: rgba(255, 59, 48, 0.1); border: 1px solid rgba(255,59,48,0.3); color: var(--danger); padding: 14px; border-radius: 14px; font-weight: 700; cursor: pointer; transition: 0.3s; overflow:hidden; position:relative;">Hesabı Sil</button>
+                    <button onclick="SadeceCikisYap()" style="flex: 1; background: rgba(255, 204, 0, 0.1); border: 1px solid rgba(255,204,0,0.3); color: var(--warning); padding: 14px; border-radius: 14px; font-weight: 700; cursor: pointer; transition: 0.3s;">🚪 Çıkış</button>
+                    <button onclick="HesabiTamamenSil()" style="flex: 1; background: rgba(255, 59, 48, 0.1); border: 1px solid rgba(255,59,48,0.3); color: var(--danger); padding: 14px; border-radius: 14px; font-weight: 700; cursor: pointer; transition: 0.3s;">🗑 Hesabı Sil</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- GEÇMİŞ (Adisyon) - DEBUG BUTONU EKLENDİ -->
+    <!-- GEÇMİŞ (Adisyon) - DEBUG BUTONU BURADA -->
     <div id="history-container" style="display: none;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin: 15px 15px 10px 15px;">
             <h2 class="page-title" style="margin:0;">Canlı Adisyon</h2>
-            <button onclick="HataRaporuIndirTxt()" class="ripple-element" style="background:#FF3B30; color:white; border:none; padding:8px 12px; border-radius:8px; font-weight:800; font-size:11px; cursor:pointer; z-index:99;">📥 Log İndir (.TXT)</button>
+            <button onclick="HataRaporuIndirTxt()" style="background:#FF3B30; color:white; border:none; padding:8px 12px; border-radius:8px; font-weight:800; font-size:11px; cursor:pointer;">📥 Log İndir (.TXT)</button>
         </div>
-        <div id="history-content">
-            <div class="skeleton-block"></div>
-        </div>
+        <div id="history-content"></div>
     </div>
 
     <!-- YÜZEN SEPET & POPUPLAR -->
-    <div id="floating-cart" class="floating-cart neon-border ripple-element" onclick="SayfaGoster('sepet')" style="display: none;">
+    <div id="floating-cart" class="floating-cart neon-border" onclick="SayfaGoster('sepet')" style="display: none;">
         <div style="display: flex; align-items: center; gap: 12px;"><span style="font-size: 22px;">🛒</span><span style="font-size: 15px; font-weight:900;">Sepeti Gör</span></div>
         <div class="floating-btn" id="floating-total">0.00 TL</div>
     </div>
@@ -449,7 +405,7 @@
                 </div>
             </div>
             <p id="cark-durum-metni" style="color:var(--text-muted); font-weight:700; font-size:14px; margin-bottom:20px;">Sadece 7 günde 1 kez çevirebilirsin.</p>
-            <button id="cark-cevir-btn" class="order-btn shimmer-btn neon-border ripple-element" onclick="CarkCevir()">Şansımı Dene!</button>
+            <button id="cark-cevir-btn" class="order-btn shimmer-btn neon-border" onclick="CarkCevir()">Şansımı Dene!</button>
         </div>
     </div>
 
@@ -459,7 +415,7 @@
             <div class="popup-drag-handle"></div>
             <div class="popup-header">
                 <h3 id="popup-title" class="popup-title">Ürün Adı</h3>
-                <button class="ripple-element" onclick="PopupKapat()" style="background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; z-index: 99; overflow:hidden;">&times;</button>
+                <button onclick="PopupKapat()" style="background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; z-index: 99;">&times;</button>
             </div>
             <div class="popup-info-box">
                 <div style="display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.6); padding: 6px; border-radius: 100px; border: 1px solid var(--border-highlight); box-shadow: inset 0 2px 8px rgba(0,0,0,0.5);"><button onclick="PopupIciMiktarDegistir(-1)" style="width: 32px; height: 32px; border-radius: 50%; border: none; background: rgba(255,255,255,0.05); color: white; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s;">-</button><span id="popup-amount" style="color: var(--text-main); font-weight: 900; min-width: 40px; text-align: center; font-size: 14px;">______</span><button onclick="PopupIciMiktarDegistir(1)" style="width: 32px; height: 32px; border-radius: 50%; border: none; background: var(--gradient-fire); color: white; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s;">+</button></div>
@@ -467,8 +423,8 @@
             </div>
             <div id="popup-custom-area" style="display: none; margin-bottom: 20px;"></div>
             <div style="display: flex; gap: 10px;">
-                <button class="ripple-element" onclick="PopupSifirla()" style="flex: 1; background: rgba(255,255,255,0.05); color: var(--text-main); border: 1px solid var(--border-highlight); border-radius: 100px; font-weight: 800; font-size: 13px; cursor: pointer; padding: 12px 0; overflow:hidden;">Sıfırla</button>
-                <button id="popup-add-btn" class="shimmer-btn ripple-element" onclick="PopupSepeteEkle()" style="flex: 2; background: var(--gradient-fire); color: white; border: none; border-radius: 100px; font-weight: 800; font-size: 14px; cursor: pointer; padding: 14px 0; box-shadow: 0 10px 20px var(--primary-glow);">Sepete Ekle</button>
+                <button onclick="PopupSifirla()" style="flex: 1; background: rgba(255,255,255,0.05); color: var(--text-main); border: 1px solid var(--border-highlight); border-radius: 100px; font-weight: 800; font-size: 13px; cursor: pointer; padding: 12px 0;">Sıfırla</button>
+                <button id="popup-add-btn" class="shimmer-btn" onclick="PopupSepeteEkle()" style="flex: 2; background: var(--gradient-fire); color: white; border: none; border-radius: 100px; font-weight: 800; font-size: 14px; cursor: pointer; padding: 14px 0; box-shadow: 0 10px 20px var(--primary-glow);">Sepete Ekle</button>
             </div>
         </div>
     </div>
@@ -479,40 +435,32 @@
             <div class="popup-drag-handle"></div>
             <div class="popup-header">
                 <h3 class="popup-title">Teslimat ve Ödeme</h3>
-                <button class="ripple-element" onclick="CheckoutKapat()" style="background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; z-index: 99; overflow:hidden;">&times;</button>
+                <button onclick="CheckoutKapat()" style="background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; z-index: 99;">&times;</button>
             </div>
             <div style="margin-bottom: 20px;">
-                <input type="text" id="chk-isim" class="checkout-input premium-input" placeholder="Adınız Soyadınız" autocomplete="name" maxlength="50" oninput="ZararliKarakterTemizle(this)" onkeyup="document.getElementById('prof-isim').value = this.value">
+                <input type="text" id="chk-isim" class="checkout-input" placeholder="Adınız Soyadınız" autocomplete="name" maxlength="50" onkeyup="document.getElementById('prof-isim').value = this.value">
                 <div class="input-group" style="margin-bottom: 12px; position:relative; display:flex; align-items:center;">
                     <span class="input-icon-left" style="position:absolute; left:15px; font-size: 13px; font-weight: 900; z-index: 10;">🇹🇷 +90</span>
-                    <input type="tel" id="chk-telefon" class="checkout-input premium-input" placeholder="Profilinizden Onaylayın" autocomplete="tel" disabled style="padding-left: 75px; opacity:0.6; cursor:not-allowed; margin-bottom:0;">
+                    <input type="tel" id="chk-telefon" class="checkout-input" placeholder="Profilinizden Onaylayın" autocomplete="tel" disabled style="padding-left: 75px; opacity:0.6; cursor:not-allowed; margin-bottom:0;">
                 </div>
-                <textarea id="chk-adres" class="checkout-input premium-input" rows="3" placeholder="Açık Adresiniz (Mahalle, Sokak, No...)" style="resize:none; padding-top:28px !important; height:100px;" maxlength="250" oninput="ZararliKarakterTemizle(this)" onkeyup="document.getElementById('prof-adres').value = this.value"></textarea>
+                <textarea id="chk-adres" class="checkout-input" rows="3" placeholder="Açık Adresiniz (Mahalle, Sokak, No...)" style="resize:none;" maxlength="250" onkeyup="document.getElementById('prof-adres').value = this.value"></textarea>
             </div>
             
             <div style="font-size:12px; color:var(--text-muted); font-weight:800; margin-bottom:12px; letter-spacing:1px; text-transform: uppercase;">Ödeme Yöntemi:</div>
             <div style="margin-bottom: 20px; position:relative;">
-                <select id="odeme-turu-secim" class="checkout-input premium-input" style="padding: 16px; width: 100%; margin-bottom: 0;">
+                <select id="odeme-turu-secim" class="checkout-input" style="padding: 16px; width: 100%; margin-bottom: 0;">
                     <option value="Kapıda Nakit">Kapıda Nakit</option>
                     <option value="Kapıda Kredi Kartı">Kapıda Kredi Kartı</option>
                     <option value="Havale/EFT">IBAN'a Havale/EFT</option>
                 </select>
             </div>
 
+            <!-- KVKK VE SÖZLEŞMELER -->
             <div style="margin: 15px 0 25px 0; display: flex; align-items: flex-start; gap: 12px; padding: 0 5px;">
                 <input type="checkbox" id="legal-checkbox" onchange="TogglePayButton()" style="width: 22px; height: 22px; accent-color: var(--primary); margin-top: 2px; cursor: pointer;">
                 <label for="legal-checkbox" style="font-size: 11px; color: var(--text-muted); line-height: 1.5; cursor: pointer;"><a class="legal-link" onclick="AcSozlesme('kvkk'); event.preventDefault();">KVKK Aydınlatma Metni</a>, <a class="legal-link" onclick="AcSozlesme('mesafeli'); event.preventDefault();">Mesafeli Satış Sözleşmesi</a>, <a class="legal-link" onclick="AcSozlesme('teslimat'); event.preventDefault();">Teslimat Şartları</a> ve <a class="legal-link" onclick="AcSozlesme('iptal'); event.preventDefault();">İptal Koşulları</a>'nı okudum ve onaylıyorum.</label>
             </div>
-            
-            <div class="military-security-badge" style="margin-bottom: 15px;">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
-                <div>
-                    <strong>Siparişiniz Güvende</strong>
-                    <span>Google altyapısı ile şifrelenmiştir.</span>
-                </div>
-            </div>
-
-            <button id="final-submit-btn" class="order-btn shimmer-btn neon-border ripple-element" disabled style="opacity: 0.5;" onclick="PaketSiparisiGonder()">Sözleşmeyi Onaylayın</button>
+            <button id="final-submit-btn" class="order-btn shimmer-btn neon-border" disabled style="margin-top: 5px; opacity: 0.5;" onclick="PaketSiparisiGonder()">Sözleşmeyi Onaylayın</button>
         </div>
     </div>
 
@@ -524,25 +472,27 @@
                 <div class="spinner"></div>
                 <h3 style="margin: 0 0 14px 0; font-weight: 900; font-size: 20px; color: var(--text-main); letter-spacing:-0.5px;">E-Postanızı Kontrol Edin</h3>
                 <p style="color: var(--text-muted); font-size: 13px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;">Girdiğiniz adrese bir doğrulama linki gönderdik. <br><br><span style="color:white; font-weight:800;">Lütfen mailinize gidip linke tıklayın.</span> Biz bu ekranda tıkladığınızı otomatik anlayacağız...</p>
-                <button onclick="IptalEtEpostaBekleme(true)" class="alert-btn ripple-element" style="background: rgba(255,255,255,0.05); color:white; overflow:hidden;">Vazgeç</button>
+                <button onclick="IptalEtEpostaBekleme(true)" class="alert-btn" style="background: rgba(255,255,255,0.05); color:white;">Vazgeç</button>
             </div>
         </div>
     </div>
 
-    <div id="confirm-overlay" class="custom-alert-overlay" onclick="KapatConfirmModal(event)"><div class="custom-alert-box" id="confirm-box" style="border-color: var(--danger);"><div class="custom-alert-glow" id="confirm-glow" style="background: var(--danger);"></div><div class="custom-alert-content"><div id="confirm-icon" style="font-size: 55px; margin-bottom: 20px;">❓</div><h3 id="confirm-title" style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Emin misiniz?</h3><p id="confirm-text" style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;"></p><div style="display:flex; gap:10px;"><button onclick="KapatConfirmModal(event, true)" class="alert-btn ripple-element" style="background: rgba(255,255,255,0.05); color:white; flex:1; overflow:hidden;">Vazgeç</button><button id="confirm-yes-btn" class="alert-btn ripple-element" style="background: var(--danger); border-color:transparent; color:white; flex:1; overflow:hidden;">Evet</button></div></div></div></div>
+    <div id="confirm-overlay" class="custom-alert-overlay" onclick="KapatConfirmModal(event)"><div class="custom-alert-box" id="confirm-box" style="border-color: var(--danger);"><div class="custom-alert-glow" id="confirm-glow" style="background: var(--danger);"></div><div class="custom-alert-content"><div id="confirm-icon" style="font-size: 55px; margin-bottom: 20px;">❓</div><h3 id="confirm-title" style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Emin misiniz?</h3><p id="confirm-text" style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;"></p><div style="display:flex; gap:10px;"><button onclick="KapatConfirmModal(event, true)" class="alert-btn" style="background: rgba(255,255,255,0.05); color:white; flex:1;">Vazgeç</button><button id="confirm-yes-btn" class="alert-btn" style="background: var(--danger); border-color:transparent; color:white; flex:1;">Evet</button></div></div></div></div>
     
     <div id="legal-popup" class="popup-overlay" onclick="if(event.target === this) KapatSozlesme();">
         <div class="popup-content" style="max-height: 85vh;">
             <div class="popup-drag-handle"></div>
             <div class="popup-header">
                 <h3 id="legal-title" class="popup-title" style="font-size:18px;">Sözleşme</h3>
-                <button class="ripple-element" onclick="KapatSozlesme()" style="background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); width: 36px; height: 36px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; z-index: 99; overflow:hidden;">&times;</button>
+                <button onclick="KapatSozlesme()" style="background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); width: 36px; height: 36px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; z-index: 99;">&times;</button>
             </div>
             <div id="legal-body" style="color: #A1A1AA; font-size: 12px; line-height: 1.7; text-align: left; overflow-y: auto; max-height: 60vh; padding-right: 5px;"></div>
         </div>
     </div>
     
-    <div id="custom-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)"><div class="custom-alert-box" id="custom-alert-box"><div class="custom-alert-glow" id="custom-alert-glow"></div><div class="custom-alert-content"><div id="custom-alert-icon" style="font-size: 55px; margin-bottom: 20px;">⚠️</div><h3 id="custom-alert-title" style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Uyarı</h3><p id="custom-alert-text" style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;"></p><button onclick="KapatUyariModal(event, true)" class="alert-btn ripple-element" style="overflow:hidden;">Tamam, Anladım</button></div></div></div>
+    <div id="custom-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)"><div class="custom-alert-box" id="custom-alert-box"><div class="custom-alert-glow" id="custom-alert-glow"></div><div class="custom-alert-content"><div id="custom-alert-icon" style="font-size: 55px; margin-bottom: 20px;">⚠️</div><h3 id="custom-alert-title" style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Uyarı</h3><p id="custom-alert-text" style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;"></p><button onclick="KapatUyariModal(event, true)" class="alert-btn">Tamam, Anladım</button></div></div></div>
+    
+    <div id="distance-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)"><div class="custom-alert-box"><div class="custom-alert-glow" style="background:var(--primary);"></div><div class="custom-alert-content"><div style="font-size: 55px; margin-bottom: 20px;">🛵</div><h3 style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Menzil Dışındasınız</h3><p style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;">Bekmez GO lezzetlerini size ulaştırabilmek için teslimat ağımızı <b>4 km</b> ile sınırlandırıyoruz.<br><br>Maalesef şu an sıcak teslimat bölgemizin dışındasınız.</p><button onclick="KapatUyariModal(event, true)" class="alert-btn" style="background:var(--primary); border-color:transparent; color:white;">Anladım</button></div></div></div>
     
     <div id="success-overlay" class="success-overlay"><div class="success-icon-wrapper"><div class="success-ring"></div><div class="success-circle"><svg class="success-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div></div><div class="success-text">Sipariş İletildi</div><div class="success-subtext">Kasa onayı bekleniyor...</div></div>
 <script>
@@ -592,7 +542,7 @@
         if(e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) { e.preventDefault(); return false; }
         if(e.ctrlKey && (e.key === 'U' || e.keyCode === 85)) { e.preventDefault(); return false; }
     };
-    
+
     function CihazParmakIziOlustur() {
         try {
             let canvas = document.createElement('canvas');
@@ -665,9 +615,7 @@
     }
     function SecureSil(anahtar) { localStorage.removeItem(anahtar); }
 
-    function ZararliKarakterTemizle(el) {
-        el.value = el.value.replace(/[<>\\/{}\[\]]/g, '');
-    }
+    function ZararliKarakterTemizle(el) { el.value = el.value.replace(/[<>\\/{}\[\]]/g, ''); }
 
     function escapeHTML(str) { 
         return str ? str.toString().replace(/[&<>'"]/g, function(tag){ 
@@ -675,69 +623,9 @@
         }) : ""; 
     }
 
-    document.addEventListener('click', function(e) {
-        let target = e.target.closest('.ripple-element');
-        if (!target) return;
-        let rect = target.getBoundingClientRect();
-        let x = e.clientX - rect.left;
-        let y = e.clientY - rect.top;
-        let ripple = document.createElement('span');
-        ripple.className = 'ripple-span';
-        ripple.style.left = x + 'px';
-        ripple.style.top = y + 'px';
-        let size = Math.max(rect.width, rect.height);
-        ripple.style.width = ripple.style.height = size + 'px';
-        ripple.style.marginLeft = ripple.style.marginTop = -(size / 2) + 'px';
-        target.appendChild(ripple);
-        setTimeout(() => { ripple.remove(); }, 600);
-    });
-
     // ==========================================
     // SİSTEM DEĞİŞKENLERİ VE AYARLAR
     // ==========================================
-    const DUKKAN_WHATSAPP_NUMARASI = "905369517776"; 
-
-    let sepetHatirlaticiTimer = null;
-    let serverTimeOffset = 0;
-    
-    const emptyCartSVG = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1.003 1.003 0 0 0 20 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>`;
-    const emptyCouponSVG = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 6h-2.18c.11-.31.18-.65.18-1a2.996 2.996 0 0 0-5.5-1.65l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/></svg>`;
-    const emptyHistorySVG = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 17H6v-2h12v2zm0-4H6v-2h12v2zm0-4H6V7h12v2zM3 22l1.5-1.5L6 22l1.5-1.5L9 22l1.5-1.5L12 22l1.5-1.5L15 22l1.5-1.5L18 22l1.5-1.5L21 22V2l-1.5 1.5L18 2l-1.5 1.5L15 2l-1.5 1.5L12 2l-1.5 1.5L9 2l-1.5 1.5L6 2 4.5 3.5 3 2v20z"/></svg>`;
-
-    async function SyncServerTime() {
-        try {
-            let st = Date.now();
-            let res = await fetch(window.location.href, { method: "HEAD", cache: "no-cache" });
-            let sDate = res.headers.get("Date");
-            if(sDate) {
-                let serverDate = new Date(sDate).getTime();
-                let latency = (Date.now() - st) / 2;
-                serverTimeOffset = (serverDate + latency) - Date.now();
-            }
-        } catch(e) { serverTimeOffset = 0; }
-    }
-    function GetServerTimeFast() { return Date.now() + serverTimeOffset; }
-
-    function BildirimGonder(baslik, mesaj) {
-        if (!("Notification" in window) || Notification.permission !== "granted") return;
-        let ayarlar = { body: mesaj, icon: "icon-192.png", badge: "icon-192.png", vibrate: [200, 100, 200, 100, 200], requireInteraction: true };
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.ready.then(function(registration) { registration.showNotification(baslik, ayarlar); })
-            .catch(function() { try { new Notification(baslik, ayarlar); } catch(e) {} });
-        } else { try { new Notification(baslik, ayarlar); } catch(e) {} }
-    }
-
-    function SessizIzinIste() { 
-        if ("Notification" in window) {
-            if (Notification.permission === "default") {
-                Notification.requestPermission().then(permission => {
-                    if (permission === "granted") { BildirimGonder("Bildirimler Aktif! 🔔", "Sipariş durumlarınızı, hatırlatmaları ve fırsatları buradan takip edebilirsiniz."); }
-                });
-            }
-        }
-    }
-
-    // === FIREBASE YAPILANDIRMASI ===
     const firebaseConfig = {
         apiKey: "AIzaSyC8WLup5zoOmFBcFJkflo7J-XJjQEK_jr8", authDomain: "bekmezpos.firebaseapp.com",
         databaseURL: "https://bekmezpos-default-rtdb.firebaseio.com", projectId: "bekmezpos",
@@ -745,44 +633,35 @@
         appId: "1:1013709760225:web:ec71341cb6cdcce9fbf9a0", measurementId: "G-BXKNH6B49K"
     };
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-    
-    const appCheck = firebase.appCheck();
-    appCheck.activate(
-      new firebase.appCheck.ReCaptchaEnterpriseProvider('6LfaV-AtAAAAAGqAbPWGYWxmlGfQNasMlne4iHne'),
-      true 
-    );
+    const FIREBASE_URL = "https://bekmezpos-default-rtdb.firebaseio.com";
 
-    // DÜZELTME: APPCHECK FETCH OVERRIDE ZAMAN AŞIMI (SİSTEMİ KİLİTLEMEMESİ İÇİN)
+    // App Check Güvenliği (Eğer SDK yoksa hata vermez, atlattık)
+    let appCheck = null;
+    try {
+        if(firebase.appCheck) {
+            appCheck = firebase.appCheck();
+            appCheck.activate(new firebase.appCheck.ReCaptchaEnterpriseProvider('6LfaV-AtAAAAAGqAbPWGYWxmlGfQNasMlne4iHne'), true);
+        }
+    } catch(e) { LogDebug("AppCheck kullanılamıyor, atlanıyor."); }
+
     const orjinalFetch = window.fetch;
     window.fetch = async function(...args) {
         let url = args[0];
         let options = args[1] || {};
-        
-        if (typeof url === 'string' && url.includes("firebaseio.com")) {
+        if (appCheck && typeof url === 'string' && url.includes("firebaseio.com")) {
             try {
-                let tokenRes = await Promise.race([
-                    appCheck.getToken(false),
-                    new Promise((_, reject) => setTimeout(() => reject(new Error("AppCheck Timeout")), 2500)) // 2.5 Sn sonra blokajı kaldırır
-                ]);
+                let tokenRes = await appCheck.getToken(false);
                 if (tokenRes && tokenRes.token) {
                     options.headers = options.headers || {};
                     options.headers['X-Firebase-AppCheck'] = tokenRes.token;
                     args[1] = options;
                 }
-            } catch(e) { 
-                LogDebug("Fetch Güvenlik Token Uyarısı: " + e.message, "UYARI"); 
-            }
+            } catch(e) {}
         }
         return orjinalFetch.apply(this, args);
     };
 
-    const FIREBASE_URL = "https://bekmezpos-default-rtdb.firebaseio.com";
-
-    const textKVKK = `<strong style="color:white; font-size:14px;">KVKK AYDINLATMA METNİ</strong><br><br><b>1. Veri Sorumlusu:</b> Bekmez Pişirim Gıda Ltd. Şti.<br><b>2. İşlenen Veriler:</b> Ad, soyad, telefon numarası, adres ve sipariş geçmişiniz siparişinizin teslimi amacıyla işlenmektedir.<br><b>3. Veri Güvenliği:</b> Verileriniz sistemimizde uçtan uca şifrelenerek saklanmakta ve üçüncü şahıslarla/kurumlarla kesinlikle paylaşılmamaktadır. Hesabınızı sildiğiniz an tüm verileriniz kalıcı olarak yok edilir.`;
-    const textMesafeli = `<strong style="color:white; font-size:14px;">MESAFELİ SATIŞ SÖZLEŞMESİ</strong><br><br><b>MADDE 1 - TARAFLAR</b><br><b>SATICI:</b> Bekmez Pişirim Gıda Ltd. Şti.<br><br><b>MADDE 2 - CAYMA HAKKI İSTİSNASI</b><br>Tüketici Mevzuatı gereğince; çabuk bozulabilen, gıda maddesi niteliğindeki malların teslimine ilişkin sözleşmelerde Tüketicinin <b>CAYMA HAKKI BULUNMAMAKTADIR.</b> Ürünlerin size eksiksiz teslimi satıcının sorumluluğundadır.`;
-    const textTeslimat = `<strong style="color:white; font-size:14px;">TESLİMAT ŞARTLARI</strong><br><br><b>1. Teslimat Bölgesi:</b> Kalite standartlarımız gereği, sıcak teslimat sağlayabilmek için maksimum 4 km yarıçapındaki bölgelere hizmet verilmektedir.<br><b>2. Süre:</b> Siparişleriniz ortalama 30-45 dakika içerisinde adresinize ulaştırılır. Olumsuz hava koşulları ve yoğun saatlerde bu süre değişiklik gösterebilir.`;
-    const textIptal = `<strong style="color:white; font-size:14px;">İPTAL VE İADE KOŞULLARI</strong><br><br><b>1. Şartlar:</b> Siparişiniz yalnızca "Kasa Onayı Bekleniyor" aşamasındayken (ilk 3 dakika içerisinde) iptal edilebilir. Sipariş mutfağa iletildiğinde veya yola çıktığında iptal ve iade yapılamaz.`;
-    
+    const DUKKAN_WHATSAPP_NUMARASI = "905369517776"; 
     const DUKKAN_ENLEM = 36.206278; const DUKKAN_BOYLAM = 36.134472; const MAKS_MESAFE_KM = 4; const GHOST_TIMEOUT_MS = 8 * 60 * 60 * 1000; 
     const CARK_SALT = "BEKMEZ_GO_SECURE_2026"; const TIME_SALT = "BKMZ_TIME_SEAL_X9";
     const CARK_ODULLERI = ["🍟 Ekstra Patates", "😔 Pas", "🥤 1 Lt İçecek", "😔 Pas", "🍰 Fırın Sütlaç"];
@@ -793,18 +672,13 @@
     let seciliUrun = null; let seciliMiktar = 0; let seciliFiyat = 0; let seciliEkstraIstekler = []; let seciliOzelEkmekTip = "Normal"; 
     let baseKgBread = 0; let ekstraEkmekKg = 0; let seciliUrunStok = 999; let oncekiToplamFiyat = 0; let oncekiPopupFiyat = 0; let oncekiPopupMiktar = 0;
     
-    let populerUrunlerListesi = []; let aktifAdisyonDinleyiciRef = null; let menuDinleyiciRef = null; let sonCekilenAdisyonHTML = ""; let sonKuponVerisi = ""; let isProcessingOrder = false;
+    let populerUrunlerListesi = []; let canliAdisyonTimer = null; let sonCekilenAdisyonHTML = ""; let sonKuponVerisi = ""; let isProcessingOrder = false;
+    let emailInterval = null; let whatsappInterval = null; let aktifWhatsappKodu = ""; let aktifWhatsappNumarasi = "";
+    window.isAddingToCart = false; window.isOrderFinished = false; let aktifKullanilanCarkOdulu = null; 
+    let aktifSayacInterval = null; let serverTimeOffset = 0;
+
+    function HapticTitresim() { if(navigator.vibrate) navigator.vibrate(15); }
     
-    let emailInterval = null; 
-    let whatsappInterval = null; 
-    let aktifWhatsappKodu = "";
-    let aktifWhatsappNumarasi = "";
-    window.isAddingToCart = false;
-
-    let deferredPrompt; let installPromptDismissed = SecureOku('pwa_prompt_dismissed') === 'true';
-    window.isOrderFinished = false; let aktifKullanilanCarkOdulu = null; 
-    let aktifSayacInterval = null;
-
     function generateUUID() {
         if (crypto && crypto.randomUUID) return crypto.randomUUID();
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -822,41 +696,41 @@
         return 0; 
     }
 
+    async function SyncServerTime() {
+        try {
+            let st = Date.now();
+            let res = await fetch(window.location.href, { method: "HEAD", cache: "no-cache" });
+            let sDate = res.headers.get("Date");
+            if(sDate) {
+                let serverDate = new Date(sDate).getTime();
+                let latency = (Date.now() - st) / 2;
+                serverTimeOffset = (serverDate + latency) - Date.now();
+            }
+        } catch(e) { serverTimeOffset = 0; }
+    }
+    function GetServerTimeFast() { return Date.now() + serverTimeOffset; }
+
     function OzelUyariGoster(baslik, metin, ikon) { 
         document.getElementById("custom-alert-title").innerText = baslik; 
         document.getElementById("custom-alert-text").innerHTML = metin; 
-        document.getElementById("custom-alert-icon").innerText = ikon || "ℹ️"; 
-        let p = document.getElementById("custom-alert-overlay"); 
-        p.style.display = "flex"; 
-        setTimeout(() => p.classList.add("active"), 10); 
-        LogDebug(`[UI UYARI] ${baslik} - ${metin}`, "BILGI");
+        if(document.getElementById("custom-alert-icon")) document.getElementById("custom-alert-icon").innerText = ikon || "ℹ️"; 
+        let p = document.getElementById("custom-alert-overlay"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10); 
     }
-    
     function KapatUyariModal(e, force=false) { 
         if(force || e.target === document.getElementById("custom-alert-overlay") || e.target === document.getElementById("distance-alert-overlay") || e.target === document.getElementById("whatsapp-wait-overlay")) { 
-            let p = document.getElementById("custom-alert-overlay"); 
-            let d = document.getElementById("distance-alert-overlay"); 
-            p.classList.remove("active"); 
-            if(d) d.classList.remove("active"); 
-            setTimeout(() => { p.style.display = "none"; if(d) d.style.display = "none"; }, 400); 
+            let p = document.getElementById("custom-alert-overlay"); let d = document.getElementById("distance-alert-overlay"); p.classList.remove("active"); if(d) d.classList.remove("active"); setTimeout(() => { p.style.display = "none"; if(d) d.style.display = "none"; }, 400); 
         } 
     }
-    
     function SoruSor(baslik, metin, ikon, evetCallback, isDanger=false) { 
-        document.getElementById("confirm-title").innerText = baslik; 
-        document.getElementById("confirm-text").innerHTML = metin; 
-        document.getElementById("confirm-icon").innerText = ikon; 
+        document.getElementById("confirm-title").innerText = baslik; document.getElementById("confirm-text").innerHTML = metin; 
+        if(document.getElementById("confirm-icon")) document.getElementById("confirm-icon").innerText = ikon; 
         let btn = document.getElementById("confirm-yes-btn"); let box = document.getElementById("confirm-box"); let glow = document.getElementById("confirm-glow"); 
         if(isDanger) { btn.style.background = "var(--danger)"; btn.innerText = "İptal Et"; box.style.borderColor = "var(--danger)"; glow.style.background = "var(--danger)"; } else { btn.style.background = "var(--primary)"; btn.innerText = "Onayla"; box.style.borderColor = "var(--primary)"; glow.style.background = "var(--primary)"; } 
-        let currentConfirmAction = evetCallback; 
-        document.getElementById("confirm-yes-btn").onclick = () => { KapatConfirmModal(null, true); if(currentConfirmAction) currentConfirmAction(); }; 
+        let currentConfirmAction = evetCallback; document.getElementById("confirm-yes-btn").onclick = () => { KapatConfirmModal(null, true); if(currentConfirmAction) currentConfirmAction(); }; 
         let p = document.getElementById("confirm-overlay"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10); 
     }
-    
     function KapatConfirmModal(e, force=false) { 
-        if(force || e.target === document.getElementById("confirm-overlay")) { 
-            let p = document.getElementById("confirm-overlay"); p.classList.remove("active"); setTimeout(() => p.style.display = "none", 400); 
-        } 
+        if(force || e.target === document.getElementById("confirm-overlay")) { let p = document.getElementById("confirm-overlay"); p.classList.remove("active"); setTimeout(() => p.style.display = "none", 400); } 
     }
 
     firebase.auth().languageCode = 'tr';
@@ -869,26 +743,17 @@
 
     function AuthModuDegistir(mod) {
         HapticTitresim();
-        let slider = document.getElementById("auth-toggle-slider");
-        let btns = document.querySelectorAll(".premium-toggle-btn");
-        let loginForm = document.getElementById("login-form-area");
-        let registerForm = document.getElementById("register-form-area");
-        let secBadge = document.getElementById("auth-security-badge");
-
+        let slider = document.getElementById("auth-toggle-slider"); let btns = document.querySelectorAll(".premium-toggle-btn");
+        let loginForm = document.getElementById("login-form-area"); let registerForm = document.getElementById("register-form-area");
         btns.forEach(b => b.classList.remove("active"));
-
         if (mod === 'login') {
-            if(slider) slider.style.transform = "translateX(0%)";
-            if(btns[0]) btns[0].classList.add("active");
+            if(slider) slider.style.transform = "translateX(0%)"; if(btns[0]) btns[0].classList.add("active");
             if(loginForm) { loginForm.style.display = "block"; setTimeout(() => loginForm.classList.add("fade-up-enter"), 10); }
             if(registerForm) { registerForm.style.display = "none"; registerForm.classList.remove("fade-up-enter"); }
-            if(secBadge) secBadge.style.display = "none";
         } else {
-            if(slider) slider.style.transform = "translateX(100%)";
-            if(btns[1]) btns[1].classList.add("active");
+            if(slider) slider.style.transform = "translateX(100%)"; if(btns[1]) btns[1].classList.add("active");
             if(registerForm) { registerForm.style.display = "block"; setTimeout(() => registerForm.classList.add("fade-up-enter"), 10); }
             if(loginForm) { loginForm.style.display = "none"; loginForm.classList.remove("fade-up-enter"); }
-            if(secBadge) secBadge.style.display = "flex";
         }
     }
 
@@ -896,21 +761,17 @@
         HapticTitresim();
         document.querySelectorAll(".premium-dash-tab").forEach(t => t.classList.remove("active"));
         document.querySelectorAll(".dash-content").forEach(c => { c.style.display = "none"; c.classList.remove("fade-up-enter"); });
-        let btn = document.getElementById(`tab-${sekme}`);
-        if(btn) btn.classList.add("active");
+        let btn = document.getElementById(`tab-${sekme}`); if(btn) btn.classList.add("active");
         let seciliAlan = document.getElementById(`dash-${sekme.toLowerCase()}-alani`);
         if(seciliAlan) { seciliAlan.style.display = "block"; setTimeout(() => seciliAlan.classList.add("fade-up-enter"), 10); }
     }
 
     function ProfilArayuzunuGuncelle(isLoggedIn, userName = "") {
-        let anaBaslik = document.getElementById("profil-ana-baslik");
-        let altBaslik = document.getElementById("profil-alt-baslik");
-        let authWrapper = document.getElementById("auth-wrapper");
-        let dashboardWrapper = document.getElementById("dashboard-wrapper");
-
+        let anaBaslik = document.getElementById("profil-ana-baslik"); let altBaslik = document.getElementById("profil-alt-baslik");
+        let authWrapper = document.getElementById("auth-wrapper"); let dashboardWrapper = document.getElementById("dashboard-wrapper");
         if (isLoggedIn) {
-            let kisaAd = userName && userName.trim() !== "" ? userName.trim().split(' ')[0] : "Müşterimiz";
-            if(anaBaslik) anaBaslik.innerHTML = `Hoş Geldin, <span style="color:var(--primary);">${escapeHTML(kisaAd)}</span> ✨`;
+            let kisaAd = userName.split(' ')[0] || "Müşterimiz";
+            if(anaBaslik) anaBaslik.innerText = `Hoş Geldin, ${escapeHTML(kisaAd)} ✨`;
             if(altBaslik) altBaslik.innerText = "Sipariş adresini ve hesap ayarlarını yönetebilirsin.";
             if(authWrapper) authWrapper.style.display = "none";
             if(dashboardWrapper) { dashboardWrapper.style.display = "block"; DashboardSekmeSec('Teslimat'); }
@@ -928,37 +789,26 @@
         let btn = document.querySelector("#login-form-area .premium-submit-btn");
 
         if(!email || !pass) { OzelUyariGoster("Eksik Bilgi", "Lütfen e-posta ve şifrenizi girin.", "⚠"); return; }
-        
-        btn.disabled = true; 
-        btn.innerHTML = `<div class="spinner-small"></div> Giriş Yapılıyor...`;
+        btn.disabled = true; btn.innerText = "Doğrulanıyor...";
 
         try {
             let userCred = await firebase.auth().signInWithEmailAndPassword(email, pass);
-            let user = userCred.user;
-            let foundTel = user.displayName;
+            let user = userCred.user; let foundTel = user.displayName;
 
             if (!foundTel || foundTel.length < 10) {
-                let idToken = await user.getIdToken();
+                let idToken = await user.getIdToken(true);
                 try {
                     let res = await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar.json?auth=${idToken}`);
                     let allUsers = await res.json();
                     if (allUsers && !allUsers.error) {
                         for(let tel in allUsers) {
-                            if(allUsers[tel].email && allUsers[tel].email.toLowerCase() === email) {
-                                foundTel = tel; await user.updateProfile({ displayName: foundTel }); break;
-                            }
+                            if(allUsers[tel].email && allUsers[tel].email.toLowerCase() === email) { foundTel = tel; await user.updateProfile({ displayName: foundTel }); break; }
                         }
                     }
                 } catch(err) {}
             }
-            
-            if(foundTel && foundTel.length >= 10) {
-                await BasariliGirisIslemleri(foundTel, email, true);
-            } else {
-                firebase.auth().signOut();
-                OzelUyariGoster("Güvenlik Güncellemesi", "Sistem güvenliği nedeniyle telefon numaranız eşleşmedi.<br><br>Lütfen <b>Kayıt Ol</b> sekmesine geçip Numaranızı, E-postanızı ve Şifrenizi yazarak işlem yapın. Hesabınız otomatik olarak eşleşecektir.", "🛡️");
-                AuthModuDegistir('register');
-            }
+            if(foundTel && foundTel.length >= 10) { await BasariliGirisIslemleri(foundTel, email, true); } 
+            else { firebase.auth().signOut(); OzelUyariGoster("Güvenlik Güncellemesi", "Lütfen <b>Kayıt Ol</b> sekmesinden şifrenizi ve numaranızı yenileyin.", "🛡️"); AuthModuDegistir('register'); }
         } catch(e) { OzelUyariGoster("Giriş Başarısız", "Şifreniz veya E-Postanız hatalı. Lütfen tekrar deneyin.", "❌"); }
         btn.disabled = false; btn.innerText = "Giriş Yap";
     }
@@ -974,11 +824,8 @@
 
     let isPasswordValid = false;
     function CanliSifreKontrolu(val) {
-        let rL = /[a-z]/.test(val) || /[çğıöşü]/.test(val);
-        let rU = /[A-Z]/.test(val) || /[ÇĞİÖŞÜ]/.test(val);
-        let rN = /[0-9]/.test(val);
-        let rS = /[^A-Za-z0-9çğıöşüÇĞİÖŞÜ]/.test(val);
-        let rLen = val.length >= 8;
+        let rL = /[a-z]/.test(val) || /[çğıöşü]/.test(val); let rU = /[A-Z]/.test(val) || /[ÇĞİÖŞÜ]/.test(val);
+        let rN = /[0-9]/.test(val); let rS = /[^A-Za-z0-9çğıöşüÇĞİÖŞÜ]/.test(val); let rLen = val.length >= 8;
 
         const updateRule = (id, isValid, text) => {
             let el = document.getElementById(id); if (!el) return;
@@ -1001,20 +848,6 @@
         if (cb.checked && isPasswordValid) { btn.disabled = false; btn.style.opacity = "1"; } else { btn.disabled = true; btn.style.opacity = "0.5"; }
     }
 
-    firebase.auth().onAuthStateChanged(async (user) => {
-        if (user) {
-            let bekleyenTel = SecureOku("bg_pending_tel");
-            let bekleyenEmail = SecureOku("bg_pending_email");
-            
-            if (bekleyenTel && bekleyenEmail && user.email === bekleyenEmail) {
-                await user.reload(); 
-                if (user.emailVerified) {
-                    IptalEtEpostaBekleme(false); SayfaGoster('profil'); WhatsappDogrulamasiniBaslat(bekleyenTel, bekleyenEmail);
-                } else { EpostaOnayiniBekle(user, bekleyenTel, bekleyenEmail); }
-            }
-        }
-    });
-
     async function YeniNesilKayitOl() {
         if (!isPasswordValid) { OzelUyariGoster("Zayıf Şifre", "Lütfen şifre gereksinimlerinin tamamını karşılayın.", "🔒"); return; }
         await EpostaDogrulamasiBaslat();
@@ -1031,9 +864,7 @@
         if(!emailInput.endsWith("@gmail.com")) { OzelUyariGoster("Sadece Gmail", "Güvenlik gereği sadece @gmail.com uzantılı e-posta adresleri kabul edilmektedir.", "🛑"); return; }
         
         let formatliTel = "0" + telInput; let autoPass = passInput; 
-        
-        btn.innerHTML = `<div class="spinner-small"></div> Kontrol Ediliyor...`; 
-        btn.disabled = true;
+        btn.innerText = "Sistem Kontrol Ediliyor..."; btn.disabled = true;
 
         try {
             let banRes = await fetch(`${FIREBASE_URL}/SilinmisHesaplar/${formatliTel}.json`);
@@ -1076,7 +907,6 @@
             try {
                 let userCred = await firebase.auth().createUserWithEmailAndPassword(emailInput, autoPass);
                 await userCred.user.sendEmailVerification();
-                
                 SecureKaydet("bg_pending_tel", formatliTel); SecureKaydet("bg_pending_email", emailInput); SecureKaydet("bg_pending_pass", autoPass);
                 EpostaOnayiniBekle(userCred.user, formatliTel, emailInput);
             } catch (error) {
@@ -1202,7 +1032,7 @@
     function WhatsappMesajiGonder() {
         HapticTitresim(); let dinlemeYazisi = document.getElementById("wp-dinleme-yazisi"); if (dinlemeYazisi) dinlemeYazisi.style.display = "block";
         let btn = document.getElementById("wp-onay-btn");
-        if (btn) { btn.innerHTML = `<div class="spinner-small"></div> <span style="vertical-align:middle;">Onay Bekleniyor...</span>`; btn.style.background = "#1da851"; btn.style.boxShadow = "0 0 15px rgba(37, 211, 102, 0.8)"; }
+        if (btn) { btn.innerHTML = `<div class="spinner" style="width:16px; height:16px; border-width:3px; display:inline-block; vertical-align:middle; margin-right:8px; margin-bottom:2px;"></div> <span style="vertical-align:middle;">Onay Bekleniyor...</span>`; btn.style.background = "#1da851"; btn.style.boxShadow = "0 0 15px rgba(37, 211, 102, 0.8)"; }
 
         let mesaj = "Merhaba Bekmez GO. Hesabımı onaylamak için kodum: " + aktifWhatsappKodu;
         let url = `https://wa.me/${DUKKAN_WHATSAPP_NUMARASI}?text=${encodeURIComponent(mesaj)}`;
@@ -1222,7 +1052,7 @@
     }
 
     async function BasariliGirisIslemleri(formatliTel, email, isLogin = false) {
-        let user = firebase.auth().currentUser; let idToken = await user.getIdToken();
+        let user = firebase.auth().currentUser; let idToken = await user.getIdToken(true);
         if (user && user.displayName !== formatliTel) { await user.updateProfile({ displayName: formatliTel }).catch(()=>{}); }
         
         try {
@@ -1258,8 +1088,7 @@
         if(isLogin) { OzelUyariGoster("Tekrar Hoş Geldiniz! 👋", "Hesabınıza başarıyla giriş yapıldı.", "✅"); BildirimGonder("Hoş Geldiniz 👋", "Bekmez GO hesabınıza başarıyla giriş yapıldı."); } 
         else { OzelUyariGoster("Hesap Doğrulandı! 🎉", "E-Posta adresiniz ve WhatsApp onayınız tamamlandı.", "✅"); BildirimGonder("Hesap Oluşturuldu 🎉", "Bekmez GO'ya hoş geldiniz! İndirimleri kaçırmayın."); }
         
-        let kayitliGorunenIsim = SecureOku("bg_i") || "";
-        ProfilArayuzunuGuncelle(true, kayitliGorunenIsim);
+        ProfilArayuzunuGuncelle(true, SecureOku("bg_i") || "Müşterimiz");
         if(SecureOku("bg_active_order_id")) { SayfaGoster('gecmis'); }
     }
 
@@ -1270,7 +1099,7 @@
         let chkIsim = document.getElementById("chk-isim"); let chkAdres = document.getElementById("chk-adres"); if(chkIsim) chkIsim.value = i; if(chkAdres) chkAdres.value = a;
 
         let tel = SecureOku("bg_t"); let authUser = firebase.auth().currentUser;
-        if(tel && authUser) { try { let idToken = await authUser.getIdToken(); await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${tel}.json?auth=${idToken}`, { method: "PATCH", body: JSON.stringify({ isim: i, adres: a }) }); } catch(e){} }
+        if(tel && authUser) { try { let idToken = await authUser.getIdToken(true); await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${tel}.json?auth=${idToken}`, { method: "PATCH", body: JSON.stringify({ isim: i, adres: a }) }); } catch(e){} }
         if(alertGoster) { HapticTitresim(); OzelUyariGoster("Başarılı", "Profil bilgileriniz cihazınıza kaydedildi.", "✅"); ProfilArayuzunuGuncelle(true, i); }
     }
 
@@ -1283,7 +1112,7 @@
         let inputs = ["prof-isim", "prof-telefon", "prof-email", "prof-password", "prof-adres", "chk-isim", "chk-telefon", "chk-adres", "login-email", "login-pass"];
         inputs.forEach(id => { let el = document.getElementById(id); if(el) el.value = ""; });
         
-        document.getElementById("history-content").innerHTML = `<div class="empty-state-box">${emptyHistorySVG}<p>Aktif bir siparişiniz bulunmuyor.</p></div>`;
+        document.getElementById("history-content").innerHTML = `<div class="empty-text">Aktif bir siparişiniz bulunmuyor.</div>`;
         sonCekilenAdisyonHTML = ""; window.isOrderFinished = false;
 
         let cb = document.getElementById("kayit-onay-cb"); if(cb) cb.checked = false;
@@ -1299,7 +1128,7 @@
         let tel = SecureOku("bg_t"); if (!tel) return;
         try {
             let authUser = firebase.auth().currentUser; if(!authUser) return;
-            let idToken = await authUser.getIdToken();
+            let idToken = await authUser.getIdToken(true);
             let res = await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${tel}.json?auth=${idToken}`); let d = await res.json();
             if (d && d.kayitZamani) {
                 let gecenZamanMs = Date.now() - d.kayitZamani; let yediGunMs = 7 * 24 * 60 * 60 * 1000;
@@ -1314,7 +1143,7 @@
             HapticTitresim(); let authUser = firebase.auth().currentUser;
             if (authUser) {
                 try {
-                    let idToken = await authUser.getIdToken();
+                    let idToken = await authUser.getIdToken(true);
                     await fetch(`${FIREBASE_URL}/SilinmisHesaplar/${tel}.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify({ silinmeZamani: Date.now() }) });
                     await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${tel}.json?auth=${idToken}`, { method: "DELETE" });
                     await fetch(`${FIREBASE_URL}/CarkKullanimlari/${tel}.json?auth=${idToken}`, { method: "DELETE" });
@@ -1356,7 +1185,7 @@
         btn.innerHTML = `<div class="spinner-small"></div> Çevriliyor...`;
 
         try {
-            let idToken = await firebase.auth().currentUser.getIdToken();
+            let idToken = await firebase.auth().currentUser.getIdToken(true);
             let res = await fetch(`${FIREBASE_URL}/CarkKullanimlari/${tel}.json?auth=${idToken}&t=${Date.now()}`);
             let data = await res.json(); let sTime = await GetServerTimeFast();
             if (data && data.bitis && sTime < data.bitis) {
@@ -1421,53 +1250,56 @@
         let tel = SecureOku("bg_t"); if(!tel) return;
         try {
             let authUser = firebase.auth().currentUser; if(!authUser) return;
-            let idToken = await authUser.getIdToken();
+            let idToken = await authUser.getIdToken(true);
             await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${tel}/aktifSiparis.json?auth=${idToken}`, { method: "DELETE" });
         } catch(e) {}
     }
 
+    // ==========================================
+    // UNITY SENKRONİZASYONLU İPTAL / DÜZENLE
+    // ==========================================
     function IptalOnaySor() { HapticTitresim(); SoruSor("Siparişi İptal Et", "Siparişinizi iptal etmek istediğinize emin misiniz? İşlem geri alınamaz.", "⚠️", () => { SiparişiGercektenIptalEt(); }, true); }
     
-    // GÜNCELLENDİ: UNITY SENKRONİZASYONU
     async function SiparişiGercektenIptalEt() {
         let siparisId = SecureOku("bg_active_order_id"); if(!siparisId) return;
+        if(canliAdisyonTimer) clearInterval(canliAdisyonTimer);
         if(aktifSayacInterval) clearInterval(aktifSayacInterval);
         
         try {
             let authUser = firebase.auth().currentUser; if(!authUser) return;
-            let idToken = await authUser.getIdToken(); 
-            LogDebug(`İptal Süreci Başlatıldı - ID: ${siparisId}`);
+            let idToken = await authUser.getIdToken(true); 
+            LogDebug(`İptal İsteği Gönderiliyor. Sipariş ID: ${siparisId}`);
 
+            // 1. Taslağı İptal Olarak Güncelle (Geçmişte İptal görünmesi için)
             await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}.json?auth=${idToken}`, { 
                 method: "PATCH", 
                 body: JSON.stringify({ durum: "İPTAL EDİLDİ ❌", iptalZamani: Date.now() }) 
             });
             
+            // 2. Canlı Paketlerden Sil (Unity'nin ekranından düşmesi için)
             await fetch(`${FIREBASE_URL}/CanliPaketler/${siparisId}.json?auth=${idToken}`, { method: "DELETE" });
 
             OzelUyariGoster("İptal Ediliyor...", "Siparişiniz iptal ediliyor. Kupon ve ödülleriniz iade edilecek...", "✅");
             
             BuluttanAktifAdisyonuSil();
             SecureSil("bg_active_order_id"); SecureSil("bg_last_status"); SecureSil("bg_order_timestamp");
-            setTimeout(() => { window.location.reload(true); }, 2000);
-        } catch(e) {
-            LogDebug(`İptal Hatası: ${e.message}`, "KRİTİK HATA");
-        }
+            setTimeout(() => { SayfaGoster('urunler'); }, 2000);
+        } catch(e) { LogDebug(`İptal Hatası: ${e.message}`, "KRİTİK HATA"); }
     }
 
     function DuzenleOnaySor() {
         HapticTitresim(); SoruSor("Siparişi Düzenle", "Mevcut siparişiniz iptal edilecek ve ürünleriniz aynen sepete geri yüklenecektir.<br><br>Değişikliklerinizi yapıp tekrar onaylayabilirsiniz. Devam edilsin mi?", "✏️", () => { SiparisiDuzenleVeSepeteDon(); }, false);
     }
 
-    // GÜNCELLENDİ: UNITY SENKRONİZASYONU
     async function SiparisiDuzenleVeSepeteDon() {
         let siparisId = SecureOku("bg_active_order_id"); if(!siparisId) return;
+        if(canliAdisyonTimer) clearInterval(canliAdisyonTimer);
         if(aktifSayacInterval) clearInterval(aktifSayacInterval);
         
         try {
             let authUser = firebase.auth().currentUser; if(!authUser) return;
-            let idToken = await authUser.getIdToken(); 
-            LogDebug(`Düzenleme Süreci Başlatıldı - ID: ${siparisId}`);
+            let idToken = await authUser.getIdToken(true); 
+            LogDebug(`Düzenleme İsteği Gönderiliyor. Sipariş ID: ${siparisId}`);
             
             await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}.json?auth=${idToken}`, { 
                 method: "PATCH", 
@@ -1498,7 +1330,7 @@
         
         if(aktifKullanilanCarkOdulu !== null) { carkUyari.style.display = "block"; document.getElementById("sepet-hediye-yazi").innerText = `Çark Hediyesi (${escapeHTML(aktifKullanilanCarkOdulu)}) eklendi!`; } else { carkUyari.style.display = "none"; }
         if (sepet.length === 0 && aktifKullanilanCarkOdulu === null) { 
-            container.innerHTML = `<div class="empty-state-box">${emptyCartSVG}<p>Sepetiniz şu an boş</p></div>`; 
+            container.innerHTML = `<div class="empty-text">Sepetiniz şu an boş 🛒</div>`; 
             panel.style.display = "none"; notSection.style.display = "none"; document.getElementById("floating-cart").style.display = "none"; return; 
         }
 
@@ -1533,166 +1365,9 @@
         if (totalQty > 0) { badge.innerText = totalQty; badge.classList.add("show"); } else { badge.classList.remove("show"); }
     }
 
-    function SmoothCounter(id, start, end, duration, isCurrency, isKg=false) { let el = document.getElementById(id); if(!el) return; let startTime = null; const step = (timestamp) => { if (!startTime) startTime = timestamp; const progress = Math.min((timestamp - startTime) / duration, 1); const current = progress * (end - start) + start; if (isCurrency) { el.innerText = current.toFixed(2) + " TL"; } else { el.innerText = isKg ? current.toFixed(2) + " KG" : Math.floor(current) + " Adet"; } if (progress < 1) window.requestAnimationFrame(step); }; window.requestAnimationFrame(step); }
-    
-    function AcSozlesme(tip) { 
-        HapticTitresim(); let baslik = "", icerik = ""; 
-        if (tip === "kvkk") { baslik = "Aydınlatma Metni (KVKK)"; icerik = textKVKK; } else if (tip === "mesafeli") { baslik = "Mesafeli Satış Sözleşmesi"; icerik = textMesafeli; } else if (tip === "teslimat") { baslik = "Teslimat Şartları"; icerik = textTeslimat; } else if (tip === "iptal") { baslik = "İptal/İade Koşulları"; icerik = textIptal; } 
-        document.getElementById("legal-title").innerText = baslik; document.getElementById("legal-body").innerHTML = icerik; let p = document.getElementById("legal-popup"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10); 
-    }
-    function KapatSozlesme() { let p = document.getElementById("legal-popup"); p.classList.remove("active"); setTimeout(() => p.style.display = "none", 500); }
-    
-    function CheckoutPopupAc() { 
-        if(sepet.length === 0 && aktifKullanilanCarkOdulu === null) return; 
-        if(SecureOku("bg_active_order_id")) { OzelUyariGoster("Siparişiniz Yolda", "Mevcut siparişiniz teslim edilmeden veya iptal edilmeden yeni bir sipariş oluşturamazsınız.", "🛵"); return; }
-        
-        let chkIsim = document.getElementById("chk-isim"); let chkAdres = document.getElementById("chk-adres");
-        if(chkIsim && !chkIsim.value) chkIsim.value = SecureOku("bg_i") || "";
-        if(chkAdres && !chkAdres.value) chkAdres.value = SecureOku("bg_a") || "";
-
-        HapticTitresim(); let p = document.getElementById("checkout-popup"); p.style.display = "flex"; setTimeout(() => { p.classList.add("active"); }, 10); TogglePayButton(); 
-    }
-
-    function CheckoutKapat() { let p = document.getElementById("checkout-popup"); p.classList.remove("active"); setTimeout(() => { p.style.display = "none"; }, 500); }
-    function TogglePayButton() { let btn = document.getElementById("final-submit-btn"); let chk = document.getElementById("legal-checkbox"); if(chk && btn) { if(chk.checked) { btn.disabled = false; btn.style.opacity = "1"; btn.innerHTML = `${sonOdenecekFiyat.toFixed(2)} TL Öde`; } else { btn.disabled = true; btn.style.opacity = "0.5"; btn.innerText = "Sözleşmeyi Onaylayın"; } } }
-    
-    function BasariEkraniGoster() { let o = document.getElementById("success-overlay"); o.style.display = "flex"; setTimeout(() => o.classList.add("active"), 10); BildirimGonder("Siparişiniz Alındı! ✅", "Bekmez GO: Paketiniz en kısa sürede yola çıkacaktır. Bizi tercih ettiğiniz için teşekkür ederiz."); setTimeout(() => { o.classList.remove("active"); setTimeout(() => { o.style.display = "none"; SayfaGoster('gecmis'); }, 3000); }, 3000); }
-
-    if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); }); }
-    window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true; if (!isStandalone && !installPromptDismissed) { let promptOverlay = document.getElementById('pwa-fullscreen-prompt'); promptOverlay.style.display = 'flex'; setTimeout(() => { promptOverlay.classList.add('active'); }, 10); } else if (!isStandalone) { document.getElementById("pwa-install-banner").style.display = "flex"; } });
-    window.addEventListener('appinstalled', (evt) => { document.getElementById('pwa-fullscreen-prompt').style.display = 'none'; document.getElementById('pwa-install-banner').style.display = 'none'; OzelUyariGoster("Kurulum Tamamlandı! 🎉", "Bekmez GO telefonunuza yüklendi.", "✅"); });
-
-    function ManuelUygulamaIndir() { HapticTitresim(); const isIos = () => { const ua = window.navigator.userAgent.toLowerCase(); return /iphone|ipad|ipod/.test(ua); }
-        if (isIos()) { OzelUyariGoster("iOS Kurulumu", "iPhone'a kurmak için alt menüdeki [Paylaş] ikonuna basıp 'Ana Ekrana Ekle' seçeneğini seçiniz.", "🍏"); return; }
-        if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.then((c) => { if (c.outcome === 'accepted') { document.getElementById("pwa-fullscreen-prompt").style.display="none"; document.getElementById("pwa-install-banner").style.display="none"; } deferredPrompt = null; }); } else { OzelUyariGoster("Uygulama Yüklü", "Uygulama zaten telefonunuzda yüklü veya tarayıcınız desteklemiyor.", "📲"); }
-    }
-    function CloseFullscreenPrompt() { HapticTitresim(); let p = document.getElementById('pwa-fullscreen-prompt'); p.classList.remove('active'); setTimeout(() => { p.style.display = 'none'; }, 500); SecureKaydet('pwa_prompt_dismissed', 'true'); if (deferredPrompt) { document.getElementById('pwa-install-banner').style.display = 'flex'; } }
-    function TetiklePwaPrompt() { ManuelUygulamaIndir(); }
-
-    window.addEventListener('DOMContentLoaded', async () => {
-        LogDebug("Sistem Yükleniyor...");
-        SyncServerTime();
-        
-        let isWaitingWp = SecureOku("bg_wp_waiting");
-        let pTel = SecureOku("bg_pending_tel");
-        let pMail = SecureOku("bg_pending_email");
-
-        if (isWaitingWp === "true" && pTel && pMail) {
-            let splash = document.getElementById('splash-screen');
-            if (splash) { splash.style.display = 'none'; splash.style.opacity = '0'; }
-            
-            SayfaGoster('profil');
-            WhatsappDogrulamasiniBaslat(pTel, pMail);
-        } else {
-            let st = new Date().getHours(); let m = "Hoş Geldiniz ✨"; 
-            if (st >= 5 && st < 11) m = "Günaydın ☀️"; else if (st >= 11 && st < 17) m = "İyi Günler 🌤️"; else if (st >= 17 && st < 22) m = "İyi Akşamlar 🌙"; else m = "İyi Geceler 🌌";
-            let ko = document.getElementById("dinamik-karsilama"); if(ko) ko.innerText = m;
-            setTimeout(() => { SplashKapatSinematik(); }, 3000);
-        }
-
-        let ki = SecureOku("bg_i"); let kt = SecureOku("bg_t"); let ka = SecureOku("bg_a");
-        
-        if (kt) { 
-            ProfilArayuzunuGuncelle(true, ki || "");
-            let displayTel = kt.startsWith("0") ? kt.substring(1) : kt;
-            let chkTel = document.getElementById("chk-telefon");
-            if (chkTel) chkTel.value = displayTel; 
-
-            try {
-                let authUser = firebase.auth().currentUser;
-                if (authUser) {
-                    let idToken = await authUser.getIdToken();
-                    let adisyonRes = await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${kt}/aktifSiparis.json?auth=${idToken}&t=${Date.now()}`);
-                    let adisyonData = await adisyonRes.json();
-                    if(adisyonData && adisyonData.siparisId) {
-                        SecureKaydet("bg_active_order_id", adisyonData.siparisId);
-                        SecureKaydet("bg_order_timestamp", adisyonData.zamanMuhru);
-                        if(adisyonData.odemeTuru) SecureKaydet("bg_odeme_turu", adisyonData.odemeTuru);
-                    } else {
-                        SecureSil("bg_active_order_id");
-                    }
-                }
-            } catch(e) { LogDebug("Aktif Sipariş Kontrol Hatası: " + e.message, "UYARI"); }
-        } else {
-            ProfilArayuzunuGuncelle(false);
-        }
-        
-        if(ki) { let pI = document.getElementById("prof-isim"); let cI = document.getElementById("chk-isim"); if(pI) pI.value = escapeHTML(ki); if(cI) cI.value = escapeHTML(ki); }
-        if(ka) { let pA = document.getElementById("prof-adres"); let cA = document.getElementById("chk-adres"); if(pA) pA.value = escapeHTML(ka); if(cA) cA.value = escapeHTML(ka); }
-
-        CanliMenuCek(true); MenuyuGercekZamanliDinle(); 
-        setInterval(() => { if(document.getElementById("opportunities-container").style.display === "block") { KuponlariCek(); CarkDurumunuKontrolEt(); } }, 5000);
-    });
-
-    async function SplashKapatSinematik() { 
-        let splash = document.getElementById('splash-screen'); 
-        if (splash && splash.style.display !== "none") { 
-            let c = document.getElementById('splash-content'); c.style.transform = 'scale(1.15)'; c.style.opacity = '0'; 
-            setTimeout(async () => { 
-                splash.style.opacity = '0'; 
-                setTimeout(async () => { 
-                    splash.style.display = 'none'; 
-                    let siparisId = SecureOku("bg_active_order_id");
-                    if(siparisId) {
-                        try {
-                            let authUser = firebase.auth().currentUser; let urlStr = `${FIREBASE_URL}/CanliPaketler/${siparisId}.json`; let taslakUrl = `${FIREBASE_URL}/SiparisTaslaklari/${siparisId}.json`;
-                            if(authUser) { let idToken = await authUser.getIdToken(); urlStr += `?auth=${idToken}`; taslakUrl += `?auth=${idToken}`; }
-                            let res = await fetch(urlStr); let d = await res.json(); let tRes = await fetch(taslakUrl); let tD = await tRes.json();
-                            
-                            if ((!d || d.error) && (!tD || tD.error)) { SecureSil("bg_active_order_id"); SecureSil("bg_last_status"); SayfaGoster('urunler'); return; }
-
-                            let sipZamani = (d && d.timestamp) ? d.timestamp : ((tD && tD.timestamp) ? tD.timestamp : null); 
-                            let isGhost = sipZamani ? ((Date.now() - sipZamani) > GHOST_TIMEOUT_MS) : false;
-                            if(d && d.durum && !d.durum.includes("İPTAL") && !d.durum.includes("RED") && !d.durum.includes("TESLİM") && !d.durum.includes("AFİYET") && !isGhost) { SayfaGoster('gecmis'); } else { SayfaGoster('urunler'); }
-                        } catch(e) { SayfaGoster('urunler'); }
-                    } else { SayfaGoster('urunler'); }
-                }, 800); 
-            }, 400); 
-        } 
-    }
-
-    function SayfaGoster(s) {
-        HapticTitresim(); SessizIzinIste(); if (aktifAdisyonDinleyiciRef) { aktifAdisyonDinleyiciRef.off(); aktifAdisyonDinleyiciRef = null; }
-        document.getElementById("menu-container").style.display = "none"; document.getElementById("cart-container").style.display = "none"; document.getElementById("profile-container").style.display = "none"; document.getElementById("history-container").style.display = "none"; document.getElementById("opportunities-container").style.display = "none"; document.getElementById("floating-cart").style.display = "none";
-        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active')); 
-
-        let t = document.getElementById("nav-" + s); if(t) { t.classList.add("active"); } else { s = 'urunler'; document.getElementById("nav-urunler").classList.add("active"); }
-
-        if(s === 'urunler') { document.getElementById("menu-container").style.display = "block"; if(sepet.length > 0 || aktifKullanilanCarkOdulu) document.getElementById("floating-cart").style.display = "flex"; } 
-        else if (s === 'sepet') { document.getElementById("cart-container").style.display = "block"; SepetEkraniniCiz(); } 
-        else if (s === 'profil') { document.getElementById("profile-container").style.display = "block"; } 
-        else if (s === 'firsatlar') { document.getElementById("opportunities-container").style.display = "block"; KuponlariCek(); CarkDurumunuKontrolEt(); } 
-        else if (s === 'gecmis') { document.getElementById("history-container").style.display = "block"; sonCekilenAdisyonHTML = ""; AdisyonuGercekZamanliDinle(); } 
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    async function CanliMenuCek(ilkYukleme) {
-        LogDebug("Menü Yükleniyor...");
-        try {
-            let pRes = await fetch(`${FIREBASE_URL}/PopulerUrunler.json?t=${Date.now()}`); let pD = await pRes.json(); if(pD && Array.isArray(pD)) populerUrunlerListesi = pD;
-            let vRes = await fetch(`${FIREBASE_URL}/MenuVersion.json?t=${Date.now()}`); let vD = await vRes.json(); if (!ilkYukleme && vD && vD.v == sonMenuVersiyonu) return; if (vD) sonMenuVersiyonu = vD.v;
-
-            let mRes = await fetch(`${FIREBASE_URL}/Menu.json?t=${Date.now()}`); let data = await mRes.json();
-            let liste = (data && data.products) ? data.products : []; let yeniVeri = JSON.stringify(liste);
-
-            if (sonMenuVerisi !== yeniVeri) {
-                tumUrunler = liste; sonMenuVerisi = yeniVeri;
-                let ekmek = tumUrunler.find(u => u.pName && u.pName.trim().toLocaleLowerCase('tr-TR') === ekmekUrunAdi.trim().toLocaleLowerCase('tr-TR')); 
-                if (ekmek) { let pStr = (ekmek.price1Kg || "0").toString().replace(',', '.'); ekmekBirimFiyati = isNaN(parseFloat(pStr)) ? 0 : parseFloat(pStr); }
-
-                let history = {}; try { let okunanGecmis = SecureOku('bg_phist'); if (okunanGecmis && okunanGecmis !== "undefined" && okunanGecmis !== "null") history = JSON.parse(okunanGecmis); } catch (err) {}
-                let historyUpdated = false; let mevcutUrunAdlari = tumUrunler.map(u => u.pName);
-                for (let kayitliUrun in history) { if (!mevcutUrunAdlari.includes(kayitliUrun)) { delete history[kayitliUrun]; historyUpdated = true; } }
-
-                if (historyUpdated) { SecureKaydet('bg_phist', JSON.stringify(history)); }
-                if (ilkYukleme) { document.getElementById("kategori-sekmeleri").style.display = "flex"; KategoriSec(aktifKategori); } 
-                else { if (document.getElementById("menu-container").style.display === "block") { if (document.getElementById('tab-Arama').style.display === "flex") { UrunAra(); } else { KategoriSec(aktifKategori); } } }
-                LogDebug("Menü Başarıyla Yüklendi.");
-            }
-        } catch(error) { LogDebug("Menü Çekme Hatası: " + error.message, "KRİTİK HATA"); if (ilkYukleme) { document.getElementById("menu-grid").innerHTML = `<div class="empty-state-box">${emptyCartSVG}<p>Bağlantı Hatası!</p></div>`; } }
-    }
-
-    // GÜNCELLENDİ: 0 TAVİZ GPS KONTROLÜ
+    // ==========================================
+    // 0 TAVİZ KURALI (GPS KONTROLÜ VE SİPARİŞ)
+    // ==========================================
     async function PaketSiparisiGonder() {
         if(isProcessingOrder || (sepet.length === 0 && aktifKullanilanCarkOdulu === null)) return;
         if(!document.getElementById("legal-checkbox").checked) { OzelUyariGoster("Sözleşme Onayı", "Sözleşmeleri onaylamanız gerek.", "📝"); return; }
@@ -1717,19 +1392,21 @@
 
         let btn = document.getElementById("final-submit-btn"); btn.disabled = true; btn.classList.add("loading"); 
         
-        btn.innerHTML = `<div class="spinner-small"></div> Sipariş İletiliyor...`;
+        btn.innerHTML = `Sipariş İletiliyor...`;
         isProcessingOrder = true;
-        LogDebug("GPS Kontrolü Başlatılıyor...");
+        LogDebug("GPS Kontrolü Başlıyor.");
 
+        // 0 TAVİZ: GPS YOKSA SİPARİŞ İPTAL
         if (navigator.geolocation) { 
             const checkLoc = () => { return new Promise((resolve, reject) => { navigator.geolocation.getCurrentPosition(p => resolve(p), e => reject(e), {enableHighAccuracy: true, timeout: 10000, maximumAge: 0}); }); };
             
             checkLoc().then(p => {
                 let lat = p.coords.latitude; let lng = p.coords.longitude; let ms = GetDistanceKm(DUKKAN_ENLEM, DUKKAN_BOYLAM, lat, lng);
-                LogDebug(`Kullanıcı Konumu Alındı: ${lat}, ${lng}. Mesafe: ${ms} km.`);
-
+                LogDebug(`Koordinatlar: ${lat}, ${lng} - Mesafe: ${ms} km.`);
+                
+                // 0 TAVİZ: 4KM DIŞIYSA SİPARİŞ İPTAL
                 if (ms > MAKS_MESAFE_KM) { 
-                    LogDebug("Menzil Dışı Engellemesi Tetiklendi.", "UYARI");
+                    LogDebug("Menzil dışı engeli.", "UYARI");
                     OzelUyariGoster("Menzil Dışındasınız", `Sıcak teslimat yapabilmek için sınırımız <b>${MAKS_MESAFE_KM} km</b>'dir. Maalesef bu alanın dışında olduğunuz için siparişinizi alamıyoruz.`, "🛵");
                     isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = `${sonOdenecekFiyat.toFixed(2)} TL Öde`; 
                     return; 
@@ -1737,11 +1414,11 @@
                 DevamEtPaketGonder(is, tl, ad, secilenOdeme, sepet, lat, lng);
             }).catch(e => { 
                 LogDebug(`GPS Hatası: ${e.message}`, "KRİTİK HATA");
-                OzelUyariGoster("Konum Bulunamadı", "Sipariş verebilmek için cihazınızın <b>Konum (GPS) servisini açmalı</b> ve tarayıcıdan izin vermelisiniz.", "📍");
+                OzelUyariGoster("Konum İzni Reddedildi", "Sipariş verebilmek için cihazınızın <b>Konum (GPS) servisini açmalı</b> ve tarayıcıdan izin vermelisiniz.", "📍");
                 isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = `${sonOdenecekFiyat.toFixed(2)} TL Öde`;
             });
         } else { 
-            LogDebug("Tarayıcı GPS Desteklemiyor.", "KRİTİK HATA");
+            LogDebug("Tarayıcı GPS Desteklemiyor", "KRİTİK HATA");
             OzelUyariGoster("Desteklenmiyor", "Cihazınız konum servisini desteklemiyor.", "❌");
             isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = `${sonOdenecekFiyat.toFixed(2)} TL Öde`;
         }
@@ -1750,14 +1427,13 @@
     async function DevamEtPaketGonder(isim, tel, adres, odemeTuru, temizSepet, lat = 0, lng = 0) {
         SecureKaydet("bg_i", isim); SecureKaydet("bg_a", adres);
         let btn = document.getElementById("final-submit-btn"); 
-        btn.innerHTML = `<div class="spinner-small"></div> İletiliyor...`; 
         window.isOrderFinished = false;
 
         try {
             let authUser = firebase.auth().currentUser;
             if (!authUser) { OzelUyariGoster("Hata", "Oturum bulunamadı, lütfen çıkış yapıp tekrar giriş yapın.", "🔒"); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = `${sonOdenecekFiyat.toFixed(2)} TL Öde`; return; }
 
-            let benzersizSiparisID = "SIP-" + Date.now() + "-" + generateUUID().split("-")[0];
+            let benzersizSiparisID = generateUUID();
             let sunucuyaGidecekSepet = temizSepet.map(u => ({ rawName: u.rawName, tamIsim: (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName, miktar: (u.baseStockAmount * u.quantity) }));
 
             let tZaman = Date.now();
@@ -1767,7 +1443,7 @@
 
             LogDebug(`Sipariş Veritabanına Yazılıyor: ${benzersizSiparisID}`);
 
-            let idToken = await authUser.getIdToken();
+            let idToken = await authUser.getIdToken(true);
             await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${benzersizSiparisID}.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(taslakVerisi) });
 
             await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${tel}/aktifSiparis.json?auth=${idToken}`, { 
@@ -1779,208 +1455,182 @@
             SecureKaydet("bg_active_order_id", benzersizSiparisID); SecureKaydet("last_ord_t", tZaman.toString()); SecureKaydet("bg_odeme_turu", odemeTuru);
             SecureKaydet("bg_order_timestamp", zM); SecureKaydet("bg_saved_cart", JSON.stringify(temizSepet)); SecureKaydet("bg_saved_note", escapeHTML(document.getElementById("siparis-notu").value.trim())); SecureKaydet("bg_saved_coupon", aktifKuponKodu || ""); SecureKaydet("bg_saved_cark", aktifKullanilanCarkOdulu || "");
 
-            LogDebug("Sipariş Başarıyla Gönderildi.");
+            LogDebug("Sipariş Başarıyla İletildi.");
             HapticTitresim(); CheckoutKapat(); BasariEkraniGoster();
 
             if (sepetHatirlaticiTimer) clearTimeout(sepetHatirlaticiTimer); sepet = []; aktifKuponKodu = ""; document.getElementById("siparis-notu").value = ""; SepetEkraniniCiz(); HesaplaVeGuncelle(); seciliEkstraIstekler = []; isProcessingOrder = false;
-        } catch (e) { LogDebug(`Sipariş İletim Hatası: ${e.message}`, "KRİTİK HATA"); OzelUyariGoster("Hata", "Sipariş iletilemedi, internetinizi kontrol edin.", "📡"); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = `${sonOdenecekFiyat.toFixed(2)} TL Öde`; }
+        } catch (e) { LogDebug(`İletim Hatası: ${e.message}`, "KRİTİK HATA"); OzelUyariGoster("Hata", "Sipariş iletilemedi, internetinizi kontrol edin.", "📡"); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = `${sonOdenecekFiyat.toFixed(2)} TL Öde`; }
     }
 
-    // GÜNCELLENDİ: DONMAYAN VE GÜVENLİ DİNLEYİCİ
-    function AdisyonuGercekZamanliDinle() {
-        let siparisId = SecureOku("bg_active_order_id");
-        LogDebug(`Adisyon dinleniyor... Bekleyen ID: ${siparisId}`);
-
-        if (!siparisId) {
-            document.getElementById("history-content").innerHTML = `<div class="empty-state-box">${emptyHistorySVG}<p>Aktif bir siparişiniz bulunmuyor.</p></div>`;
-            return;
-        }
-        
-        document.getElementById("history-content").innerHTML = `<div class="skeleton-block"></div>`;
-        
-        let denemeSayisi = 0;
-        let tryListen = () => {
-            let authUser = firebase.auth().currentUser;
-            if(!authUser) {
-                denemeSayisi++;
-                LogDebug(`Oturum bekleniyor... Deneme: ${denemeSayisi}`);
-                if(denemeSayisi > 15) { 
-                    LogDebug("Oturum açılamadı, dinleme iptal edildi.", "KRİTİK HATA");
-                    document.getElementById("history-content").innerHTML = `<div class="empty-state-box"><p>Oturum bağlantısı kurulamadı. Lütfen sayfayı yenileyin.</p></div>`;
-                    return;
+    // ==========================================
+    // CANLI ADİSYON DİNLEME (DONMAZ)
+    // ==========================================
+    function BaslatAdisyonSayaci(orderTs, canEdit, nakitDisiOdeme) {
+        if (aktifSayacInterval) clearInterval(aktifSayacInterval);
+        if (canEdit && !nakitDisiOdeme) {
+            aktifSayacInterval = setInterval(() => {
+                let currTime = GetServerTimeFast();
+                let nLeftMs = 180000 - (currTime - orderTs);
+                let span = document.getElementById("gerisayim-span");
+                
+                if (nLeftMs <= 0) {
+                    clearInterval(aktifSayacInterval);
+                    if (span) {
+                        span.parentElement.innerHTML = `<span style="color:var(--warning);">🔒 3 dakikalık süre doldu. Artık değişiklik yapılamaz.</span>`;
+                        let buttonsDiv = span.parentElement.nextElementSibling;
+                        if (buttonsDiv && buttonsDiv.style) buttonsDiv.style.display = "none";
+                    }
+                } else {
+                    if (span) {
+                        let m = Math.floor(nLeftMs / 60000); 
+                        let s = Math.floor((nLeftMs % 60000) / 1000);
+                        span.innerText = `${m}:${s < 10 ? '0'+s : s}`;
+                    }
                 }
-                setTimeout(tryListen, 500); 
-                return;
+            }, 1000);
+        }
+    }
+
+    async function CanliAdisyonCek() {
+        try {
+            let siparisId = SecureOku("bg_active_order_id");
+            if(!siparisId) { 
+                if(canliAdisyonTimer) clearInterval(canliAdisyonTimer);
+                document.getElementById("history-content").innerHTML = `<div class="empty-text">Adisyon yok.<br><br>Aktif bir siparişiniz bulunmamaktadır.</div>`; 
+                return; 
             }
             
-            if (aktifAdisyonDinleyiciRef) aktifAdisyonDinleyiciRef.off();
+            let authUser = firebase.auth().currentUser; 
+            if(!authUser) return;
             
-            let db = firebase.database();
-            aktifAdisyonDinleyiciRef = db.ref(`CanliPaketler/${siparisId}`);
+            let idToken = await authUser.getIdToken(true);
             
-            LogDebug("Firebase WebSockets ile CanliPaketler dinlenmeye başlandı.");
-            
-            aktifAdisyonDinleyiciRef.on('value', async (snapshot) => {
-                let bP = snapshot.val();
-                LogDebug(`Sipariş Durumu Okundu: ${bP ? bP.durum : 'Taslakta veya Silinmiş'}`);
-                try {
-                    await AdisyonEkraniGuncelle(bP, siparisId);
-                } catch(e) {
-                    LogDebug(`Adisyon Güncelleme Hatası: ${e.message}`, "KRİTİK HATA");
-                    document.getElementById("history-content").innerHTML = `<div class="empty-state-box"><p>Sipariş verisi bağlanıyor...</p></div>`;
-                }
-            }, (error) => {
-                LogDebug(`Dinleme İzni Reddedildi: ${error.message}`, "KRİTİK HATA");
-                document.getElementById("history-content").innerHTML = `<div class="empty-state-box"><p>Siparişe erişim sağlanamadı veya sipariş silinmiş.</p></div>`;
-            });
-        };
-        tryListen();
-    }
+            // 1. Önce Canlı Paketler'den çek
+            let r = await fetch(`${FIREBASE_URL}/CanliPaketler/${siparisId}.json?auth=${idToken}&t=${Date.now()}`); 
+            let bP = await r.json();
 
-    async function AdisyonEkraniGuncelle(bP, siparisId) {
-        try {
-            let authUser = firebase.auth().currentUser; if(!authUser) return;
-            let idToken = await authUser.getIdToken(); 
-            let odemeTuru = SecureOku("bg_odeme_turu") || "Kapıda Nakit"; 
-            let nakitDisiOdeme = !odemeTuru.includes("Nakit");
-
-            let rawOrderTs = SecureOku("bg_order_timestamp"); 
-            let parsedTs = rawOrderTs ? ZamanMuhruCoz(rawOrderTs, siparisId) : 0;
-            
-            let orderTs = parsedTs;
-            if (orderTs === 0 && bP && bP.timestamp) orderTs = bP.timestamp;
-
-            // EĞER CANLI PAKETLERDE YOKSA (DAHA ONAYLANMADIYSA) TASLAKLARA BAK
+            // 2. Canlı Paketler'de yoksa Sipariş Taslakları'na bak
             if (!bP || bP.error) {
-                LogDebug("CanliPaketler'de bulunamadı. Taslaklar kontrol ediliyor...");
-                let taslakRes = await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}.json?auth=${idToken}`); 
+                let taslakRes = await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}.json?auth=${idToken}&t=${Date.now()}`); 
                 let taslakData = await taslakRes.json();
                 
                 if (taslakData && !taslakData.error && taslakData.durum) {
-                    if (orderTs === 0 && taslakData.timestamp) orderTs = taslakData.timestamp;
-                    if (orderTs === 0) orderTs = GetServerTimeFast();
-
-                    let leftMs = 180000 - (GetServerTimeFast() - orderTs); let timeStr = ""; let canEdit = false;
-                    
-                    if(leftMs > 0 && orderTs > 0) { canEdit = true; let m = Math.floor(leftMs / 60000); let s = Math.floor((leftMs % 60000) / 1000); timeStr = `${m}:${s < 10 ? '0'+s : s}`; }
-                    
-                    let butonlar = "";
-                    if (canEdit) { if (nakitDisiOdeme) { butonlar = `<div style="text-align:center; font-size:12px; color:var(--warning); margin-top:20px; font-weight:700;">💳 Nakit dışı ödemeli (IBAN/Kart) siparişlerde iptal ve değişiklik için restoranı arayın.</div>`; } else { butonlar = `<div style="text-align:center; font-size:12px; color:var(--primary); font-weight:800; margin-top:20px;">⏳ Düzenleme için son <span id="gerisayim-span" style="font-size:16px;">${timeStr}</span></div><div style="display:flex; gap:10px; margin-top:10px;"><button class="ripple-element" onclick="IptalOnaySor()" style="flex:1; background:rgba(255,59,48,0.1); border:1px solid rgba(255, 59, 48, 0.5); color:var(--danger); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">İptal Et</button><button class="ripple-element" onclick="DuzenleOnaySor()" style="flex:1; background:rgba(255, 107, 0, 0.1); border:1px solid var(--primary); color:var(--primary); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">Düzenle</button></div>`; } } else { butonlar = `<div style="text-align:center; font-size:11px; color:var(--warning); margin-top:20px; font-weight:700;"><span style="color:var(--warning);">🔒 3 dakikalık süre doldu.</span></div>`; }
-
-                    let hBekleme = `<div class="receipt-card"><div style="text-align: center; margin-bottom: 15px;"><div class="spinner" style="border-top-color:var(--primary); width:35px; height:35px; border-width:4px;"></div><div style="font-weight: 900; font-size: 20px; color:#1c1c1e;">KASA ONAYI BEKLENİYOR</div></div>${butonlar}</div>`;
-                    
-                    document.getElementById("history-content").innerHTML = hBekleme; 
-                    BaslatAdisyonSayaci(orderTs, canEdit, nakitDisiOdeme);
+                    AdisyonEkraniCiz(taslakData, siparisId, true);
                     return; 
                 } else {
-                    LogDebug("Sipariş her iki listede de bulunamadı.", "UYARI");
-                    window.isOrderFinished = false; document.getElementById("history-content").innerHTML = `<div class="empty-state-box">${emptyHistorySVG}<p>Aktif bir siparişiniz bulunmuyor.</p></div>`; 
+                    window.isOrderFinished = false; 
+                    document.getElementById("history-content").innerHTML = `<div class="empty-text">Aktif bir siparişiniz bulunmuyor.</div>`; 
                     sonCekilenAdisyonHTML = ""; SecureSil("bg_active_order_id"); SecureSil("bg_last_status"); 
-                    BuluttanAktifAdisyonuSil(); return;
+                    BuluttanAktifAdisyonuSil(); 
+                    if(canliAdisyonTimer) clearInterval(canliAdisyonTimer);
+                    return;
                 }
             }
 
-            if (orderTs === 0) orderTs = GetServerTimeFast();
+            // 3. Canlı Paketler'de varsa ekrana çiz
+            AdisyonEkraniCiz(bP, siparisId, false);
 
-            let sipZamani = (bP && bP.timestamp) ? bP.timestamp : null; 
-            let isGhost = sipZamani ? ((Date.now() - sipZamani) > GHOST_TIMEOUT_MS) : false; 
-            let h = "";
-            if(!bP || isGhost) { 
-                window.isOrderFinished = false; h = `<div class="empty-state-box">${emptyHistorySVG}<p>Aktif bir siparişiniz bulunmuyor.</p></div>`; sonCekilenAdisyonHTML = "";
-                SecureSil("bg_active_order_id"); SecureSil("bg_last_status"); BuluttanAktifAdisyonuSil();
-            } else {
-                let dR = bP.durum ? bP.durum.toUpperCase() : "SİPARİŞ ALINDI 🔔";
-                let durumRenk = "var(--primary)"; let durumBg = "rgba(255,107,0,0.1)"; let durumIkon = "⏳"; let iptalButonuHTML = "";
-                
-                let oncekiDurum = SecureOku("bg_last_status") || "";
-                if (dR !== oncekiDurum) { SecureKaydet("bg_last_status", dR); if (dR.includes("TESLİM") || dR.includes("AFİYET")) { BildirimGonder("Afiyet Olsun! 😋", "Bekmez GO: Siparişiniz teslim edildi. Bizi tercih ettiğiniz için teşekkür ederiz!"); } else if (dR.includes("YOLDA") || dR.includes("KURYE")) { BildirimGonder("Kurye Yola Çıktı! 🛵", "Siparişiniz yola çıktı, gelmek üzere!"); } }
-
-                let leftMs = 180000 - (GetServerTimeFast() - orderTs); let canEdit = false; let timeStr = ""; let lockMsg = "";
-
-                if (dR.includes("HAZIRLANIYOR") || dR.includes("SİPARİŞ ALINDI")) { 
-                    durumRenk = "var(--primary)"; durumBg = "rgba(255,107,0,0.1)"; durumIkon = "👨‍🍳"; 
-                    if(leftMs > 0 && orderTs > 0) { canEdit = true; let m = Math.floor(leftMs / 60000); let s = Math.floor((leftMs % 60000) / 1000); timeStr = `${m}:${s < 10 ? '0'+s : s}`; } 
-                    else { lockMsg = "3 dakikalık süre doldu."; }
-                }
-                else if (dR.includes("PİŞİYOR") || dR.includes("MUTFAK")) { durumRenk = "var(--warning)"; durumBg = "rgba(255, 204, 0, 0.1)"; durumIkon = "🔥"; lockMsg = "Sipariş mutfakta işleme alındı."; }
-                else if (dR.includes("YOLDA") || dR.includes("KURYE") || dR.includes("PAKET")) { durumRenk = "#0A84FF"; durumBg = "rgba(10, 132, 255, 0.1)"; durumIkon = "🛵"; lockMsg = "Kuryemiz yola çıktı."; }
-                else if (dR.includes("İPTAL") || dR.includes("RED")) { durumRenk = "var(--danger)"; durumBg = "rgba(255, 59, 48, 0.1)"; durumIkon = "❌"; BuluttanAktifAdisyonuSil(); }
-                else if (dR.includes("TESLİM") || dR.includes("AFİYET") || dR.includes("TAMAM")) { 
-                    durumRenk = "var(--success)"; durumBg = "rgba(52, 199, 89, 0.1)"; durumIkon = "✅"; BuluttanAktifAdisyonuSil();
-                    if (!window.isOrderFinished) { window.isOrderFinished = true; setTimeout(() => { SecureSil("bg_last_status"); SecureSil("bg_active_order_id"); document.getElementById("history-content").innerHTML = `<div class="empty-state-box">${emptyHistorySVG}<p>Aktif bir siparişiniz bulunmuyor.</p></div>`; sonCekilenAdisyonHTML = ""; SayfaGoster('urunler'); OzelUyariGoster("Afiyet Olsun!", "Siparişiniz teslim edildi. Bizi tercih ettiğiniz için teşekkür ederiz 😋", "🎉"); }, 6000); }
-                }
-
-                if (canEdit) { 
-                    if (nakitDisiOdeme) { 
-                        iptalButonuHTML = `<div style="text-align:center; font-size:12px; color:var(--warning); margin-top:20px; font-weight:700;">💳 Nakit dışı ödemeli (IBAN/Kart) siparişlerde iptal ve değişiklik için restoranı arayın.</div>`; 
-                    } else { 
-                        iptalButonuHTML = `<div style="text-align:center; font-size:12px; color:var(--primary); font-weight:800; margin-top:20px;">⏳ Düzenleme için son <span id="gerisayim-span" style="font-size:16px;">${timeStr}</span></div><div style="display:flex; gap:10px; margin-top:10px;"><button class="ripple-element" onclick="IptalOnaySor()" style="flex:1; background:rgba(255,59,48,0.1); border:1px solid rgba(255, 59, 48, 0.5); color:var(--danger); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">İptal Et</button><button class="ripple-element" onclick="DuzenleOnaySor()" style="flex:1; background:rgba(255, 107, 0, 0.1); border:1px solid var(--primary); color:var(--primary); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">Düzenle</button></div>`; 
-                    } 
-                } else if (!dR.includes("İPTAL") && !dR.includes("TESLİM") && !dR.includes("RED") && !dR.includes("AFİYET")) { 
-                    iptalButonuHTML = `<div style="text-align:center; font-size:11px; color:var(--warning); margin-top:15px; font-weight:700;"><span style="color:var(--warning);">🔒 ${lockMsg} Artık değişiklik yapılamaz.</span></div>`; 
-                }
-
-                if(dR.includes("İPTAL") || dR.includes("RED")) { 
-                    h = `<div class="empty-text" style="color: var(--danger); border-color: rgba(255, 59, 48, 0.3); background: rgba(255, 59, 48, 0.05); padding: 40px 20px;"><div style="font-size:40px; margin-bottom:15px;">❌</div><strong style="font-size:18px;">İptal Edildi</strong><br><br><span style="font-size:14px; color:#A1A1AA;">${escapeHTML(dR)}</span></div>`; 
-                    sonCekilenAdisyonHTML = ""; 
-                    setTimeout(() => { SecureSil("bg_active_order_id"); }, 5000); 
-                } 
-                else { 
-                    h = `<div class="receipt-card"><div style="text-align: center; margin-bottom: 25px;"><div style="font-size:30px; margin-bottom:5px;">${durumIkon}</div><div style="font-weight: 900; font-size: 22px; color:#1c1c1e;">BEKMEZ GO</div><div style="font-size: 14px; font-weight: 800; color:var(--text-muted); margin-top:4px;">PAKET SERVİS</div></div><div class="receipt-header"><span>DURUM</span><span style="color:${durumRenk}; font-weight:900; background:${durumBg}; padding:8px 14px; border-radius:12px; text-align:right;">${escapeHTML(dR)}</span></div>`; 
-                    if(bP.siparisler) { bP.siparisler.forEach(u => { h += `<div class="receipt-item"><span>${escapeHTML(u.itemName)}</span><span>${parseFloat(u.itemPrice).toFixed(2)} ₺</span></div>`; }); } 
-                    if (bP.siparisNotu) { h += `<div style="margin-top: 20px; padding: 16px; background: rgba(0,0,0,0.03); border-radius:16px; font-size: 13px; font-weight: 600; color:#8e8e93; border: 1px dashed #d1d1d6;">NOT:<br>${escapeHTML(bP.siparisNotu)}</div>`; } 
-                    h += `<div class="receipt-total">TOPLAM: <span style="font-size:28px; display:block; margin-top:8px;">${parseFloat(bP.toplamTutar).toFixed(2)} TL</span></div>${iptalButonuHTML}<div style="text-align: center; font-size: 11px; margin-top: 25px; color:#a1a1aa; font-weight: 600;">Bizi tercih ettiğiniz için teşekkür ederiz.</div></div>`; 
-                    sonCekilenAdisyonHTML = h; 
-                }
-            }
-            
-            if (document.getElementById("history-content").innerHTML !== h) { 
-                document.getElementById("history-content").innerHTML = h; 
-            }
-            
-            BaslatAdisyonSayaci(orderTs, canEdit, nakitDisiOdeme);
-            
         } catch(e) {
-            LogDebug(`Adisyon Çizim Hatası: ${e.message}`, "KRİTİK HATA");
+            LogDebug(`Adisyon Çekme Hatası: ${e.message}`, "UYARI");
+            // Eğer ekran zaten boşsa veya iskeletse, hatayı belli et. Değilse eski veriyi tut.
+            if(!document.getElementById("history-content").innerHTML.includes("receipt-card")) {
+                document.getElementById("history-content").innerHTML = `<div class="empty-text" style="color:var(--warning)">Bağlantı Kuruluyor...</div>`;
+            }
         }
     }
-    
-    // GÜNCELLENDİ: UNITY DESTEKLİ İPTAL FONKSİYONU
-    async function SiparişiGercektenIptalEt() {
-        let siparisId = SecureOku("bg_active_order_id"); if(!siparisId) return;
-        if(aktifSayacInterval) clearInterval(aktifSayacInterval);
+
+    function AdisyonEkraniCiz(siparisData, siparisId, isTaslak) {
+        let odemeTuru = SecureOku("bg_odeme_turu") || "Kapıda Nakit"; 
+        let nakitDisiOdeme = !odemeTuru.includes("Nakit");
+
+        let rawOrderTs = SecureOku("bg_order_timestamp"); 
+        let orderTs = rawOrderTs ? ZamanMuhruCoz(rawOrderTs, siparisId) : GetServerTimeFast();
+        if (orderTs === 0 && siparisData.timestamp) orderTs = siparisData.timestamp;
+
+        let leftMs = 180000 - (GetServerTimeFast() - orderTs); 
+        let timeStr = ""; let canEdit = false;
         
-        try {
-            let authUser = firebase.auth().currentUser; if(!authUser) return;
-            let idToken = await authUser.getIdToken(); 
-            LogDebug(`Sipariş İptal Ediliyor - ID: ${siparisId}`);
-
-            await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}.json?auth=${idToken}`, { 
-                method: "PATCH", 
-                body: JSON.stringify({ durum: "İPTAL EDİLDİ ❌", iptalZamani: Date.now() }) 
-            });
-            
-            await fetch(`${FIREBASE_URL}/CanliPaketler/${siparisId}.json?auth=${idToken}`, { method: "DELETE" });
-
-            OzelUyariGoster("İptal Ediliyor...", "Siparişiniz iptal ediliyor. Kupon ve ödülleriniz iade edilecek...", "✅");
-            
-            BuluttanAktifAdisyonuSil();
-            SecureSil("bg_active_order_id"); SecureSil("bg_last_status"); SecureSil("bg_order_timestamp");
-            setTimeout(() => { window.location.reload(true); }, 2000);
-        } catch(e) {
-            LogDebug(`İptal Hatası: ${e.message}`, "KRİTİK HATA");
+        if(leftMs > 0 && orderTs > 0) { 
+            canEdit = true; 
+            let m = Math.floor(leftMs / 60000); 
+            let s = Math.floor((leftMs % 60000) / 1000); 
+            timeStr = `${m}:${s < 10 ? '0'+s : s}`; 
         }
-    }
 
-    function GetKategoriAd(u) { 
-        try { 
-            if (u.categoryIndex !== undefined && u.categoryIndex !== null) { let c = parseInt(u.categoryIndex); if(c===1) return "İçecek"; if(c===2) return "Ekstra"; if(c===0) return "Ana Yemek"; } 
-            if (!u.pName) return "Ana Yemek"; let ad = u.pName.toString().toLocaleLowerCase('tr-TR'); 
-            if (ad.includes("cola") || ad.includes("ayran") || ad.includes("su") || ad.includes("şalgam") || ad.includes("fanta")) return "İçecek"; 
-            if (ad.includes("ekmek") || ad.includes("salata") || ad.includes("ezme") || ad.includes("patates")) return "Ekstra"; 
-            return "Ana Yemek"; 
-        } catch(e) { return "Ana Yemek"; } 
+        let dR = siparisData.durum ? siparisData.durum.toUpperCase() : "SİPARİŞ ALINDI 🔔";
+        let durumRenk = "var(--primary)"; let durumBg = "rgba(255,107,0,0.1)"; let durumIkon = "⏳"; let iptalButonuHTML = ""; let lockMsg = "";
+        
+        let oncekiDurum = SecureOku("bg_last_status") || "";
+        if (dR !== oncekiDurum) { 
+            SecureKaydet("bg_last_status", dR); 
+            if (dR.includes("TESLİM") || dR.includes("AFİYET")) { BildirimGonder("Afiyet Olsun! 😋", "Bekmez GO: Siparişiniz teslim edildi. Bizi tercih ettiğiniz için teşekkür ederiz!"); } 
+            else if (dR.includes("YOLDA") || dR.includes("KURYE")) { BildirimGonder("Kurye Yola Çıktı! 🛵", "Siparişiniz yola çıktı, gelmek üzere!"); } 
+        }
+
+        if (isTaslak) {
+            durumIkon = "⏳";
+        } else if (dR.includes("HAZIRLANIYOR") || dR.includes("SİPARİŞ ALINDI")) { 
+            durumRenk = "var(--primary)"; durumBg = "rgba(255,107,0,0.1)"; durumIkon = "👨‍🍳"; 
+            if(!canEdit) { lockMsg = "3 dakikalık süre doldu."; }
+        }
+        else if (dR.includes("PİŞİYOR") || dR.includes("MUTFAK")) { durumRenk = "var(--warning)"; durumBg = "rgba(255, 204, 0, 0.1)"; durumIkon = "🔥"; lockMsg = "Sipariş mutfakta işleme alındı."; canEdit = false; }
+        else if (dR.includes("YOLDA") || dR.includes("KURYE") || dR.includes("PAKET")) { durumRenk = "#0A84FF"; durumBg = "rgba(10, 132, 255, 0.1)"; durumIkon = "🛵"; lockMsg = "Kuryemiz yola çıktı."; canEdit = false; }
+        else if (dR.includes("İPTAL") || dR.includes("RED")) { durumRenk = "var(--danger)"; durumBg = "rgba(255, 59, 48, 0.1)"; durumIkon = "❌"; BuluttanAktifAdisyonuSil(); canEdit = false; }
+        else if (dR.includes("TESLİM") || dR.includes("AFİYET") || dR.includes("TAMAM")) { 
+            durumRenk = "var(--success)"; durumBg = "rgba(52, 199, 89, 0.1)"; durumIkon = "✅"; BuluttanAktifAdisyonuSil(); canEdit = false;
+            if (!window.isOrderFinished) { 
+                window.isOrderFinished = true; 
+                setTimeout(() => { 
+                    SecureSil("bg_last_status"); SecureSil("bg_active_order_id"); 
+                    document.getElementById("history-content").innerHTML = `<div class="empty-text">Aktif bir siparişiniz bulunmuyor.</div>`; 
+                    sonCekilenAdisyonHTML = ""; SayfaGoster('urunler'); 
+                    if(canliAdisyonTimer) clearInterval(canliAdisyonTimer);
+                    OzelUyariGoster("Afiyet Olsun!", "Siparişiniz teslim edildi. Bizi tercih ettiğiniz için teşekkür ederiz 😋", "🎉"); 
+                }, 6000); 
+            }
+        }
+
+        let isGhost = (Date.now() - orderTs) > GHOST_TIMEOUT_MS;
+        if(isGhost) {
+            window.isOrderFinished = false; 
+            document.getElementById("history-content").innerHTML = `<div class="empty-text">Aktif bir siparişiniz bulunmuyor.</div>`; 
+            sonCekilenAdisyonHTML = ""; SecureSil("bg_active_order_id"); SecureSil("bg_last_status"); 
+            BuluttanAktifAdisyonuSil(); 
+            if(canliAdisyonTimer) clearInterval(canliAdisyonTimer);
+            return;
+        }
+
+        if (canEdit && (isTaslak || dR.includes("SİPARİŞ ALINDI") || dR.includes("BEKLE"))) { 
+            if (nakitDisiOdeme) { 
+                iptalButonuHTML = `<div style="text-align:center; font-size:12px; color:var(--warning); margin-top:20px; font-weight:700;">💳 Nakit dışı ödemeli (IBAN/Kart) siparişlerde iptal ve değişiklik için restoranı arayın.</div>`; 
+            } else { 
+                iptalButonuHTML = `<div style="text-align:center; font-size:12px; color:var(--primary); font-weight:800; margin-top:20px;">⏳ Düzenleme için son <span id="gerisayim-span" style="font-size:16px;">${timeStr}</span></div><div style="display:flex; gap:10px; margin-top:10px;"><button onclick="IptalOnaySor()" style="flex:1; background:rgba(255,59,48,0.1); border:1px solid rgba(255, 59, 48, 0.5); color:var(--danger); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">İptal Et</button><button onclick="DuzenleOnaySor()" style="flex:1; background:rgba(255, 107, 0, 0.1); border:1px solid var(--primary); color:var(--primary); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">Düzenle</button></div>`; 
+            } 
+        } else if (!dR.includes("İPTAL") && !dR.includes("TESLİM") && !dR.includes("RED") && !dR.includes("AFİYET")) { 
+            iptalButonuHTML = `<div style="text-align:center; font-size:11px; color:var(--warning); margin-top:15px; font-weight:700;">🔒 ${lockMsg} Artık değişiklik yapılamaz.</div>`; 
+        }
+
+        let h = "";
+        if(dR.includes("İPTAL") || dR.includes("RED")) { 
+            h = `<div class="empty-text" style="color: var(--danger); border-color: rgba(255, 59, 48, 0.3); background: rgba(255, 59, 48, 0.05); padding: 40px 20px;"><div style="font-size:40px; margin-bottom:15px;">❌</div><strong style="font-size:18px;">İptal Edildi</strong><br><br><span style="font-size:14px; color:#A1A1AA;">${escapeHTML(dR)}</span></div>`; 
+            sonCekilenAdisyonHTML = ""; 
+            if(canliAdisyonTimer) clearInterval(canliAdisyonTimer);
+            setTimeout(() => { SecureSil("bg_active_order_id"); }, 5000); 
+        } 
+        else { 
+            h = `<div class="receipt-card"><div style="text-align: center; margin-bottom: 25px;"><div style="font-size:30px; margin-bottom:5px;">${durumIkon}</div><div style="font-weight: 900; font-size: 22px; color:#1c1c1e;">BEKMEZ GO</div><div style="font-size: 14px; font-weight: 800; color:var(--text-muted); margin-top:4px;">PAKET SERVİS</div></div><div class="receipt-header"><span>DURUM</span><span style="color:${durumRenk}; font-weight:900; background:${durumBg}; padding:8px 14px; border-radius:12px; text-align:right;">${escapeHTML(dR)}</span></div>`; 
+            if(siparisData.sepet) { siparisData.sepet.forEach(u => { h += `<div class="receipt-item"><span>${escapeHTML(u.tamIsim || u.rawName)}</span><span>${parseFloat(u.fiyat || 0).toFixed(2)} ₺</span></div>`; }); } 
+            if (siparisData.siparisNotu) { h += `<div style="margin-top: 20px; padding: 16px; background: rgba(0,0,0,0.03); border-radius:16px; font-size: 13px; font-weight: 600; color:#8e8e93; border: 1px dashed #d1d1d6;">NOT:<br>${escapeHTML(siparisData.siparisNotu)}</div>`; } 
+            h += `<div class="receipt-total">TOPLAM: <span style="font-size:28px; display:block; margin-top:8px;">${parseFloat(siparisData.toplamTutar || 0).toFixed(2)} TL</span></div>${iptalButonuHTML}<div style="text-align: center; font-size: 11px; margin-top: 25px; color:#a1a1aa; font-weight: 600;">Bizi tercih ettiğiniz için teşekkür ederiz.</div></div>`; 
+            sonCekilenAdisyonHTML = h; 
+        }
+
+        if (document.getElementById("history-content").innerHTML !== h) { 
+            document.getElementById("history-content").innerHTML = h; 
+        }
+        
+        BaslatAdisyonSayaci(orderTs, canEdit, nakitDisiOdeme);
     }
-  </script>
+</script>
 </body>
 </html>
