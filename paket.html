@@ -537,10 +537,9 @@
     <div id="custom-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)"><div class="custom-alert-box" id="custom-alert-box"><div class="custom-alert-glow" id="custom-alert-glow"></div><div class="custom-alert-content"><div id="custom-alert-icon" style="font-size: 55px; margin-bottom: 20px;">⚠️</div><h3 id="custom-alert-title" style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Uyarı</h3><p id="custom-alert-text" style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;"></p><button onclick="KapatUyariModal(event, true)" class="alert-btn ripple-element" style="overflow:hidden;">Tamam, Anladım</button></div></div></div>
     
     <div id="success-overlay" class="success-overlay"><div class="success-icon-wrapper"><div class="success-ring"></div><div class="success-circle"><svg class="success-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div></div><div class="success-text">Sipariş İletildi</div><div class="success-subtext">Kasa onayı bekleniyor...</div></div>
-
-<script>
+  <script>
     // ==========================================
-    // SİBER GÜVENLİK KALKANLARI VE ŞİFRELEME (PREMIUM SECURITY)
+    // SİBER GÜVENLİK KALKANLARI VE ŞİFRELEME
     // ==========================================
     console.log("%c DİKKAT!", "color: #FF3B30; font-size: 50px; font-weight: 900; text-shadow: 2px 2px 0 #000;");
     console.log("%c Bu alan geliştiriciler ve siber güvenlik uzmanları içindir. Bekmez Pişirim Güvenlik Kalkanı devrede.", "font-size: 14px; font-weight: bold; color: #fff; background: #1a1a24; padding: 15px; border-radius: 8px; border: 1px solid #FF3B30;");
@@ -552,20 +551,6 @@
         if(e.ctrlKey && (e.key === 'U' || e.keyCode === 85)) { e.preventDefault(); return false; }
     };
     
-    // Geliştirme aşamasında bu tuzağı geçici olarak yoruma alabilirsin (// ile), 
-    // ama canlıda mutlaka açık kalsın.
-    /*
-    setInterval(function() {
-        let t1 = Date.now();
-        debugger;
-        let t2 = Date.now();
-        if (t2 - t1 > 100) {
-            document.body.innerHTML = "<div style='background:#000;color:red;height:100vh;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:bold;text-align:center;'>GÜVENLİK İHLALİ!<br><span style='font-size:14px;color:#fff;'>Lütfen geliştirici araçlarını kapatın.</span></div>";
-            window.location.reload();
-        }
-    }, 2000);
-    */
-
     function CihazParmakIziOlustur() {
         try {
             let canvas = document.createElement('canvas');
@@ -638,9 +623,7 @@
     }
     function SecureSil(anahtar) { localStorage.removeItem(anahtar); }
 
-    function ZararliKarakterTemizle(el) {
-        el.value = el.value.replace(/[<>\\/{}\[\]]/g, '');
-    }
+    function ZararliKarakterTemizle(el) { el.value = el.value.replace(/[<>\\/{}\[\]]/g, ''); }
 
     function escapeHTML(str) { 
         return str ? str.toString().replace(/[&<>'"]/g, function(tag){ 
@@ -754,7 +737,7 @@
                     options.headers['X-Firebase-AppCheck'] = tokenRes.token;
                     args[1] = options;
                 }
-            } catch(e) { console.warn("AppCheck Kalkanı Vizesi Alınamadı:", e); }
+            } catch(e) {}
         }
         return orjinalFetch.apply(this, args);
     };
@@ -786,7 +769,6 @@
 
     let deferredPrompt; let installPromptDismissed = SecureOku('pwa_prompt_dismissed') === 'true';
     window.isOrderFinished = false; let aktifKullanilanCarkOdulu = null; 
-    
     let aktifSayacInterval = null;
 
     function HapticTitresim() { if(navigator.vibrate) navigator.vibrate(15); }
@@ -892,7 +874,7 @@
             let foundTel = user.displayName;
 
             if (!foundTel || foundTel.length < 10) {
-                let idToken = await user.getIdToken(true);
+                let idToken = await user.getIdToken();
                 try {
                     let res = await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar.json?auth=${idToken}`);
                     let allUsers = await res.json();
@@ -1176,7 +1158,7 @@
     }
 
     async function BasariliGirisIslemleri(formatliTel, email, isLogin = false) {
-        let user = firebase.auth().currentUser; let idToken = await user.getIdToken(true);
+        let user = firebase.auth().currentUser; let idToken = await user.getIdToken();
         if (user && user.displayName !== formatliTel) { await user.updateProfile({ displayName: formatliTel }).catch(()=>{}); }
         
         try {
@@ -1224,7 +1206,7 @@
         let chkIsim = document.getElementById("chk-isim"); let chkAdres = document.getElementById("chk-adres"); if(chkIsim) chkIsim.value = i; if(chkAdres) chkAdres.value = a;
 
         let tel = SecureOku("bg_t"); let authUser = firebase.auth().currentUser;
-        if(tel && authUser) { try { let idToken = await authUser.getIdToken(true); await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${tel}.json?auth=${idToken}`, { method: "PATCH", body: JSON.stringify({ isim: i, adres: a }) }); } catch(e){} }
+        if(tel && authUser) { try { let idToken = await authUser.getIdToken(); await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${tel}.json?auth=${idToken}`, { method: "PATCH", body: JSON.stringify({ isim: i, adres: a }) }); } catch(e){} }
         if(alertGoster) { HapticTitresim(); OzelUyariGoster("Başarılı", "Profil bilgileriniz cihazınıza kaydedildi.", "✅"); ProfilArayuzunuGuncelle(true, i); }
     }
 
@@ -1253,7 +1235,7 @@
         let tel = SecureOku("bg_t"); if (!tel) return;
         try {
             let authUser = firebase.auth().currentUser; if(!authUser) return;
-            let idToken = await authUser.getIdToken(true);
+            let idToken = await authUser.getIdToken();
             let res = await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${tel}.json?auth=${idToken}`); let d = await res.json();
             if (d && d.kayitZamani) {
                 let gecenZamanMs = Date.now() - d.kayitZamani; let yediGunMs = 7 * 24 * 60 * 60 * 1000;
@@ -1268,7 +1250,7 @@
             HapticTitresim(); let authUser = firebase.auth().currentUser;
             if (authUser) {
                 try {
-                    let idToken = await authUser.getIdToken(true);
+                    let idToken = await authUser.getIdToken();
                     await fetch(`${FIREBASE_URL}/SilinmisHesaplar/${tel}.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify({ silinmeZamani: Date.now() }) });
                     await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${tel}.json?auth=${idToken}`, { method: "DELETE" });
                     await fetch(`${FIREBASE_URL}/CarkKullanimlari/${tel}.json?auth=${idToken}`, { method: "DELETE" });
@@ -1310,7 +1292,7 @@
         btn.innerHTML = `<div class="spinner-small"></div> Çevriliyor...`;
 
         try {
-            let idToken = await firebase.auth().currentUser.getIdToken(true);
+            let idToken = await firebase.auth().currentUser.getIdToken();
             let res = await fetch(`${FIREBASE_URL}/CarkKullanimlari/${tel}.json?auth=${idToken}&t=${Date.now()}`);
             let data = await res.json(); let sTime = await GetServerTimeFast();
             if (data && data.bitis && sTime < data.bitis) {
@@ -1375,23 +1357,22 @@
         let tel = SecureOku("bg_t"); if(!tel) return;
         try {
             let authUser = firebase.auth().currentUser; if(!authUser) return;
-            let idToken = await authUser.getIdToken(true);
+            let idToken = await authUser.getIdToken();
             await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${tel}/aktifSiparis.json?auth=${idToken}`, { method: "DELETE" });
         } catch(e) {}
     }
 
     function IptalOnaySor() { HapticTitresim(); SoruSor("Siparişi İptal Et", "Siparişinizi iptal etmek istediğinize emin misiniz? İşlem geri alınamaz.", "⚠️", () => { SiparişiGercektenIptalEt(); }, true); }
     
-    // YENİ PATCH METODLU İPTAL FONKSİYONU
+    // Unity'ye direkt PATCH atarak iptal gösteren düzeltilmiş fonksiyon
     async function SiparişiGercektenIptalEt() {
         let siparisId = SecureOku("bg_active_order_id"); if(!siparisId) return;
         if(aktifSayacInterval) clearInterval(aktifSayacInterval);
         
         try {
             let authUser = firebase.auth().currentUser; if(!authUser) return;
-            let idToken = await authUser.getIdToken(true); 
+            let idToken = await authUser.getIdToken(); 
 
-            // YENİ DÜĞÜM AÇMAK YERİNE ORJİNAL SİPARİŞİ PATCH İLE GÜNCELLİYORUZ
             await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}.json?auth=${idToken}`, { 
                 method: "PATCH", 
                 body: JSON.stringify({ durum: "İPTAL EDİLDİ ❌", iptalZamani: Date.now() }) 
@@ -1408,19 +1389,18 @@
     }
 
     function DuzenleOnaySor() {
-        HapticTitresim(); SoruSor("Siparişi Düzenle", "Mevcut siparişiniz iptal edilecek ve ürünleriniz aynen sepete geri yüklenecektir.<br><br>Değişikliklerinizi yapıp tekrar onaylayabilirsiniz. Devam edilsin mi?", "✏️️", () => { SiparisiDuzenleVeSepeteDon(); }, false);
+        HapticTitresim(); SoruSor("Siparişi Düzenle", "Mevcut siparişiniz iptal edilecek ve ürünleriniz aynen sepete geri yüklenecektir.<br><br>Değişikliklerinizi yapıp tekrar onaylayabilirsiniz. Devam edilsin mi?", "✏️", () => { SiparisiDuzenleVeSepeteDon(); }, false);
     }
 
-    // YENİ PATCH METODLU DÜZENLE FONKSİYONU
+    // Unity'ye direkt PATCH atarak düzenleyen düzeltilmiş fonksiyon
     async function SiparisiDuzenleVeSepeteDon() {
         let siparisId = SecureOku("bg_active_order_id"); if(!siparisId) return;
         if(aktifSayacInterval) clearInterval(aktifSayacInterval);
         
         try {
             let authUser = firebase.auth().currentUser; if(!authUser) return;
-            let idToken = await authUser.getIdToken(true); 
+            let idToken = await authUser.getIdToken(); 
             
-            // YENİ DÜĞÜM AÇMAK YERİNE ORJİNAL SİPARİŞİ PATCH İLE GÜNCELLİYORUZ
             await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}.json?auth=${idToken}`, { 
                 method: "PATCH", 
                 body: JSON.stringify({ durum: "İPTAL EDİLDİ ❌", iptalZamani: Date.now() }) 
@@ -1545,7 +1525,6 @@
         
         if (kt) { 
             ProfilArayuzunuGuncelle(true, ki || "");
-            
             let displayTel = kt.startsWith("0") ? kt.substring(1) : kt;
             let chkTel = document.getElementById("chk-telefon");
             if (chkTel) chkTel.value = displayTel; 
@@ -1553,7 +1532,7 @@
             try {
                 let authUser = firebase.auth().currentUser;
                 if (authUser) {
-                    let idToken = await authUser.getIdToken(true);
+                    let idToken = await authUser.getIdToken();
                     let adisyonRes = await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${kt}/aktifSiparis.json?auth=${idToken}&t=${Date.now()}`);
                     let adisyonData = await adisyonRes.json();
                     if(adisyonData && adisyonData.siparisId) {
@@ -1588,7 +1567,7 @@
                     if(siparisId) {
                         try {
                             let authUser = firebase.auth().currentUser; let urlStr = `${FIREBASE_URL}/CanliPaketler/${siparisId}.json`; let taslakUrl = `${FIREBASE_URL}/SiparisTaslaklari/${siparisId}.json`;
-                            if(authUser) { let idToken = await authUser.getIdToken(true); urlStr += `?auth=${idToken}`; taslakUrl += `?auth=${idToken}`; }
+                            if(authUser) { let idToken = await authUser.getIdToken(); urlStr += `?auth=${idToken}`; taslakUrl += `?auth=${idToken}`; }
                             let res = await fetch(urlStr); let d = await res.json(); let tRes = await fetch(taslakUrl); let tD = await tRes.json();
                             
                             if ((!d || d.error) && (!tD || tD.error)) { SecureSil("bg_active_order_id"); SecureSil("bg_last_status"); SayfaGoster('urunler'); return; }
@@ -1917,7 +1896,7 @@
 
             let taslakVerisi = { uid: authUser.uid, telefon: tel, musteriAd: isim, adres: adres, odemeTuru: odemeTuru, siparisNotu: escapeHTML(document.getElementById("siparis-notu").value.trim()), kuponKodu: aktifKuponKodu, carkOdulu: aktifKullanilanCarkOdulu, sepet: sunucuyaGidecekSepet, gpsInfo: { latitude: lat, longitude: lng }, timestamp: tZaman, durum: "KASA ONAYI BEKLENİYOR ⏳" };
 
-            let idToken = await authUser.getIdToken(true);
+            let idToken = await authUser.getIdToken();
             await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${benzersizSiparisID}.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(taslakVerisi) });
 
             await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${tel}/aktifSiparis.json?auth=${idToken}`, { 
@@ -1978,11 +1957,10 @@
                     await AdisyonEkraniGuncelle(bP, siparisId);
                 } catch(e) {
                     console.error("Güncelleme Hatası:", e);
-                    document.getElementById("history-content").innerHTML = `<div class="empty-state-box"><p>Sipariş verisi alınırken bir hata oluştu.</p></div>`;
+                    document.getElementById("history-content").innerHTML = `<div class="empty-state-box"><p>Sipariş verisi bağlanıyor...</p></div>`;
                 }
             }, (error) => {
-                // Veritabanı okuma izni reddedilirse iskeletin donmasını engeller
-                document.getElementById("history-content").innerHTML = `<div class="empty-state-box"><p>Siparişe erişim sağlanamadı veya iptal edildi.</p></div>`;
+                document.getElementById("history-content").innerHTML = `<div class="empty-state-box"><p>Siparişe erişim sağlanamadı veya sipariş silinmiş.</p></div>`;
             });
         };
         tryListen();
@@ -2017,7 +1995,7 @@
     async function AdisyonEkraniGuncelle(bP, siparisId) {
         try {
             let authUser = firebase.auth().currentUser; if(!authUser) return;
-            let idToken = await authUser.getIdToken(true);
+            let idToken = await authUser.getIdToken(); // Hata fırlatan (true) zorlaması kaldırıldı
             let odemeTuru = SecureOku("bg_odeme_turu") || "Kapıda Nakit"; 
             let nakitDisiOdeme = !odemeTuru.includes("Nakit");
 
@@ -2028,7 +2006,7 @@
             if (orderTs === 0 && bP && bP.timestamp) orderTs = bP.timestamp;
 
             if (!bP || bP.error) {
-                let taslakRes = await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}.json?auth=${idToken}&t=${Date.now()}`); 
+                let taslakRes = await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}.json?auth=${idToken}`); 
                 let taslakData = await taslakRes.json();
                 
                 if (taslakData && !taslakData.error && taslakData.durum) {
@@ -2040,14 +2018,11 @@
                     if(leftMs > 0 && orderTs > 0) { canEdit = true; let m = Math.floor(leftMs / 60000); let s = Math.floor((leftMs % 60000) / 1000); timeStr = `${m}:${s < 10 ? '0'+s : s}`; }
                     
                     let butonlar = "";
-                    if (canEdit) { if (nakitDisiOdeme) { butonlar = `<div style="text-align:center; font-size:12px; color:var(--warning); margin-top:20px; font-weight:700;">💳 Nakit dışı ödemeli (IBAN/Kart) siparişlerde iptal ve değişiklik için restoranı arayın.</div>`; } else { butonlar = `<div style="text-align:center; font-size:12px; color:var(--primary); font-weight:800; margin-top:20px;">⏳ Düzenleme için son <span id="gerisayim-span" style="font-size:16px;">${timeStr}</span></div><div style="display:flex; gap:10px; margin-top:10px;"><button class="ripple-element" onclick="IptalOnaySor()" style="flex:1; background:rgba(255,59,48,0.1); border:1px solid rgba(255, 59, 48, 0.5); color:var(--danger); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">İptal Et</button><button class="ripple-element" onclick="DuzenleOnaySor()" style="flex:1; background:rgba(255, 107, 0, 0.1); border:1px solid var(--primary); color:var(--primary); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">Düzenle</button></div>`; } } else { butonlar = `<div style="text-align:center; font-size:11px; color:var(--warning); margin-top:20px; font-weight:700;"><span style="color:var(--warning);">🔒 3 dakikalık süre doldu veya zaman manipülasyonu algılandı.</span></div>`; }
+                    if (canEdit) { if (nakitDisiOdeme) { butonlar = `<div style="text-align:center; font-size:12px; color:var(--warning); margin-top:20px; font-weight:700;">💳 Nakit dışı ödemeli (IBAN/Kart) siparişlerde iptal ve değişiklik için restoranı arayın.</div>`; } else { butonlar = `<div style="text-align:center; font-size:12px; color:var(--primary); font-weight:800; margin-top:20px;">⏳ Düzenleme için son <span id="gerisayim-span" style="font-size:16px;">${timeStr}</span></div><div style="display:flex; gap:10px; margin-top:10px;"><button class="ripple-element" onclick="IptalOnaySor()" style="flex:1; background:rgba(255,59,48,0.1); border:1px solid rgba(255, 59, 48, 0.5); color:var(--danger); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">İptal Et</button><button class="ripple-element" onclick="DuzenleOnaySor()" style="flex:1; background:rgba(255, 107, 0, 0.1); border:1px solid var(--primary); color:var(--primary); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">Düzenle</button></div>`; } } else { butonlar = `<div style="text-align:center; font-size:11px; color:var(--warning); margin-top:20px; font-weight:700;"><span style="color:var(--warning);">🔒 3 dakikalık süre doldu.</span></div>`; }
 
                     let hBekleme = `<div class="receipt-card"><div style="text-align: center; margin-bottom: 15px;"><div class="spinner" style="border-top-color:var(--primary); width:35px; height:35px; border-width:4px;"></div><div style="font-weight: 900; font-size: 20px; color:#1c1c1e;">KASA ONAYI BEKLENİYOR</div></div>${butonlar}</div>`;
                     
-                    if (document.getElementById("history-content").innerHTML !== hBekleme) { 
-                        document.getElementById("history-content").innerHTML = hBekleme; 
-                    } 
-                    
+                    document.getElementById("history-content").innerHTML = hBekleme; 
                     BaslatAdisyonSayaci(orderTs, canEdit, nakitDisiOdeme);
                     return; 
                 } else {
@@ -2117,8 +2092,11 @@
             
             BaslatAdisyonSayaci(orderTs, canEdit, nakitDisiOdeme);
             
-        } catch(e) {}
+        } catch(e) {
+            console.error("Adisyon Güncelleme Hatası:", e);
+            document.getElementById("history-content").innerHTML = `<div class="empty-state-box"><p>Bağlantı kuruluyor...</p></div>`;
+        }
     }
-</script>
+  </script>
 </body>
 </html>
