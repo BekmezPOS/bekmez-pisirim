@@ -775,7 +775,7 @@
     <div id="distance-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)"><div class="custom-alert-box"><div class="custom-alert-glow" style="background:var(--primary);"></div><div class="custom-alert-content"><div style="font-size: 55px; margin-bottom: 20px;">🛵</div><h3 style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Menzil Dışındasınız</h3><p style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;">Bekmez GO lezzetlerini size ulaştırabilmek için teslimat ağımızı <b>4 km</b> ile sınırlandırıyoruz.<br><br>Maalesef şu an sıcak teslimat bölgemizin dışındasınız.</p><button onclick="KapatUyariModal(event, true)" class="alert-btn ripple-element" style="background:var(--primary); border-color:transparent; color:white; overflow:hidden;">Anladım</button></div></div></div>
     
     <div id="success-overlay" class="success-overlay"><div class="success-icon-wrapper"><div class="success-ring"></div><div class="success-circle"><svg class="success-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div></div><div class="success-text">Sipariş İletildi</div><div class="success-subtext">Kasa onayı bekleniyor...</div></div>
-    <script>
+   <script>
     // ==========================================
     // 1. SİBER GÜVENLİK, AES-GCM ŞİFRELEME VE FINGERPRINT MOTORU
     // ==========================================
@@ -808,7 +808,7 @@
     const ANAHTAR_KOKU = "BKMZ_PREMIUM_AES256_SALT_!#";
     let cryptoKeyInstance = null;
 
-    // KUSURSUZ WEB CRYPTO API (AES-GCM 256-Bit) Şifreleme Motoru (Madde 6 ve 10)
+    // KUSURSUZ WEB CRYPTO API (AES-GCM 256-Bit) Şifreleme Motoru
     async function getCryptoKey() {
         if (cryptoKeyInstance) return cryptoKeyInstance;
         try {
@@ -845,7 +845,7 @@
             const decrypted = await crypto.subtle.decrypt({name: "AES-GCM", iv: iv}, key, cipher);
             return new TextDecoder().decode(decrypted);
         } catch(e) { 
-            // Çöp karakter bug'ı çözümü: Şifre kırılamazsa (farklı cihaz/bozuk veri) veriyi imha et. (Madde 4, 8)
+            // Çöp karakter bug'ı çözümü: Şifre kırılamazsa (farklı cihaz/bozuk veri) veriyi imha et.
             localStorage.removeItem(anahtar); 
             return null; 
         }
@@ -856,7 +856,7 @@
     function ZararliKarakterTemizle(el) { el.value = el.value.replace(/[<>\\/{}\[\]]/g, ''); }
     function escapeHTML(str) { return str ? str.toString().replace(/[&<>'"]/g, function(tag){ return {'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[tag]; }) : ""; }
 
-    // PREMIUM ŞİFRE GÖZ İKONU (Madde 5)
+    // PREMIUM ŞİFRE GÖZ İKONU
     const eyeClosedSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`;
     const eyeOpenSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
     
@@ -926,7 +926,6 @@
     };
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     
-    // Firebase AppCheck Kalkanı (Madde 2 - Uygulandı)
     const appCheck = firebase.appCheck();
     appCheck.activate(new firebase.appCheck.ReCaptchaEnterpriseProvider('6LfaV-AtAAAAAGqAbPWGYWxmlGfQNasMlne4iHne'), true);
 
@@ -991,7 +990,6 @@
         let seciliAlan = document.getElementById(`dash-${sekme.toLowerCase()}-alani`); if(seciliAlan) { seciliAlan.style.display = "block"; setTimeout(() => seciliAlan.classList.add("fade-up-enter"), 10); }
     }
 
-    // GÜVENLİ SENKRONİZASYON (İsim ve Adresin Checkout'a Aktarımı) (Madde 9 ve 12)
     function ProfilArayuzunuGuncelle(isLoggedIn, userName = "") {
         let anaBaslik = document.getElementById("profil-ana-baslik"); let altBaslik = document.getElementById("profil-alt-baslik"); let authWrapper = document.getElementById("auth-wrapper"); let dashboardWrapper = document.getElementById("dashboard-wrapper");
         if (isLoggedIn) {
@@ -1263,26 +1261,35 @@
         if(alertGoster) { HapticTitresim(); OzelUyariGoster("Başarılı", "Profil bilgileriniz cihazınıza kaydedildi.", "✅"); ProfilArayuzunuGuncelle(true, i); }
     }
 
-    async function TemizleOturumVerileri() {
-        await SecureSil("bg_i"); await SecureSil("bg_t"); await SecureSil("bg_a"); await SecureSil("bg_cark_data"); 
-        await SecureSil("bg_active_order_id"); await SecureSil("bg_order_timestamp"); await SecureSil("bg_last_status"); await SecureSil("bg_odeme_turu");
-        await SecureSil("bg_saved_cart"); await SecureSil("bg_saved_note"); await SecureSil("bg_saved_coupon"); await SecureSil("bg_saved_cark");
-        await SecureSil("bg_wp_waiting"); await SecureSil("bg_wp_kod"); await SecureSil("bg_pending_tel"); await SecureSil("bg_pending_email");
-
-        let inputs = ["prof-isim", "prof-telefon", "prof-email", "prof-password", "prof-adres", "chk-isim", "chk-telefon", "chk-adres", "login-email", "login-pass"];
-        inputs.forEach(id => { let el = document.getElementById(id); if(el) el.value = ""; });
-        
-        document.getElementById("history-content").innerHTML = `<div class="empty-state-box">${emptyHistorySVG}<p>Aktif bir siparişiniz bulunmuyor.</p></div>`;
-        sonCekilenAdisyonHTML = ""; window.isOrderFinished = false;
-
-        let cb = document.getElementById("kayit-onay-cb"); if(cb) cb.checked = false;
-        let btn = document.getElementById("btn-email-verify"); if(btn) { btn.disabled = true; btn.style.opacity = "0.5"; btn.innerText = "Hesabımı Oluştur"; }
-        
-        CanliSifreKontrolu(""); firebase.auth().signOut(); aktifKullanilanCarkOdulu = null; await CarkDurumunuKontrolEt(); SepetEkraniniCiz(); 
-        ProfilArayuzunuGuncelle(false);
+    // AÇIK 4 (ÇIKIŞ YAPAMAMA) İÇİN KUSURSUZ AGRESİF ÇIKIŞ YAPISI
+    function SadeceCikisYap() { 
+        SoruSor("Oturumu Kapat", "Cihazınızdaki mevcut oturumu kapatmak istediğinize emin misiniz?", "🚪", async () => { 
+            HapticTitresim(); 
+            // Kullanıcıya güven vermek ve arka plan hatalarını maskelemek için tam ekran yükleniyor simgesi göster
+            document.body.innerHTML += `<div style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999999;display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;font-weight:bold;backdrop-filter:blur(10px);"><div class="spinner"></div><div style="margin-top:20px; font-size:18px;">Güvenli Çıkış Yapılıyor...</div></div>`;
+            await TemizleOturumVerileri(); 
+        }, false); 
     }
 
-    function SadeceCikisYap() { SoruSor("Oturumu Kapat", "Cihazınızdaki mevcut oturumu kapatmak istediğinize emin misiniz?", "🚪", async () => { HapticTitresim(); await TemizleOturumVerileri(); OzelUyariGoster("Çıkış Yapıldı", "Hesabınızdan güvenle çıkış yaptınız.", "✅"); }, false); }
+    async function TemizleOturumVerileri() {
+        try {
+            if(firebase.auth().currentUser) { await firebase.auth().signOut(); }
+            
+            // Veri İmhası
+            await SecureSil("bg_i"); await SecureSil("bg_t"); await SecureSil("bg_a"); await SecureSil("bg_cark_data"); 
+            await SecureSil("bg_active_order_id"); await SecureSil("bg_order_timestamp"); await SecureSil("bg_last_status"); await SecureSil("bg_odeme_turu");
+            await SecureSil("bg_saved_cart"); await SecureSil("bg_saved_note"); await SecureSil("bg_saved_coupon"); await SecureSil("bg_saved_cark");
+            await SecureSil("bg_wp_waiting"); await SecureSil("bg_wp_kod"); await SecureSil("bg_pending_tel"); await SecureSil("bg_pending_email");
+            
+            localStorage.clear(); // Extreme Safety Wipe
+            
+            // Tüm önbelleği silip SPA state'ini RAM'den tamamen arındırmak için sistemi hard reload ile yeniden başlat
+            setTimeout(() => { window.location.reload(true); }, 800);
+        } catch(e) {
+            localStorage.clear();
+            window.location.reload(true);
+        }
+    }
 
     async function HesabiTamamenSil() {
         let tel = await SecureOku("bg_t"); if (!tel) return;
@@ -1301,12 +1308,13 @@
             if (authUser) {
                 try {
                     let idToken = await authUser.getIdToken(true);
+                    document.body.innerHTML += `<div style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999999;display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;font-weight:bold;backdrop-filter:blur(10px);"><div class="spinner" style="border-top-color:var(--danger);"></div><div style="margin-top:20px; font-size:18px;">Verileriniz İmha Ediliyor...</div></div>`;
                     await fetch(`${FIREBASE_URL}/SilinmisHesaplar/${tel}.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify({ silinmeZamani: Date.now() }) });
                     await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${tel}.json?auth=${idToken}`, { method: "DELETE" });
                     await fetch(`${FIREBASE_URL}/CarkKullanimlari/${tel}.json?auth=${idToken}`, { method: "DELETE" });
                     let temizTel = tel.replace(/[^0-9]/g, ''); await fetch(`${FIREBASE_URL}/WhatsappOnayliNumaralar/${temizTel}.json?auth=${idToken}`, { method: "DELETE" });
                     await authUser.delete();
-                    await TemizleOturumVerileri(); OzelUyariGoster("Hesap Silindi", "Hesabınız ve tüm verileriniz sistemden başarıyla silindi. Güvenlik kuralları gereği 7 gün boyunca aynı numarayla tekrar kayıt yapılamaz.", "🗑");
+                    await TemizleOturumVerileri(); 
                 } catch (error) {
                     if (error.code === 'auth/requires-recent-login') { OzelUyariGoster("Oturum Zaman Aşımı", "Hesabınızı silebilmek için güvenlik sebebiyle önce Çıkış Yapıp tekrar Giriş yapmalısınız.", "🔒"); } else { OzelUyariGoster("Hata", "Silme işlemi sırasında bir hata oluştu.", "❌"); }
                 }
@@ -1404,7 +1412,7 @@
     async function CarkHediyesiIptal() { HapticTitresim(); aktifKullanilanCarkOdulu = null; await CarkDurumunuKontrolEt(); SepetEkraniniCiz(); }
 
     // ==========================================
-    // 5. İPTAL VE UNITY SENKRONİZASYONU (Madde 3)
+    // 5. İPTAL VE UNITY SENKRONİZASYONU (Madde 1 ve 2)
     // ==========================================
     async function BuluttanAktifAdisyonuSil() {
         let tel = await SecureOku("bg_t"); if(!tel) return;
@@ -1413,21 +1421,26 @@
 
     function IptalOnaySor() { HapticTitresim(); SoruSor("Siparişi İptal Et", "Siparişinizi iptal etmek istediğinize emin misiniz? İşlem geri alınamaz.", "⚠️", () => { SiparişiGercektenIptalEt(); }, true); }
     
-    // Unity'e Doğrudan İptal Bildirimi Sağlayan Yeni İptal Motoru
+    // Unity'nin Kökten İptali Görmesi İçin Patch + Delete Sistemi
     async function SiparişiGercektenIptalEt() {
         let siparisId = await SecureOku("bg_active_order_id"); if(!siparisId) return;
         try {
             let authUser = firebase.auth().currentUser; if(!authUser) return;
             let idToken = await authUser.getIdToken(true); let telInput = document.getElementById("prof-telefon"); let tel = telInput ? telInput.value.replace(/[^0-9]/g, '') : await SecureOku("bg_t");
 
-            // Unity Kasanın anında görmesi için hem taslağa hem canlıya PATCH atılır.
-            await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}.json?auth=${idToken}`, { method: "PATCH", body: JSON.stringify({ durum: "İPTAL EDİLDİ ❌", islemTuru: "IPTAL", iptalZamani: Date.now() }) });
-            await fetch(`${FIREBASE_URL}/CanliPaketler/${siparisId}.json?auth=${idToken}`, { method: "PATCH", body: JSON.stringify({ durum: "İPTAL EDİLDİ ❌" }) });
+            let iptalPaketi = { islemTuru: "IPTAL", zaman: new Date().toLocaleTimeString(), telefon: tel, uid: authUser.uid };
             
-            OzelUyariGoster("İptal Ediliyor...", "Siparişiniz iptal ediliyor. Kupon ve ödülleriniz iade edilecek...", "✅");
+            // UNITY 3D UYUMU: Eski sistemde olduğu gibi "-IPTAL" node'unu yolluyoruz.
+            await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}-IPTAL.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(iptalPaketi) });
+            // UNITY 3D UYUMU: Kasadaki Child'ı anında siliyoruz.
+            await fetch(`${FIREBASE_URL}/CanliPaketler/${siparisId}.json?auth=${idToken}`, { method: "DELETE" });
+            
+            OzelUyariGoster("İptal Ediliyor...", "Siparişiniz iptal edildi. Ana sayfaya yönlendiriliyorsunuz...", "✅");
             await BuluttanAktifAdisyonuSil();
             await SecureSil("bg_active_order_id"); await SecureSil("bg_last_status"); await SecureSil("bg_order_timestamp");
-            setTimeout(() => { window.location.reload(true); }, 2500);
+            
+            // Tüm sayfayı reload ederek her şeyin kusursuzca sıfırlanmasını sağlıyoruz.
+            setTimeout(() => { window.location.reload(true); }, 2000);
         } catch(e) {}
     }
 
@@ -1439,9 +1452,12 @@
             let authUser = firebase.auth().currentUser; if(!authUser) return;
             let idToken = await authUser.getIdToken(true); let tel = await SecureOku("bg_t");
             
-            // Unity'i haberdar et.
-            await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}.json?auth=${idToken}`, { method: "PATCH", body: JSON.stringify({ durum: "İPTAL EDİLDİ ❌", islemTuru: "IPTAL", iptalZamani: Date.now() }) });
-            await fetch(`${FIREBASE_URL}/CanliPaketler/${siparisId}.json?auth=${idToken}`, { method: "PATCH", body: JSON.stringify({ durum: "İPTAL EDİLDİ ❌" }) });
+            let iptalPaketi = { islemTuru: "IPTAL", zaman: new Date().toLocaleTimeString(), telefon: tel, uid: authUser.uid };
+            
+            // UNITY 3D UYUMU: Eski sistemde olduğu gibi "-IPTAL" node'unu yolluyoruz.
+            await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}-IPTAL.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(iptalPaketi) });
+            await fetch(`${FIREBASE_URL}/CanliPaketler/${siparisId}.json?auth=${idToken}`, { method: "DELETE" });
+            
             await BuluttanAktifAdisyonuSil();
             
             let savedCart = await SecureOku("bg_saved_cart"); if (savedCart) { try { sepet = JSON.parse(savedCart); } catch(e){} }
@@ -1534,7 +1550,7 @@
         
         const guncelle = () => {
             let gecenMs = Date.now() - lastOrder;
-            let kalanMs = 180000 - gecenMs;
+            let kalanMs = 180000 - gecenMs; // 3 Dakika
             
             if (kalanMs > 0 && chk.checked) {
                 btn.disabled = true; btn.style.opacity = "1";
@@ -1899,7 +1915,7 @@
         HapticTitresim(); let p = document.getElementById("checkout-popup"); p.style.display = "flex"; setTimeout(() => { p.classList.add("active"); }, 10); TogglePayButton(); 
     }
 
-    // SPAM KORUMA MOTORU VE DİNAMİK BUTON UI (Madde 14)
+    // SPAM KORUMA MOTORU VE DİNAMİK BUTON UI
     async function SpamSayaciKontrolEt() {
         let lastOrderStr = await SecureOku("last_ord_t");
         let btn = document.getElementById("final-submit-btn");
@@ -1983,14 +1999,13 @@
 
     async function DevamEtPaketGonder(isim, tel, adres, odemeTuru, temizSepet, lat = 0, lng = 0) {
         await SecureKaydet("bg_i", isim); await SecureKaydet("bg_a", adres);
-        let btn = document.getElementById("final-submit-btn"); 
         let btnText = document.getElementById("final-btn-text");
         btnText.innerHTML = `<div class="spinner-small"></div> İletiliyor...`; 
         window.isOrderFinished = false;
 
         try {
             let authUser = firebase.auth().currentUser;
-            if (!authUser) { OzelUyariGoster("Hata", "Oturum bulunamadı, lütfen çıkış yapıp tekrar giriş yapın.", "🔒"); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btnText.innerHTML = `${sonOdenecekFiyat.toFixed(2)} TL Öde`; return; }
+            if (!authUser) { OzelUyariGoster("Hata", "Oturum bulunamadı, lütfen çıkış yapıp tekrar giriş yapın.", "🔒"); isProcessingOrder = false; document.getElementById("final-submit-btn").disabled = false; document.getElementById("final-submit-btn").classList.remove("loading"); btnText.innerHTML = `${sonOdenecekFiyat.toFixed(2)} TL Öde`; return; }
 
             let benzersizSiparisID = generateUUID();
             let sunucuyaGidecekSepet = temizSepet.map(u => ({ rawName: u.rawName, tamIsim: (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName, miktar: (u.baseStockAmount * u.quantity) }));
@@ -2015,7 +2030,7 @@
             HapticTitresim(); CheckoutKapat(); BasariEkraniGoster();
 
             if (sepetHatirlaticiTimer) clearTimeout(sepetHatirlaticiTimer); sepet = []; aktifKuponKodu = ""; document.getElementById("siparis-notu").value = ""; SepetEkraniniCiz(); await HesaplaVeGuncelle(); seciliEkstraIstekler = []; isProcessingOrder = false;
-        } catch (e) { OzelUyariGoster("Hata", "Sipariş iletilemedi, internetinizi kontrol edin.", "📡"); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btnText.innerHTML = `${sonOdenecekFiyat.toFixed(2)} TL Öde`; }
+        } catch (e) { OzelUyariGoster("Hata", "Sipariş iletilemedi, internetinizi kontrol edin.", "📡"); isProcessingOrder = false; document.getElementById("final-submit-btn").disabled = false; document.getElementById("final-submit-btn").classList.remove("loading"); btnText.innerHTML = `${sonOdenecekFiyat.toFixed(2)} TL Öde`; }
     }
 
     // ==========================================
@@ -2053,7 +2068,14 @@
 
     async function AdisyonuGercekZamanliDinle() {
         let siparisId = await SecureOku("bg_active_order_id");
-        if (!siparisId) { document.getElementById("history-content").innerHTML = `<div class="empty-state-box">${emptyHistorySVG}<p>Aktif bir siparişiniz bulunmuyor.</p></div>`; return; }
+        let authUser = firebase.auth().currentUser;
+
+        // Skeleton UI Bug'ı Düzeltildi (Madde 3)
+        if (!siparisId || !authUser) { 
+            document.getElementById("history-content").innerHTML = `<div class="empty-state-box">${emptyHistorySVG}<p>Aktif bir siparişiniz bulunmuyor.</p></div>`; 
+            if (aktifAdisyonDinleyiciRef) aktifAdisyonDinleyiciRef.off();
+            return; 
+        }
         
         if (aktifAdisyonDinleyiciRef) aktifAdisyonDinleyiciRef.off();
         
@@ -2066,7 +2088,9 @@
 
     async function AdisyonEkraniGuncelle(bP, siparisId) {
         try {
-            let authUser = firebase.auth().currentUser; if(!authUser) return;
+            let authUser = firebase.auth().currentUser; 
+            if(!authUser) { document.getElementById("history-content").innerHTML = `<div class="empty-state-box">${emptyHistorySVG}<p>Aktif bir siparişiniz bulunmuyor.</p></div>`; return; }
+
             let idToken = await authUser.getIdToken(true);
             let odemeTuru = await SecureOku("bg_odeme_turu") || "Kapıda Nakit"; 
             let nakitDisiOdeme = !odemeTuru.includes("Nakit");
@@ -2131,11 +2155,8 @@
                 }
 
                 if (canEdit) { 
-                    if (nakitDisiOdeme) { 
-                        iptalButonuHTML = `<div style="text-align:center; font-size:12px; color:var(--warning); margin-top:20px; font-weight:700;">💳 Nakit dışı ödemeli (IBAN/Kart) siparişlerde iptal ve değişiklik için restoranı arayın.</div>`; 
-                    } else { 
-                        iptalButonuHTML = `<div style="text-align:center; font-size:12px; color:var(--primary); font-weight:800; margin-top:20px;">⏳ Düzenleme için son <span id="adisyon-timer-span" style="font-size:16px;">...</span></div><div style="display:flex; gap:10px; margin-top:10px;"><button class="ripple-element" onclick="IptalOnaySor()" style="flex:1; background:rgba(255,59,48,0.1); border:1px solid rgba(255, 59, 48, 0.5); color:var(--danger); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">İptal Et</button><button class="ripple-element" onclick="DuzenleOnaySor()" style="flex:1; background:rgba(255, 107, 0, 0.1); border:1px solid var(--primary); color:var(--primary); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">Düzenle</button></div>`; 
-                    } 
+                    if (nakitDisiOdeme) { iptalButonuHTML = `<div style="text-align:center; font-size:12px; color:var(--warning); margin-top:20px; font-weight:700;">💳 Nakit dışı ödemeli (IBAN/Kart) siparişlerde iptal ve değişiklik için restoranı arayın.</div>`; } 
+                    else { iptalButonuHTML = `<div style="text-align:center; font-size:12px; color:var(--primary); font-weight:800; margin-top:20px;">⏳ Düzenleme için son <span id="adisyon-timer-span" style="font-size:16px;">...</span></div><div style="display:flex; gap:10px; margin-top:10px;"><button class="ripple-element" onclick="IptalOnaySor()" style="flex:1; background:rgba(255,59,48,0.1); border:1px solid rgba(255, 59, 48, 0.5); color:var(--danger); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">İptal Et</button><button class="ripple-element" onclick="DuzenleOnaySor()" style="flex:1; background:rgba(255, 107, 0, 0.1); border:1px solid var(--primary); color:var(--primary); padding:14px; border-radius:100px; font-weight:800; font-size:13px; cursor:pointer;">Düzenle</button></div>`; } 
                 } else if (!dR.includes("İPTAL") && !dR.includes("TESLİM") && !dR.includes("RED") && !dR.includes("AFİYET")) { iptalButonuHTML = `<div style="text-align:center; font-size:11px; color:var(--warning); margin-top:15px; font-weight:700;">🔒 ${lockMsg} Artık değişiklik yapılamaz.</div>`; }
 
                 if(dR.includes("İPTAL") || dR.includes("RED")) { h = `<div class="empty-text" style="color: var(--danger); border-color: rgba(255, 59, 48, 0.3); background: rgba(255, 59, 48, 0.05); padding: 40px 20px;"><div style="font-size:40px; margin-bottom:15px;">❌</div><strong style="font-size:18px;">İptal Edildi</strong><br><br><span style="font-size:14px; color:#A1A1AA;">${escapeHTML(dR)}</span></div>`; sonCekilenAdisyonHTML = ""; setTimeout(async () => { await SecureSil("bg_active_order_id"); }, 5000); } 
