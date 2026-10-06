@@ -736,6 +736,26 @@
             }
         }
     });
+ function CheckoutPopupAc() { 
+    if(sepet.length === 0 && aktifKullanilanCarkOdulu === null) return; 
+    if(SecureOku("bg_active_order_id")) { 
+        OzelUyariGoster("Siparişiniz Yolda", "Mevcut siparişiniz teslim edilmeden veya iptal edilmeden yeni bir sipariş oluşturamazsınız.", "🛵"); 
+        return; 
+    }
+    
+    let chkIsim = document.getElementById("chk-isim"); 
+    let chkAdres = document.getElementById("chk-adres");
+    
+    if(chkIsim && !chkIsim.value) chkIsim.value = SecureOku("bg_i") || "";
+    if(chkAdres && !chkAdres.value) chkAdres.value = SecureOku("bg_a") || "";
+
+    HapticTitresim(); 
+    let p = document.getElementById("checkout-popup"); 
+    p.style.display = "flex"; 
+    setTimeout(() => { p.classList.add("active"); }, 10); 
+    
+    TogglePayButton(); 
+}
 
     function BildirimGonder(baslik, mesaj) {
         if (!("Notification" in window) || Notification.permission !== "granted") return;
