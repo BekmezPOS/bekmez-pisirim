@@ -553,7 +553,8 @@
     <div id="distance-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)"><div class="custom-alert-box"><div class="custom-alert-glow" style="background:var(--primary);"></div><div class="custom-alert-content"><div style="font-size: 55px; margin-bottom: 20px;">🛵</div><h3 style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Menzil Dışındasınız</h3><p style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;">Bekmez GO lezzetlerini size ulaştırabilmek için teslimat ağımızı <b>4 km</b> ile sınırlandırıyoruz.<br><br>Maalesef şu an sıcak teslimat bölgemizin dışındasınız.</p><button onclick="KapatUyariModal(event, true)" class="alert-btn ripple-element" style="background:var(--primary); border-color:transparent; color:white; overflow:hidden;">Anladım</button></div></div></div>
     
     <div id="success-overlay" class="success-overlay"><div class="success-icon-wrapper"><div class="success-ring"></div><div class="success-circle"><svg class="success-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div></div><div class="success-text">Sipariş İletildi</div><div class="success-subtext">Kasa onayı bekleniyor...</div></div>
-  <script>
+    
+   <script>
     // ==========================================
     // SİBER GÜVENLİK KALKANLARI VE ŞİFRELEME (PREMIUM SECURITY)
     // ==========================================
@@ -800,7 +801,7 @@
     window.isAddingToCart = false;
 
     let deferredPrompt; let installPromptDismissed = SecureOku('pwa_prompt_dismissed') === 'true';
-    window.isOrderFinished = false; let aktifKullanilanCarkOdulu = null; 
+    window.isOrderFinished = false; window.sonRenderEdilenDurum = ""; let aktifKullanilanCarkOdulu = null; 
     
     let aktifSayacInterval = null;
 
@@ -1253,7 +1254,7 @@
         inputs.forEach(id => { let el = document.getElementById(id); if(el) el.value = ""; });
         
         document.getElementById("history-content").innerHTML = `<div class="empty-state-box">${emptyHistorySVG}<p>Aktif bir siparişiniz bulunmuyor.</p></div>`;
-        sonCekilenAdisyonHTML = ""; window.isOrderFinished = false;
+        sonCekilenAdisyonHTML = ""; window.isOrderFinished = false; window.sonRenderEdilenDurum = "";
 
         let cb = document.getElementById("kayit-onay-cb"); if(cb) cb.checked = false;
         let btn = document.getElementById("btn-email-verify"); if(btn) { btn.disabled = true; btn.style.opacity = "0.5"; btn.innerText = "Hesabımı Oluştur"; }
@@ -1397,8 +1398,7 @@
 
     function IptalOnaySor() { HapticTitresim(); SoruSor("Siparişi İptal Et", "Siparişinizi iptal etmek istediğinize emin misiniz? İşlem geri alınamaz.", "⚠️", () => { SiparişiGercektenIptalEt(); }, true); }
     
-    // GÜNCELLENDİ: Unity'nin algılaması için sipariş doğrudan CanliPaketler'den SİLİNİYOR (DELETE)
-   async function SiparişiGercektenIptalEt() {
+    async function SiparişiGercektenIptalEt() {
         let siparisId = SecureOku("bg_active_order_id"); if(!siparisId) return;
         try {
             let authUser = firebase.auth().currentUser; if(!authUser) return;
@@ -1408,19 +1408,16 @@
             let tel = telInput ? telInput.value.replace(/[^0-9]/g, '') : SecureOku("bg_t");
             if (!tel) tel = SecureOku("bg_t");
 
-            let iptalPaketi = { durum: "İPTAL EDİLDİ (Müşteri)", islemTuru: "IPTAL", zaman: new Date().toLocaleTimeString() };
+            let iptalPaketi = { durum: "İPTAL EDİLDİ (Müşteri)", islemTuru: "IPTAL", zaman: new Date().toLocaleTimeString(), telefon: tel, uid: authUser.uid };
 
-            // DÜZELTME 1: Yeni bir "-IPTAL" ID'si açmak yerine mevcut siparişi PATCH ile güncelliyoruz
             await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}.json?auth=${idToken}`, { method: "PATCH", body: JSON.stringify(iptalPaketi) });
-            
-            // UNITY SİLME KOMUTU
             await fetch(`${FIREBASE_URL}/CanliPaketler/${siparisId}.json?auth=${idToken}`, { method: "DELETE" });
 
             OzelUyariGoster("İptal Ediliyor...", "Siparişiniz iptal ediliyor. Kupon ve ödülleriniz iade edilecek...", "✅");
             
             BuluttanAktifAdisyonuSil();
             SecureSil("bg_active_order_id"); SecureSil("bg_last_status"); SecureSil("bg_order_timestamp");
-            window.sonRenderEdilenDurum = ""; // Ekran sıfırlaması için
+            window.sonRenderEdilenDurum = ""; 
             setTimeout(() => { window.location.reload(true); }, 3000);
         } catch(e) {}
     }
@@ -1429,18 +1426,14 @@
         HapticTitresim(); SoruSor("Siparişi Düzenle", "Mevcut siparişiniz iptal edilecek ve ürünleriniz aynen sepete geri yüklenecektir.<br><br>Değişikliklerinizi yapıp tekrar onaylayabilirsiniz. Devam edilsin mi?", "✏️", () => { SiparisiDuzenleVeSepeteDon(); }, false);
     }
 
-    // GÜNCELLENDİ: Unity'nin algılaması için sipariş doğrudan CanliPaketler'den SİLİNİYOR (DELETE)
-   async function SiparisiDuzenleVeSepeteDon() {
+    async function SiparisiDuzenleVeSepeteDon() {
         let siparisId = SecureOku("bg_active_order_id"); if(!siparisId) return;
         try {
             let authUser = firebase.auth().currentUser; if(!authUser) return;
             let idToken = await authUser.getIdToken(true); let tel = SecureOku("bg_t");
-            let iptalPaketi = { durum: "İPTAL EDİLDİ (Düzenleme)", islemTuru: "IPTAL", zaman: new Date().toLocaleTimeString() };
+            let iptalPaketi = { durum: "İPTAL EDİLDİ (Düzenleme)", islemTuru: "IPTAL", zaman: new Date().toLocaleTimeString(), telefon: tel, uid: authUser.uid };
             
-            // DÜZELTME 2: Mevcut siparişi PATCH ile güncelliyoruz
             await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}.json?auth=${idToken}`, { method: "PATCH", body: JSON.stringify(iptalPaketi) });
-            
-            // UNITY SİLME KOMUTU
             await fetch(`${FIREBASE_URL}/CanliPaketler/${siparisId}.json?auth=${idToken}`, { method: "DELETE" });
 
             BuluttanAktifAdisyonuSil();
@@ -1451,7 +1444,7 @@
             let note = SecureOku("bg_saved_note"); if(note) document.getElementById("siparis-notu").value = note;
 
             SecureSil("bg_active_order_id"); SecureSil("bg_last_status"); SecureSil("bg_order_timestamp");
-            window.sonRenderEdilenDurum = ""; // Ekran sıfırlaması için
+            window.sonRenderEdilenDurum = ""; 
             
             OzelUyariGoster("Düzenleme Modu Aktif", "Eski siparişiniz iptal edildi ve ürünler sepete eklendi. Değişiklik yapıp tekrar sipariş verebilirsiniz.", "🛒");
             SayfaGoster('sepet');
@@ -1896,7 +1889,7 @@
         if (navigator.geolocation) { 
             const checkLoc = () => { return new Promise((resolve, reject) => { navigator.geolocation.getCurrentPosition(p => resolve(p), e => reject(e), {enableHighAccuracy: true, timeout: 10000, maximumAge: 0}); }); };
             
-           checkLoc().then(p => {
+            checkLoc().then(p => {
                 let lat = p.coords.latitude; let lng = p.coords.longitude; let ms = GetDistanceKm(DUKKAN_ENLEM, DUKKAN_BOYLAM, lat, lng);
                 if (ms > MAKS_MESAFE_KM) { 
                     let do2 = document.getElementById("distance-alert-overlay"); do2.style.display = "flex"; setTimeout(() => do2.classList.add("active"), 10); 
@@ -1904,7 +1897,6 @@
                 }
                 DevamEtPaketGonder(is, tl, ad, secilenOdeme, sepet, lat, lng);
             }).catch(e => { 
-                // DÜZELTME 5: Konum alınamazsa işlemi zorla durdurup kullanıcıyı uyarıyoruz.
                 OzelUyariGoster("Konum Hatası", "Teslimat bölgemizde olduğunuzu doğrulamamız için tarayıcı ayarlarından konum izni vermeniz zorunludur.", "📍");
                 isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btn.innerHTML = `${sonOdenecekFiyat.toFixed(2)} TL Öde`;
                 return;
@@ -1941,8 +1933,15 @@
 
             if (aktifKullanilanCarkOdulu !== null) { SecureSil("bg_cark_data"); aktifKullanilanCarkOdulu = null; }
 
-            SecureKaydet("bg_active_order_id", benzersizSiparisID); SecureKaydet("last_ord_t", tZaman.toString()); SecureKaydet("bg_odeme_turu", odemeTuru);
-            SecureKaydet("bg_order_timestamp", zM); SecureKaydet("bg_saved_cart", JSON.stringify(temizSepet)); SecureKaydet("bg_saved_note", escapeHTML(document.getElementById("siparis-notu").value.trim())); SecureKaydet("bg_saved_coupon", aktifKuponKodu || ""); SecureKaydet("bg_saved_cark", aktifKullanilanCarkOdulu || "");
+            SecureKaydet("bg_active_order_id", benzersizSiparisID); 
+            SecureKaydet("last_ord_t", tZaman.toString()); 
+            SecureKaydet("last_ord_price", sonOdenecekFiyat.toString());
+            SecureKaydet("bg_odeme_turu", odemeTuru);
+            SecureKaydet("bg_order_timestamp", zM); 
+            SecureKaydet("bg_saved_cart", JSON.stringify(temizSepet)); 
+            SecureKaydet("bg_saved_note", escapeHTML(document.getElementById("siparis-notu").value.trim())); 
+            SecureKaydet("bg_saved_coupon", aktifKuponKodu || ""); 
+            SecureKaydet("bg_saved_cark", aktifKullanilanCarkOdulu || "");
 
             HapticTitresim(); CheckoutKapat(); BasariEkraniGoster();
 
@@ -2003,7 +2002,7 @@
         }
     }
 
-async function AdisyonEkraniGuncelle(bP, siparisId) {
+    async function AdisyonEkraniGuncelle(bP, siparisId) {
         try {
             let authUser = firebase.auth().currentUser; if(!authUser) return;
             let idToken = await authUser.getIdToken(true);
@@ -2013,18 +2012,15 @@ async function AdisyonEkraniGuncelle(bP, siparisId) {
             let rawOrderTs = SecureOku("bg_order_timestamp"); 
             let orderTs = rawOrderTs ? ZamanMuhruCoz(rawOrderTs, siparisId) : 0;
             
-            // Eğer Zaman damgası bozuksa yedek saati al
             let lastOrdT = parseInt(SecureOku("last_ord_t") || "0");
             if (orderTs === 0 && lastOrdT > 0) orderTs = lastOrdT;
 
-            // KURAL 1: KASADA (CANLI PAKETLERDE) YOKSA, TASLAKLARI KONTROL ET
             if (!bP || bP.error || !bP.durum) {
                 try {
                     let taslakRes = await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}.json?auth=${idToken}&t=${Date.now()}`); 
                     let taslakData = await taslakRes.json();
                     
                     if (taslakData && !taslakData.error && taslakData.durum) {
-                        // Taslaklarda bulundu, kasa onayı bekliyor ekranını çiz
                         if (orderTs === 0 && taslakData.timestamp) orderTs = taslakData.timestamp;
                         
                         let leftMs = 180000 - (Date.now() - orderTs); let timeStr = ""; let canEdit = false;
@@ -2052,9 +2048,7 @@ async function AdisyonEkraniGuncelle(bP, siparisId) {
                     }
                 } catch(e) {}
 
-                // İKİ TARAFTA DA YOK (Kasanın Siparişi Çektiği O Kritik Salise Boşluğu)
                 let gecenZaman = Date.now() - lastOrdT;
-                // Eğer sipariş vereli 2 dakikadan (120000ms) az olmuşsa SAKIN SİLME!
                 if (lastOrdT > 0 && gecenZaman < 120000) {
                     let hGecis = `<div class="receipt-card"><div style="text-align: center; margin-bottom: 15px;"><div class="spinner" style="border-top-color:var(--primary); width:35px; height:35px; border-width:4px;"></div><div style="font-weight: 900; font-size: 20px; color:#1c1c1e;">SİPARİŞ İŞLENİYOR</div><div style="font-size:12px; color:#a1a1aa; margin-top:8px;">Kasa siparişinizi aldı, fişiniz yazdırılıyor...</div></div></div>`;
                     if (window.sonRenderEdilenDurum !== "GECIS_BEKLEME") { 
@@ -2064,14 +2058,12 @@ async function AdisyonEkraniGuncelle(bP, siparisId) {
                     return;
                 }
 
-                // 2 DAKİKADAN FAZLA GEÇTİYSE VE YOKSA, GERÇEKTEN YOKTUR (SİL)
                 window.isOrderFinished = false; window.sonRenderEdilenDurum = "";
                 document.getElementById("history-content").innerHTML = `<div class="empty-state-box">${emptyHistorySVG}<p>Aktif bir siparişiniz bulunmuyor.</p></div>`; 
                 sonCekilenAdisyonHTML = ""; SecureSil("bg_active_order_id"); SecureSil("bg_last_status"); 
                 BuluttanAktifAdisyonuSil(); return;
             }
 
-            // KURAL 2: SİPARİŞ CANLI PAKETLERE DÜŞTÜYSE (KASA İŞLİYORSA)
             if (orderTs === 0 && bP.timestamp) {
                 orderTs = bP.timestamp.toString().length === 10 ? bP.timestamp * 1000 : bP.timestamp;
             }
