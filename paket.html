@@ -445,7 +445,7 @@
             </div>
         </div>
 
-        <!-- YENİ: MÜŞTERİ YÖNETİMİ SEKMESİ -->
+        <!-- 2. MÜŞTERİ YÖNETİMİ SEKMESİ -->
         <div id="admin-sec-musteri" class="admin-section">
             <div class="admin-card">
                 <h2>Müşteriler ve Yasaklar</h2>
@@ -457,7 +457,7 @@
             </div>
         </div>
 
-        <!-- 2. ÇARK YÖNETİMİ -->
+        <!-- 3. ÇARK YÖNETİMİ -->
         <div id="admin-sec-cark" class="admin-section">
             <div class="admin-card">
                 <h2>Çark İçeriklerini Düzenle</h2>
@@ -473,7 +473,7 @@
             </div>
         </div>
 
-        <!-- 3. PUSH BİLDİRİM -->
+        <!-- 4. PUSH BİLDİRİM -->
         <div id="admin-sec-bildirim" class="admin-section">
             <div class="admin-card">
                 <h2>Global Bildirim Gönder</h2>
@@ -486,7 +486,7 @@
             </div>
         </div>
 
-        <!-- 4. SİSTEM AYARLARI (KAPALI GÜNLER) -->
+        <!-- 5. SİSTEM AYARLARI (KAPALI GÜNLER) -->
         <div id="admin-sec-sistem" class="admin-section">
             <div class="admin-card">
                 <h2>Dükkan Durumu (Kill-Switch)</h2>
@@ -913,40 +913,85 @@
                 </button>
             </div>
         </div>
+    </div> <!-- main-user-ui BİTİŞİ BURASI -->
 
-        <!-- ALERTS VE BAŞARI EKRANLARI -->
-        <div id="email-wait-overlay" class="custom-alert-overlay" style="z-index: 999999;">
-            <div class="custom-alert-box" style="border-color: var(--primary);">
-                <div class="custom-alert-glow" style="background: var(--primary);"></div>
-                <div class="custom-alert-content">
-                    <div class="spinner"></div>
-                    <h3 style="margin: 0 0 14px 0; font-weight: 900; font-size: 20px; color: var(--text-main); letter-spacing:-0.5px;">E-Postanızı Kontrol Edin</h3>
-                    <p style="color: var(--text-muted); font-size: 13px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;">Girdiğiniz adrese bir doğrulama linki gönderdik. <br><br><span style="color:white; font-weight:800;">Lütfen mailinize gidip linke tıklayın.</span> Biz bu ekranda tıkladığınızı otomatik anlayacağız...</p>
-                    <button onclick="IptalEtEpostaBekleme(true)" class="alert-btn ripple-element" style="background: rgba(255,255,255,0.05); color:white; overflow:hidden;">Vazgeç</button>
-                </div>
+    <!-- ======================================================== -->
+    <!-- ALERTS VE BAŞARI EKRANLARI (ARTIK main-user-ui DIŞINDA)  -->
+    <!-- ======================================================== -->
+    <div id="email-wait-overlay" class="custom-alert-overlay" style="z-index: 999999;">
+        <div class="custom-alert-box" style="border-color: var(--primary);">
+            <div class="custom-alert-glow" style="background: var(--primary);"></div>
+            <div class="custom-alert-content">
+                <div class="spinner"></div>
+                <h3 style="margin: 0 0 14px 0; font-weight: 900; font-size: 20px; color: var(--text-main); letter-spacing:-0.5px;">E-Postanızı Kontrol Edin</h3>
+                <p style="color: var(--text-muted); font-size: 13px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;">Girdiğiniz adrese bir doğrulama linki gönderdik. <br><br><span style="color:white; font-weight:800;">Lütfen mailinize gidip linke tıklayın.</span> Biz bu ekranda tıkladığınızı otomatik anlayacağız...</p>
+                <button onclick="IptalEtEpostaBekleme(true)" class="alert-btn ripple-element" style="background: rgba(255,255,255,0.05); color:white; overflow:hidden;">Vazgeç</button>
             </div>
         </div>
-
-        <div id="confirm-overlay" class="custom-alert-overlay" onclick="KapatConfirmModal(event)"><div class="custom-alert-box" id="confirm-box" style="border-color: var(--danger);"><div class="custom-alert-glow" id="confirm-glow" style="background: var(--danger);"></div><div class="custom-alert-content"><div id="confirm-icon" style="font-size: 55px; margin-bottom: 20px;">❓</div><h3 id="confirm-title" style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Emin misiniz?</h3><p id="confirm-text" style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;"></p><div style="display:flex; gap:10px;"><button onclick="KapatConfirmModal(event, true)" class="alert-btn ripple-element" style="background: rgba(255,255,255,0.05); color:white; flex:1; overflow:hidden;">Vazgeç</button><button id="confirm-yes-btn" class="alert-btn ripple-element" style="background: var(--danger); border-color:transparent; color:white; flex:1; overflow:hidden;">Evet</button></div></div></div></div>
-        
-        <div id="legal-popup" class="popup-overlay" onclick="if(event.target === this) KapatSozlesme();">
-            <div class="popup-content" style="max-height: 85vh;">
-                <div class="popup-drag-handle"></div>
-                <div class="popup-header">
-                    <h3 id="legal-title" class="popup-title" style="font-size:18px;">Sözleşme</h3>
-                    <button class="ripple-element" onclick="KapatSozlesme()" style="background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); width: 36px; height: 36px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; z-index: 99; overflow:hidden;">&times;</button>
-                </div>
-                <div id="legal-body" style="color: #A1A1AA; font-size: 12px; line-height: 1.7; text-align: left; overflow-y: auto; max-height: 60vh; padding-right: 5px;"></div>
-            </div>
-        </div>
-        
-        <div id="custom-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)"><div class="custom-alert-box" id="custom-alert-box"><div class="custom-alert-glow" id="custom-alert-glow"></div><div class="custom-alert-content"><div id="custom-alert-icon" style="font-size: 55px; margin-bottom: 20px;">⚠️</div><h3 id="custom-alert-title" style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Uyarı</h3><p id="custom-alert-text" style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;"></p><button onclick="KapatUyariModal(event, true)" class="alert-btn ripple-element" style="overflow:hidden;">Tamam, Anladım</button></div></div></div>
-        
-        <div id="distance-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)"><div class="custom-alert-box"><div class="custom-alert-glow" style="background:var(--primary);"></div><div class="custom-alert-content"><div style="font-size: 55px; margin-bottom: 20px;">🛵</div><h3 style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Menzil Dışındasınız</h3><p style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;">Bekmez GO lezzetlerini size ulaştırabilmek için teslimat ağımızı <b>4 km</b> ile sınırlandırıyoruz.<br><br>Maalesef şu an sıcak teslimat bölgemizin dışındasınız.</p><button onclick="KapatUyariModal(event, true)" class="alert-btn ripple-element" style="background:var(--primary); border-color:transparent; color:white; overflow:hidden;">Anladım</button></div></div></div>
-        
-        <div id="success-overlay" class="success-overlay"><div class="success-icon-wrapper"><div class="success-ring"></div><div class="success-circle"><svg class="success-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div></div><div class="success-text">Sipariş İletildi</div><div class="success-subtext">Kasa onayı bekleniyor...</div></div>
     </div>
-    <script>
+
+    <div id="confirm-overlay" class="custom-alert-overlay" onclick="KapatConfirmModal(event)">
+        <div class="custom-alert-box" id="confirm-box" style="border-color: var(--danger);">
+            <div class="custom-alert-glow" id="confirm-glow" style="background: var(--danger);"></div>
+            <div class="custom-alert-content">
+                <div id="confirm-icon" style="font-size: 55px; margin-bottom: 20px;">❓</div>
+                <h3 id="confirm-title" style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Emin misiniz?</h3>
+                <p id="confirm-text" style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;"></p>
+                <div style="display:flex; gap:10px;">
+                    <button onclick="KapatConfirmModal(event, true)" class="alert-btn ripple-element" style="background: rgba(255,255,255,0.05); color:white; flex:1; overflow:hidden;">Vazgeç</button>
+                    <button id="confirm-yes-btn" class="alert-btn ripple-element" style="background: var(--danger); border-color:transparent; color:white; flex:1; overflow:hidden;">Evet</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="legal-popup" class="popup-overlay" onclick="if(event.target === this) KapatSozlesme();">
+        <div class="popup-content" style="max-height: 85vh;">
+            <div class="popup-drag-handle"></div>
+            <div class="popup-header">
+                <h3 id="legal-title" class="popup-title" style="font-size:18px;">Sözleşme</h3>
+                <button class="ripple-element" onclick="KapatSozlesme()" style="background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); width: 36px; height: 36px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; z-index: 99; overflow:hidden;">&times;</button>
+            </div>
+            <div id="legal-body" style="color: #A1A1AA; font-size: 12px; line-height: 1.7; text-align: left; overflow-y: auto; max-height: 60vh; padding-right: 5px;"></div>
+        </div>
+    </div>
+    
+    <div id="custom-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)">
+        <div class="custom-alert-box" id="custom-alert-box">
+            <div class="custom-alert-glow" id="custom-alert-glow"></div>
+            <div class="custom-alert-content">
+                <div id="custom-alert-icon" style="font-size: 55px; margin-bottom: 20px;">⚠️</div>
+                <h3 id="custom-alert-title" style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Uyarı</h3>
+                <p id="custom-alert-text" style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;"></p>
+                <button onclick="KapatUyariModal(event, true)" class="alert-btn ripple-element" style="overflow:hidden;">Tamam, Anladım</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="distance-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)">
+        <div class="custom-alert-box">
+            <div class="custom-alert-glow" style="background:var(--primary);"></div>
+            <div class="custom-alert-content">
+                <div style="font-size: 55px; margin-bottom: 20px;">🛵</div>
+                <h3 style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Menzil Dışındasınız</h3>
+                <p style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;">Bekmez GO lezzetlerini size ulaştırabilmek için teslimat ağımızı <b>4 km</b> ile sınırlandırıyoruz.<br><br>Maalesef şu an sıcak teslimat bölgemizin dışındasınız.</p>
+                <button onclick="KapatUyariModal(event, true)" class="alert-btn ripple-element" style="background:var(--primary); border-color:transparent; color:white; overflow:hidden;">Anladım</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="success-overlay" class="success-overlay">
+        <div class="success-icon-wrapper">
+            <div class="success-ring"></div>
+            <div class="success-circle">
+                <svg class="success-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+        </div>
+        <div class="success-text">Sipariş İletildi</div>
+        <div class="success-subtext">Kasa onayı bekleniyor...</div>
+    </div>
+
+     <script>
     // ==========================================
     // 0. CANLI HATA YAKALAYICI (TÜM ÇÖKMELERİ GÖSTERİR)
     // ==========================================
@@ -2230,5 +2275,4 @@
 
 </script>
 </body>
-</html>    
-</html>
+</html>  
