@@ -2457,4 +2457,67 @@
 
 </script>
 </body>
+    <script>
+(function() {
+    let loggerDiv = document.createElement("div");
+    loggerDiv.style.position = "fixed";
+    loggerDiv.style.bottom = "0";
+    loggerDiv.style.left = "0";
+    loggerDiv.style.width = "100vw";
+    loggerDiv.style.height = "35vh";
+    loggerDiv.style.background = "rgba(0,0,0,0.95)";
+    loggerDiv.style.color = "#0f0";
+    loggerDiv.style.zIndex = "9999999999";
+    loggerDiv.style.overflowY = "scroll";
+    loggerDiv.style.fontFamily = "monospace";
+    loggerDiv.style.fontSize = "12px";
+    loggerDiv.style.padding = "10px";
+    loggerDiv.style.borderTop = "3px solid #FF3B30";
+    
+    loggerDiv.innerHTML = `
+        <div style="display:flex; justify-content:space-between; border-bottom:1px solid #333; padding-bottom:8px; margin-bottom:8px;">
+            <b style="color:#FF3B30;">CANLI HATA KAYITLARI (LOG)</b>
+            <button onclick="this.parentElement.parentElement.style.display='none'" style="color:white; background:#FF3B30; border:none; border-radius:5px; padding:4px 8px; font-weight:bold;">Kapat</button>
+        </div>
+        <div id="debug-log-area"></div>
+    `;
+    
+    document.documentElement.appendChild(loggerDiv);
+
+    function formatObj(args) {
+        return args.map(a => typeof a === 'object' ? JSON.stringify(a) : a).join(" ");
+    }
+
+    function logToScreen(msg, color) {
+        let area = document.getElementById("debug-log-area");
+        if(!area) return;
+        let m = document.createElement("div");
+        m.style.color = color;
+        m.style.marginBottom = "6px";
+        m.style.borderBottom = "1px dashed #333";
+        m.style.paddingBottom = "4px";
+        m.style.wordBreak = "break-all";
+        m.innerText = new Date().toLocaleTimeString() + " - " + msg;
+        area.appendChild(m);
+        loggerDiv.scrollTop = loggerDiv.scrollHeight;
+    }
+
+    // Gerçek konsol fonksiyonlarını yedekle ve üzerine yaz
+    let oldLog = console.log; let oldWarn = console.warn; let oldError = console.error;
+    console.log = function(...args) { logToScreen(formatObj(args), "#fff"); oldLog.apply(console, args); };
+    console.warn = function(...args) { logToScreen(formatObj(args), "#FFCC00"); oldWarn.apply(console, args); };
+    console.error = function(...args) { logToScreen(formatObj(args), "#FF3B30"); oldError.apply(console, args); };
+
+    // Yazılım çökmelerini ve reddedilen ağ (fetch) isteklerini yakala
+    window.onerror = function(msg, source, line, col, error) {
+        logToScreen(`KRİTİK HATA: ${msg} (Satır: ${line})`, "#FF3B30");
+    };
+
+    window.addEventListener('unhandledrejection', function(event) {
+        logToScreen(`FIREBASE/FETCH HATASI: ${event.reason}`, "#FF3B30");
+    });
+    
+    console.log("Hata yakalayıcı aktif. Lütfen admin panelinde çalışmayan butonlara basın.");
+})();
+</script>
 </html>
