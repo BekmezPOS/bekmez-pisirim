@@ -1243,6 +1243,18 @@
         }
     }
 
+    // ŞİFRE GÖSTER / GİZLE FONKSİYONU
+    function SifreGosterGizle(inputId, iconSpan) {
+        let inp = document.getElementById(inputId);
+        if(inp.type === "password") {
+            inp.type = "text";
+            iconSpan.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><line x1="3" y1="3" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line></svg>`;
+        } else {
+            inp.type = "password";
+            iconSpan.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+        }
+    }
+
     function AdminKullaniciYasaklaModalAc(tel) {
         hedefYasaklanacakTel = tel;
         document.getElementById("admin-ban-reason").value = "";
@@ -1260,10 +1272,11 @@
         try {
             let user = firebase.auth().currentUser; if(!user) return; let idToken = await user.getIdToken(true);
             let payload = { sebep: sebep, ts: Date.now() };
-            await fetch(`${FIREBASE_URL}/YasakliHesaplar/${tel}.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(payload) });
+            let res = await fetch(`${FIREBASE_URL}/YasakliHesaplar/${tel}.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(payload) });
+            if(!res.ok) throw new Error("Veritabanı yazma izni reddedildi. (App Check hatası olabilir)");
             OzelUyariGoster("Yasaklandı", `${tel} numaralı müşteri kalıcı olarak engellendi.`, "🔨");
             AdminMusterileriListele(idToken); 
-        } catch(e) { OzelUyariGoster("Hata", "İşlem başarısız.", "❌"); }
+        } catch(e) { OzelUyariGoster("Hata", e.message, "❌"); }
     }
 
     async function AdminYasakKaldira(tel) {
@@ -1300,29 +1313,28 @@
     async function AdminBildirimGonder() {
         let t = document.getElementById("adm-notif-title").value.trim();
         let b = document.getElementById("adm-notif-body").value.trim();
-        
         if(!t || !b) { OzelUyariGoster("Hata", "Başlık ve mesaj boş olamaz.", "⚠"); return; }
         
         SoruSor("Dikkat", "Bu bildirim uygulamaya giren <b>TÜM MÜŞTERİLERİN</b> ekranında aniden belirecek. Göndermek istediğinize emin misiniz?", "📢", async () => {
             try {
-                let user = firebase.auth().currentUser; if(!user) return;
-                let idToken = await user.getIdToken(true);
+                let user = firebase.auth().currentUser; if(!user) return; let idToken = await user.getIdToken(true);
                 let payload = { baslik: t, mesaj: b, ts: Date.now() };
-                await fetch(`${FIREBASE_URL}/SistemBildirimleri/GenelBildirim.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(payload) });
+                let res = await fetch(`${FIREBASE_URL}/SistemBildirimleri/GenelBildirim.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(payload) });
+                if(!res.ok) throw new Error("İşlem reddedildi. Kuralları veya AppCheck'i kontrol edin.");
                 OzelUyariGoster("Başarılı", "Bildirim fırlatıldı!", "🚀");
                 document.getElementById("adm-notif-title").value = ""; document.getElementById("adm-notif-body").value = "";
-            } catch(e) { OzelUyariGoster("Hata", "İşlem yetkiniz yok.", "❌");}
+            } catch(e) { OzelUyariGoster("Hata", e.message, "❌");}
         }, true);
     }
 
     async function AdminKapanisGununuKaydet() {
         let secim = document.getElementById("adm-closed-day").value;
         try {
-            let user = firebase.auth().currentUser; if(!user) return;
-            let idToken = await user.getIdToken(true);
-            await fetch(`${FIREBASE_URL}/DukkanDurumu/kapaliGun.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(secim) });
+            let user = firebase.auth().currentUser; if(!user) return; let idToken = await user.getIdToken(true);
+            let res = await fetch(`${FIREBASE_URL}/DukkanDurumu/kapaliGun.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(secim) });
+            if(!res.ok) throw new Error("Erişim engellendi.");
             OzelUyariGoster("Başarılı", "Haftalık kapanış günü ayarlandı.", "✅");
-        } catch(e) { OzelUyariGoster("Hata", "Veritabanı erişim hatası.", "❌"); }
+        } catch(e) { OzelUyariGoster("Hata", e.message, "❌"); }
     }
 
     async function AdminAcilDurumKapat() {
@@ -1332,11 +1344,11 @@
         
         SoruSor("Sistem Kill-Switch", yeniDurum ? "Tüm sipariş akışı durdurulacak ve müşteriler ekrandan atılacak! Emin misiniz?" : "Dükkan tekrar aktif edilecek. Emin misiniz?", "⚠️", async () => {
             try {
-                let user = firebase.auth().currentUser; if(!user) return;
-                let idToken = await user.getIdToken(true);
-                await fetch(`${FIREBASE_URL}/DukkanDurumu/acilKapat.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(yeniDurum) });
+                let user = firebase.auth().currentUser; if(!user) return; let idToken = await user.getIdToken(true);
+                let res = await fetch(`${FIREBASE_URL}/DukkanDurumu/acilKapat.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(yeniDurum) });
+                if(!res.ok) throw new Error("Sistem reddetti. Token geçersiz.");
                 OzelUyariGoster("Başarılı", yeniDurum ? "SİSTEM KAPATILDI." : "SİSTEM AÇILDI.", "✅");
-            } catch(e) { OzelUyariGoster("Hata", "İşlem yetkiniz yok.", "❌"); }
+            } catch(e) { OzelUyariGoster("Hata", e.message, "❌"); }
         }, yeniDurum); 
     }
 
