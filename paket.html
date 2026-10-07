@@ -945,9 +945,11 @@
         <div id="distance-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)"><div class="custom-alert-box"><div class="custom-alert-glow" style="background:var(--primary);"></div><div class="custom-alert-content"><div style="font-size: 55px; margin-bottom: 20px;">🛵</div><h3 style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Menzil Dışındasınız</h3><p style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;">Bekmez GO lezzetlerini size ulaştırabilmek için teslimat ağımızı <b>4 km</b> ile sınırlandırıyoruz.<br><br>Maalesef şu an sıcak teslimat bölgemizin dışındasınız.</p><button onclick="KapatUyariModal(event, true)" class="alert-btn ripple-element" style="background:var(--primary); border-color:transparent; color:white; overflow:hidden;">Anladım</button></div></div></div>
         
         <div id="success-overlay" class="success-overlay"><div class="success-icon-wrapper"><div class="success-ring"></div><div class="success-circle"><svg class="success-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div></div><div class="success-text">Sipariş İletildi</div><div class="success-subtext">Kasa onayı bekleniyor...</div></div>
-    </div>
-    <script>
-    // EKSİK DEĞİŞKENLER VE SVG İKONLARI
+    </div> 
+<script>
+    // ==========================================
+    // 1. SİSTEM DEĞİŞKENLERİ VE SVG İKONLARI
+    // ==========================================
     const emptyHistorySVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>`;
     const emptyCartSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>`;
     const emptyCouponSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="8" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line></svg>`;
@@ -957,8 +959,31 @@
     const textTeslimat = "Teslimatlar ortalama 30-45 dakika içinde belirttiğiniz adrese yapılmaktadır.";
     const textIptal = "Siparişler restoran tarafından işleme alınmadan (ilk 3 dakika içinde) iptal edilebilir.";
 
+    const FIREBASE_URL = "https://bekmezpos-default-rtdb.firebaseio.com";
+    const DUKKAN_ENLEM = 36.206278; const DUKKAN_BOYLAM = 36.134472; const MAKS_MESAFE_KM = 4; const GHOST_TIMEOUT_MS = 8 * 60 * 60 * 1000; 
+    const CARK_SALT = "BEKMEZ_GO_SECURE_2026"; const TIME_SALT = "BKMZ_TIME_SEAL_X9";
+    const DUKKAN_WHATSAPP_NUMARASI = "905369517776"; 
+    
+    let CARK_ODULLERI = ["🍟 Ekstra Patates", "😔 Pas", "🥤 1 Lt İçecek", "😔 Pas", "🍰 Fırın Sütlaç"];
+    let ekmekUrunAdi = "Ekmek"; let ekmekBirimFiyati = 0; let sepet = []; let hamToplamFiyat = 0; let sonOdenecekFiyat = 0;
+    let aktifKuponKodu = ""; let aktifKuponIndirimTutari = 0; let aktifKuponAltLimit = 0; let aktifKuponHedefUrun = "Herşey"; 
+    let tumUrunler = []; let aktifKategori = 'Ana Yemek'; let sonMenuVerisi = ""; let sonMenuVersiyonu = "";
+    let seciliUrun = null; let seciliMiktar = 0; let seciliFiyat = 0; let seciliEkstraIstekler = []; let seciliOzelEkmekTip = "Normal"; 
+    let baseKgBread = 0; let ekstraEkmekKg = 0; let seciliUrunStok = 999; let oncekiToplamFiyat = 0; let oncekiPopupFiyat = 0; let oncekiPopupMiktar = 0;
+    let populerUrunlerListesi = []; let aktifAdisyonDinleyiciRef = null; let menuDinleyiciRef = null; let sonCekilenAdisyonHTML = ""; let sonKuponVerisi = ""; let isProcessingOrder = false;
+    let emailInterval = null; let whatsappInterval = null; let aktifWhatsappKodu = ""; let aktifWhatsappNumarasi = "";
+    let sepetHatirlaticiTimer = null; let serverTimeOffset = 0; let spamTimerInterval = null; let adisyonSayacInterval = null;
+    let sistemAyarlariDinleyiciRef = null; let hedefYasaklanacakTel = "";
+    
+    window.isAddingToCart = false; let deferredPrompt; window.isOrderFinished = false; let aktifKullanilanCarkOdulu = null; 
+    
+    // GÜVENLİK VE ROL DURUMLARI (Buradaki çakışma çözüldü)
+    let isStoreClosed = false; 
+    let isAdmin = false; 
+    let isBannedUser = false;
+
     // ==========================================
-    // 1. SİBER GÜVENLİK VE AES-GCM 256 ŞİFRELEME
+    // 2. SİBER GÜVENLİK, FINGERPRINT VE CRYPTO
     // ==========================================
     console.log("%c DİKKAT!", "color: #FF3B30; font-size: 50px; font-weight: 900; text-shadow: 2px 2px 0 #000;");
     console.log("%c Bu alan geliştiriciler içindir. Bekmez Pişirim Güvenlik Kalkanı devrede.", "font-size: 14px; font-weight: bold; color: #fff; background: #1a1a24; padding: 15px; border-radius: 8px; border: 1px solid #FF3B30;");
@@ -1020,34 +1045,29 @@
     }
     async function SecureSil(anahtar) { localStorage.removeItem(anahtar); }
 
+    // ==========================================
+    // 3. YARDIMCI ARAÇLAR VE FIREBASE BAŞLATMA
+    // ==========================================
     function ZararliKarakterTemizle(el) { el.value = el.value.replace(/[<>\\/{}\[\]]/g, ''); }
     function escapeHTML(str) { return str ? str.toString().replace(/[&<>'"]/g, function(tag){ return {'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[tag]; }) : ""; }
 
     const eyeClosedSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`;
     const eyeOpenSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+    
     document.addEventListener("DOMContentLoaded", () => { document.querySelectorAll('.password-toggle').forEach(el => { el.innerHTML = eyeClosedSVG; }); });
     function SifreGosterGizle(id, iconEl) { let el = document.getElementById(id); if(el.type === "password") { el.type = "text"; iconEl.innerHTML = eyeOpenSVG; } else { el.type = "password"; iconEl.innerHTML = eyeClosedSVG; } }
 
-    document.addEventListener('click', function(e) {
-        let target = e.target.closest('.ripple-element'); if (!target) return;
-        let rect = target.getBoundingClientRect(); let x = e.clientX - rect.left; let y = e.clientY - rect.top;
-        let ripple = document.createElement('span'); ripple.className = 'ripple-span';
-        ripple.style.left = x + 'px'; ripple.style.top = y + 'px';
-        let size = Math.max(rect.width, rect.height); ripple.style.width = ripple.style.height = size + 'px';
-        ripple.style.marginLeft = ripple.style.marginTop = -(size / 2) + 'px';
-        target.appendChild(ripple); setTimeout(() => { ripple.remove(); }, 600);
-    });
+    function HapticTitresim() { if(navigator.vibrate) navigator.vibrate(15); }
+    function generateUUID() { if (crypto && crypto.randomUUID) return crypto.randomUUID(); return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) { var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8); return v.toString(16); }); }
+    function ZamanMuhruSifrele(ts, id) { return btoa(encodeURIComponent(`${ts}|||${id}|||${TIME_SALT}`)); }
+    function ZamanMuhruCoz(hash, id) { if(!hash) return 0; try { let dec = decodeURIComponent(atob(hash)); let parts = dec.split("|||"); if(parts.length === 3 && parts[1] === id && parts[2] === TIME_SALT) return parseInt(parts[0]); } catch(e) {} return 0; }
 
-    // ==========================================
-    // 2. FIREBASE & DEĞİŞKENLER
-    // ==========================================
-    const DUKKAN_WHATSAPP_NUMARASI = "905369517776"; 
-    let sepetHatirlaticiTimer = null; let serverTimeOffset = 0; 
-    let spamTimerInterval = null; let adisyonSayacInterval = null;
-    let sistemAyarlariDinleyiciRef = null; let adminSonBildirimId = null;
-    let isStoreClosed = false; let isAdmin = false; let isBannedUser = false;
-    let hedefYasaklanacakTel = "";
-    
+    function OzelUyariGoster(baslik, metin, ikon) { document.getElementById("custom-alert-title").innerText = baslik; document.getElementById("custom-alert-text").innerHTML = metin; document.getElementById("custom-alert-icon").innerText = ikon; let p = document.getElementById("custom-alert-overlay"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10); }
+    function KapatUyariModal(e, force=false) { if(force || e.target === document.getElementById("custom-alert-overlay") || e.target === document.getElementById("distance-alert-overlay") || e.target === document.getElementById("whatsapp-wait-overlay")) { let p = document.getElementById("custom-alert-overlay"); let d = document.getElementById("distance-alert-overlay"); p.classList.remove("active"); d.classList.remove("active"); setTimeout(() => { p.style.display = "none"; d.style.display = "none"; }, 400); } }
+    function SoruSor(baslik, metin, ikon, evetCallback, isDanger=false) { document.getElementById("confirm-title").innerText = baslik; document.getElementById("confirm-text").innerHTML = metin; document.getElementById("confirm-icon").innerText = ikon; let btn = document.getElementById("confirm-yes-btn"); let box = document.getElementById("confirm-box"); let glow = document.getElementById("confirm-glow"); if(isDanger) { btn.style.background = "var(--danger)"; btn.innerText = "İptal Et"; box.style.borderColor = "var(--danger)"; glow.style.background = "var(--danger)"; } else { btn.style.background = "var(--primary)"; btn.innerText = "Onayla"; box.style.borderColor = "var(--primary)"; glow.style.background = "var(--primary)"; } document.getElementById("confirm-yes-btn").onclick = () => { KapatConfirmModal(null, true); if(evetCallback) evetCallback(); }; let p = document.getElementById("confirm-overlay"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10); }
+    function KapatConfirmModal(e, force=false) { if(force || e.target === document.getElementById("confirm-overlay")) { let p = document.getElementById("confirm-overlay"); p.classList.remove("active"); setTimeout(() => p.style.display = "none", 400); } }
+    function KapatAdminPrompt(e, force=false) { if(force || e.target === document.getElementById("admin-prompt-overlay")) { let p = document.getElementById("admin-prompt-overlay"); p.classList.remove("active"); setTimeout(() => p.style.display = "none", 400); } }
+
     async function SyncServerTime() { try { let st = Date.now(); let res = await fetch(window.location.href, { method: "HEAD", cache: "no-cache" }); let sDate = res.headers.get("Date"); if(sDate) { let serverDate = new Date(sDate).getTime(); let latency = (Date.now() - st) / 2; serverTimeOffset = (serverDate + latency) - Date.now(); } } catch(e) { serverTimeOffset = 0; } }
     function GetServerTimeFast() { return Date.now() + serverTimeOffset; }
 
@@ -1075,38 +1095,11 @@
         } return orjinalFetch.apply(this, args);
     };
 
-    const FIREBASE_URL = "https://bekmezpos-default-rtdb.firebaseio.com";
-    const DUKKAN_ENLEM = 36.206278; const DUKKAN_BOYLAM = 36.134472; const MAKS_MESAFE_KM = 4; const GHOST_TIMEOUT_MS = 8 * 60 * 60 * 1000; 
-    const CARK_SALT = "BEKMEZ_GO_SECURE_2026"; const TIME_SALT = "BKMZ_TIME_SEAL_X9";
-    
-    // Admin Paneli İçin Dinamik Çark Ödülleri
-    let CARK_ODULLERI = ["🍟 Ekstra Patates", "😔 Pas", "🥤 1 Lt İçecek", "😔 Pas", "🍰 Fırın Sütlaç"];
-
-    let ekmekUrunAdi = "Ekmek"; let ekmekBirimFiyati = 0; let sepet = []; let hamToplamFiyat = 0; let sonOdenecekFiyat = 0;
-    let aktifKuponKodu = ""; let aktifKuponIndirimTutari = 0; let aktifKuponAltLimit = 0; let aktifKuponHedefUrun = "Herşey"; 
-    let tumUrunler = []; let aktifKategori = 'Ana Yemek'; let sonMenuVerisi = ""; let sonMenuVersiyonu = "";
-    let seciliUrun = null; let seciliMiktar = 0; let seciliFiyat = 0; let seciliEkstraIstekler = []; let seciliOzelEkmekTip = "Normal"; 
-    let baseKgBread = 0; let ekstraEkmekKg = 0; let seciliUrunStok = 999; let oncekiToplamFiyat = 0; let oncekiPopupFiyat = 0; let oncekiPopupMiktar = 0;
-    let populerUrunlerListesi = []; let aktifAdisyonDinleyiciRef = null; let menuDinleyiciRef = null; let sonCekilenAdisyonHTML = ""; let sonKuponVerisi = ""; let isProcessingOrder = false;
-    let emailInterval = null; let whatsappInterval = null; let aktifWhatsappKodu = ""; let aktifWhatsappNumarasi = "";
-    window.isAddingToCart = false; let deferredPrompt; window.isOrderFinished = false; let aktifKullanilanCarkOdulu = null; 
-
-    function HapticTitresim() { if(navigator.vibrate) navigator.vibrate(15); }
-    function generateUUID() { if (crypto && crypto.randomUUID) return crypto.randomUUID(); return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) { var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8); return v.toString(16); }); }
-    function ZamanMuhruSifrele(ts, id) { return btoa(encodeURIComponent(`${ts}|||${id}|||${TIME_SALT}`)); }
-    function ZamanMuhruCoz(hash, id) { if(!hash) return 0; try { let dec = decodeURIComponent(atob(hash)); let parts = dec.split("|||"); if(parts.length === 3 && parts[1] === id && parts[2] === TIME_SALT) return parseInt(parts[0]); } catch(e) {} return 0; }
-
-    function OzelUyariGoster(baslik, metin, ikon) { document.getElementById("custom-alert-title").innerText = baslik; document.getElementById("custom-alert-text").innerHTML = metin; document.getElementById("custom-alert-icon").innerText = ikon; let p = document.getElementById("custom-alert-overlay"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10); }
-    function KapatUyariModal(e, force=false) { if(force || e.target === document.getElementById("custom-alert-overlay") || e.target === document.getElementById("distance-alert-overlay") || e.target === document.getElementById("whatsapp-wait-overlay")) { let p = document.getElementById("custom-alert-overlay"); let d = document.getElementById("distance-alert-overlay"); p.classList.remove("active"); d.classList.remove("active"); setTimeout(() => { p.style.display = "none"; d.style.display = "none"; }, 400); } }
-    function SoruSor(baslik, metin, ikon, evetCallback, isDanger=false) { document.getElementById("confirm-title").innerText = baslik; document.getElementById("confirm-text").innerHTML = metin; document.getElementById("confirm-icon").innerText = ikon; let btn = document.getElementById("confirm-yes-btn"); let box = document.getElementById("confirm-box"); let glow = document.getElementById("confirm-glow"); if(isDanger) { btn.style.background = "var(--danger)"; btn.innerText = "İptal Et"; box.style.borderColor = "var(--danger)"; glow.style.background = "var(--danger)"; } else { btn.style.background = "var(--primary)"; btn.innerText = "Onayla"; box.style.borderColor = "var(--primary)"; glow.style.background = "var(--primary)"; } document.getElementById("confirm-yes-btn").onclick = () => { KapatConfirmModal(null, true); if(evetCallback) evetCallback(); }; let p = document.getElementById("confirm-overlay"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10); }
-    function KapatConfirmModal(e, force=false) { if(force || e.target === document.getElementById("confirm-overlay")) { let p = document.getElementById("confirm-overlay"); p.classList.remove("active"); setTimeout(() => p.style.display = "none", 400); } }
-    function KapatAdminPrompt(e, force=false) { if(force || e.target === document.getElementById("admin-prompt-overlay")) { let p = document.getElementById("admin-prompt-overlay"); p.classList.remove("active"); setTimeout(() => p.style.display = "none", 400); } }
-
     firebase.auth().languageCode = 'tr';
     function EpostaMaskele(email) { let parts = email.split("@"); if(parts.length !== 2) return email; let name = parts[0]; return (name.length > 3 ? name.substring(0,2) + "***" + name.substring(name.length-1) : name + "***") + "@" + parts[1]; }
 
     // ==========================================
-    // 3. ADMİN PANELİ, BAN SİSTEMİ VE KILL-SWITCH
+    // 4. ADMİN PANELİ VE MÜŞTERİ YÖNETİMİ
     // ==========================================
     async function BanKontrolu(tel) {
         if(!tel || isAdmin) return false;
@@ -1133,6 +1126,7 @@
             let data = snapshot.val();
             if(!data) return;
 
+            // Çark
             if (data.CarkIcerigi && Array.isArray(data.CarkIcerigi) && data.CarkIcerigi.length === 5) {
                 CARK_ODULLERI = data.CarkIcerigi;
                 for(let i=1; i<=5; i++) {
@@ -1141,6 +1135,7 @@
                 }
             }
 
+            // Dükkan Durumu (Kill-Switch)
             if (data.DukkanDurumu) {
                 let kapaliGun = data.DukkanDurumu.kapaliGun || "Yok"; let acilKapat = data.DukkanDurumu.acilKapat || false;
                 let selectEl = document.getElementById("adm-closed-day"); if(selectEl) selectEl.value = kapaliGun;
@@ -1171,6 +1166,7 @@
                 }
             }
 
+            // Global Bildirim
             if (data.GenelBildirim && data.GenelBildirim.ts) {
                 let sonGosterilen = await SecureOku("bg_last_notif_ts");
                 if (!sonGosterilen || parseInt(sonGosterilen) < data.GenelBildirim.ts) {
@@ -1184,9 +1180,101 @@
         });
     }
 
+    async function AdminMusterileriListele(idToken) {
+        try {
+            let activeRes = await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar.json?auth=${idToken}`); 
+            let activeData = await activeRes.json();
+            
+            let delRes = await fetch(`${FIREBASE_URL}/SilinmisHesaplar.json?auth=${idToken}`); 
+            let delData = await delRes.json();
+            
+            let banRes = await fetch(`${FIREBASE_URL}/YasakliHesaplar.json?auth=${idToken}`); 
+            let banData = await banRes.json();
+            
+            let activeCount = 0; let usersArray = [];
+            if(activeData && typeof activeData === 'object' && !activeData.error) {
+                for(let tel in activeData) { 
+                    activeCount++; 
+                    let ad = activeData[tel].isim || "İsimsiz Müşteri";
+                    let tarih = activeData[tel].sonGiris || activeData[tel].kayitZamani || activeData[tel].tarih || new Date().toISOString();
+                    usersArray.push({ ad: ad, tel: tel, tarih: tarih });
+                }
+            }
+            
+            let delCount = 0; 
+            if(delData && typeof delData === 'object' && !delData.error) { 
+                for(let k in delData) delCount++; 
+            }
+            
+            document.getElementById("adm-total-user").innerText = activeCount;
+            document.getElementById("adm-deleted-user").innerText = delCount;
+            
+            usersArray.sort((a,b) => { return new Date(b.tarih).getTime() - new Date(a.tarih).getTime(); });
+            
+            let recentList = document.getElementById("adm-recent-users");
+            let fullList = document.getElementById("adm-full-user-list");
+
+            if(usersArray.length === 0) { 
+                recentList.innerHTML = `<div style="color: #a1a1aa; font-size: 12px; text-align: center;">Henüz müşteri yok.</div>`; 
+                fullList.innerHTML = `<div style="color: #a1a1aa; font-size: 12px; text-align: center;">Henüz müşteri yok.</div>`;
+            } else {
+                let h = ""; let max = Math.min(usersArray.length, 10);
+                for(let i=0; i<max; i++) { 
+                    h += `<div class="user-list-item"><span style="color:white; font-weight:800;">${escapeHTML(usersArray[i].ad)}</span><span style="color:var(--text-muted); font-size:10px;">${usersArray[i].tel}</span></div>`; 
+                }
+                recentList.innerHTML = h;
+
+                let fh = "";
+                for(let i=0; i<usersArray.length; i++) {
+                    let uTel = usersArray[i].tel;
+                    let isBan = (banData && typeof banData === 'object' && !banData.error && banData[uTel]);
+                    
+                    let actionHtml = "";
+                    if(isBan) {
+                        actionHtml = `<button class="btn-unban ripple-element" onclick="AdminYasakKaldira('${uTel}')">Ban Kaldır</button>`;
+                    } else {
+                        actionHtml = `<button class="btn-ban ripple-element" onclick="AdminKullaniciYasaklaModalAc('${uTel}')">Yasakla</button>`;
+                    }
+                    
+                    let sebepHtml = isBan ? `<span style="color:var(--danger); font-size:10px;">Sebep: ${escapeHTML(banData[uTel].sebep)}</span>` : "";
+
+                    fh += `<div class="user-mng-card">
+                            <div class="user-mng-info">
+                                <span style="color:white; font-weight:800; font-size:14px;">${escapeHTML(usersArray[i].ad)}</span>
+                                <span style="color:var(--primary); font-size:11px; font-weight:600;">${uTel}</span>
+                                ${sebepHtml}
+                            </div>
+                            <div class="user-mng-actions">
+                                ${actionHtml}
+                                <button class="btn-del ripple-element" onclick="AdminKullaniciSil('${uTel}')">Hesabı Sil</button>
+                            </div>
+                          </div>`;
+                }
+                fullList.innerHTML = fh;
+            }
+        } catch(e) { console.error("Admin stats error", e); }
+    }
+
+    async function AdminPaneleGec() {
+        isAdmin = true;
+        let splash = document.getElementById('splash-screen'); if (splash) { splash.style.display = 'none'; splash.style.opacity = '0'; }
+        document.getElementById("main-user-ui").style.display = "none";
+        document.getElementById("store-closed-overlay").style.display = "none";
+        document.getElementById("banned-user-overlay").style.display = "none";
+        
+        document.getElementById("admin-panel-container").style.display = "block";
+        
+        let user = firebase.auth().currentUser;
+        if(user) {
+            let idToken = await user.getIdToken(true);
+            AdminMusterileriListele(idToken);
+        }
+    }
+
     function AdminSekmeGoster(sekmeId, btn) {
         document.querySelectorAll(".admin-tab").forEach(b => b.classList.remove("active"));
         if(btn) btn.classList.add("active");
+        
         document.querySelectorAll(".admin-section").forEach(s => { s.classList.remove("active"); });
         let target = document.getElementById("admin-sec-" + sekmeId);
         if(target) target.classList.add("active");
@@ -1197,83 +1285,10 @@
         }
     }
 
-    async function AdminMusterileriListele(idToken) {
-        try {
-            let activeRes = await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar.json?auth=${idToken}`); let activeData = await activeRes.json();
-            let delRes = await fetch(`${FIREBASE_URL}/SilinmisHesaplar.json?auth=${idToken}`); let delData = await delRes.json();
-            let banRes = await fetch(`${FIREBASE_URL}/YasakliHesaplar.json?auth=${idToken}`); let banData = await banRes.json();
-            
-            let activeCount = 0; let usersArray = [];
-            if(activeData && !activeData.error) {
-                for(let tel in activeData) { 
-                    activeCount++; 
-                    if(activeData[tel].isim) { usersArray.push({ ad: activeData[tel].isim, tel: tel, tarih: activeData[tel].sonGiris || activeData[tel].tarih }); }
-                }
-            }
-            let delCount = 0; if(delData && !delData.error) { for(let k in delData) delCount++; }
-            
-            document.getElementById("adm-total-user").innerText = activeCount;
-            document.getElementById("adm-deleted-user").innerText = delCount;
-            
-            usersArray.sort((a,b) => { return new Date(b.tarih).getTime() - new Date(a.tarih).getTime(); });
-            
-            // Son Kayıt Olanlar Listesi (İstatistik Sekmesi)
-            let recentList = document.getElementById("adm-recent-users");
-            if(usersArray.length === 0) { recentList.innerHTML = `<div style="color: #a1a1aa; font-size: 12px; text-align: center;">Henüz müşteri yok.</div>`; }
-            else {
-                let h = ""; let max = Math.min(usersArray.length, 10);
-                for(let i=0; i<max; i++) { h += `<div class="user-list-item"><span style="color:white; font-weight:800;">${escapeHTML(usersArray[i].ad)}</span><span style="color:var(--text-muted); font-size:10px;">${usersArray[i].tel}</span></div>`; }
-                recentList.innerHTML = h;
-            }
-
-            // Müşteri Yönetimi Listesi (Ban / Delete)
-            let fullList = document.getElementById("adm-full-user-list");
-            if(usersArray.length === 0) { fullList.innerHTML = `<div style="color: #a1a1aa; font-size: 12px; text-align: center;">Henüz müşteri yok.</div>`; }
-            else {
-                let fh = "";
-                for(let i=0; i<usersArray.length; i++) {
-                    let uTel = usersArray[i].tel;
-                    let isBan = (banData && !banData.error && banData[uTel]);
-                    
-                    let actionHtml = "";
-                    if(isBan) {
-                        actionHtml = `<button class="btn-unban ripple-element" onclick="AdminYasakKaldira('${uTel}')">Ban Kaldır</button>`;
-                    } else {
-                        actionHtml = `<button class="btn-ban ripple-element" onclick="AdminKullaniciYasaklaModalAc('${uTel}')">Yasakla</button>`;
-                    }
-                    
-                    fh += `<div class="user-mng-card">
-                            <div class="user-mng-info">
-                                <span style="color:white; font-weight:800; font-size:14px;">${escapeHTML(usersArray[i].ad)}</span>
-                                <span style="color:var(--primary); font-size:11px; font-weight:600;">${uTel}</span>
-                                ${isBan ? `<span style="color:var(--danger); font-size:10px;">Sebep: ${escapeHTML(banData[uTel].sebep)}</span>` : ""}
-                            </div>
-                            <div class="user-mng-actions">
-                                ${actionHtml}
-                                <button class="btn-del ripple-element" onclick="AdminKullaniciSil('${uTel}')">Hesabı Sil</button>
-                            </div>
-                          </div>`;
-                }
-                fullList.innerHTML = fh;
-            }
-        } catch(e) {}
-    }
-
-    async function AdminPaneleGec() {
-        isAdmin = true;
-        let splash = document.getElementById('splash-screen'); if (splash) { splash.style.display = 'none'; splash.style.opacity = '0'; }
-        document.getElementById("main-user-ui").style.display = "none";
-        document.getElementById("store-closed-overlay").style.display = "none";
-        document.getElementById("admin-panel-container").style.display = "block";
-        let user = firebase.auth().currentUser;
-        if(user) { let idToken = await user.getIdToken(true); AdminMusterileriListele(idToken); }
-    }
-
     function AdminKullaniciYasaklaModalAc(tel) {
         hedefYasaklanacakTel = tel;
         document.getElementById("admin-ban-reason").value = "";
         
-        // Setup the specific Ban Action
         document.getElementById("admin-prompt-yes-btn").onclick = () => {
             let reason = document.getElementById("admin-ban-reason").value.trim() || "Kural İhlali";
             AdminGercektenYasakla(hedefYasaklanacakTel, reason);
@@ -1289,7 +1304,7 @@
             let payload = { sebep: sebep, ts: Date.now() };
             await fetch(`${FIREBASE_URL}/YasakliHesaplar/${tel}.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(payload) });
             OzelUyariGoster("Yasaklandı", `${tel} numaralı müşteri kalıcı olarak engellendi.`, "🔨");
-            AdminMusterileriListele(idToken); // Refresh list
+            AdminMusterileriListele(idToken); 
         } catch(e) { OzelUyariGoster("Hata", "İşlem başarısız.", "❌"); }
     }
 
@@ -1299,59 +1314,95 @@
                 let user = firebase.auth().currentUser; if(!user) return; let idToken = await user.getIdToken(true);
                 await fetch(`${FIREBASE_URL}/YasakliHesaplar/${tel}.json?auth=${idToken}`, { method: "DELETE" });
                 OzelUyariGoster("Kaldırıldı", `${tel} numaralı müşterinin engeli açıldı.`, "✅");
-                AdminMusterileriListele(idToken); // Refresh list
+                AdminMusterileriListele(idToken);
             } catch(e) {}
         });
     }
 
     async function AdminKullaniciSil(tel) {
-        SoruSor("Hesabı Sil (Ghost Fix)", "Bu müşterinin veritabanındaki kaydı <b>kalıcı olarak silinecek</b>. (Bu işlem Auth sekmesindeki hayalet hesap bug'ını düzeltmek veya müşteriyi tamamen unutmak içindir.)<br><br>Emin misiniz?", "🗑", async () => {
+        SoruSor("Hesabı Sil (Ghost Fix)", "Bu müşterinin veritabanındaki kaydı <b>kalıcı olarak silinecek</b>.<br><br>Emin misiniz?", "🗑", async () => {
             try {
                 let user = firebase.auth().currentUser; if(!user) return; let idToken = await user.getIdToken(true);
-                // Müşterinin tekrar aynı no ile 7 gün girememesi için silinmişlere ekle
                 await fetch(`${FIREBASE_URL}/SilinmisHesaplar/${tel}.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify({ silinmeZamani: Date.now(), byAdmin: true }) });
-                // Kökten temizle
                 await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${tel}.json?auth=${idToken}`, { method: "DELETE" });
                 await fetch(`${FIREBASE_URL}/CarkKullanimlari/${tel}.json?auth=${idToken}`, { method: "DELETE" });
+                await fetch(`${FIREBASE_URL}/YasakliHesaplar/${tel}.json?auth=${idToken}`, { method: "DELETE" });
                 
                 OzelUyariGoster("Silindi", `${tel} numaralı hesap veritabanından imha edildi.`, "✅");
-                AdminMusterileriListele(idToken); // Refresh list
+                AdminMusterileriListele(idToken); 
             } catch(e) {}
-        }, true); // Danger red button
+        }, true); 
     }
 
     async function AdminCarkKaydet() {
         let yeniCark = [];
-        for(let i=1; i<=5; i++) { let val = document.getElementById(`adm-cark-${i}`).value.trim(); if(!val) { OzelUyariGoster("Hata", "Tüm çark dilimlerini doldurun.", "⚠"); return; } yeniCark.push(val); }
+        for(let i=1; i<=5; i++) {
+            let val = document.getElementById(`adm-cark-${i}`).value.trim();
+            if(!val) { OzelUyariGoster("Hata", "Lütfen tüm çark dilimlerini doldurun.", "⚠"); return; }
+            yeniCark.push(val);
+        }
+        
         SoruSor("Onay", "Çark içerikleri değiştirilecek. Emin misiniz?", "🎰", async () => {
-            try { let user = firebase.auth().currentUser; if(!user) return; let idToken = await user.getIdToken(true); await fetch(`${FIREBASE_URL}/SistemAyarlari/CarkIcerigi.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(yeniCark) }); OzelUyariGoster("Başarılı", "Çark ödülleri tüm müşteriler için güncellendi.", "✅"); } catch(e) {}
-        });
+            try {
+                let user = firebase.auth().currentUser; if(!user) return;
+                let idToken = await user.getIdToken(true);
+                await fetch(`${FIREBASE_URL}/SistemAyarlari/CarkIcerigi.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(yeniCark) });
+                OzelUyariGoster("Başarılı", "Çark ödülleri tüm müşteriler için güncellendi.", "✅");
+            } catch(e) {}
+        }, false);
     }
 
     async function AdminBildirimGonder() {
-        let t = document.getElementById("adm-notif-title").value.trim(); let b = document.getElementById("adm-notif-body").value.trim();
+        let t = document.getElementById("adm-notif-title").value.trim();
+        let b = document.getElementById("adm-notif-body").value.trim();
+        
         if(!t || !b) { OzelUyariGoster("Hata", "Başlık ve mesaj boş olamaz.", "⚠"); return; }
-        SoruSor("Dikkat", "Bu bildirim uygulamaya giren <b>TÜM MÜŞTERİLERİN</b> ekranında aniden belirecek. Emin misiniz?", "📢", async () => {
-            try { let user = firebase.auth().currentUser; if(!user) return; let idToken = await user.getIdToken(true); let payload = { baslik: t, mesaj: b, ts: Date.now() }; await fetch(`${FIREBASE_URL}/SistemAyarlari/GenelBildirim.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(payload) }); OzelUyariGoster("Başarılı", "Bildirim fırlatıldı!", "🚀"); document.getElementById("adm-notif-title").value = ""; document.getElementById("adm-notif-body").value = ""; } catch(e) {}
-        });
+        
+        SoruSor("Dikkat", "Bu bildirim uygulamaya giren <b>TÜM MÜŞTERİLERİN</b> ekranında aniden belirecek. Göndermek istediğinize emin misiniz?", "📢", async () => {
+            try {
+                let user = firebase.auth().currentUser; if(!user) return;
+                let idToken = await user.getIdToken(true);
+                let payload = { baslik: t, mesaj: b, ts: Date.now() };
+                await fetch(`${FIREBASE_URL}/SistemAyarlari/GenelBildirim.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(payload) });
+                OzelUyariGoster("Başarılı", "Bildirim fırlatıldı!", "🚀");
+                document.getElementById("adm-notif-title").value = ""; document.getElementById("adm-notif-body").value = "";
+            } catch(e) {}
+        }, true);
     }
 
     async function AdminKapanisGununuKaydet() {
         let secim = document.getElementById("adm-closed-day").value;
-        try { let user = firebase.auth().currentUser; if(!user) return; let idToken = await user.getIdToken(true); await fetch(`${FIREBASE_URL}/SistemAyarlari/DukkanDurumu/kapaliGun.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(secim) }); OzelUyariGoster("Başarılı", "Haftalık kapanış günü ayarlandı.", "✅"); } catch(e) {}
+        try {
+            let user = firebase.auth().currentUser; if(!user) return;
+            let idToken = await user.getIdToken(true);
+            await fetch(`${FIREBASE_URL}/SistemAyarlari/DukkanDurumu/kapaliGun.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(secim) });
+            OzelUyariGoster("Başarılı", "Haftalık kapanış günü ayarlandı.", "✅");
+        } catch(e) {}
     }
 
     async function AdminAcilDurumKapat() {
-        let acilBtn = document.getElementById("adm-emergency-btn"); let suanKapalimi = acilBtn.innerText.includes("AÇ"); let yeniDurum = !suanKapalimi;
+        let acilBtn = document.getElementById("adm-emergency-btn");
+        let suanKapalimi = acilBtn.innerText.includes("AÇ");
+        let yeniDurum = !suanKapalimi;
+        
         SoruSor("Sistem Kill-Switch", yeniDurum ? "Tüm sipariş akışı durdurulacak ve müşteriler ekrandan atılacak! Emin misiniz?" : "Dükkan tekrar aktif edilecek. Emin misiniz?", "⚠️", async () => {
-            try { let user = firebase.auth().currentUser; if(!user) return; let idToken = await user.getIdToken(true); await fetch(`${FIREBASE_URL}/SistemAyarlari/DukkanDurumu/acilKapat.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(yeniDurum) }); OzelUyariGoster("Başarılı", yeniDurum ? "SİSTEM KAPATILDI." : "SİSTEM AÇILDI.", "✅"); } catch(e) {}
-        }, yeniDurum);
+            try {
+                let user = firebase.auth().currentUser; if(!user) return;
+                let idToken = await user.getIdToken(true);
+                await fetch(`${FIREBASE_URL}/SistemAyarlari/DukkanDurumu/acilKapat.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(yeniDurum) });
+                OzelUyariGoster("Başarılı", yeniDurum ? "SİSTEM KAPATILDI." : "SİSTEM AÇILDI.", "✅");
+            } catch(e) {}
+        }, yeniDurum); 
     }
 
-    async function AdminCikisYap() { SoruSor("Oturumu Kapat", "Admin panelinden çıkış yapmak üzeresiniz.", "🚪", async () => { await TemizleOturumVerileri(); }); }
+    async function AdminCikisYap() {
+        SoruSor("Oturumu Kapat", "Admin panelinden çıkış yapmak üzeresiniz.", "🚪", async () => {
+            await TemizleOturumVerileri();
+        }, false);
+    }
 
     // ==========================================
-    // 4. MÜŞTERİ AUTH (GİRİŞ/KAYIT) İŞLEMLERİ
+    // 5. MÜŞTERİ AUTH, KAYIT VE PROFİL İŞLEMLERİ
     // ==========================================
     function AuthModuDegistir(mod) {
         HapticTitresim(); let slider = document.getElementById("auth-toggle-slider"); let btns = document.querySelectorAll(".premium-toggle-btn"); let loginForm = document.getElementById("login-form-area"); let registerForm = document.getElementById("register-form-area"); let secBadge = document.getElementById("auth-security-badge");
@@ -1462,7 +1513,6 @@
         btn.innerHTML = `<div class="spinner-small"></div> Kontrol Ediliyor...`; btn.disabled = true;
 
         try {
-            // BAN Kontrolü
             let banliMi = await BanKontrolu(formatliTel);
             if(banliMi) { btn.innerText = "Hesabımı Oluştur"; btn.disabled = false; return; }
 
@@ -1713,207 +1763,8 @@
     }
 
     // ==========================================
-    // 5. MÜŞTERİ ÇARK SİSTEMİ
+    // 6. MÜŞTERİ MENÜ, LİSTELEME VE ÇARK
     // ==========================================
-    async function CarkPopupAc() {
-        HapticTitresim(); SessizIzinIste(); let tel = await SecureOku("bg_t");
-        if (!tel || tel.length < 10) { OzelUyariGoster("Hesap Doğrulaması Şart", "Çarkıfelek sistemini kullanabilmek için hesabınızı doğrulamalısınız.", "🛡"); SayfaGoster('profil'); return; }
-
-        let p = document.getElementById("cark-popup"); let btn = document.getElementById("cark-cevir-btn"); let durum = document.getElementById("cark-durum-metni");
-        p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10);
-        let sTime = await GetServerTimeFast(); let kayitliHash = await SecureOku("bg_cark_data"); 
-        
-        let parsed = null;
-        if(kayitliHash) { try{ let dec = decodeURIComponent(atob(kayitliHash)); let parts = dec.split("|||"); if(parts.length === 4 && parts[2] === CARK_SALT && parts[3] === tel) parsed = { odul: parts[0], bitis: parseInt(parts[1]) }; } catch(e){} }
-
-        if(parsed && sTime < parsed.bitis) {
-            let kalanGun = Math.ceil((parsed.bitis - sTime) / (1000 * 60 * 60 * 24));
-            durum.innerText = `Çarkı tekrar çevirmek için ${kalanGun} gün beklemelisin.`; durum.style.color = "var(--warning)"; btn.innerText = "Şansını Denedin"; btn.disabled = true;
-        } else { durum.innerText = "Sadece 7 günde 1 kez çevirebilirsin."; durum.style.color = "var(--text-muted)"; btn.innerText = "Şansımı Dene!"; btn.disabled = false; }
-    }
-    function CarkPopupKapat() { let p = document.getElementById("cark-popup"); p.classList.remove("active"); setTimeout(() => p.style.display = "none", 500); }
-
-    async function CarkCevir() {
-        HapticTitresim(); let tel = await SecureOku("bg_t"); if (!tel || tel.length < 10) return; 
-        let btn = document.getElementById("cark-cevir-btn"); 
-        btn.disabled = true; btn.innerHTML = `<div class="spinner-small"></div> Çevriliyor...`;
-
-        try {
-            let idToken = await firebase.auth().currentUser.getIdToken(true);
-            let res = await fetch(`${FIREBASE_URL}/CarkKullanimlari/${tel}.json?auth=${idToken}&t=${Date.now()}`);
-            let data = await res.json(); let sTime = await GetServerTimeFast();
-            if (data && data.bitis && sTime < data.bitis) { let kalanGun = Math.ceil((data.bitis - sTime) / (1000 * 60 * 60 * 24)); OzelUyariGoster("Hile Koruması", `Yakın zamanda çark zaten çevrilmiş. <b>${kalanGun} gün</b> beklemelisiniz.`, "🛑"); btn.innerText = "Şansımı Dene!"; btn.disabled = false; CarkPopupKapat(); return; }
-
-            let cark = document.getElementById("cark-element");
-            let kazananIndex = Math.floor(Math.random() * 5); 
-            
-            let baseRotation = 360 - (36 + (kazananIndex * 72));
-            let hedefAci = (360 * 5) + baseRotation; 
-            cark.style.transform = `rotate(${hedefAci}deg)`;
-
-            setTimeout(async () => {
-                let kazanilanOdul = CARK_ODULLERI[kazananIndex]; let sTimeN = await GetServerTimeFast(); let bitisZamani = sTimeN + (7 * 24 * 60 * 60 * 1000);
-                
-                let kayitOdul = kazanilanOdul.includes("Pas") ? "😔 Pas" : kazanilanOdul;
-                await SecureKaydet("bg_cark_data", btoa(encodeURIComponent(`${kayitOdul}|||${bitisZamani}|||${CARK_SALT}|||${tel}`)));
-                await fetch(`${FIREBASE_URL}/CarkKullanimlari/${tel}.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify({ odul: kayitOdul, bitis: bitisZamani, zaman: new Date().toLocaleString() }) });
-
-                if(kayitOdul === "😔 Pas") { OzelUyariGoster("Ah be!", "Bu hafta şans sana gülmedi (Pas). 7 Gün sonra tekrar dene!", "😔"); } 
-                else { OzelUyariGoster("Tebrikler! 🎉", `Şans çarkından <b>${escapeHTML(kayitOdul)}</b> kazandınız! Fırsatlar menüsünden siparişinize ekleyebilirsiniz.`, "🎁"); BildirimGonder("Hediye Kazandın! 🎁", `Bekmez GO çarkından ${kayitOdul} kazandın. Sepetine eklemeyi unutma!`); }
-                
-                CarkPopupKapat(); await CarkDurumunuKontrolEt(); 
-                btn.innerText = "Şansımı Dene!"; 
-                setTimeout(() => { cark.style.transition = "none"; cark.style.transform = `rotate(0deg)`; setTimeout(() => cark.style.transition = "transform 4s cubic-bezier(0.1, 0.7, 0.1, 1)", 50); }, 500);
-            }, 4200); 
-        } catch(e) { OzelUyariGoster("Hata", "Sunucuya bağlanılamadı.", "📡"); btn.innerText = "Şansımı Dene!"; btn.disabled = false; return; }
-    }
-
-   async function CarkDurumunuKontrolEt() {
-        let kayitliHash = await SecureOku("bg_cark_data"); 
-        let parsed = null;
-        if(kayitliHash) {
-            let tel = await SecureOku("bg_t") || "BOS";
-            try{ let dec = decodeURIComponent(atob(kayitliHash)); let parts = dec.split("|||"); if(parts.length === 4 && parts[2] === CARK_SALT && parts[3] === tel) parsed = { odul: parts[0], bitis: parseInt(parts[1]) }; } catch(e){}
-        }
-
-        let bannerDesc = document.getElementById("cark-banner-desc"); let hediyeKutusu = document.getElementById("aktif-cark-hediye-kutusu");
-        if(!parsed) { bannerDesc.innerText = "Sürpriz hediyeler seni bekliyor!"; bannerDesc.style.color = "var(--text-muted)"; hediyeKutusu.style.display = "none"; return; }
-
-        let sTime = await GetServerTimeFast();
-        if(sTime > parsed.bitis) {
-            await SecureSil("bg_cark_data"); bannerDesc.innerText = "Çarkın süresi doldu, tekrar çevir!"; bannerDesc.style.color = "var(--primary)"; hediyeKutusu.style.display = "none";
-        } else {
-            let kalanGun = Math.ceil((parsed.bitis - sTime) / (1000 * 60 * 60 * 24));
-            bannerDesc.innerText = `Sonraki çark hakkına ${kalanGun} gün var.`; bannerDesc.style.color = "var(--warning)";
-            
-            if(parsed.odul && parsed.odul !== "😔 Pas" && aktifKullanilanCarkOdulu === null) {
-                hediyeKutusu.style.display = "block"; document.getElementById("kazanilan-odul-yazi").innerText = escapeHTML(parsed.odul); document.getElementById("kazanilan-sure-yazi").innerText = `Kalan Süre: ${kalanGun} Gün`;
-            } else { hediyeKutusu.style.display = "none"; }
-        }
-    }
-
-    async function CarkHediyesiniKullan() { HapticTitresim(); let kayitliHash = await SecureOku("bg_cark_data"); let parsed = null; if(kayitliHash) { let tel = await SecureOku("bg_t") || "BOS"; try{ let dec = decodeURIComponent(atob(kayitliHash)); let parts = dec.split("|||"); if(parts.length === 4 && parts[2] === CARK_SALT && parts[3] === tel) parsed = { odul: parts[0], bitis: parseInt(parts[1]) }; } catch(e){} } if(parsed && parsed.odul !== "😔 Pas") { aktifKullanilanCarkOdulu = parsed.odul; OzelUyariGoster("Sepete Eklendi", `Çark hediyeniz siparişinize eklendi!`, "🛒"); await CarkDurumunuKontrolEt(); SayfaGoster('sepet'); } }
-    async function CarkHediyesiIptal() { HapticTitresim(); aktifKullanilanCarkOdulu = null; await CarkDurumunuKontrolEt(); SepetEkraniniCiz(); }
-
-    // ==========================================
-    // 6. MÜŞTERİ İPTAL VE DÜZENLEME 
-    // ==========================================
-    async function BuluttanAktifAdisyonuSil() {
-        let tel = await SecureOku("bg_t"); if(!tel) return;
-        try { let authUser = firebase.auth().currentUser; if(!authUser) return; let idToken = await authUser.getIdToken(true); await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${tel}/aktifSiparis.json?auth=${idToken}`, { method: "DELETE" }); } catch(e) {}
-    }
-
-    function IptalOnaySor() { HapticTitresim(); SoruSor("Siparişi İptal Et", "Siparişinizi iptal etmek istediğinize emin misiniz? İşlem geri alınamaz.", "⚠️", () => { SiparişiGercektenIptalEt(); }, true); }
-    
-    async function SiparişiGercektenIptalEt() {
-        let siparisId = await SecureOku("bg_active_order_id"); if(!siparisId) return;
-        try {
-            let authUser = firebase.auth().currentUser; if(!authUser) return;
-            let idToken = await authUser.getIdToken(true);
-            let tel = await SecureOku("bg_t"); if (!tel) return;
-
-            let iptalPaketi = { islemTuru: "IPTAL", zaman: new Date().toLocaleTimeString(), telefon: tel, uid: authUser.uid };
-            
-            await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}-IPTAL.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(iptalPaketi) });
-            await fetch(`${FIREBASE_URL}/CanliPaketler/${siparisId}.json?auth=${idToken}`, { method: "DELETE" });
-            
-            OzelUyariGoster("İptal Ediliyor...", "Siparişiniz iptal edildi. Ana sayfaya yönlendiriliyorsunuz...", "✅");
-            await BuluttanAktifAdisyonuSil();
-            await SecureSil("bg_active_order_id"); await SecureSil("bg_last_status"); await SecureSil("bg_order_timestamp");
-            
-            setTimeout(() => { window.location.reload(true); }, 2000);
-        } catch(e) {}
-    }
-
-    function DuzenleOnaySor() { HapticTitresim(); SoruSor("Siparişi Düzenle", "Mevcut siparişiniz iptal edilecek ve ürünleriniz aynen sepete geri yüklenecektir.<br><br>Değişikliklerinizi yapıp tekrar onaylayabilirsiniz. Devam edilsin mi?", "✏️", () => { SiparisiDuzenleVeSepeteDon(); }, false); }
-
-    async function SiparisiDuzenleVeSepeteDon() {
-        let siparisId = await SecureOku("bg_active_order_id"); if(!siparisId) return;
-        try {
-            let authUser = firebase.auth().currentUser; if(!authUser) return;
-            let idToken = await authUser.getIdToken(true); let tel = await SecureOku("bg_t");
-            
-            let iptalPaketi = { islemTuru: "IPTAL", zaman: new Date().toLocaleTimeString(), telefon: tel, uid: authUser.uid };
-            
-            await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}-IPTAL.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(iptalPaketi) });
-            await fetch(`${FIREBASE_URL}/CanliPaketler/${siparisId}.json?auth=${idToken}`, { method: "DELETE" });
-            
-            await BuluttanAktifAdisyonuSil();
-            
-            let savedCart = await SecureOku("bg_saved_cart"); if (savedCart) { try { sepet = JSON.parse(savedCart); } catch(e){} }
-            aktifKuponKodu = await SecureOku("bg_saved_coupon") || ""; aktifKullanilanCarkOdulu = await SecureOku("bg_saved_cark") || null;
-            if(aktifKullanilanCarkOdulu === "") aktifKullanilanCarkOdulu = null;
-            let note = await SecureOku("bg_saved_note"); if(note) document.getElementById("siparis-notu").value = note;
-
-            await SecureSil("bg_active_order_id"); await SecureSil("bg_last_status"); await SecureSil("bg_order_timestamp");
-            
-            OzelUyariGoster("Düzenleme Modu Aktif", "Eski siparişiniz iptal edildi ve ürünler sepete eklendi. Değişiklik yapıp tekrar sipariş verebilirsiniz.", "🛒");
-            SayfaGoster('sepet');
-        } catch(e) {}
-    }
-
-    // ==========================================
-    // 7. MÜŞTERİ MENÜ, SEPET VE LİSTELEME
-    // ==========================================
-    function UnityFiyatiniHesapla(urun, miktar) { if (!urun || miktar <= 0) return 0; let f = parseFloat((urun.price1Kg || "0").toString().replace(',', '.')); return isNaN(f) ? 0 : f * miktar; }
-
-    function SepetEkraniniCiz() {
-        let container = document.getElementById("cart-items-list"); let panel = document.getElementById("alt-panel"); let notSection = document.getElementById("cart-note-section");
-        container.innerHTML = ""; let carkUyari = document.getElementById("aktif-hediye-uyari");
-        
-        if(aktifKullanilanCarkOdulu !== null) { carkUyari.style.display = "block"; document.getElementById("sepet-hediye-yazi").innerText = `Çark Hediyesi (${escapeHTML(aktifKullanilanCarkOdulu)}) eklendi!`; } else { carkUyari.style.display = "none"; }
-        if (sepet.length === 0 && aktifKullanilanCarkOdulu === null) { 
-            container.innerHTML = `<div class="empty-state-box">${emptyCartSVG}<p>Sepetiniz şu an boş</p></div>`; 
-            panel.style.display = "none"; notSection.style.display = "none"; document.getElementById("floating-cart").style.display = "none"; return; 
-        }
-
-        panel.style.display = "block"; notSection.style.display = "block"; document.getElementById("floating-cart").style.display = "flex";
-
-        if(aktifKullanilanCarkOdulu !== null) { container.innerHTML += `<div class="cart-item" style="border-color:var(--success); background:linear-gradient(145deg,rgba(52,199,89,0.1) 0%,rgba(15,15,20,0.9) 100%);"><div class="cart-item-details"><div class="cart-item-name"><span style="color:var(--success);">🎁 ÇARK HEDİYESİ:</span> ${escapeHTML(aktifKullanilanCarkOdulu)}</div><div class="cart-item-price" style="color:var(--success);">0.00 TL (Ücretsiz)</div></div></div>`; }
-
-        sepet.forEach((item, index) => {
-            let html = `<div class="cart-item"><div class="cart-item-details"><div class="cart-item-name" id="cart-name-${index}">${item.quantity > 1 ? '<span style="color:var(--primary);">' + escapeHTML(item.quantity) + 'x</span> ' : ''}${escapeHTML(item.baseName)}</div><div class="cart-item-price" id="cart-price-${index}">${(item.basePrice * item.quantity).toFixed(2)} TL</div></div><div class="cart-controls"><button class="cart-btn" onclick="SepetMiktarDegistir(${index}, -1)">-</button><span class="cart-amount" id="cart-qty-${index}">${escapeHTML(item.quantity)}</span><button class="cart-btn" onclick="SepetMiktarDegistir(${index}, 1)">+</button></div></div>`;
-            container.innerHTML += html;
-        });
-        HesaplaVeGuncelle();
-    }
-
-    async function HesaplaVeGuncelle() {
-        hamToplamFiyat = 0; sepet.forEach(item => { hamToplamFiyat += (item.basePrice * item.quantity); });
-        hamToplamFiyat = Math.round(hamToplamFiyat * 100) / 100;
-        
-        if (aktifKuponKodu !== "" && hamToplamFiyat < aktifKuponAltLimit) { OzelUyariGoster("Kupon İptal Edildi", `Sepet tutarınız ${aktifKuponAltLimit} TL'nin altına düştüğü için kuponunuz devre dışı bırakıldı.`, "⚠️"); KuponuIptalEt(true); }
-
-        sonOdenecekFiyat = hamToplamFiyat - aktifKuponIndirimTutari; if (sonOdenecekFiyat < 0) sonOdenecekFiyat = 0;
-        sonOdenecekFiyat = Math.round(sonOdenecekFiyat * 100) / 100;
-
-        document.getElementById("sepet-tutar").innerText = sonOdenecekFiyat.toFixed(2) + " TL"; document.getElementById("floating-total").innerText = sonOdenecekFiyat.toFixed(2) + " TL";
-
-        let eskiFiyatEl = document.getElementById("eski-fiyat-ustu-cizik");
-        if (aktifKuponIndirimTutari > 0) { eskiFiyatEl.style.display = "block"; eskiFiyatEl.innerText = hamToplamFiyat.toFixed(2) + " TL"; } else { eskiFiyatEl.style.display = "none"; }
-
-        let badge = document.getElementById("nav-sepet-badge"); let totalQty = 0; sepet.forEach(item => totalQty += item.quantity);
-        if(aktifKullanilanCarkOdulu !== null) totalQty += 1; 
-        if (totalQty > 0) { badge.innerText = totalQty; badge.classList.add("show"); } else { badge.classList.remove("show"); }
-        SpamSayaciKontrolEt();
-    }
-
-    function SmoothCounter(id, start, end, duration, isCurrency, isKg=false) { let el = document.getElementById(id); if(!el) return; let startTime = null; const step = (timestamp) => { if (!startTime) startTime = timestamp; const progress = Math.min((timestamp - startTime) / duration, 1); const current = progress * (end - start) + start; if (isCurrency) { el.innerText = current.toFixed(2) + " TL"; } else { el.innerText = isKg ? current.toFixed(2) + " KG" : Math.floor(current) + " Adet"; } if (progress < 1) window.requestAnimationFrame(step); }; window.requestAnimationFrame(step); }
-    function AcSozlesme(tip) { HapticTitresim(); let baslik = "", icerik = ""; if (tip === "kvkk") { baslik = "Aydınlatma Metni (KVKK)"; icerik = textKVKK; } else if (tip === "mesafeli") { baslik = "Mesafeli Satış Sözleşmesi"; icerik = textMesafeli; } else if (tip === "teslimat") { baslik = "Teslimat Şartları"; icerik = textTeslimat; } else if (tip === "iptal") { baslik = "İptal/İade Koşulları"; icerik = textIptal; } document.getElementById("legal-title").innerText = baslik; document.getElementById("legal-body").innerHTML = icerik; let p = document.getElementById("legal-popup"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10); }
-    function KapatSozlesme() { let p = document.getElementById("legal-popup"); p.classList.remove("active"); setTimeout(() => p.style.display = "none", 500); }
-    function CheckoutKapat() { let p = document.getElementById("checkout-popup"); p.classList.remove("active"); setTimeout(() => { p.style.display = "none"; }, 500); }
-    function TogglePayButton() { SpamSayaciKontrolEt(); }
-    function GetDistanceKm(lat1, lon1, lat2, lon2) { var R = 6371; var dLat = (lat2 - lat1) * Math.PI / 180; var dLon = (lon2 - lon1) * Math.PI / 180; var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2); var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); return R * c; }
-    function BasariEkraniGoster() { let o = document.getElementById("success-overlay"); o.style.display = "flex"; setTimeout(() => o.classList.add("active"), 10); BildirimGonder("Siparişiniz Alındı! ✅", "Bekmez GO: Paketiniz en kısa sürede yola çıkacaktır. Bizi tercih ettiğiniz için teşekkür ederiz."); setTimeout(() => { o.classList.remove("active"); setTimeout(() => { o.style.display = "none"; SayfaGoster('gecmis'); }, 3000); }, 3000); }
-
-    if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); }); }
-    window.addEventListener('beforeinstallprompt', async (e) => { e.preventDefault(); deferredPrompt = e; const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true; installPromptDismissed = (await SecureOku('pwa_prompt_dismissed')) === 'true'; if (!isStandalone && !installPromptDismissed && !isAdmin && !isBannedUser) { let promptOverlay = document.getElementById('pwa-fullscreen-prompt'); promptOverlay.style.display = 'flex'; setTimeout(() => { promptOverlay.classList.add('active'); }, 10); } else if (!isStandalone && !isAdmin && !isBannedUser) { document.getElementById("pwa-install-banner").style.display = "flex"; } });
-    window.addEventListener('appinstalled', (evt) => { document.getElementById('pwa-fullscreen-prompt').style.display = 'none'; document.getElementById('pwa-install-banner').style.display = 'none'; OzelUyariGoster("Kurulum Tamamlandı! 🎉", "Bekmez GO telefonunuza yüklendi.", "✅"); });
-
-    function ManuelUygulamaIndir() { HapticTitresim(); const isIos = () => { const ua = window.navigator.userAgent.toLowerCase(); return /iphone|ipad|ipod/.test(ua); }; if (isIos()) { OzelUyariGoster("iOS Kurulumu", "iPhone'a kurmak için alt menüdeki [Paylaş] ikonuna basıp 'Ana Ekrana Ekle' seçeneğini seçiniz.", "🍏"); return; } if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.then((c) => { if (c.outcome === 'accepted') { document.getElementById("pwa-fullscreen-prompt").style.display="none"; document.getElementById("pwa-install-banner").style.display="none"; } deferredPrompt = null; }); } else { OzelUyariGoster("Uygulama Yüklü", "Uygulama zaten telefonunuzda yüklü veya tarayıcınız desteklemiyor.", "📲"); } }
-    async function CloseFullscreenPrompt() { HapticTitresim(); let p = document.getElementById('pwa-fullscreen-prompt'); p.classList.remove('active'); setTimeout(() => { p.style.display = 'none'; }, 500); await SecureKaydet('pwa_prompt_dismissed', 'true'); if (deferredPrompt) { document.getElementById('pwa-install-banner').style.display = 'flex'; } }
-    function TetiklePwaPrompt() { ManuelUygulamaIndir(); }
-
     window.addEventListener('DOMContentLoaded', async () => {
         SyncServerTime(); SistemAyarlariniDinle();
         
@@ -2200,7 +2051,7 @@
     function KuponArayuzunuGuncelle() { let b = document.getElementById("coupon-apply-btn"); let m = document.getElementById("coupon-message"); let iE = document.getElementById("coupon-code"); if(aktifKuponIndirimTutari > 0) { b.style.background = "var(--danger)"; b.style.color = "white"; b.innerText = "İptal Et"; b.onclick = () => KuponuIptalEt(false); if(iE) { iE.disabled = true; iE.style.opacity = "0.6"; } m.innerHTML = `<span style="color: var(--success);">✓ ${aktifKuponIndirimTutari} TL İndirim!</span>`; } else { b.style.background = "rgba(255,255,255,0.05)"; b.style.color = "var(--text-main)"; b.innerText = "Uygula"; b.onclick = KuponSorgula; if(iE) { iE.disabled = false; iE.style.opacity = "1"; } m.innerHTML = ""; } }
     
     // ==========================================
-    // 8. SİPARİŞ TAMAMLAMA (CHECKOUT) VE SPAM MOTORU
+    // 7. SİPARİŞ TAMAMLAMA VE SPAM MOTORU
     // ==========================================
     async function CheckoutPopupAc() { 
         if(sepet.length === 0 && aktifKullanilanCarkOdulu === null) return; 
@@ -2305,7 +2156,7 @@
     }
 
     // ==========================================
-    // 9. CANLI ADİSYON DİNLEYİCİSİ VE SAYACI
+    // 8. CANLI ADİSYON DİNLEYİCİSİ VE SAYACI
     // ==========================================
     function CanliAdisyonSayaciBaslat(orderTs) {
         if(adisyonSayacInterval) clearInterval(adisyonSayacInterval);
