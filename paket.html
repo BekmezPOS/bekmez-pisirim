@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <!-- CSP Sıkılaştırıldı: Canlı Sistem reCAPTCHA Enterprise ve Google İzinleri Eklendi -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://*.firebaseio.com https://*.firebaseapp.com https://*.googleapis.com https://*.gstatic.com; script-src 'self' 'unsafe-inline' https://*.gstatic.com https://*.firebaseapp.com https://www.google.com https://apis.google.com https://*.firebaseio.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://*.visa.com https://upload.wikimedia.org https://nwzxvksywfzpvxwvtypf.supabase.co; frame-src 'self' https://www.google.com https://recaptcha.google.com https://*.firebaseapp.com; connect-src 'self' wss://*.firebaseio.com https://*.firebaseio.com https://*.googleapis.com https://www.google.com https://*.gstatic.com https://nwzxvksywfzpvxwvtypf.supabase.co;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://*.firebaseio.com https://*.firebaseapp.com https://*.googleapis.com https://*.gstatic.com; script-src 'self' 'unsafe-inline' https://*.gstatic.com https://*.firebaseapp.com https://www.google.com https://apis.google.com https://*.firebaseio.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://*.visa.com https://upload.wikimedia.org https://nwzxvksywfzpvxwvtypf.supabase.co; frame-src 'self' https://www.google.com https://recaptcha.google.com https://*.firebaseapp.com; connect-src 'self' wss://*.firebaseio.com https://*.firebaseio.com https://*.googleapis.com https://www.google.com https://*.gstatic.com https://nwzxvksywfzpvxwvtypf.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self';">
     <title>Bekmez GO - Premium Paket</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -1247,7 +1248,9 @@
     
     const FIREBASE_URL = "https://bekmezpos-default-rtdb.firebaseio.com";
     const DUKKAN_ENLEM = 36.206278; const DUKKAN_BOYLAM = 36.134472; const MAKS_MESAFE_KM = 4; const GHOST_TIMEOUT_MS = 8 * 60 * 60 * 1000; 
-    const CARK_SALT = "BEKMEZ_GO_SECURE_2026"; const TIME_SALT = "BKMZ_TIME_SEAL_X9";
+    // UYARI: Bu sabitler gizli anahtar degildir. Eski istemci kayitlarinin cozulmesi icin
+    // sadece format isaretcisi olarak tutulur; Base64 veya bu degerler kriptografi saglamaz.
+    const CARK_LEGACY_MARKER = "BEKMEZ_GO_SECURE_2026"; const TIME_LEGACY_MARKER = "BKMZ_TIME_SEAL_X9";
     const DUKKAN_WHATSAPP_NUMARASI = "905369517776"; 
     
     let CARK_ODULLERI = ["🍟 Ekstra Patates", "😔 Pas", "🥤 1 Lt İçecek", "😔 Pas", "🍰 Fırın Sütlaç"];
@@ -1417,6 +1420,8 @@
 
     firebase.auth().languageCode = 'tr';
 
+    // Geriye donuk uyumluluk: bu fonksiyon SIFRELEME YAPMAZ.
+    // localStorage kullanilir; telefon, adres ve siparis bilgileri XSS veya fiziksel erisime karsi gizli degildir.
     async function SecureKaydet(anahtar, veri) { if(veri === null || veri === undefined || veri === "") { localStorage.removeItem(anahtar); return; } localStorage.setItem(anahtar, veri.toString()); }
     async function SecureOku(anahtar) { return localStorage.getItem(anahtar); }
     async function SecureSil(anahtar) { localStorage.removeItem(anahtar); }
@@ -1424,15 +1429,43 @@
     function ZararliKarakterTemizle(el) { el.value = el.value.replace(/[<>\\/{}\[\]]/g, ''); }
     function escapeHTML(str) { return str ? str.toString().replace(/[&<>'"]/g, function(tag){ return {'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[tag]; }) : ""; }
     function HapticTitresim() { if(navigator.vibrate) navigator.vibrate(15); }
-    function generateUUID() { if (crypto && crypto.randomUUID) return crypto.randomUUID(); return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) { var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8); return v.toString(16); }); }
-    function ZamanMuhruSifrele(ts, id) { return btoa(encodeURIComponent(`${ts}|||${id}|||${TIME_SALT}`)); }
-    function ZamanMuhruCoz(hash, id) { if(!hash) return 0; try { let dec = decodeURIComponent(atob(hash)); let parts = dec.split("|||"); if(parts.length === 3 && parts[1] === id && parts[2] === TIME_SALT) return parseInt(parts[0]); } catch(e) {} return 0; }
+    function generateUUID() {
+        if(!window.isSecureContext || !window.crypto || !crypto.getRandomValues) throw new Error('Guvenli rastgelelik kullanilamiyor. HTTPS gerekli.');
+        if (crypto.randomUUID) return crypto.randomUUID();
+        const b = new Uint8Array(16); crypto.getRandomValues(b);
+        b[6] = (b[6] & 15) | 64; b[8] = (b[8] & 63) | 128;
+        const hex = Array.from(b, x => x.toString(16).padStart(2,'0')).join('');
+        return `${hex.slice(0,8)}-${hex.slice(8,12)}-${hex.slice(12,16)}-${hex.slice(16,20)}-${hex.slice(20)}`;
+    }
+    function ZamanMuhruKodla(ts, id) { return btoa(encodeURIComponent(`${ts}|||${id}|||${TIME_LEGACY_MARKER}`)); }
+    function ZamanMuhruOku(hash, id) { if(!hash) return 0; try { let dec = decodeURIComponent(atob(hash)); let parts = dec.split("|||"); if(parts.length === 3 && parts[1] === id && parts[2] === TIME_LEGACY_MARKER) return parseInt(parts[0]); } catch(e) {} return 0; }
     
     function GetDistanceKm(lat1, lon1, lat2, lon2) { const R = 6371; const dLat = (lat2 - lat1) * Math.PI / 180; const dLon = (lon2 - lon1) * Math.PI / 180; const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2); return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); }
 
-    function OzelUyariGoster(baslik, metin, ikon) { document.getElementById("custom-alert-title").innerText = baslik; document.getElementById("custom-alert-text").innerHTML = metin; document.getElementById("custom-alert-icon").innerText = ikon; let p = document.getElementById("custom-alert-overlay"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10); }
+    // Uyari pencereleri API/veritabani kaynakli HTML calistirmasin.
+    // Eski sabit mesajlardaki <b>/<br> bicimlendirmesini koruyan dar izin listesi.
+    function GuvenliUyariIcerigi(icerik) {
+        const t = document.createElement('template'); t.innerHTML = String(icerik ?? '');
+        const safe = document.createElement('div');
+        const allowed = new Set(['B','STRONG','I','EM','BR']);
+        function walk(source, target) {
+            for (const child of Array.from(source.childNodes)) {
+                if(child.nodeType === Node.TEXT_NODE) target.appendChild(document.createTextNode(child.nodeValue));
+                else if(child.nodeType === Node.ELEMENT_NODE) {
+                    if (allowed.has(child.tagName)) {
+                        const el=document.createElement(child.tagName.toLowerCase());
+                        if(child.tagName !== 'BR') walk(child,el);
+                        target.appendChild(el);
+                    } else target.appendChild(document.createTextNode(child.textContent || ''));
+                }
+            }
+        }
+        walk(t.content,safe); return safe.innerHTML;
+    }
+
+    function OzelUyariGoster(baslik, metin, ikon) { document.getElementById("custom-alert-title").innerText = baslik; document.getElementById("custom-alert-text").innerHTML = GuvenliUyariIcerigi(metin); document.getElementById("custom-alert-icon").innerText = ikon; let p = document.getElementById("custom-alert-overlay"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10); }
     function KapatUyariModal(e, force=false) { if(force || e.target === document.getElementById("custom-alert-overlay") || e.target === document.getElementById("distance-alert-overlay")) { let p = document.getElementById("custom-alert-overlay"); let d = document.getElementById("distance-alert-overlay"); p.classList.remove("active"); d.classList.remove("active"); setTimeout(() => { p.style.display = "none"; d.style.display = "none"; }, 400); } }
-    function SoruSor(baslik, metin, ikon, evetCallback, isDanger=false) { document.getElementById("confirm-title").innerText = baslik; document.getElementById("confirm-text").innerHTML = metin; document.getElementById("confirm-icon").innerText = ikon; let btn = document.getElementById("confirm-yes-btn"); let box = document.getElementById("confirm-box"); let glow = document.getElementById("confirm-glow"); if(isDanger) { btn.style.background = "var(--danger)"; btn.innerText = "İptal Et"; box.style.borderColor = "var(--danger)"; glow.style.background = "var(--danger)"; } else { btn.style.background = "var(--primary)"; btn.innerText = "Onayla"; box.style.borderColor = "var(--primary)"; glow.style.background = "var(--primary)"; } document.getElementById("confirm-yes-btn").onclick = () => { KapatConfirmModal(null, true); if(evetCallback) evetCallback(); }; let p = document.getElementById("confirm-overlay"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10); }
+    function SoruSor(baslik, metin, ikon, evetCallback, isDanger=false) { document.getElementById("confirm-title").innerText = baslik; document.getElementById("confirm-text").innerHTML = GuvenliUyariIcerigi(metin); document.getElementById("confirm-icon").innerText = ikon; let btn = document.getElementById("confirm-yes-btn"); let box = document.getElementById("confirm-box"); let glow = document.getElementById("confirm-glow"); if(isDanger) { btn.style.background = "var(--danger)"; btn.innerText = "İptal Et"; box.style.borderColor = "var(--danger)"; glow.style.background = "var(--danger)"; } else { btn.style.background = "var(--primary)"; btn.innerText = "Onayla"; box.style.borderColor = "var(--primary)"; glow.style.background = "var(--primary)"; } document.getElementById("confirm-yes-btn").onclick = () => { KapatConfirmModal(null, true); if(evetCallback) evetCallback(); }; let p = document.getElementById("confirm-overlay"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10); }
     function KapatConfirmModal(e, force=false) { if(force || e.target === document.getElementById("confirm-overlay")) { let p = document.getElementById("confirm-overlay"); p.classList.remove("active"); setTimeout(() => p.style.display = "none", 400); } }
     function KapatAdminPrompt(e, force=false) { if(force || e.target === document.getElementById("admin-prompt-overlay")) { let p = document.getElementById("admin-prompt-overlay"); p.classList.remove("active"); setTimeout(() => p.style.display = "none", 400); } }
 
@@ -1641,9 +1674,10 @@
         });
     }
 
+    let adminTelefonAnahtarlari = [];
     async function AdminMusterileriListele(idToken) {
         try {
-            let activeRes = await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar.json?auth=${idToken}`); let activeData = await activeRes.json();
+            let activeRes = await fetch(`${FIREBASE_URL}/DoğrulanmisHesaplar.json?auth=${idToken}`); let activeData = await activeRes.json();
             let delRes = await fetch(`${FIREBASE_URL}/SilinmisHesaplar.json?auth=${idToken}`); let delData = await delRes.json();
             let banRes = await fetch(`${FIREBASE_URL}/YasakliHesaplar.json?auth=${idToken}`); let banData = await banRes.json();
             
@@ -1662,6 +1696,7 @@
             document.getElementById("adm-total-user").innerText = activeCount;
             document.getElementById("adm-deleted-user").innerText = delCount;
             usersArray.sort((a,b) => { return new Date(b.tarih).getTime() - new Date(a.tarih).getTime(); });
+            adminTelefonAnahtarlari = usersArray.map(u => u.tel);
             
             let recentList = document.getElementById("adm-recent-users"); let fullList = document.getElementById("adm-full-user-list");
 
@@ -1669,17 +1704,17 @@
                 recentList.innerHTML = `<div style="color: #a1a1aa; font-size: 12px; text-align: center;">Henüz müşteri yok.</div>`; fullList.innerHTML = `<div style="color: #a1a1aa; font-size: 12px; text-align: center;">Henüz müşteri yok.</div>`;
             } else {
                 let h = ""; let max = Math.min(usersArray.length, 10);
-                for(let i=0; i<max; i++) { h += `<div class="user-list-item" style="padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between;"><span style="color:white; font-weight:800;">${escapeHTML(usersArray[i].ad)}</span><span style="color:var(--text-muted); font-size:10px;">${usersArray[i].tel}</span></div>`; }
+                for(let i=0; i<max; i++) { h += `<div class="user-list-item" style="padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between;"><span style="color:white; font-weight:800;">${escapeHTML(usersArray[i].ad)}</span><span style="color:var(--text-muted); font-size:10px;">${escapeHTML(usersArray[i].tel)}</span></div>`; }
                 recentList.innerHTML = h;
 
                 let fh = "";
                 for(let i=0; i<usersArray.length; i++) {
                     let uTel = usersArray[i].tel;
                     let isBan = (banData && typeof banData === 'object' && !banData.error && banData[uTel]);
-                    let actionHtml = isBan ? `<button class="btn-unban ripple-element" onclick="AdminYasakKaldira('${uTel}')">Ban Kaldır</button>` : `<button class="btn-ban ripple-element" onclick="AdminKullaniciYasaklaModalAc('${uTel}')">Yasakla</button>`;
+                    let actionHtml = isBan ? `<button class="btn-unban ripple-element" onclick="AdminYasakKaldira(adminTelefonAnahtarlari[${i}])">Ban Kaldır</button>` : `<button class="btn-ban ripple-element" onclick="AdminKullaniciYasaklaModalAc(adminTelefonAnahtarlari[${i}])">Yasakla</button>`;
                     let sebepHtml = isBan ? `<span style="color:var(--danger); font-size:10px;">Sebep: ${escapeHTML(banData[uTel].sebep)}</span>` : "";
 
-                    fh += `<div class="user-mng-card"><div class="user-mng-info"><span style="color:white; font-weight:800; font-size:14px;">${escapeHTML(usersArray[i].ad)}</span><span style="color:var(--primary); font-size:11px; font-weight:600;">${uTel}</span>${sebepHtml}</div><div class="user-mng-actions">${actionHtml}<button class="btn-del ripple-element" onclick="AdminKullaniciSil('${uTel}')">Hesabı Sil</button></div></div>`;
+                    fh += `<div class="user-mng-card"><div class="user-mng-info"><span style="color:white; font-weight:800; font-size:14px;">${escapeHTML(usersArray[i].ad)}</span><span style="color:var(--primary); font-size:11px; font-weight:600;">${escapeHTML(uTel)}</span>${sebepHtml}</div><div class="user-mng-actions">${actionHtml}<button class="btn-del ripple-element" onclick="AdminKullaniciSil(adminTelefonAnahtarlari[${i}])">Hesabı Sil</button></div></div>`;
                 }
                 fullList.innerHTML = fh;
             }
@@ -1694,21 +1729,118 @@
         else bgAdminSesBekliyor=true;
     }
 
-    async function AdminPaneleGec() {
-        let user = firebase.auth().currentUser; if(!user) return;
-        let idToken = await user.getIdToken(true);
-        try {
-            let res = await fetch(`${FIREBASE_URL}/DukkanDurumu.json?auth=${idToken}`); let data = await res.json();
-            if(data && data.error) { OzelUyariGoster("Güvenlik İhlali", "Bu panele erişim yetkiniz bulunmamaktadır.", "🛑"); await firebase.auth().signOut(); return; }
-        } catch(e) { return; }
+    // Yonetim yetkisi herkese acik /DukkanDurumu yerine server tarafinda
+    // sadece kasa hesabinin okuyabildigi /BulutYedek uzerinden kontrol edilir.
+    const BG_ADMIN_EMAIL='kasa@bekmez.com';
+    const BG_ADMIN_IDLE_MS=15 * 60 * 1000;
+    let bgAdminLastActivity=Date.now();
+    let bgAdminLogoutInProgress=false;
+    let bgAdminVerifiedUid=null;
+    let bgAdminVerifiedUntil=0;
+    let bgAdminRecentAuthUntil=0;
 
-        isAdmin = true;
-        let splash = document.getElementById('splash-screen'); if (splash) { splash.style.display = 'none'; splash.style.opacity = '0'; }
-        document.getElementById("main-user-ui").style.display = "none"; document.getElementById("store-closed-overlay").style.display = "none"; document.getElementById("banned-user-overlay").style.display = "none";
-        document.getElementById("admin-panel-container").style.display = "block"; AdminChimeCal(); AdminMusterileriListele(idToken);
+    async function AdminYetkiliToken(hassas=false) {
+        const auth=firebase.auth();
+        const user=auth.currentUser;
+        if(!user || (user.email || '').toLowerCase() !== BG_ADMIN_EMAIL) throw new Error('Yönetici hesabı doğrulanamadı.');
+        if(isAdmin && Date.now()-bgAdminLastActivity > BG_ADMIN_IDLE_MS) {
+            await AdminGuvenliZamanAsimi();
+            throw new Error('Yonetici oturumu zaman asimina ugradi.');
+        }
+        const token=await user.getIdToken(true);
+        // Firebase RTDB Rules ile korunan yol: normal musteri icin 401/403.
+        if(bgAdminVerifiedUid !== user.uid || Date.now()>bgAdminVerifiedUntil) {
+            const ctrl=await fetch(`${FIREBASE_URL}/BulutYedek.json?auth=${encodeURIComponent(token)}&shallow=true`,{cache:'no-store'});
+            if(!ctrl.ok) throw new Error('Veritabanı yönetici erişimini reddetti.');
+            const result=await ctrl.json();
+            if(result && result.error) throw new Error('Sunucu yönetici yetkisi bulunamadı.');
+            bgAdminVerifiedUid=user.uid;
+            bgAdminVerifiedUntil=Date.now()+30000;
+        }
+        if(hassas && Date.now()>bgAdminRecentAuthUntil) {
+            const ok=await AdminIkinciSifreKontrolu(user);
+            if(!ok) throw new Error('Hassas işlem için tekrar şifre doğrulaması gereklidir.');
+            bgAdminRecentAuthUntil=Date.now()+5*60*1000;
+        }
+        return token;
+    }
+
+    // Kritik degisikliklerden once Firebase parola ile yeniden kimlik dogrulama.
+    // Parola sadece bu formda kullanilir; localStorage veya veritabanina yazilmaz.
+    function AdminIkinciSifreKontrolu(user) {
+        return new Promise(resolve=>{
+            const back=document.createElement('div');
+            back.id='bg-admin-reauth';
+            back.style.cssText='position:fixed;inset:0;z-index:2147483646;background:rgba(0,0,0,.93);display:flex;align-items:center;justify-content:center;padding:18px';
+            const form=document.createElement('form');
+            form.style.cssText='width:100%;max-width:380px;padding:26px;border-radius:22px;border:1px solid rgba(255,255,255,.15);background:#18181c;color:#fff;font-family:inherit;box-shadow:0 18px 60px #000';
+            const title=document.createElement('h3');title.textContent='Yönetici güvenlik onayı';title.style.cssText='margin:0 0 9px;font-size:21px';
+            const desc=document.createElement('p');desc.textContent='Bu kritik işlemi onaylamak için kasa şifreni yeniden gir.';desc.style.cssText='color:#b7b7be;font-size:13px;line-height:1.5';
+            const input=document.createElement('input');input.type='password';input.autocomplete='current-password';input.required=true;input.placeholder='Kasa şifresi';input.style.cssText='width:100%;padding:15px;border-radius:12px;background:#08080b;border:1px solid #444;color:#fff;font-size:15px;margin:12px 0';
+            const note=document.createElement('div');note.setAttribute('role','alert');note.style.cssText='min-height:20px;color:#ff8d75;font-size:12px;margin-bottom:9px';
+            const actions=document.createElement('div');actions.style.cssText='display:flex;gap:10px';
+            const cancel=document.createElement('button');cancel.type='button';cancel.textContent='Vazgeç';cancel.style.cssText='flex:1;padding:13px;border:0;border-radius:12px;background:#36363b;color:white';
+            const submit=document.createElement('button');submit.type='submit';submit.textContent='Doğrula';submit.style.cssText='flex:1;padding:13px;border:0;border-radius:12px;background:#ff6b00;color:white;font-weight:800';
+            actions.append(cancel,submit);form.append(title,desc,input,note,actions);back.append(form);document.body.append(back);
+            let finished=false;
+            const done=value=>{if(finished)return;finished=true;input.value='';back.remove();resolve(value);};
+            cancel.addEventListener('click',()=>done(false));
+            form.addEventListener('submit',async e=>{
+                e.preventDefault();submit.disabled=true;cancel.disabled=true;note.textContent='Doğrulaniyor...';
+                try {
+                    const password=input.value;
+                    const credential=firebase.auth.EmailAuthProvider.credential(user.email,password);
+                    input.value='';
+                    await user.reauthenticateWithCredential(credential);
+                    done(true);
+                } catch(_){note.textContent='Şifre doğrulanamadı. Tekrar dene.';submit.disabled=false;cancel.disabled=false;input.value='';input.focus();}
+            });
+            input.focus();
+        });
+    }
+
+    async function AdminGuvenliZamanAsimi() {
+        if(bgAdminLogoutInProgress || !isAdmin)return;
+        bgAdminLogoutInProgress=true;isAdmin=false;
+        bgAdminVerifiedUid=null;bgAdminVerifiedUntil=0;bgAdminRecentAuthUntil=0;
+        const panel=document.getElementById('admin-panel-container');
+        if(panel)panel.style.display='none';
+        try{if(fotoSupabase)await fotoSupabase.auth.signOut();}catch(_){}
+        try{await firebase.auth().signOut();}catch(_){}
+        try{window.sessionStorage.clear();}catch(_){}
+        window.location.reload();
+    }
+    ['pointerdown','keydown','touchstart'].forEach(ev=>document.addEventListener(ev,()=>{
+        if(isAdmin && !bgAdminLogoutInProgress) bgAdminLastActivity=Date.now();
+    },{passive:true}));
+    setInterval(()=>{if(isAdmin && Date.now()-bgAdminLastActivity>BG_ADMIN_IDLE_MS) AdminGuvenliZamanAsimi();},30000);
+    document.addEventListener('visibilitychange',()=>{
+        if(!document.hidden && isAdmin && Date.now()-bgAdminLastActivity>BG_ADMIN_IDLE_MS) AdminGuvenliZamanAsimi();
+    });
+
+    async function AdminPaneleGec() {
+        try { await AdminYetkiliToken(); }
+        catch(_) {
+            isAdmin=false;
+            document.getElementById('admin-panel-container').style.display='none';
+            OzelUyariGoster('Yönetim Erişimi Engellendi','Sunucu yönetici yetkisini doğrulamadı.','🔒');
+            try{await firebase.auth().signOut();}catch(e){}
+            return;
+        }
+        isAdmin=true;
+        bgAdminLastActivity=Date.now();
+        const splash=document.getElementById('splash-screen');if(splash){splash.style.display='none';splash.style.opacity='0';}
+        document.getElementById('main-user-ui').style.display='none';
+        document.getElementById('store-closed-overlay').style.display='none';
+        document.getElementById('banned-user-overlay').style.display='none';
+        document.getElementById('admin-panel-container').style.display='block';
+        AdminChimeCal();
+        const user=firebase.auth().currentUser;
+        if(user)AdminMusterileriListele(await user.getIdToken(true));
     }
 
     function AdminSekmeGoster(sekmeId, btn) {
+        if(!isAdmin || bgAdminLogoutInProgress || !bgAdminVerifiedUid) return;
         document.querySelectorAll('.admin-tab').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
         if (btn) { btn.classList.add('active'); btn.setAttribute('aria-selected','true'); }
         document.querySelectorAll(".admin-section").forEach(s => { s.classList.remove("active"); });
@@ -1718,6 +1850,7 @@
     }
 
     function AdminKullaniciYasaklaModalAc(tel) {
+        if(!isAdmin || !bgAdminVerifiedUid) return;
         hedefYasaklanacakTel = tel; document.getElementById("admin-ban-reason").value = "";
         document.getElementById("admin-prompt-yes-btn").onclick = () => { let reason = document.getElementById("admin-ban-reason").value.trim() || "Kural İhlali"; AdminGercektenYasakla(hedefYasaklanacakTel, reason); KapatAdminPrompt(null, true); };
         let p = document.getElementById("admin-prompt-overlay"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10);
@@ -1725,7 +1858,7 @@
 
     async function AdminGercektenYasakla(tel, sebep) {
         try {
-            let user = firebase.auth().currentUser; if(!user) return; let idToken = await user.getIdToken(true);
+            let idToken = await AdminYetkiliToken(true);
             let payload = { sebep: sebep, ts: Date.now() };
             let res = await fetch(`${FIREBASE_URL}/YasakliHesaplar/${tel}.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(payload) });
             if(!res.ok) throw new Error("Veritabanı yazma izni reddedildi. (App Check hatası)");
@@ -1736,7 +1869,7 @@
     async function AdminYasakKaldira(tel) {
         SoruSor("Yasağı Kaldır", "Bu müşterinin engeli kaldırılacak. Emin misiniz?", "🔓", async () => {
             try {
-                let user = firebase.auth().currentUser; if(!user) return; let idToken = await user.getIdToken(true);
+                let idToken = await AdminYetkiliToken(true);
                 let res = await fetch(`${FIREBASE_URL}/YasakliHesaplar/${tel}.json?auth=${idToken}`, { method: "DELETE" });
                 if(!res.ok) throw new Error("İşlem reddedildi.");
                 OzelUyariGoster("Kaldırıldı", `${tel} numaralı müşterinin engeli açıldı.`, "✅"); AdminMusterileriListele(idToken);
@@ -1747,11 +1880,11 @@
     async function AdminKullaniciSil(tel) {
         SoruSor("Hesabı Sil", "Bu müşterinin veritabanındaki kaydı <b>kalıcı olarak silinecek</b>.<br><br>Emin misiniz?", "🗑", async () => {
             try {
-                let user = firebase.auth().currentUser; if(!user) return; let idToken = await user.getIdToken(true);
+                let idToken = await AdminYetkiliToken(true);
                 await fetch(`${FIREBASE_URL}/CarkKullanimlari/${tel}.json?auth=${idToken}`, { method: "DELETE" });
                 await fetch(`${FIREBASE_URL}/YasakliHesaplar/${tel}.json?auth=${idToken}`, { method: "DELETE" });
                 await fetch(`${FIREBASE_URL}/SilinmisHesaplar/${tel}.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify({ silinmeZamani: Date.now(), byAdmin: true }) });
-                let res = await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${tel}.json?auth=${idToken}`, { method: "DELETE" });
+                let res = await fetch(`${FIREBASE_URL}/DoğrulanmisHesaplar/${tel}.json?auth=${idToken}`, { method: "DELETE" });
                 if(!res.ok) throw new Error("Silme işlemi sunucu tarafından reddedildi.");
                 OzelUyariGoster("Silindi", `${tel} numaralı hesap veritabanından imha edildi.`, "✅"); AdminMusterileriListele(idToken); 
             } catch(e) { OzelUyariGoster("Hata", e.message, "❌"); }
@@ -1762,7 +1895,7 @@
         let d1 = document.getElementById("adm-cark-1").value || "Ekstra Patates"; let d2 = document.getElementById("adm-cark-2").value || "Pas"; let d3 = document.getElementById("adm-cark-3").value || "1 Lt İçecek"; let d4 = document.getElementById("adm-cark-4").value || "Pas"; let d5 = document.getElementById("adm-cark-5").value || "Fırın Sütlaç";
         let yeniOduller = [d1, d2, d3, d4, d5];
         try {
-            let user = firebase.auth().currentUser; if(!user) return; let idToken = await user.getIdToken(true);
+            let idToken = await AdminYetkiliToken(true);
             let res = await fetch(`${FIREBASE_URL}/DukkanDurumu/CarkOdulleri.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(yeniOduller) });
             if(!res.ok) throw new Error("Veritabanı reddetti (App Check hatası olabilir)");
             OzelUyariGoster("Başarılı", "Çark ödülleri başarıyla güncellendi.", "✅");
@@ -1774,7 +1907,7 @@
         if(!t || !b) { OzelUyariGoster("Hata", "Başlık ve mesaj boş olamaz.", "⚠"); return; }
         SoruSor("Dikkat", "Bu bildirim uygulamaya giren <b>TÜM MÜŞTERİLERİN</b> ekranında aniden belirecek. Göndermek istediğinize emin misiniz?", "📢", async () => {
             try {
-                let user = firebase.auth().currentUser; if(!user) return; let idToken = await user.getIdToken(true);
+                let idToken = await AdminYetkiliToken(true);
                 let payload = { baslik: t, mesaj: b, ts: Date.now() };
                 let res = await fetch(`${FIREBASE_URL}/SistemBildirimleri/GenelBildirim.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(payload) });
                 if(!res.ok) throw new Error("İşlem reddedildi. Kuralları veya AppCheck'i kontrol edin.");
@@ -1786,7 +1919,7 @@
     async function AdminKapanisGununuKaydet() {
         let secim = document.getElementById("adm-closed-day").value;
         try {
-            let user = firebase.auth().currentUser; if(!user) return; let idToken = await user.getIdToken(true);
+            let idToken = await AdminYetkiliToken(true);
             let res = await fetch(`${FIREBASE_URL}/DukkanDurumu/kapaliGun.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(secim) });
             if(!res.ok) throw new Error("Erişim engellendi.");
             OzelUyariGoster("Başarılı", "Haftalık kapanış günü ayarlandı.", "✅");
@@ -1797,7 +1930,7 @@
         let acilBtn = document.getElementById("adm-emergency-btn"); let suanKapalimi = acilBtn.innerText.includes("AÇ"); let yeniDurum = !suanKapalimi;
         SoruSor("Sistem Kill-Switch", yeniDurum ? "Tüm sipariş akışı durdurulacak ve müşteriler ekrandan atılacak! Emin misiniz?" : "Dükkan tekrar aktif edilecek. Emin misiniz?", "⚠️", async () => {
             try {
-                let user = firebase.auth().currentUser; if(!user) return; let idToken = await user.getIdToken(true);
+                let idToken = await AdminYetkiliToken(true);
                 let res = await fetch(`${FIREBASE_URL}/DukkanDurumu/acilKapat.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(yeniDurum) });
                 if(!res.ok) throw new Error("Sistem reddetti. Token geçersiz.");
                 OzelUyariGoster("Başarılı", yeniDurum ? "SİSTEM KAPATILDI." : "SİSTEM AÇILDI.", "✅");
@@ -1857,17 +1990,21 @@
         btn.disabled = true; btn.innerHTML = `<div class="spinner-small"></div> Giriş Yapılıyor...`;
 
         try {
-            let userCred = await firebase.auth().signInWithEmailAndPassword(email, pass); let user = userCred.user; 
+            await firebase.auth().setPersistence(email === 'kasa@bekmez.com'
+                ? firebase.auth.Auth.Persistence.SESSION : firebase.auth.Auth.Persistence.LOCAL);
+            let userCred = await firebase.auth().signInWithEmailAndPassword(email, pass); let user = userCred.user;
+            document.getElementById('login-pass').value='';
             if(email === "kasa@bekmez.com") { await AdminPaneleGec(); return; }
 
             let foundTel = user.displayName;
             if (!foundTel || foundTel.length < 10) {
                 let idToken = await user.getIdToken(true);
-                try { let res = await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar.json?auth=${idToken}`); let allUsers = await res.json(); if (allUsers && !allUsers.error) { for(let tel in allUsers) { if(allUsers[tel].email && allUsers[tel].email.toLowerCase() === email) { foundTel = tel; await user.updateProfile({ displayName: foundTel }); break; } } } } catch(err) {}
+                try { let res = await fetch(`${FIREBASE_URL}/DoğrulanmisHesaplar.json?auth=${idToken}`); let allUsers = await res.json(); if (allUsers && !allUsers.error) { for(let tel in allUsers) { if(allUsers[tel].email && allUsers[tel].email.toLowerCase() === email) { foundTel = tel; await user.updateProfile({ displayName: foundTel }); break; } } } } catch(err) {}
             }
             if(foundTel && foundTel.length >= 10) { let isBan = await BanKontrolu(foundTel); if(isBan) { await firebase.auth().signOut(); btn.disabled = false; btn.innerText = "Giriş Yap"; return; } await BasariliGirisIslemleri(foundTel, email, true); } 
             else { firebase.auth().signOut(); OzelUyariGoster("Güvenlik Güncellemesi", "Sistem güvenliği nedeniyle telefon numaranız eşleşmedi. Lütfen tekrar kayıt olun.", "🛡️"); AuthModuDegistir('register'); }
         } catch(e) { OzelUyariGoster("Giriş Başarısız", "Şifreniz veya E-Postanız hatalı.", "❌"); }
+        document.getElementById('login-pass').value='';
         btn.disabled = false; btn.innerText = "Giriş Yap";
     }
 
@@ -1888,9 +2025,12 @@
         // Dinleyiciler başlangıçta anonim açılmışsa oturum değişince yeniden yetkilendir.
         if (document.readyState !== 'loading') SistemAyarlariniDinle();
         if (user) {
-            if(user.email === "kasa@bekmez.com") { await AdminPaneleGec(); return; }
+            if((user.email || '').toLowerCase() === "kasa@bekmez.com") {
+                try { await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION); } catch(_) {}
+                await AdminPaneleGec(); return;
+            }
             let bekleyenTel = await SecureOku("bg_pending_tel"); let bekleyenEmail = await SecureOku("bg_pending_email");
-            if (bekleyenTel && bekleyenEmail && user.email === bekleyenEmail) { await user.reload(); if (user.emailVerified) { IptalEtEpostaBekleme(false); SayfaGoster('profil'); WhatsappDogrulamasiniBaslat(bekleyenTel, bekleyenEmail); } else { EpostaOnayiniBekle(user, bekleyenTel, bekleyenEmail); } }
+            if (bekleyenTel && bekleyenEmail && user.email === bekleyenEmail) { await user.reload(); if (user.emailVerified) { IptalEtEpostaBekleme(false); SayfaGoster('profil'); WhatsappDoğrulamasiniBaslat(bekleyenTel, bekleyenEmail); } else { EpostaOnayiniBekle(user, bekleyenTel, bekleyenEmail); } }
         }
     });
 
@@ -1909,11 +2049,11 @@
         } catch (e) { btn.innerText = "Hesabımı Oluştur"; btn.disabled = false; OzelUyariGoster("İşlem Başarısız", "Bağlantı hatası oluştu.", "📡"); }
     }
 
-    async function handleVerifiedUser(userCred, formatliTel, emailInput) { if(userCred.user.emailVerified) { await WhatsappIkinciDogrulama(formatliTel, emailInput, true); } else { await userCred.user.sendEmailVerification(); await SecureKaydet("bg_pending_tel", formatliTel); await SecureKaydet("bg_pending_email", emailInput); EpostaOnayiniBekle(userCred.user, formatliTel, emailInput); } }
+    async function handleVerifiedUser(userCred, formatliTel, emailInput) { if(userCred.user.emailVerified) { await WhatsappIkinciDoğrulama(formatliTel, emailInput, true); } else { await userCred.user.sendEmailVerification(); await SecureKaydet("bg_pending_tel", formatliTel); await SecureKaydet("bg_pending_email", emailInput); EpostaOnayiniBekle(userCred.user, formatliTel, emailInput); } }
 
     function EpostaOnayiniBekle(user, formatliTel, email) {
         let p = document.getElementById("email-wait-overlay"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10);
-        if(emailInterval) clearInterval(emailInterval); emailInterval = setInterval(async () => { try { await user.reload(); if (user.emailVerified) { clearInterval(emailInterval); p.classList.remove("active"); setTimeout(() => p.style.display = "none", 400); WhatsappDogrulamasiniBaslat(formatliTel, email); } } catch(e) {} }, 3000);
+        if(emailInterval) clearInterval(emailInterval); emailInterval = setInterval(async () => { try { await user.reload(); if (user.emailVerified) { clearInterval(emailInterval); p.classList.remove("active"); setTimeout(() => p.style.display = "none", 400); WhatsappDoğrulamasiniBaslat(formatliTel, email); } } catch(e) {} }, 3000);
     }
 
     async function IptalEtEpostaBekleme(tamamenIptal = false) {
@@ -1922,7 +2062,7 @@
         let p = document.getElementById("email-wait-overlay"); if(p) { p.classList.remove("active"); setTimeout(() => p.style.display = "none", 400); } let btn = document.getElementById("btn-email-verify"); if(btn) { btn.innerText = "Hesabımı Oluştur"; btn.disabled = false; }
     }
 
-    async function WhatsappDogrulamasiniBaslat(formatliTel, email, isLogin = false) {
+    async function WhatsappDoğrulamasiniBaslat(formatliTel, email, isLogin = false) {
         let kaydedilmisKod = await SecureOku("bg_wp_kod"); if (kaydedilmisKod) { aktifWhatsappKodu = kaydedilmisKod; } else { let rastgeleKod = Math.floor(1000 + Math.random() * 9000); aktifWhatsappKodu = `BKMZ-${rastgeleKod}`; await SecureKaydet("bg_wp_kod", aktifWhatsappKodu); }
         aktifWhatsappNumarasi = formatliTel.replace(/[^0-9]/g, ''); if (aktifWhatsappNumarasi.startsWith("0")) aktifWhatsappNumarasi = aktifWhatsappNumarasi.substring(1); if (aktifWhatsappNumarasi.startsWith("90")) aktifWhatsappNumarasi = aktifWhatsappNumarasi.substring(2);
         let wpOverlay = document.getElementById("whatsapp-wait-overlay"); if(!wpOverlay) { wpOverlay = document.createElement("div"); wpOverlay.id = "whatsapp-wait-overlay"; wpOverlay.className = "custom-alert-overlay"; wpOverlay.style.zIndex = "9999999"; document.body.appendChild(wpOverlay); }
@@ -1949,7 +2089,7 @@
         }, 3000);
     }
 
-    async function WhatsappIkinciDogrulama(formatliTel, email, isLogin) { if(isLogin) { await BasariliGirisIslemleri(formatliTel, email, true); return; } WhatsappDogrulamasiniBaslat(formatliTel, email); }
+    async function WhatsappIkinciDoğrulama(formatliTel, email, isLogin) { if(isLogin) { await BasariliGirisIslemleri(formatliTel, email, true); return; } WhatsappDoğrulamasiniBaslat(formatliTel, email); }
 
     async function WhatsappMesajiGonder() { HapticTitresim(); let dinlemeYazisi = document.getElementById("wp-dinleme-yazisi"); if (dinlemeYazisi) dinlemeYazisi.style.display = "block"; let btn = document.getElementById("wp-onay-btn"); if (btn) { btn.innerHTML = `<div class="spinner-small"></div> <span style="vertical-align:middle;">Onay Bekleniyor...</span>`; btn.style.background = "#1da851"; btn.style.boxShadow = "0 0 15px rgba(37, 211, 102, 0.8)"; } let mesaj = "Merhaba Bekmez GO. Hesabımı onaylamak için kodum: " + aktifWhatsappKodu; let url = `https://wa.me/${DUKKAN_WHATSAPP_NUMARASI}?text=${encodeURIComponent(mesaj)}`; await SecureKaydet("bg_wp_waiting", "true"); window.location.href = url; }
 
@@ -1960,12 +2100,12 @@
         if (user && user.displayName !== formatliTel) { await user.updateProfile({ displayName: formatliTel }).catch(()=>{}); }
         let kayitliIsim = "";
         try {
-            let dbKontrol = await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${formatliTel}.json?auth=${idToken}`); let dbData = await dbKontrol.json();
+            let dbKontrol = await fetch(`${FIREBASE_URL}/DoğrulanmisHesaplar/${formatliTel}.json?auth=${idToken}`); let dbData = await dbKontrol.json();
             kayitliIsim = (dbData && dbData.isim) ? dbData.isim : ""; let kayitliAdres = (dbData && dbData.adres) ? dbData.adres : "";
             let profIsimEl = document.getElementById("prof-isim"); if (profIsimEl && !profIsimEl.value && kayitliIsim) profIsimEl.value = kayitliIsim;
             let profAdresEl = document.getElementById("prof-adres"); if (profAdresEl && !profAdresEl.value && kayitliAdres) profAdresEl.value = kayitliAdres;
-            if (!dbData || !dbData.email) { await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${formatliTel}.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify({ email: email, tarih: new Date().toLocaleString(), kayitZamani: Date.now() }) }); } 
-            else { await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${formatliTel}.json?auth=${idToken}`, { method: "PATCH", body: JSON.stringify({ sonGiris: new Date().toLocaleString() }) }); }
+            if (!dbData || !dbData.email) { await fetch(`${FIREBASE_URL}/DoğrulanmisHesaplar/${formatliTel}.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify({ email: email, tarih: new Date().toLocaleString(), kayitZamani: Date.now() }) }); } 
+            else { await fetch(`${FIREBASE_URL}/DoğrulanmisHesaplar/${formatliTel}.json?auth=${idToken}`, { method: "PATCH", body: JSON.stringify({ sonGiris: new Date().toLocaleString() }) }); }
             await fetch(`${FIREBASE_URL}/SilinmisHesaplar/${formatliTel}.json?auth=${idToken}`, { method: "DELETE" });
         } catch (error) {}
 
@@ -1975,11 +2115,11 @@
 
         try {
             let carkRes = await fetch(`${FIREBASE_URL}/CarkKullanimlari/${formatliTel}.json?auth=${idToken}&t=${Date.now()}`); let carkData = await carkRes.json(); let sTime = await GetServerTimeFast();
-            if (carkData && carkData.bitis && sTime < carkData.bitis) { await SecureKaydet("bg_cark_data", btoa(encodeURIComponent(`${carkData.odul}|||${carkData.bitis}|||${CARK_SALT}|||${formatliTel}`))); } else { await SecureSil("bg_cark_data"); }
+            if (carkData && carkData.bitis && sTime < carkData.bitis) { await SecureKaydet("bg_cark_data", btoa(encodeURIComponent(`${carkData.odul}|||${carkData.bitis}|||${CARK_LEGACY_MARKER}|||${formatliTel}`))); } else { await SecureSil("bg_cark_data"); }
         } catch(e) {}
 
         try {
-            let adisyonRes = await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${formatliTel}/aktifSiparis.json?auth=${idToken}&t=${Date.now()}`); let adisyonData = await adisyonRes.json();
+            let adisyonRes = await fetch(`${FIREBASE_URL}/DoğrulanmisHesaplar/${formatliTel}/aktifSiparis.json?auth=${idToken}&t=${Date.now()}`); let adisyonData = await adisyonRes.json();
             if(adisyonData && adisyonData.siparisId) { await SecureKaydet("bg_active_order_id", adisyonData.siparisId); await SecureKaydet("bg_order_timestamp", adisyonData.zamanMuhru); if(adisyonData.odemeTuru) await SecureKaydet("bg_odeme_turu", adisyonData.odemeTuru); }
         } catch(e) {}
 
@@ -1998,19 +2138,19 @@
         await SecureKaydet("bg_i", i); await SecureKaydet("bg_a", a);
         let chkIsim = document.getElementById("chk-isim"); let chkAdres = document.getElementById("chk-adres"); if(chkIsim) chkIsim.value = i; if(chkAdres) chkAdres.value = a;
         let tel = await SecureOku("bg_t"); let authUser = firebase.auth().currentUser;
-        if(tel && authUser) { try { let idToken = await authUser.getIdToken(true); await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${tel}.json?auth=${idToken}`, { method: "PATCH", body: JSON.stringify({ isim: i, adres: a }) }); } catch(e){} }
+        if(tel && authUser) { try { let idToken = await authUser.getIdToken(true); await fetch(`${FIREBASE_URL}/DoğrulanmisHesaplar/${tel}.json?auth=${idToken}`, { method: "PATCH", body: JSON.stringify({ isim: i, adres: a }) }); } catch(e){} }
         if(alertGoster) { HapticTitresim(); OzelUyariGoster("Başarılı", "Profil bilgileriniz kaydedildi.", "✅"); ProfilArayuzunuGuncelle(true, i); }
     }
 
     function SadeceCikisYap() { SoruSor("Oturumu Kapat", "Cihazınızdaki mevcut oturumu kapatmak istediğinize emin misiniz?", "🚪", async () => { HapticTitresim(); document.body.innerHTML += `<div style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999999;display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;font-weight:bold;backdrop-filter:blur(10px);"><div class="spinner"></div><div style="margin-top:20px; font-size:18px;">Güvenli Çıkış Yapılıyor...</div></div>`; await TemizleOturumVerileri(); }, false); }
 
-    async function TemizleOturumVerileri() { try { await PushCihazKaydiniSil(); if (fotoSupabase) { try { await fotoSupabase.auth.signOut(); } catch(e) { console.warn("Supabase oturumu kapanamadı", e); } } if(firebase.auth().currentUser) { await firebase.auth().signOut(); } localStorage.clear(); setTimeout(() => { window.location.reload(true); }, 800); } catch(e) { localStorage.clear(); window.location.reload(true); } }
+    async function TemizleOturumVerileri() { try { await PushCihazKaydiniSil(); if (fotoSupabase) { try { await fotoSupabase.auth.signOut(); } catch(e) { console.warn("Supabase oturumu kapanamadı", e); } } if(firebase.auth().currentUser) { await firebase.auth().signOut(); } localStorage.clear(); sessionStorage.clear(); bgAdminVerifiedUid=null; bgAdminVerifiedUntil=0; bgAdminRecentAuthUntil=0; setTimeout(() => { window.location.reload(true); }, 800); } catch(e) { localStorage.clear(); window.location.reload(true); } }
 
     async function HesabiTamamenSil() {
         let tel = await SecureOku("bg_t"); if (!tel) return;
         try {
             let authUser = firebase.auth().currentUser; if(!authUser) return; let idToken = await authUser.getIdToken(true);
-            let res = await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${tel}.json?auth=${idToken}`); let d = await res.json();
+            let res = await fetch(`${FIREBASE_URL}/DoğrulanmisHesaplar/${tel}.json?auth=${idToken}`); let d = await res.json();
             if (d && d.kayitZamani) {
                 let gecenZamanMs = Date.now() - d.kayitZamani; let yediGunMs = 7 * 24 * 60 * 60 * 1000;
                 if (gecenZamanMs < yediGunMs) { let kalanGun = Math.ceil((yediGunMs - gecenZamanMs) / (1000 * 60 * 60 * 24)); OzelUyariGoster("Güvenlik Kilidi 🛡️", `Hesabınızı silebilmek için <b>${kalanGun} gün</b> daha beklemelisiniz.`, "⏳"); return; }
@@ -2028,7 +2168,7 @@
                     let temizTel = tel.replace(/[^0-9]/g, ''); await fetch(`${FIREBASE_URL}/WhatsappOnayliNumaralar/${temizTel}.json?auth=${idToken}`, { method: "DELETE" });
                     await fetch(`${FIREBASE_URL}/SilinmisHesaplar/${tel}.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify({ silinmeZamani: Date.now() }) });
                     
-                    let res = await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${tel}.json?auth=${idToken}`, { method: "DELETE" });
+                    let res = await fetch(`${FIREBASE_URL}/DoğrulanmisHesaplar/${tel}.json?auth=${idToken}`, { method: "DELETE" });
                     if(!res.ok) throw new Error("Silme işlemi sunucu tarafından reddedildi.");
                     
                     await authUser.delete(); await TemizleOturumVerileri(); 
@@ -2068,7 +2208,7 @@
 
             if (isWaitingWp === "true" && pTel && pMail) {
                 let splash = document.getElementById('splash-screen'); if (splash) { splash.style.display = 'none'; splash.style.opacity = '0'; }
-                SayfaGoster('profil'); WhatsappDogrulamasiniBaslat(pTel, pMail);
+                SayfaGoster('profil'); WhatsappDoğrulamasiniBaslat(pTel, pMail);
             } else {
                 let st = new Date().getHours(); let m = "Hoş Geldiniz ✨"; 
                 if (st >= 5 && st < 11) m = "Günaydın ☀️"; else if (st >= 11 && st < 17) m = "İyi Günler 🌤️"; else if (st >= 17 && st < 22) m = "İyi Akşamlar 🌙"; else m = "İyi Geceler 🌌";
@@ -2089,7 +2229,7 @@
                     if (authUser) {
                         if(authUser.email === "kasa@bekmez.com") { await AdminPaneleGec(); return; }
                         let idToken = await authUser.getIdToken(true);
-                        let adisyonRes = await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${kt}/aktifSiparis.json?auth=${idToken}&t=${Date.now()}`);
+                        let adisyonRes = await fetch(`${FIREBASE_URL}/DoğrulanmisHesaplar/${kt}/aktifSiparis.json?auth=${idToken}&t=${Date.now()}`);
                         let adisyonData = await adisyonRes.json();
                         if(adisyonData && adisyonData.siparisId) {
                             await SecureKaydet("bg_active_order_id", adisyonData.siparisId);
@@ -2171,9 +2311,12 @@
     const FOTO_SB_BUCKET = "Bekmez-GO Photos";
     const FOTO_ADMIN_UID = "9ee8f01d-80e1-4676-8c97-7fc47ddf0e99";
     const FOTO_TABLE = "bekmez_urun_fotograflari";
+    // Yonetici Supabase refresh token'ini kalici localStorage'a yazmayiz.
+    // Eski surumun projeye ait kalici oturumu kullanilmayacak (tekrar giris gerekir).
+    try { localStorage.removeItem('sb-nwzxvksywfzpvxwvtypf-auth-token'); } catch (_) {}
     const fotoSupabase = window.supabase && typeof window.supabase.createClient === 'function'
         ? window.supabase.createClient(FOTO_SB_URL, FOTO_SB_PUBLIC_KEY, {
-            auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, flowType: 'implicit' }
+            auth: { persistSession: true, storage: window.sessionStorage, storageKey: 'bekmez-photo-admin-session-v2', autoRefreshToken: true, detectSessionInUrl: true, flowType: 'implicit' }
           }) : null;
 
     // ===========================================================
@@ -2245,7 +2388,7 @@
             FotoSifreMesaj('photo-reset-request-status','E-posta gönderimi başarısız: '+(e?.message||'Bilinmeyen hata'),true);
         } finally { btn.disabled = false; }
     }
-    async function FotoSifreKurtarmaDogrula() {
+    async function FotoSifreKurtarmaDoğrula() {
         if(fotoSifreKurtarmaOnayli || fotoSifreKurtarmaKontrol || !fotoSupabase) return;
         fotoSifreKurtarmaKontrol = true;
         try {
@@ -2298,7 +2441,7 @@
     if(fotoSupabase) {
         fotoSupabase.auth.onAuthStateChange((event, session) => {
             if(event === 'PASSWORD_RECOVERY' && session && fotoSifreGelenKurtarma) {
-                setTimeout(FotoSifreKurtarmaDogrula, 0);
+                setTimeout(FotoSifreKurtarmaDoğrula, 0);
             }
         });
     }
@@ -2313,7 +2456,7 @@
             setTimeout(async () => {
                 if(fotoSifreKurtarmaOnayli) return;
                 const {data,error} = await fotoSupabase.auth.getSession();
-                if(!error && data?.session && fotoSifreGelenAccessToken && data.session.access_token === fotoSifreGelenAccessToken) return FotoSifreKurtarmaDogrula();
+                if(!error && data?.session && fotoSifreGelenAccessToken && data.session.access_token === fotoSifreGelenAccessToken) return FotoSifreKurtarmaDoğrula();
                 FotoSifreMesaj('photo-reset-request-status','Kurtarma bağlantısı geçersiz veya süresi dolmuş. Yeni bağlantı iste.',true);
             }, 1700);
         }
@@ -2937,7 +3080,7 @@
         if (cDataRaw) {
             try {
                 let dec = decodeURIComponent(atob(cDataRaw)); let parts = dec.split("|||");
-                if (parts.length === 4 && parts[2] === CARK_SALT && parts[3] === tel) {
+                if (parts.length === 4 && parts[2] === CARK_LEGACY_MARKER && parts[3] === tel) {
                     let odul = parts[0]; let bitis = parseInt(parts[1]); let sTime = await GetServerTimeFast();
                     if (sTime < bitis) {
                         if (odul === "😔 Pas") { if(b) b.style.display = "none"; if(aHK) aHK.style.display = "none"; } 
@@ -2978,7 +3121,7 @@
                 let carkRes = await fetch(`${FIREBASE_URL}/CarkKullanimlari/${tel}.json?auth=${idToken}&t=${Date.now()}`);
                 let carkData = await carkRes.json();
                 if (carkData && !carkData.error && carkData.bitis && await GetServerTimeFast() < carkData.bitis) {
-                    await SecureKaydet("bg_cark_data", btoa(encodeURIComponent(`${carkData.odul}|||${carkData.bitis}|||${CARK_SALT}|||${tel}`)));
+                    await SecureKaydet("bg_cark_data", btoa(encodeURIComponent(`${carkData.odul}|||${carkData.bitis}|||${CARK_LEGACY_MARKER}|||${tel}`)));
                     CarkDurumunuKontrolEt(); OzelUyariGoster("Zaten Çevirdin", "Hesabınızda aktif bir çark çevirme kaydı bulundu.", "⏳"); return;
                 }
             } catch(e){}
@@ -3011,7 +3154,7 @@
             }
             
             let sTime = await GetServerTimeFast(); let bitisSuresi = sTime + (7 * 24 * 60 * 60 * 1000); // 7 Gün
-            await SecureKaydet("bg_cark_data", btoa(encodeURIComponent(`${odul}|||${bitisSuresi}|||${CARK_SALT}|||${tel}`)));
+            await SecureKaydet("bg_cark_data", btoa(encodeURIComponent(`${odul}|||${bitisSuresi}|||${CARK_LEGACY_MARKER}|||${tel}`)));
             
             let uAuth = firebase.auth().currentUser;
             if(uAuth) {
@@ -3030,7 +3173,7 @@
         if (cDataRaw) { 
             try { 
                 let dec = decodeURIComponent(atob(cDataRaw)); let parts = dec.split("|||"); 
-                if (parts.length === 4 && parts[2] === CARK_SALT && parts[3] === tel) { 
+                if (parts.length === 4 && parts[2] === CARK_LEGACY_MARKER && parts[3] === tel) { 
                     aktifKullanilanCarkOdulu = parts[0]; 
                     document.getElementById("aktif-cark-hediye-kutusu").style.display = "none"; document.getElementById("aktif-hediye-uyari").style.display = "block"; document.getElementById("sepet-hediye-yazi").innerText = `${escapeHTML(aktifKullanilanCarkOdulu)} Hediyesi Eklendi!`; 
                     SayfaGoster('sepet'); OzelUyariGoster("Hediye Eklendi", `${escapeHTML(aktifKullanilanCarkOdulu)} sepetinize hediye olarak tanımlandı.`, "🎁"); 
@@ -3176,7 +3319,7 @@
             let benzersizSiparisID = generateUUID();
             let sunucuyaGidecekSepet = temizSepet.map(u => ({ rawName: u.rawName, tamIsim: (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName, miktar: (u.baseStockAmount * u.quantity) }));
 
-            let tZaman = Date.now(); let zM = ZamanMuhruSifrele(tZaman, benzersizSiparisID);
+            let tZaman = Date.now(); let zM = ZamanMuhruKodla(tZaman, benzersizSiparisID);
 
             let taslakVerisi = { 
                 uid: authUser.uid, telefon: tel, musteriAd: isim, adres: adres, odemeTuru: odemeTuru, 
@@ -3188,9 +3331,11 @@
 
             let idToken = await authUser.getIdToken(true);
             let taslakRes = await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${benzersizSiparisID}.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(taslakVerisi) });
-            if(!taslakRes.ok) throw new Error("Sipariş iletilemedi (App Check hatası)");
+            if(!taslakRes.ok) throw new Error("Sipariş iletilemedi (HTTP " + taslakRes.status + ")");
 
-            await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${tel}/aktifSiparis.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify({ siparisId: benzersizSiparisID, zamanMuhru: zM, odemeTuru: odemeTuru }) });
+            const profilSiparisRes = await fetch(`${FIREBASE_URL}/DoğrulanmisHesaplar/${tel}/aktifSiparis.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify({ siparisId: benzersizSiparisID, zamanMuhru: zM, odemeTuru: odemeTuru }) });
+            // Siparis kaydi basariliysa profil baglantisi hatasinda ikinci siparis gonderme.
+            if(!profilSiparisRes.ok) console.warn("Siparis kaydedildi; profil takip baglantisi guncellenemedi:", profilSiparisRes.status);
 
             if (aktifKullanilanCarkOdulu !== null) { await SecureSil("bg_cark_data"); aktifKullanilanCarkOdulu = null; await fetch(`${FIREBASE_URL}/CarkKullanimlari/${tel}.json?auth=${idToken}`, { method: "DELETE" }); }
 
@@ -3278,7 +3423,7 @@
             if (!bP || bP.error) {
                 let taslakRes = await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}.json?auth=${idToken}&t=${Date.now()}`); let taslakData = await taslakRes.json();
                 if (taslakData && !taslakData.error && taslakData.durum) {
-                    let rawOrderTs = await SecureOku("bg_order_timestamp"); let orderTs = rawOrderTs ? ZamanMuhruCoz(rawOrderTs, siparisId) : GetServerTimeFast();
+                    let rawOrderTs = await SecureOku("bg_order_timestamp"); let orderTs = rawOrderTs ? ZamanMuhruOku(rawOrderTs, siparisId) : GetServerTimeFast();
                     let leftMs = 180000 - (GetServerTimeFast() - orderTs); let canEdit = false;
                     if(leftMs > 0 && orderTs > 0) { canEdit = true; }
                     
@@ -3308,7 +3453,7 @@
                 let oncekiDurum = await SecureOku("bg_last_status") || "";
                 if (dR !== oncekiDurum) { await SecureKaydet("bg_last_status", dR); if (dR.includes("TESLİM") || dR.includes("AFİYET")) { BildirimGonder("Afiyet Olsun! 😋", "Bekmez GO: Siparişiniz teslim edildi. Bizi tercih ettiğiniz için teşekkür ederiz!"); } else if (dR.includes("YOLDA") || dR.includes("KURYE")) { BildirimGonder("Kurye Yola Çıktı! 🛵", "Siparişiniz yola çıktı, gelmek üzere!"); } }
 
-                let rawOrderTs = await SecureOku("bg_order_timestamp"); let orderTs = rawOrderTs ? ZamanMuhruCoz(rawOrderTs, siparisId) : GetServerTimeFast();
+                let rawOrderTs = await SecureOku("bg_order_timestamp"); let orderTs = rawOrderTs ? ZamanMuhruOku(rawOrderTs, siparisId) : GetServerTimeFast();
                 let leftMs = 180000 - (GetServerTimeFast() - orderTs); let canEdit = false; let lockMsg = "";
 
                 if (dR.includes("HAZIRLANIYOR") || dR.includes("SİPARİŞ ALINDI")) { durumRenk = "var(--primary)"; durumBg = "rgba(255,107,0,0.1)"; durumIkon = "👨‍🍳"; if(leftMs > 0 && orderTs > 0) { canEdit = true; } else { lockMsg = "3 dakikalık süre doldu."; } }
@@ -3332,7 +3477,7 @@
         } catch(e) {}
     }
 
-    async function BuluttanAktifAdisyonuSil() { try { let tel = await SecureOku("bg_t"); let authUser = firebase.auth().currentUser; if(tel && authUser) { let idToken = await authUser.getIdToken(true); await fetch(`${FIREBASE_URL}/DogrulanmisHesaplar/${tel}/aktifSiparis.json?auth=${idToken}`, { method: "DELETE" }); } } catch(e){} }
+    async function BuluttanAktifAdisyonuSil() { try { let tel = await SecureOku("bg_t"); let authUser = firebase.auth().currentUser; if(tel && authUser) { let idToken = await authUser.getIdToken(true); await fetch(`${FIREBASE_URL}/DoğrulanmisHesaplar/${tel}/aktifSiparis.json?auth=${idToken}`, { method: "DELETE" }); } } catch(e){} }
 
     async function IptalOnaySor() {
         SoruSor("Siparişi İptal Et", "Siparişiniz henüz hazırlanmaya başlanmadı. İptal etmek istediğinize emin misiniz?", "❌", async () => {
