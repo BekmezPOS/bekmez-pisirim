@@ -414,6 +414,19 @@
         .photo-admin-file{width:100%;font:600 12px inherit;color:#ddd;padding:10px 0;}
         .photo-admin-file::file-selector-button{background:#27272b;color:white;border:1px solid #4b4b55;border-radius:10px;padding:10px;margin-right:10px;cursor:pointer;}
 
+
+        /* SUPABASE YÖNETİCİ ŞİFRESİ - aynı paket.html içinde, ek sayfa yok */
+        #photo-password-overlay{position:fixed;inset:0;z-index:2147483647;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.96);overflow-y:auto;}
+        #photo-password-overlay.photo-password-open{display:flex;}
+        .photo-password-card{width:100%;max-width:430px;max-height:calc(100dvh - 32px);overflow:auto;border:1px solid rgba(255,255,255,.12);background:linear-gradient(155deg,#202026,#0a0a0d);padding:25px 22px;border-radius:25px;box-shadow:0 20px 60px rgba(0,0,0,.7);}
+        .photo-password-card h2{font-size:23px;margin:0 0 10px;line-height:1.2;}
+        .photo-password-card p{font-size:13px;line-height:1.55;color:#a1a1aa;}
+        .photo-password-card label{display:block;font-size:12px;font-weight:800;margin-bottom:7px;}
+        .photo-password-card input{width:100%;height:50px;border-radius:12px;border:1px solid #44444b;background:#08080b;color:white;padding:0 13px;font-size:15px;margin-bottom:14px;}
+        .photo-password-card input:focus{outline:2px solid rgba(255,107,0,.45);border-color:#ff6b00;}
+        .photo-password-card [hidden]{display:none!important;}
+        .photo-password-card .password-feedback{font-size:12px;line-height:1.5;margin-top:12px;min-height:19px;overflow-wrap:anywhere;}
+        .photo-password-card button:disabled{opacity:.6;cursor:wait;}
     </style>
 </head>
 <body>
@@ -550,6 +563,7 @@
                     <input id="photo-admin-email" type="email" class="admin-input" placeholder="Supabase yönetici e-postası" autocomplete="username">
                     <input id="photo-admin-pass" type="password" class="admin-input" placeholder="Supabase şifresi" autocomplete="current-password">
                     <button class="admin-btn" type="button" style="background:var(--primary)" onclick="FotoAdminGiris()">Görsel Yönetimine Giriş</button>
+                    <button class="btn-del" type="button" style="margin-top:12px;width:100%;padding:12px;" onclick="FotoSifrePanelAc()">Supabase şifremi oluştur / unuttum</button>
                 </div>
                 <div id="photo-admin-editor" style="display:none;">
                     <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;">
@@ -573,6 +587,42 @@
                 <p id="photo-admin-status" class="photo-admin-note" role="status" aria-live="polite"></p>
             </div>
         </div>
+    </div>
+
+
+    <!-- Supabase şifre kurtarma. E-posta dönüşü paket.html içinde tamamlanır. -->
+    <div id="photo-password-overlay" role="dialog" aria-modal="true" aria-labelledby="photo-password-heading">
+      <div class="photo-password-card">
+        <div style="font-size:12px;color:#ff9500;letter-spacing:1px;font-weight:900;margin-bottom:15px;">BEKMEZ GO • GÖRSEL YÖNETİMİ</div>
+        <section id="photo-password-request">
+          <h2 id="photo-password-heading">Supabase şifreni oluştur</h2>
+          <p>Bu işlem sadece ürün görsellerini yöneten Supabase hesabının şifresi içindir. Firebase kasa şifreni veya veritabanı şifreni kullanma.</p>
+          <form id="photo-password-request-form" onsubmit="FotoSifreMailGonder(event)">
+            <label for="photo-reset-email">Supabase yönetici e-postası</label>
+            <input id="photo-reset-email" type="email" autocomplete="email" required maxlength="254" placeholder="ornek@eposta.com">
+            <button id="photo-reset-send" class="admin-btn" style="background:var(--primary)" type="submit">Şifre belirleme bağlantısı gönder</button>
+          </form>
+          <p id="photo-reset-request-status" class="password-feedback" role="status" aria-live="polite"></p>
+          <button class="btn-del" style="width:100%;padding:11px;" type="button" onclick="FotoSifrePanelKapat()">Geri dön</button>
+        </section>
+        <section id="photo-password-new" hidden>
+          <h2>Yeni şifreni belirle</h2>
+          <p>E-posta bağlantısı doğrulandı. Güçlü ve başka yerde kullanmadığın bir şifre seç.</p>
+          <form id="photo-password-update-form" onsubmit="FotoSifreKaydet(event)">
+            <label for="photo-reset-new-password">Yeni şifre (en az 12 karakter)</label>
+            <input id="photo-reset-new-password" type="password" minlength="12" autocomplete="new-password" required>
+            <label for="photo-reset-confirm-password">Yeni şifre tekrar</label>
+            <input id="photo-reset-confirm-password" type="password" minlength="12" autocomplete="new-password" required>
+            <button id="photo-reset-save" class="admin-btn" style="background:var(--primary)" type="submit">Yeni şifreyi kaydet</button>
+          </form>
+          <p id="photo-reset-save-status" class="password-feedback" role="status" aria-live="polite"></p>
+        </section>
+        <section id="photo-password-done" hidden>
+          <h2>✓ Şifren kaydedildi</h2>
+          <p>Artık Firebase kasa yönetimine girip <b>Ürün Görselleri</b> sekmesinde bu Supabase şifresiyle giriş yapabilirsin.</p>
+          <button class="admin-btn" style="background:var(--primary)" type="button" onclick="window.location.href='https://bekmezpos.github.io/bekmez-pisirim/paket.html'">Bekmez GO'ya dön</button>
+        </section>
+      </div>
     </div>
 
     <!-- DÜKKAN KAPALI EKRANI (Tüm Kullanıcılara Gözükecek) -->
@@ -1628,6 +1678,11 @@
     }, 3500);
 
     window.addEventListener('DOMContentLoaded', async () => {
+        if(fotoSifreAkisiAktif) {
+            const s = document.getElementById('splash-screen');
+            if(s) s.style.display = 'none';
+            return;
+        }
         try {
             SyncServerTime(); 
             if(typeof SistemAyarlariniDinle === "function") SistemAyarlariniDinle();
@@ -1742,8 +1797,152 @@
     const FOTO_TABLE = "bekmez_urun_fotograflari";
     const fotoSupabase = window.supabase && typeof window.supabase.createClient === 'function'
         ? window.supabase.createClient(FOTO_SB_URL, FOTO_SB_PUBLIC_KEY, {
-            auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
+            auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, flowType: 'implicit' }
           }) : null;
+
+    // ===========================================================
+    // SUPABASE ŞİFRE KURTARMA - AYNI paket.html SAYFASINDA
+    // Not: parola yalnızca Supabase Auth'a gönderilir, Firebase'e yazılmaz.
+    // ===========================================================
+    const FOTO_SIFRE_DONUS_URL = 'https://bekmezpos.github.io/bekmez-pisirim/paket.html';
+    const fotoSifreGelenHash = new URLSearchParams(window.location.hash.substring(1));
+    const fotoSifreGelenQuery = new URLSearchParams(window.location.search);
+    const fotoSifreGelenKurtarma = fotoSifreGelenHash.get('type') === 'recovery' || fotoSifreGelenQuery.get('type') === 'recovery';
+    const fotoSifreGelenAccessToken = fotoSifreGelenHash.get('access_token');
+    const fotoSifreGelenHata = fotoSifreGelenHash.get('error_code') || fotoSifreGelenHash.get('error_description') || fotoSifreGelenQuery.get('error_code') || fotoSifreGelenQuery.get('error_description');
+    let fotoSifreAkisiAktif = Boolean(fotoSifreGelenKurtarma || fotoSifreGelenHata);
+    let fotoSifreKurtarmaOnayli = false;
+    let fotoSifreKurtarmaKontrol = false;
+
+    function FotoSifreMesaj(id, mesaj, hata = false) {
+        const el = document.getElementById(id);
+        if(el) { el.textContent = mesaj; el.style.color = hata ? '#ff8585' : '#bce7c1'; }
+    }
+    function FotoSifreBolumAc(bolum) {
+        for(const [kimlik, isim] of [['photo-password-request','request'],['photo-password-new','new'],['photo-password-done','done']]) {
+            const el = document.getElementById(kimlik);
+            if(el) el.hidden = isim !== bolum;
+        }
+    }
+    function FotoSifrePanelGoster() {
+        const overlay = document.getElementById('photo-password-overlay');
+        if(overlay) overlay.classList.add('photo-password-open');
+    }
+    function FotoSifrePanelAc() {
+        if(!isAdmin || firebase.auth().currentUser?.email !== 'kasa@bekmez.com') {
+            FotoAdminMesaj('Şifre bağlantısını yalnızca Firebase kasa yönetiminden isteyebilirsin.',true);
+            return;
+        }
+        fotoSifreAkisiAktif = true;
+        FotoSifreBolumAc('request');
+        const email = document.getElementById('photo-admin-email')?.value || '';
+        const input = document.getElementById('photo-reset-email');
+        if(input) input.value = email;
+        FotoSifreMesaj('photo-reset-request-status','');
+        FotoSifrePanelGoster();
+    }
+    function FotoSifrePanelKapat() {
+        // Kurtarma linkiyle girildiyse, hassas URL parametreleri korunmasın.
+        if(fotoSifreGelenKurtarma || fotoSifreGelenHata) {
+            window.location.replace(FOTO_SIFRE_DONUS_URL);
+            return;
+        }
+        const overlay = document.getElementById('photo-password-overlay');
+        if(overlay) overlay.classList.remove('photo-password-open');
+        fotoSifreAkisiAktif = false;
+    }
+    async function FotoSifreMailGonder(event) {
+        event.preventDefault();
+        const btn = document.getElementById('photo-reset-send');
+        const email = document.getElementById('photo-reset-email')?.value.trim() || '';
+        if(!email || !fotoSupabase) {
+            FotoSifreMesaj('photo-reset-request-status','E-posta veya Supabase bağlantısı eksik.',true);
+            return;
+        }
+        btn.disabled = true;
+        FotoSifreMesaj('photo-reset-request-status','Şifre belirleme e-postası isteniyor...');
+        try {
+            const {error} = await fotoSupabase.auth.resetPasswordForEmail(email, {redirectTo: FOTO_SIFRE_DONUS_URL});
+            if(error) throw error;
+            FotoSifreMesaj('photo-reset-request-status','E-posta hesabı kayıtlıysa bir şifre belirleme bağlantısı gönderildi. Gelen kutusunu ve spam klasörünü kontrol et.');
+        } catch(e) {
+            FotoSifreMesaj('photo-reset-request-status','E-posta gönderimi başarısız: '+(e?.message||'Bilinmeyen hata'),true);
+        } finally { btn.disabled = false; }
+    }
+    async function FotoSifreKurtarmaDogrula() {
+        if(fotoSifreKurtarmaOnayli || fotoSifreKurtarmaKontrol || !fotoSupabase) return;
+        fotoSifreKurtarmaKontrol = true;
+        try {
+            const {data,error} = await fotoSupabase.auth.getUser();
+            if(error || !data?.user || data.user.id !== FOTO_ADMIN_UID) throw new Error('Kurtarma bağlantısı yönetici hesabıyla eşleşmiyor. Yeni bağlantı iste.');
+            fotoSifreKurtarmaOnayli = true;
+            FotoSifreBolumAc('new');
+            FotoSifrePanelGoster();
+            // SDK tokeni işledikten sonra URL'deki erişim bilgilerini kaldır.
+            history.replaceState(null, '', window.location.pathname);
+        } catch(e) {
+            FotoSifreBolumAc('request');
+            FotoSifrePanelGoster();
+            FotoSifreMesaj('photo-reset-request-status', e.message, true);
+        } finally { fotoSifreKurtarmaKontrol = false; }
+    }
+    async function FotoSifreKaydet(event) {
+        event.preventDefault();
+        if(!fotoSifreKurtarmaOnayli || !fotoSupabase) {
+            FotoSifreMesaj('photo-reset-save-status','Önce e-posta bağlantısını doğrula.',true);
+            return;
+        }
+        const yeni = document.getElementById('photo-reset-new-password').value;
+        const tekrar = document.getElementById('photo-reset-confirm-password').value;
+        if(yeni.length < 12 || yeni !== tekrar) {
+            FotoSifreMesaj('photo-reset-save-status','Şifre en az 12 karakter olmalı ve her iki alan aynı olmalı.',true);
+            return;
+        }
+        const btn = document.getElementById('photo-reset-save');
+        btn.disabled = true;
+        FotoSifreMesaj('photo-reset-save-status','Şifre kaydediliyor...');
+        try {
+            // Tekrar doğrula: yanlış Supabase kullanıcısının parolası değiştirilmesin.
+            const {data:current,error:currentError} = await fotoSupabase.auth.getUser();
+            if(currentError || current?.user?.id !== FOTO_ADMIN_UID) throw new Error('Yönetici oturumu geçersiz.');
+            const {error} = await fotoSupabase.auth.updateUser({password:yeni});
+            if(error) throw error;
+            document.getElementById('photo-reset-new-password').value = '';
+            document.getElementById('photo-reset-confirm-password').value = '';
+            const {error:logoutErr} = await fotoSupabase.auth.signOut();
+            if(logoutErr) console.warn('Parola değişti, ancak oturum kapatma hatası:',logoutErr.message);
+            history.replaceState(null,'',window.location.pathname);
+            FotoSifreBolumAc('done');
+            FotoSifreMesaj('photo-reset-save-status','');
+        } catch(e) {
+            FotoSifreMesaj('photo-reset-save-status','Şifre kaydedilemedi: '+(e?.message||'Bilinmeyen hata'),true);
+        } finally {btn.disabled = false;}
+    }
+    // CALLBACK: ağ çağrısı callback içinde beklenmez; auth kitaplığında kilitlenme olmasın.
+    if(fotoSupabase) {
+        fotoSupabase.auth.onAuthStateChange((event, session) => {
+            if(event === 'PASSWORD_RECOVERY' && session && fotoSifreGelenKurtarma) {
+                setTimeout(FotoSifreKurtarmaDogrula, 0);
+            }
+        });
+    }
+    if(fotoSifreAkisiAktif) {
+        FotoSifreBolumAc('request');
+        FotoSifrePanelGoster();
+        if(fotoSifreGelenHata) FotoSifreMesaj('photo-reset-request-status','Bağlantının süresi dolmuş veya bağlantı geçersiz. Yeni bağlantı iste.',true);
+        else FotoSifreMesaj('photo-reset-request-status','Şifre kurtarma bağlantısı doğrulanıyor...');
+        if(!fotoSupabase) FotoSifreMesaj('photo-reset-request-status','Supabase kütüphanesi yüklenemedi.',true);
+        else if(fotoSifreGelenKurtarma) {
+            // PASSWORD_RECOVERY olayı yakalanamazsa yalnızca URL'deki aynı tokenla oluşturulmuş oturumu kabul et.
+            setTimeout(async () => {
+                if(fotoSifreKurtarmaOnayli) return;
+                const {data,error} = await fotoSupabase.auth.getSession();
+                if(!error && data?.session && fotoSifreGelenAccessToken && data.session.access_token === fotoSifreGelenAccessToken) return FotoSifreKurtarmaDogrula();
+                FotoSifreMesaj('photo-reset-request-status','Kurtarma bağlantısı geçersiz veya süresi dolmuş. Yeni bağlantı iste.',true);
+            }, 1700);
+        }
+    }
+
     let fotoHaritasi = Object.create(null);
     let fotoSonCekilis = 0;
     let fotoAdminUrunler = [];
