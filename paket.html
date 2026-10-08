@@ -547,15 +547,7 @@
         .bg-notify-bell{width:40px;height:40px;display:grid;place-items:center;border-radius:13px;background:rgba(255,107,0,.13);color:var(--primary);font-size:19px}
         .bg-notify-box h3{font-size:15px;line-height:1.3;margin:0;color:#fff;font-weight:800;letter-spacing:-.25px}
         .bg-notify-help{font-size:12px;line-height:1.55;color:#acaab3;margin:0 0 14px}
-        .bg-notify-settings{display:flex;align-items:center;gap:12px;justify-content:space-between;margin:10px 0 13px;padding:10px 12px;border-radius:12px;background:rgba(0,0,0,.26)}
-        .bg-notify-settings label{font-size:13px;color:#f2f2f5;font-weight:700;cursor:pointer}
-        .bg-notify-settings input{width:19px;height:19px;accent-color:#ff6b00;cursor:pointer}
-        .bg-notify-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-        .bg-notify-actions button{min-height:43px;border-radius:13px;border:1px solid rgba(255,255,255,.11);font-family:inherit;font-size:12px;font-weight:750;cursor:pointer;padding:10px 7px;background:rgba(255,255,255,.07);color:#fff;transition:transform .15s}
-        .bg-notify-actions button:first-child{background:var(--primary);border-color:transparent}
-        .bg-notify-actions button:active{transform:scale(.97)}
         #bg-notify-status{font-size:11px;line-height:1.5;color:#a1a1aa;margin-top:11px;min-height:17px}
-        @media(max-width:335px){.bg-notify-actions{grid-template-columns:1fr}}
         .bg-admin-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
         .bg-admin-audio-preview{border:1px solid rgba(255,107,0,.35);color:#ff9d56;background:rgba(255,107,0,.09);border-radius:12px;padding:9px 12px;font-family:inherit;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap}
         .bg-admin-audio-preview:active{transform:scale(.97)}
@@ -951,13 +943,11 @@
                 <p id="profil-alt-baslik" style="color: #a1a1aa; font-size: 14px; font-weight: 500;">Sipariş vermek için giriş yapın.</p>
             </div>
 
-            <!-- Bildirim kontrolu: OS izni yalnizca kullanici butona basinca istenir. -->
+            <!-- Bildirimler: sistem izni ilk uygun kullanıcı etkileşiminde otomatik istenir. -->
             <section class="bg-notify-box" aria-labelledby="bg-notify-title">
-                <div class="bg-notify-header"><span class="bg-notify-bell" aria-hidden="true">♬</span><div><h3 id="bg-notify-title">Bildirim ve Ses</h3></div></div>
-                <p class="bg-notify-help">Ücretsiz bildirimler uygulama çalışırken görünür: sepet hatırlatması (60 dakika), indirimler, hesap ve sipariş güncellemeleri, duyurular. Uygulama tamamen kapalıyken otomatik bildirim gönderilmez. Özel chime uygulama açıkken çalar.</p>
-                <div class="bg-notify-settings"><label for="bg-notify-sound-toggle">Premium bildirim sesi</label><input type="checkbox" id="bg-notify-sound-toggle" checked onchange="BildirimSesiTercihiKaydet(this.checked)"></div>
-                <div class="bg-notify-actions"><button type="button" onclick="BildirimIzniAc()">Telefon bildirimlerini aç</button><button type="button" onclick="BildirimSesiTestEt()">♪ Sesi dinle</button></div>
-                <div id="bg-notify-status" role="status" aria-live="polite">İzin durumu kontrol ediliyor…</div>
+                <div class="bg-notify-header"><span class="bg-notify-bell" aria-hidden="true">🔔</span><div><h3 id="bg-notify-title">Telefon Bildirimleri</h3></div></div>
+                <p class="bg-notify-help">Sepet hatırlatmaları, fırsatlar, duyurular ve sipariş güncellemeleri için izin otomatik istenir. Özel bildirim sesi kullanılmaz. Bildirimler uygulama çalışırken gösterilir.</p>
+                <div id="bg-notify-status" role="status" aria-live="polite">Bildirim izni kontrol ediliyor…</div>
             </section>
             <div id="auth-wrapper" class="premium-glass-card fade-up-enter">
                 <div class="premium-toggle-box">
@@ -1397,7 +1387,7 @@
         // Arka planda sure sinirlandirilabilir, sayfaya donunce yeniden kontrol et.
         if (!bgCartReminderInterval) bgCartReminderInterval=setInterval(SepetHatirlatmaKontrol,60000);
     });
-    document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible') SepetHatirlatmaKontrol();});
+    document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible') { SepetHatirlatmaKontrol(); BildirimDurumunuGuncelle(); }});
     window.addEventListener('pageshow',SepetHatirlatmaKontrol);
 
     const appCheck = firebase.appCheck();
@@ -1449,11 +1439,9 @@
     async function SyncServerTime() { try { let st = Date.now(); let res = await fetch(window.location.href, { method: "HEAD", cache: "no-cache" }); let sDate = res.headers.get("Date"); if(sDate) { let serverDate = new Date(sDate).getTime(); let latency = (Date.now() - st) / 2; serverTimeOffset = (serverDate + latency) - Date.now(); } } catch(e) { serverTimeOffset = 0; } }
     function GetServerTimeFast() { return Date.now() + serverTimeOffset; }
 
-    // Ucretsiz: Firebase olaylari sayfa calisirken bildirim ve premium ses uretir.
+    // Ucretsiz: Firebase olaylari sayfa calisirken sessiz sistem bildirimi olusturur.
     // Sayfa tamamen kapaliysa tetikleyici olmadigindan otomatik push yoktur.
-    const bgSesAyariAnahtar = 'bg_premium_sound_enabled';
     let bgPremiumSesContext = null;
-    let bgSesSonCalis = 0;
     let bgAdminSesBekliyor = false;
     let bgAdminSesCalindi = false;
 
@@ -1471,24 +1459,16 @@
         } catch (_) { return null; }
     }
 
-    function BildirimSesiAcikMi() {
-        try { return localStorage.getItem(bgSesAyariAnahtar) !== '0'; }
-        catch (_) { return true; }
-    }
-
     // Tamamen özgün, otomotiv-esintili sinüs/üçgen harmonikleri.
     // Master seviyeyi kısık tutar; dışarıdan müzik/ses dosyası yüklemez.
-    function PremiumChimeCal(tur='bildirim', test=false) {
-        if (tur === 'bildirim' && !test && !BildirimSesiAcikMi()) return false;
+    function PremiumChimeCal(tur='admin', test=false) {
+        // Bildirim chime'i kaldırıldı. Sadece yönetim paneli açılışı seslidir.
+        if (tur !== 'admin') return false;
         const ctx = PremiumSesHazirla();
         if (!ctx || ctx.state !== 'running') return false;
-        if (tur === 'bildirim' && !test && performance.now() - bgSesSonCalis < 750) return false;
         try {
             const t0 = ctx.currentTime + .012;
-            const admin = tur === 'admin';
-            const notalar = admin
-                ? [{f:587.33,at:0,len:.39,amp:.025},{f:739.99,at:.115,len:.44,amp:.022},{f:987.77,at:.240,len:.53,amp:.018}]
-                : [{f:880,at:0,len:.29,amp:.020},{f:1174.66,at:.135,len:.40,amp:.018}];
+            const notalar = [{f:587.33,at:0,len:.39,amp:.025},{f:739.99,at:.115,len:.44,amp:.022},{f:987.77,at:.240,len:.53,amp:.018}];
             const master = ctx.createGain();
             master.gain.value = .68;
             const filter = ctx.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.value = 3900;
@@ -1509,55 +1489,61 @@
                     o.start(t); o.stop(t+n.len+.025);
                 }
             }
-            if(tur === 'bildirim') bgSesSonCalis = performance.now();
             return true;
         } catch (_) { return false; }
     }
 
-    function BildirimSesiTercihiKaydet(acik) {
-        try { localStorage.setItem(bgSesAyariAnahtar, acik ? '1':'0'); } catch (_) {}
-        BildirimDurumunuGuncelle();
-        if (acik) PremiumChimeCal('bildirim',true);
-    }
-    function BildirimSesiTestEt() {
-        const oynadi = PremiumChimeCal('bildirim',true);
-        const x=document.getElementById('bg-notify-status');
-        if (!oynadi && x) x.textContent='Tarayıcı sesi engelledi. Tekrar dokunup deneyin.';
-    }
     function BildirimDurumunuGuncelle() {
-        const cb=document.getElementById('bg-notify-sound-toggle');
-        if (cb) cb.checked=BildirimSesiAcikMi();
-        const x=document.getElementById('bg-notify-status'); if(!x) return;
-        if (!('Notification' in window)) x.textContent='Sistem bildirimleri bu tarayıcıda desteklenmiyor; sayfa içi duyurular çalışır.';
-        else if (Notification.permission === 'granted') x.textContent='Bildirim izni açık. Uygulama çalışırken telefon bildirimleri gösterilir; tamamen kapalıyken otomatik bildirim gönderilmez.';
-        else if (Notification.permission === 'denied') x.textContent='Sistem bildirimleri engellenmiş. Tarayıcı site ayarlarından izin verebilirsin.';
-        else x.textContent='Sistem bildirimi izni verilmedi. İstersen üstteki butondan açabilirsin.';
-    }
-    async function BildirimIzniAc() {
-        // Bildirim iznini sadece kullanicinin dogrudan dokunmasiyla soruyoruz.
-        PremiumSesHazirla();
-        if (!('Notification' in window)) { BildirimDurumunuGuncelle(); return; }
-        try { if (Notification.permission==='default') await Notification.requestPermission(); }
-        catch (_) { /* Tarayici engellediyse sayfayi kullanmaya devam et. */ }
-        BildirimDurumunuGuncelle();
-        if (Notification.permission==='granted') {
-            BildirimGonder('Bekmez GO bildirimleri acik 🔔', 'Sepet, duyuru ve indirim bildirimlerin uygulama calisirken burada gorunecek.',true,'profil');
-            PushSepetDurumuYansit();
+        const x = document.getElementById('bg-notify-status');
+        if (!x) return;
+        if (!('Notification' in window) || !window.isSecureContext) {
+            x.textContent = 'Bu tarayıcıda veya bağlantıda telefon bildirimleri desteklenmiyor.';
+        } else if (Notification.permission === 'granted') {
+            x.textContent = 'Bildirimler açık. Uygulama çalışırken telefonuna sessiz sistem bildirimleri gelir.';
+        } else if (Notification.permission === 'denied') {
+            x.textContent = 'Bildirimlere izin verilmemiş. İstersen telefonunun tarayıcı/site ayarlarından değiştirebilirsin.';
+        } else {
+            x.textContent = 'Bildirim izni, uygulamada ilk dokunduğunda tarayıcı tarafından otomatik sorulacak.';
         }
     }
-    // Eski çağrıları koruyoruz, fakat menü dolaşırken izinsiz popup açmıyoruz.
-    function SessizIzinIste() { PremiumSesHazirla(); }
+
+    // Chrome/Safari/Firefox genellikle izni sayfa açılır açılmaz istemeye izin vermez.
+    // Ayrı ayar düğmesi gerekmeksizin ilk gerçek kullanıcı etkileşiminde sor.
+    let bgBildirimIzinIstegiBasladi = false;
+    function BildirimIzniIlkEtkilesimdeIste() {
+        if (bgBildirimIzinIstegiBasladi || fotoSifreAkisiAktif || isAdmin || isBannedUser) return;
+        if (!window.isSecureContext || !('Notification' in window) || Notification.permission !== 'default') return;
+        try {
+            if (sessionStorage.getItem('bg_notify_permission_asked') === '1') return;
+        } catch (_) {}
+        bgBildirimIzinIstegiBasladi = true;
+        try { sessionStorage.setItem('bg_notify_permission_asked','1'); } catch (_) {}
+        // Kullanıcı etkileşiminin hemen içinde çağır: araya async await koyma.
+        try {
+            Promise.resolve(Notification.requestPermission()).then(() => {
+                BildirimDurumunuGuncelle();
+                if (Notification.permission === 'granted') PushSepetDurumuYansit();
+            }).catch(() => { BildirimDurumunuGuncelle(); });
+        } catch (_) { BildirimDurumunuGuncelle(); }
+    }
+    document.addEventListener('click', BildirimIzniIlkEtkilesimdeIste, {capture:true});
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') BildirimIzniIlkEtkilesimdeIste();
+    }, {capture:true});
+
+    // Eski fonksiyon adlariyla uyumluluk; artik elle izin secme butonu yok.
+    function BildirimIzniAc() { BildirimIzniIlkEtkilesimdeIste(); }
+    function SessizIzinIste() { /* Otomatik izin, ilk kullanici etkileşiminde sorulur. */ }
 
     function BildirimGonder(baslik, mesaj, sesli=true, hedef=null) {
-        // Sayfa açıkken ses; OS bildiriminin kendi sesini özelleştiremeyiz.
-        if(sesli && !isAdmin && !isBannedUser) PremiumChimeCal('bildirim');
+        // Bildirimleri ses olmadan göster; sadece admin panelinin açılış chime'i korunur.
         if (!('Notification' in window) || Notification.permission !== 'granted') return;
         const name=String(baslik||'bilgi');
         const page=hedef || (/sepet/i.test(name) ? 'sepet' : /sipari[şs]|kurye|mutfak|teslim/i.test(name) ? 'gecmis' : /indirim/i.test(name) ? 'urunler' : /duyuru/i.test(name) ? 'firsatlar' : 'profil');
         const opts = {body: String(mesaj||''), icon:'icon-192.png', badge:'icon-192.png', tag:'bekmez-go-'+name.slice(0,40),
-                      requireInteraction:false, silent:document.visibilityState==='visible', data:{page}};
+                      requireInteraction:false, silent:true, data:{page}};
         // register edilmemiş SW için navigator.serviceWorker.ready beklemesi sonsuzdur.
-        // Mobilde Notification() çoğunlukla desteklenmez; uygulama içi ses/uyarı kalır.
+        // Mobilde Notification() çoğunlukla desteklenmez; kayıtlı SW varsa onu kullan.
         (async () => {
             try {
                 const registration = 'serviceWorker' in navigator ? await navigator.serviceWorker.getRegistration() : null;
@@ -1571,7 +1557,6 @@
     }
     // Dokunma sonrasında AudioContext açılabilir; admin sesi engellenmişse bir defa tekrar denenir.
     function BgSesKullaniciEtkilesimi(){
-        PremiumSesHazirla();
         if(bgAdminSesBekliyor && isAdmin) AdminChimeCal();
     }
     document.addEventListener('pointerdown', BgSesKullaniciEtkilesimi, {passive:true});
