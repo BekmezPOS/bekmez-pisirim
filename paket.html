@@ -1675,50 +1675,92 @@
     }
 
     let adminTelefonAnahtarlari = [];
+    let adminTelefonKaynakYollari = Object.create(null);
+    let adminListeIstekNo = 0;
+    const ADMIN_HESAP_YOLLARI = ['DoğrulanmisHesaplar', 'DogrulanmisHesaplar'];
+
     async function AdminMusterileriListele(idToken) {
+        const istekNo = ++adminListeIstekNo;
+        const recentList = document.getElementById('adm-recent-users');
+        const fullList = document.getElementById('adm-full-user-list');
+        if(!recentList || !fullList) return;
         try {
-            let activeRes = await fetch(`${FIREBASE_URL}/DoğrulanmisHesaplar.json?auth=${idToken}`); let activeData = await activeRes.json();
-            let delRes = await fetch(`${FIREBASE_URL}/SilinmisHesaplar.json?auth=${idToken}`); let delData = await delRes.json();
-            let banRes = await fetch(`${FIREBASE_URL}/YasakliHesaplar.json?auth=${idToken}`); let banData = await banRes.json();
-            
-            let activeCount = 0; let usersArray = [];
-            if(activeData && typeof activeData === 'object' && !activeData.error) {
-                for(let tel in activeData) { 
-                    activeCount++; 
-                    let ad = activeData[tel].isim || "İsimsiz Müşteri";
-                    let tarih = activeData[tel].sonGiris || activeData[tel].kayitZamani || activeData[tel].tarih || new Date().toISOString();
-                    usersArray.push({ ad: ad, tel: tel, tarih: tarih });
+            // Kasa hesabinin RTDB Rules ile sunucuda yetkilendirildigini dogrula.
+            await AdminYetkiliToken(false);
+            const authQ = '?auth=' + encodeURIComponent(idToken);
+            const paths = ADMIN_HESAP_YOLLARI;
+            const responses = await Promise.all([
+                ...paths.map(p => fetch(`${FIREBASE_URL}/${encodeURIComponent(p)}.json${authQ}`, {cache:'no-store'})),
+                fetch(`${FIREBASE_URL}/SilinmisHesaplar.json${authQ}`, {cache:'no-store'}),
+                fetch(`${FIREBASE_URL}/YasakliHesaplar.json${authQ}`, {cache:'no-store'})
+            ]);
+            const results = await Promise.all(responses.map(r => r.json().catch(()=>null)));
+            if(istekNo !== adminListeIstekNo) return;
+            const kaynaklar = Object.create(null);
+            const kullanicilar = new Map();
+            let basariliYol = 0;
+            const engellenenYollar = [];
+            paths.forEach((p, i) => {
+                const body=results[i];
+                if(!responses[i].ok || (body && body.error)) {
+                    engellenenYollar.push(p + ' (HTTP ' + responses[i].status + ')');
+                    return;
                 }
+                basariliYol++;
+                if(body && typeof body === 'object' && !Array.isArray(body)) {
+                    Object.entries(body).forEach(([tel,u]) => {
+                        if(!u || typeof u !== 'object' || Array.isArray(u)) return;
+                        if(!kaynaklar[tel]) kaynaklar[tel] = [];
+                        kaynaklar[tel].push(p);
+                        // Primary = current accented Web path. Merge without duplicate accounts.
+                        if(!kullanicilar.has(tel) || p === paths[0])
+                            kullanicilar.set(tel, {tel, ad:String(u.isim || 'İsimsiz Müşteri'),
+                                tarih:u.sonGiris || u.kayitZamani || u.tarih || ''});
+                    });
+                }
+            });
+            if(basariliYol === 0) {
+                throw new Error('Firebase müşteri kayıtlarını okumayı reddetti. Rules ve App Check ayarlarını kontrol edin: ' + engellenenYollar.join(', '));
             }
-            
-            let delCount = 0; if(delData && typeof delData === 'object' && !delData.error) { for(let k in delData) delCount++; }
-            
-            document.getElementById("adm-total-user").innerText = activeCount;
-            document.getElementById("adm-deleted-user").innerText = delCount;
-            usersArray.sort((a,b) => { return new Date(b.tarih).getTime() - new Date(a.tarih).getTime(); });
+            adminTelefonKaynakYollari = kaynaklar;
+            const delData = responses[2].ok && results[2] && !results[2].error ? results[2] : {};
+            const banData = responses[3].ok && results[3] && !results[3].error ? results[3] : {};
+            const usersArray = Array.from(kullanicilar.values());
+            usersArray.sort((a,b) => (Number(new Date(b.tarih)) || Number(b.tarih) || 0) - (Number(new Date(a.tarih)) || Number(a.tarih) || 0));
             adminTelefonAnahtarlari = usersArray.map(u => u.tel);
-            
-            let recentList = document.getElementById("adm-recent-users"); let fullList = document.getElementById("adm-full-user-list");
+            document.getElementById('adm-total-user').textContent = String(usersArray.length);
+            document.getElementById('adm-deleted-user').textContent = String(delData && typeof delData==='object' ? Object.keys(delData).length : 0);
 
-            if(usersArray.length === 0) { 
-                recentList.innerHTML = `<div style="color: #a1a1aa; font-size: 12px; text-align: center;">Henüz müşteri yok.</div>`; fullList.innerHTML = `<div style="color: #a1a1aa; font-size: 12px; text-align: center;">Henüz müşteri yok.</div>`;
-            } else {
-                let h = ""; let max = Math.min(usersArray.length, 10);
-                for(let i=0; i<max; i++) { h += `<div class="user-list-item" style="padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between;"><span style="color:white; font-weight:800;">${escapeHTML(usersArray[i].ad)}</span><span style="color:var(--text-muted); font-size:10px;">${escapeHTML(usersArray[i].tel)}</span></div>`; }
-                recentList.innerHTML = h;
-
-                let fh = "";
-                for(let i=0; i<usersArray.length; i++) {
-                    let uTel = usersArray[i].tel;
-                    let isBan = (banData && typeof banData === 'object' && !banData.error && banData[uTel]);
-                    let actionHtml = isBan ? `<button class="btn-unban ripple-element" onclick="AdminYasakKaldira(adminTelefonAnahtarlari[${i}])">Ban Kaldır</button>` : `<button class="btn-ban ripple-element" onclick="AdminKullaniciYasaklaModalAc(adminTelefonAnahtarlari[${i}])">Yasakla</button>`;
-                    let sebepHtml = isBan ? `<span style="color:var(--danger); font-size:10px;">Sebep: ${escapeHTML(banData[uTel].sebep)}</span>` : "";
-
-                    fh += `<div class="user-mng-card"><div class="user-mng-info"><span style="color:white; font-weight:800; font-size:14px;">${escapeHTML(usersArray[i].ad)}</span><span style="color:var(--primary); font-size:11px; font-weight:600;">${escapeHTML(uTel)}</span>${sebepHtml}</div><div class="user-mng-actions">${actionHtml}<button class="btn-del ripple-element" onclick="AdminKullaniciSil(adminTelefonAnahtarlari[${i}])">Hesabı Sil</button></div></div>`;
-                }
-                fullList.innerHTML = fh;
+            const warning = engellenenYollar.length
+                ? `<div role="alert" style="color:#ffc37d;padding:12px;font-size:12px">Bazı hesap yolları okunamadı: ${escapeHTML(engellenenYollar.join(', '))}. Liste eksik olabilir.</div>` : '';
+            if(!usersArray.length) {
+                const empty='<div style="color:#a1a1aa;text-align:center;font-size:12px;padding:12px">Müşteri kaydı bulunamadı.</div>';
+                recentList.innerHTML = warning + empty;
+                fullList.innerHTML = warning + empty;
+                return;
             }
-        } catch(e) { console.error("Admin listeleme hatası", e); }
+            let recent='';
+            for(let i=0; i<Math.min(usersArray.length,10); i++) {
+                const u=usersArray[i];
+                recent+=`<div class="user-list-item" style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between"><span style="color:white;font-weight:800">${escapeHTML(u.ad)}</span><span style="color:var(--text-muted);font-size:10px">${escapeHTML(u.tel)}</span></div>`;
+            }
+            recentList.innerHTML=warning + recent;
+            let full='';
+            usersArray.forEach((u,i)=>{
+                const isBan=!!(banData && banData[u.tel]);
+                const banButton=isBan ? `<button class="btn-unban ripple-element" onclick="AdminYasakKaldira(adminTelefonAnahtarlari[${i}])">Ban Kaldır</button>`
+                    : `<button class="btn-ban ripple-element" onclick="AdminKullaniciYasaklaModalAc(adminTelefonAnahtarlari[${i}])">Yasakla</button>`;
+                const reason=isBan ? `<span style="color:var(--danger);font-size:10px">Sebep: ${escapeHTML(String(banData[u.tel].sebep||''))}</span>` : '';
+                full+=`<div class="user-mng-card"><div class="user-mng-info"><span style="color:white;font-weight:800;font-size:14px">${escapeHTML(u.ad)}</span><span style="color:var(--primary);font-size:11px;font-weight:600">${escapeHTML(u.tel)}</span>${reason}</div><div class="user-mng-actions">${banButton}<button class="btn-del ripple-element" onclick="AdminKullaniciSil(adminTelefonAnahtarlari[${i}])">Hesabı Sil</button></div></div>`;
+            });
+            fullList.innerHTML=warning + full;
+        } catch(err) {
+            if(istekNo !== adminListeIstekNo) return;
+            const safe=escapeHTML(err && err.message || 'Bilinmeyen hata');
+            recentList.innerHTML=`<div role="alert" style="color:#ff9b91;padding:12px">Müşteriler yüklenemedi: ${safe}</div>`;
+            fullList.innerHTML=recentList.innerHTML;
+            console.warn('Admin müşteri listeleme başarısız (hassas veri loglanmadı).');
+        }
     }
 
     // Premium otomotiv-esintili özgün yönetici karşılama; sadece bir kez.
@@ -1884,8 +1926,11 @@
                 await fetch(`${FIREBASE_URL}/CarkKullanimlari/${tel}.json?auth=${idToken}`, { method: "DELETE" });
                 await fetch(`${FIREBASE_URL}/YasakliHesaplar/${tel}.json?auth=${idToken}`, { method: "DELETE" });
                 await fetch(`${FIREBASE_URL}/SilinmisHesaplar/${tel}.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify({ silinmeZamani: Date.now(), byAdmin: true }) });
-                let res = await fetch(`${FIREBASE_URL}/DoğrulanmisHesaplar/${tel}.json?auth=${idToken}`, { method: "DELETE" });
-                if(!res.ok) throw new Error("Silme işlemi sunucu tarafından reddedildi.");
+                const kaynakYollari = adminTelefonKaynakYollari[tel] || ['DoğrulanmisHesaplar'];
+                for(const yol of kaynakYollari) {
+                    const res = await fetch(`${FIREBASE_URL}/${encodeURIComponent(yol)}/${encodeURIComponent(tel)}.json?auth=${encodeURIComponent(idToken)}`, { method: "DELETE" });
+                    if(!res.ok) throw new Error('Hesap kaydı silinemedi: ' + yol + ' (HTTP ' + res.status + ')');
+                }
                 OzelUyariGoster("Silindi", `${tel} numaralı hesap veritabanından imha edildi.`, "✅"); AdminMusterileriListele(idToken); 
             } catch(e) { OzelUyariGoster("Hata", e.message, "❌"); }
         }, true); 
