@@ -17,6 +17,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script> 
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-check-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-messaging-compat.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -954,9 +955,9 @@
             <!-- Bildirim kontrolu: OS izni yalnizca kullanici butona basinca istenir. -->
             <section class="bg-notify-box" aria-labelledby="bg-notify-title">
                 <div class="bg-notify-header"><span class="bg-notify-bell" aria-hidden="true">♬</span><div><h3 id="bg-notify-title">Bildirim ve Ses</h3></div></div>
-                <p class="bg-notify-help">Yeni duyurular ve sipariş durumu için zarif bir bildirim sesi. Ses uygulama açıkken çalar.</p>
+                <p class="bg-notify-help">Telefon bildirimleri için izin verin. Sepet hatırlatmaları ve duyurular cihazınızda görünebilir. Özel chime yalnızca uygulama açıkken çalar.</p>
                 <div class="bg-notify-settings"><label for="bg-notify-sound-toggle">Premium bildirim sesi</label><input type="checkbox" id="bg-notify-sound-toggle" checked onchange="BildirimSesiTercihiKaydet(this.checked)"></div>
-                <div class="bg-notify-actions"><button type="button" onclick="BildirimIzniAc()">Bildirimlere izin ver</button><button type="button" onclick="BildirimSesiTestEt()">♪ Sesi dinle</button></div>
+                <div class="bg-notify-actions"><button type="button" onclick="BildirimIzniAc()">Telefon bildirimlerini aç</button><button type="button" onclick="BildirimSesiTestEt()">♪ Sesi dinle</button></div>
                 <div id="bg-notify-status" role="status" aria-live="polite">İzin durumu kontrol ediliyor…</div>
             </section>
             <div id="auth-wrapper" class="premium-glass-card fade-up-enter">
@@ -1289,6 +1290,112 @@
     };
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 
+    // FCM: Firebase Console > Project Settings > Cloud Messaging > Web Push certificates
+    // altındaki PUBLIC VAPID anahtarını doldurun. Gizli sunucu anahtarı koymayın.
+    const BEKMEZ_FCM_PUBLIC_VAPID_KEY = 'BEu-akBRi55gd_LK3hCjfpLoDPAUNZK0CLUmbRmzjmRVWj5gZHv6bhhbfDTsfx2qN5UtBZJXrwiLe-Ni699X59g';
+    const BEKMEZ_SW_PATH = './sw.js';
+    let bekmezSWRegistration = null;
+    let bekmezFcm = null;
+    let pushCartNoticeAt = 0;
+    let pushCartTimer = null;
+    let pushLastCartSignature = null;
+
+    async function PushServisCalistir() {
+        if(!('serviceWorker' in navigator) || !window.isSecureContext) return null;
+        try {
+            bekmezSWRegistration = await navigator.serviceWorker.register(BEKMEZ_SW_PATH, {scope:'./'});
+            return bekmezSWRegistration;
+        } catch(err) {
+            console.warn('Bildirim servis çalışanı kaydedilemedi:',err);
+            return null;
+        }
+    }
+    async function PushFCMAl() {
+        if(!BEKMEZ_FCM_PUBLIC_VAPID_KEY || BEKMEZ_FCM_PUBLIC_VAPID_KEY.length < 80) {
+            throw new Error('Firebase VAPID anahtarı henüz eklenmedi.');
+        }
+        if(!('Notification' in window) || Notification.permission !== 'granted') throw new Error('Bildirim izni verilmedi.');
+        if(!window.firebase || !firebase.messaging || !(await firebase.messaging.isSupported())) {
+            throw new Error('Bu tarayıcı FCM Web Push için destek sunmuyor.');
+        }
+        const reg = await (bekmezSWRegistration || PushServisCalistir());
+        if(!reg) throw new Error('Service worker etkinleştirilemedi.');
+        if(!bekmezFcm) {
+            bekmezFcm = firebase.messaging();
+            bekmezFcm.onMessage(payload => {
+                // Duyuru ve siparişler açık sayfada RTDB'den zaten dinleniyor; çift bildirim yapma.
+                if(payload && payload.data && payload.data.type === 'cart') {
+                    BildirimGonder(payload.data.title || 'Sepetin seni bekliyor',payload.data.body || 'Siparişini tamamlamayı unutma.');
+                }
+            });
+        }
+        const token = await bekmezFcm.getToken({vapidKey:BEKMEZ_FCM_PUBLIC_VAPID_KEY,serviceWorkerRegistration:reg});
+        if(!token) throw new Error('Cihaz için bildirim anahtarı üretilemedi.');
+        return token;
+    }
+    async function PushCihazKaydet() {
+        const user = firebase.auth().currentUser;
+        if(!user || !user.emailVerified || user.email === 'kasa@bekmez.com') return false;
+        const token = await PushFCMAl();
+        const encoded = new TextEncoder().encode(token);
+        const hash = await crypto.subtle.digest('SHA-256',encoded);
+        const key = Array.from(new Uint8Array(hash),b=>b.toString(16).padStart(2,'0')).join('');
+        const ref=firebase.database().ref('BekmezPushUsers/'+user.uid+'/devices/'+key);
+        await ref.set({token,enabled:true,updatedAt:firebase.database.ServerValue.TIMESTAMP});
+        try { localStorage.setItem('bg_push_device',JSON.stringify({uid:user.uid,key})); } catch(_) {}
+        return true;
+    }
+    async function PushCihazKaydiniSil() {
+        try {
+            const user=firebase.auth().currentUser;
+            const current=JSON.parse(localStorage.getItem('bg_push_device')||'null');
+            if(user && current && user.uid===current.uid && /^[a-f0-9]{64}$/.test(current.key)) {
+                await firebase.database().ref('BekmezPushUsers/'+user.uid+'/devices/'+current.key).remove();
+            }
+            localStorage.removeItem('bg_push_device');
+        } catch(err) { console.warn('Push cihaz kaydı kaldırılamadı:',err); }
+    }
+    function PushSepetDurumuYansit() {
+        if(pushCartTimer) clearTimeout(pushCartTimer);
+        pushCartTimer=setTimeout(async()=>{
+            const user=firebase.auth().currentUser;
+            if(!user || !user.emailVerified || user.email === 'kasa@bekmez.com') return;
+            // Ürün ve fiyatı sunucuya kopyalamıyoruz; yalnızca sayı ve değişiklik zamanı.
+            const signature=JSON.stringify(sepet.map(p=>({n:p.rawName,q:p.quantity,a:p.baseStockAmount})));
+            const unique=user.uid+'|'+signature;
+            if(unique===pushLastCartSignature) return;
+            try {
+                const count=sepet.reduce((n,p)=>n+(Number(p.quantity)||0),0);
+                await firebase.database().ref('BekmezPushUsers/'+user.uid+'/cart').set({
+                    count,changedAt:firebase.database.ServerValue.TIMESTAMP
+                });
+                pushLastCartSignature=unique;
+            } catch(err) { console.warn('Sepet hatırlatma kaydı yazılamadı; RTDB kuralını kontrol edin:',err); }
+        },1100);
+    }
+
+    // Bildirime dokunan kullanıcı doğru uygulama sayfasını görsün.
+    if('serviceWorker' in navigator) {
+        navigator.serviceWorker.addEventListener('message',event=>{
+            const msg=event.data;
+            if(!msg || msg.type!=='BEKMEZ_PUSH_OPEN' || !['sepet','gecmis','profil','firsatlar'].includes(msg.page)) return;
+            if(!isAdmin && !isBannedUser && !isStoreClosed && typeof SayfaGoster==='function') SayfaGoster(msg.page);
+        });
+    }
+    window.addEventListener('load',()=>{
+        PushServisCalistir();
+        const requested=new URLSearchParams(location.search).get('bildirim');
+        if(['sepet','gecmis','profil','firsatlar'].includes(requested)) {
+            setTimeout(()=>{if(!isAdmin && !isBannedUser && !isStoreClosed) SayfaGoster(requested);},3200);
+            history.replaceState(null,'',location.pathname);
+        }
+        // Kullanıcı önceden izin verdiyse tokenı yeni oturumunda tekrar kaydet.
+        if('Notification' in window && Notification.permission==='granted') {
+            setTimeout(()=>PushCihazKaydet().catch(err=>console.warn('Push otomatik yenileme:',err)),3600);
+        }
+    });
+
+
     const appCheck = firebase.appCheck();
     appCheck.activate(new firebase.appCheck.ReCaptchaEnterpriseProvider('6LfaV-AtAAAAAGqAbPWGYWxmlGfQNasMlne4iHne'), true);
 
@@ -1418,18 +1525,29 @@
         if (cb) cb.checked=BildirimSesiAcikMi();
         const x=document.getElementById('bg-notify-status'); if(!x) return;
         if (!('Notification' in window)) x.textContent='Sistem bildirimleri bu tarayıcıda desteklenmiyor; sayfa içi duyurular çalışır.';
-        else if (Notification.permission === 'granted') x.textContent='Sistem bildirimlerine izin verildi. Özel ses uygulama açıkken çalar.';
+        else if (Notification.permission === 'granted') x.textContent='Bildirim izni açık. Telefon push kaydı için müşteri hesabına giriş yapıp butona dokunun.';
         else if (Notification.permission === 'denied') x.textContent='Sistem bildirimleri engellenmiş. Tarayıcı site ayarlarından izin verebilirsin.';
         else x.textContent='Sistem bildirimi izni verilmedi. İstersen üstteki butondan açabilirsin.';
     }
     async function BildirimIzniAc() {
-        // Yalnızca doğrudan kullanıcı etkileşimi sırasında çağrılır.
+        // Tarayıcı izni doğrudan butona basma hareketi sırasında istenir.
         PremiumSesHazirla();
-        if ('Notification' in window && Notification.permission === 'default') {
+        if (!('Notification' in window)) { BildirimDurumunuGuncelle(); return; }
+        if(Notification.permission==='default') {
             try { await Notification.requestPermission(); } catch (_) {}
         }
         BildirimDurumunuGuncelle();
-        if ('Notification' in window && Notification.permission === 'granted') BildirimSesiTestEt();
+        if(Notification.permission !== 'granted') return;
+        const status=document.getElementById('bg-notify-status');
+        try {
+            if(status) status.textContent='Cihaz bildirim kaydı yapılıyor…';
+            const okay = await PushCihazKaydet();
+            if(status) status.textContent=okay
+                ? 'Telefon bildirimleri etkin. Sepet ve duyuru bildirimi için cihaz kaydedildi.'
+                : 'Bildirim izni açık; arka plan hatırlatmaları için müşteri hesabına giriş yapmalısın.';
+            if(okay) PushSepetDurumuYansit();
+            BildirimSesiTestEt();
+        } catch(err) { if(status) status.textContent='Bildirim izni açık; gerçek push kaydı tamamlanamadı: '+err.message; }
     }
     // Eski çağrıları koruyoruz, fakat menü dolaşırken izinsiz popup açmıyoruz.
     function SessizIzinIste() { PremiumSesHazirla(); }
@@ -1677,7 +1795,7 @@
                 let payload = { baslik: t, mesaj: b, ts: Date.now() };
                 let res = await fetch(`${FIREBASE_URL}/SistemBildirimleri/GenelBildirim.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(payload) });
                 if(!res.ok) throw new Error("İşlem reddedildi. Kuralları veya AppCheck'i kontrol edin.");
-                OzelUyariGoster("Başarılı", "Bildirim fırlatıldı!", "🚀"); document.getElementById("adm-notif-title").value = ""; document.getElementById("adm-notif-body").value = "";
+                OzelUyariGoster("Duyuru Kaydedildi", "Uygulama içi duyuru yayınlandı. Telefon bildirimlerinin gitmesi sunucu push altyapısının etkin olmasına bağlıdır.", "✅"); document.getElementById("adm-notif-title").value = ""; document.getElementById("adm-notif-body").value = "";
             } catch(e) { OzelUyariGoster("Hata", e.message, "❌");}
         }, true);
     }
@@ -1886,6 +2004,8 @@
         else { OzelUyariGoster("Hesap Doğrulandı! 🎉", "E-Posta adresiniz ve WhatsApp onayınız tamamlandı.", "✅"); BildirimGonder("Hesap Oluşturuldu 🎉", "Bekmez GO'ya hoş geldiniz! İndirimleri kaçırmayın."); }
         
         let gorunen = await SecureOku("bg_i") || kayitliIsim; ProfilArayuzunuGuncelle(true, gorunen);
+        PushSepetDurumuYansit();
+        if('Notification' in window && Notification.permission === 'granted') PushCihazKaydet().catch(err=>console.warn('Push kayıt yenileme:',err));
         if(await SecureOku("bg_active_order_id")) { SiparisDurumBildiriminiBaslat(await SecureOku('bg_active_order_id')); SayfaGoster('gecmis'); }
     }
 
@@ -1901,7 +2021,7 @@
 
     function SadeceCikisYap() { SoruSor("Oturumu Kapat", "Cihazınızdaki mevcut oturumu kapatmak istediğinize emin misiniz?", "🚪", async () => { HapticTitresim(); document.body.innerHTML += `<div style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999999;display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;font-weight:bold;backdrop-filter:blur(10px);"><div class="spinner"></div><div style="margin-top:20px; font-size:18px;">Güvenli Çıkış Yapılıyor...</div></div>`; await TemizleOturumVerileri(); }, false); }
 
-    async function TemizleOturumVerileri() { try { if (fotoSupabase) { try { await fotoSupabase.auth.signOut(); } catch(e) { console.warn("Supabase oturumu kapanamadı", e); } } if(firebase.auth().currentUser) { await firebase.auth().signOut(); } localStorage.clear(); setTimeout(() => { window.location.reload(true); }, 800); } catch(e) { localStorage.clear(); window.location.reload(true); } }
+    async function TemizleOturumVerileri() { try { await PushCihazKaydiniSil(); if (fotoSupabase) { try { await fotoSupabase.auth.signOut(); } catch(e) { console.warn("Supabase oturumu kapanamadı", e); } } if(firebase.auth().currentUser) { await firebase.auth().signOut(); } localStorage.clear(); setTimeout(() => { window.location.reload(true); }, 800); } catch(e) { localStorage.clear(); window.location.reload(true); } }
 
     async function HesabiTamamenSil() {
         let tel = await SecureOku("bg_t"); if (!tel) return;
@@ -2006,6 +2126,7 @@
             setInterval(async () => { if(document.getElementById("opportunities-container").style.display === "block" && !isAdmin && !isBannedUser) { await KuponlariCek(); await CarkDurumunuKontrolEt(); } }, 30000);
             
             try { let kS = await SecureOku("bg_saved_cart"); if(kS) { sepet = JSON.parse(kS); if(sepet.length > 0) { document.getElementById("nav-sepet-badge").innerText = sepet.length; document.getElementById("nav-sepet-badge").classList.add("show"); document.getElementById("floating-cart").style.display = "flex"; HesaplaVeGuncelle(); } } } catch(e) {}
+            PushSepetDurumuYansit();
             try { let kC = await SecureOku("bg_saved_cark"); if(kC && kC !== "") { aktifKullanilanCarkOdulu = kC; HesaplaVeGuncelle(); } } catch(e) {}
         } catch (hata) { SplashKapatSinematik(); }
     });
@@ -2702,7 +2823,11 @@
         if(isNaN(gB) || gB < 0 || eklenecekAdet <= 0 || gercekStokMiktari <= 0) { window.isAddingToCart = false; return; }
 
         if(mevcutUrun) { mevcutUrun.quantity += eklenecekAdet; } else { sepet.push({ baseName: escapeHTML(tamIsim), basePrice: gB, baseStockAmount: gercekStokMiktari, quantity: eklenecekAdet, rawName: escapeHTML(seciliUrun.pName) }); } 
-        ShowFloatingPlusOne(); TriggerCartBounce(); 
+        ShowFloatingPlusOne(); TriggerCartBounce();
+        if(Date.now()-pushCartNoticeAt>15000) {
+            pushCartNoticeAt=Date.now();
+            BildirimGonder('Sepetine eklendi 🛍️','Ürün sepetine eklendi. Siparişini Sepetim bölümünden tamamlayabilirsin.');
+        } 
         
         setTimeout(async () => { PopupKapat(); await HesaplaVeGuncelle(); window.isAddingToCart = false; }, 300); 
     }
@@ -2963,6 +3088,7 @@
         else { bdg.classList.remove("show"); document.getElementById("floating-cart").style.display = "none"; document.getElementById("alt-panel").style.display = "none"; document.getElementById("cart-note-section").style.display = "none"; }
         
         await SecureKaydet("bg_saved_cart", JSON.stringify(sepet));
+        PushSepetDurumuYansit();
     }
 
     async function CheckoutPopupAc() { 
