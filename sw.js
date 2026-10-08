@@ -1,7 +1,7 @@
 /* Bekmez GO — Service Worker v5: same-origin cache + FCM background push.
  * GitHub Pages'te paket.html ile aynı dizine sw.js olarak koyun.
  */
-const CACHE_NAME = 'bekmez-go-v5';
+const CACHE_NAME = 'bekmez-go-v6-free-local';
 const ASSETS_TO_CACHE = ['./paket.html', './manifest.json', './icon-192.png', './icon-512.png'];
 const APP_PATH = new URL('./paket.html', self.registration.scope).pathname;
 
@@ -37,45 +37,14 @@ self.addEventListener('fetch', event => {
   }));
 });
 
-// FCM data-only mesajlarını servis çalışanı alır. 'notification' payload'ı
-// ayrıca otomatik gösterilirse çift bildirim oluşur; backend sadece data yollar.
-try {
-  importScripts('https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js');
-  importScripts('https://www.gstatic.com/firebasejs/10.8.1/firebase-messaging-compat.js');
-  firebase.initializeApp({
-    apiKey: 'AIzaSyC8WLup5zoOmFBcFJkflo7J-XJjQEK_jr8',
-    authDomain: 'bekmezpos.firebaseapp.com',
-    projectId: 'bekmezpos',
-    messagingSenderId: '1013709760225',
-    appId: '1:1013709760225:web:ec71341cb6cdcce9fbf9a0'
-  });
-  const messaging = firebase.messaging();
-  messaging.onBackgroundMessage(payload => {
-    const data = payload.data || {};
-    const title = String(data.title || 'Bekmez GO').slice(0, 90);
-    const body = String(data.body || '').slice(0, 320);
-    const type = ['cart', 'announcement', 'order', 'account'].includes(data.type) ? data.type : 'announcement';
-    const options = {
-      body,
-      icon: './icon-192.png',
-      badge: './icon-192.png',
-      tag: String(data.tag || `bekmez-${type}`).slice(0, 80),
-      renotify: false,
-      // OS kendi bildirim sesini yönetir; özel Web Audio chime yalnızca açık sayfada.
-      silent: false,
-      data: {type}
-    };
-    return self.registration.showNotification(title, options);
-  });
-} catch (err) {
-  // Önbellek yine çalışır; FCM yüklenemediğinde push abonesi oluşturulamaz.
-  console.warn('FCM background SDK kurulamadı:', err);
-}
+// Sadece istemci tarafindan uretilen yerel bildirimler.
+// Kapatilmis sayfada zamanlayici veya Firebase dinleyicisi calistiramaz.
 
 self.addEventListener('notificationclick', event => {
   event.notification.close();
   const type = event.notification.data && event.notification.data.type;
-  const page = type === 'cart' ? 'sepet' : type === 'order' ? 'gecmis' : type === 'announcement' ? 'firsatlar' : 'profil';
+  const chosen = event.notification.data && event.notification.data.page;
+  const page = ['urunler','sepet','gecmis','profil','firsatlar'].includes(chosen) ? chosen : (type === 'cart' ? 'sepet' : type === 'order' ? 'gecmis' : type === 'announcement' ? 'firsatlar' : 'profil');
   event.waitUntil((async () => {
     const list = await self.clients.matchAll({type:'window', includeUncontrolled:true});
     const withinScope = list.filter(client => client.url.startsWith(self.registration.scope));
