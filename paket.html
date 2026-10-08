@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no">
     <!-- CSP Sıkılaştırıldı: Canlı Sistem reCAPTCHA Enterprise ve Google İzinleri Eklendi -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://*.firebaseio.com https://*.firebaseapp.com https://*.googleapis.com https://*.gstatic.com; script-src 'self' 'unsafe-inline' https://*.gstatic.com https://*.firebaseapp.com https://www.google.com https://apis.google.com https://*.firebaseio.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https://*.visa.com https://upload.wikimedia.org; frame-src 'self' https://www.google.com https://recaptcha.google.com https://*.firebaseapp.com; connect-src 'self' wss://*.firebaseio.com https://*.firebaseio.com https://*.googleapis.com https://www.google.com https://*.gstatic.com;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://*.firebaseio.com https://*.firebaseapp.com https://*.googleapis.com https://*.gstatic.com; script-src 'self' 'unsafe-inline' https://*.gstatic.com https://*.firebaseapp.com https://www.google.com https://apis.google.com https://*.firebaseio.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https://*.visa.com https://upload.wikimedia.org https://nwzxvksywfzpvxwvtypf.supabase.co; frame-src 'self' https://www.google.com https://recaptcha.google.com https://*.firebaseapp.com; connect-src 'self' wss://*.firebaseio.com https://*.firebaseio.com https://*.googleapis.com https://www.google.com https://*.gstatic.com https://nwzxvksywfzpvxwvtypf.supabase.co;">
     <title>Bekmez GO - Premium Paket</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -17,6 +17,8 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script> 
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-check-compat.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
         /* ==========================================
@@ -389,6 +391,29 @@
         #banned-user-overlay h1 { font-size: 32px; color: var(--danger); margin-bottom: 10px; font-weight: 900; letter-spacing: -1px; }
         #banned-user-overlay p { font-size: 15px; color: var(--text-muted); font-weight: 600; line-height: 1.5; max-width: 320px; }
         .banned-reason-box { background: rgba(255, 59, 48, 0.1); border: 1px dashed var(--danger); padding: 15px; border-radius: 12px; margin-top: 15px; color: white; font-weight: 700; font-size: 14px; width: 100%; max-width: 300px;}
+
+        /* BEKMEZ GO - PREMIUM URUN FOTOGRAFLARI */
+        .product-card{padding:0 0 12px;overflow:hidden;justify-content:flex-start;}
+        .product-photo-area{width:100%;aspect-ratio:1/1;position:relative;overflow:hidden;background:linear-gradient(155deg,#28282c,#111115);margin-bottom:10px;display:flex;align-items:center;justify-content:center;}
+        .product-photo-area>img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .3s ease;}
+        .product-card:active .product-photo-area>img{transform:scale(1.035);}
+        .product-photo-area .product-icon-wrapper{display:none;margin:0;}
+        .product-photo-area.image-error>img{display:none;}
+        .product-photo-area.image-error .product-icon-wrapper{display:flex;}
+        .product-card .product-name{padding:0 10px;flex:1;margin:0 0 10px;}
+        .product-card .product-price-badge{width:calc(100% - 20px);}
+        .product-card .popular-badge{top:9px;right:9px;}
+        .product-popup-photo{width:100%;max-height:230px;aspect-ratio:16/10;object-fit:cover;border-radius:16px;margin:0 0 16px;display:none;}
+        .photo-admin-grid{display:grid;grid-template-columns:1fr;gap:14px;}
+        .photo-admin-preview{width:100%;max-width:350px;aspect-ratio:1/1;object-fit:cover;display:none;background:#111;border:1px solid rgba(255,255,255,.1);border-radius:18px;margin:10px auto;}
+        .photo-admin-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;}
+        .photo-admin-actions>button{flex:1;min-width:110px;}
+        .photo-admin-help{font-size:12px;line-height:1.55;color:#a1a1aa;margin:0 0 12px;}
+        .photo-admin-note{font-size:12px;margin:12px 0;min-height:22px;color:#a1a1aa;overflow-wrap:anywhere;}
+        .photo-admin-login{border:1px solid rgba(255,107,0,.25);background:rgba(255,107,0,.055);padding:16px;border-radius:16px;margin-bottom:14px;}
+        .photo-admin-file{width:100%;font:600 12px inherit;color:#ddd;padding:10px 0;}
+        .photo-admin-file::file-selector-button{background:#27272b;color:white;border:1px solid #4b4b55;border-radius:10px;padding:10px;margin-right:10px;cursor:pointer;}
+
     </style>
 </head>
 <body>
@@ -422,6 +447,7 @@
             <div class="admin-tab" onclick="AdminSekmeGoster('cark', this)">Çark Yönetimi</div>
             <div class="admin-tab" onclick="AdminSekmeGoster('bildirim', this)">Push Bildirim</div>
             <div class="admin-tab" onclick="AdminSekmeGoster('sistem', this)">Sistem Ayarları</div>
+            <div class="admin-tab" onclick="AdminSekmeGoster('fotograflar', this)">📸 Ürün Görselleri</div>
         </div>
 
         <!-- 1. İSTATİSTİKLER -->
@@ -511,6 +537,40 @@
                 <p style="font-size: 11px; color: #a1a1aa; margin-bottom: 15px;">Eğer olağanüstü bir durum varsa (elektrik kesintisi vb.), uygulamayı anında herkese kapatabilirsiniz.</p>
                 
                 <button class="admin-btn danger ripple-element" id="adm-emergency-btn" onclick="AdminAcilDurumKapat()">DÜKKANI ŞİMDİ KAPAT</button>
+            </div>
+        </div>
+
+        <!-- Yalnizca Firebase kasa yonetimi icinden gorunur. Gercek yetki Supabase RLS ile saglanir. -->
+        <div id="admin-sec-fotograflar" class="admin-section">
+            <div class="admin-card">
+                <h2>📸 Ürün Fotoğraflarını Yönet</h2>
+                <p class="photo-admin-help">Ürünleri mevcut Firebase menüsünden okur. Fotoğraflar Supabase Storage'da tutulur; kasa fiyatı ve stok bilgileri değiştirilmez.</p>
+                <div id="photo-admin-login" class="photo-admin-login">
+                    <p class="photo-admin-help">Fotoğraf yüklemek için oluşturduğun <b>Supabase yönetici hesabıyla</b> da giriş yap. Firebase kasa şifresi buraya girilmez.</p>
+                    <input id="photo-admin-email" type="email" class="admin-input" placeholder="Supabase yönetici e-postası" autocomplete="username">
+                    <input id="photo-admin-pass" type="password" class="admin-input" placeholder="Supabase şifresi" autocomplete="current-password">
+                    <button class="admin-btn" type="button" style="background:var(--primary)" onclick="FotoAdminGiris()">Görsel Yönetimine Giriş</button>
+                </div>
+                <div id="photo-admin-editor" style="display:none;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;">
+                        <span style="font-size:12px;color:var(--success);font-weight:800;">🔒 Yetkili yönetici oturumu açık</span>
+                        <button type="button" class="btn-del" onclick="FotoAdminCikis()">Supabase'den Çık</button>
+                    </div>
+                    <label for="photo-admin-product" style="font-size:12px;font-weight:800;">Fotoğrafı ayarlanacak ürün</label>
+                    <select id="photo-admin-product" class="admin-input" onchange="FotoAdminUrunSecildi()">
+                        <option value="">Ürünler yükleniyor...</option>
+                    </select>
+                    <img id="photo-admin-preview" class="photo-admin-preview" alt="Ürün fotoğrafı önizlemesi">
+                    <p id="photo-admin-empty" class="photo-admin-help" style="text-align:center;margin:12px 0;">Bu ürün için henüz fotoğraf yüklenmedi.</p>
+                    <label for="photo-admin-file" style="font-size:12px;font-weight:800;">Yeni fotoğraf seç (JPG, PNG veya WebP)</label>
+                    <input id="photo-admin-file" class="photo-admin-file" type="file" accept="image/jpeg,image/png,image/webp" onchange="FotoDosyaSecildi()">
+                    <p class="photo-admin-help">Fotoğraflar tarayıcıda en fazla 800×800 piksel WebP'ye dönüştürülür. Yükleme sınırı 2 MB'dır.</p>
+                    <div class="photo-admin-actions">
+                        <button id="photo-admin-save" class="admin-btn" type="button" style="background:var(--primary)" onclick="FotoAdminKaydet()">Yükle / Değiştir</button>
+                        <button id="photo-admin-delete" class="admin-btn danger" type="button" onclick="FotoAdminSil()">Fotoğrafı Kaldır</button>
+                    </div>
+                </div>
+                <p id="photo-admin-status" class="photo-admin-note" role="status" aria-live="polite"></p>
             </div>
         </div>
     </div>
@@ -855,6 +915,7 @@
                     <h3 id="popup-title" class="popup-title">Ürün Adı</h3>
                     <button class="ripple-element" onclick="PopupKapat()" style="background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; z-index: 99; overflow:hidden;">&times;</button>
                 </div>
+                <img id="product-popup-photo" class="product-popup-photo" alt="Ürün fotoğrafı" loading="lazy">
                 <div class="popup-info-box">
                     <div style="display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.6); padding: 6px; border-radius: 100px; border: 1px solid var(--border-highlight); box-shadow: inset 0 2px 8px rgba(0,0,0,0.5);"><button onclick="PopupIciMiktarDegistir(-1)" style="width: 32px; height: 32px; border-radius: 50%; border: none; background: rgba(255,255,255,0.05); color: white; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s;">-</button><span id="popup-amount" style="color: var(--text-main); font-weight: 900; min-width: 40px; text-align: center; font-size: 14px;">______</span><button onclick="PopupIciMiktarDegistir(1)" style="width: 32px; height: 32px; border-radius: 50%; border: none; background: var(--gradient-fire); color: white; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s;">+</button></div>
                     <span id="popup-price" style="color: var(--primary); font-size: 20px; font-weight: 900; letter-spacing: -1px;">______ TL</span>
@@ -1236,6 +1297,7 @@
         document.querySelectorAll(".admin-tab").forEach(b => b.classList.remove("active")); if(btn) btn.classList.add("active");
         document.querySelectorAll(".admin-section").forEach(s => { s.classList.remove("active"); });
         let target = document.getElementById("admin-sec-" + sekmeId); if(target) target.classList.add("active");
+        if(sekmeId === 'fotograflar') FotoAdminHazirla();
         if(sekmeId === 'musteri' || sekmeId === 'istatistik') { let user = firebase.auth().currentUser; if(user) user.getIdToken(true).then(token => AdminMusterileriListele(token)); }
     }
 
@@ -1520,7 +1582,7 @@
 
     function SadeceCikisYap() { SoruSor("Oturumu Kapat", "Cihazınızdaki mevcut oturumu kapatmak istediğinize emin misiniz?", "🚪", async () => { HapticTitresim(); document.body.innerHTML += `<div style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999999;display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;font-weight:bold;backdrop-filter:blur(10px);"><div class="spinner"></div><div style="margin-top:20px; font-size:18px;">Güvenli Çıkış Yapılıyor...</div></div>`; await TemizleOturumVerileri(); }, false); }
 
-    async function TemizleOturumVerileri() { try { if(firebase.auth().currentUser) { await firebase.auth().signOut(); } localStorage.clear(); setTimeout(() => { window.location.reload(true); }, 800); } catch(e) { localStorage.clear(); window.location.reload(true); } }
+    async function TemizleOturumVerileri() { try { if (fotoSupabase) { try { await fotoSupabase.auth.signOut(); } catch(e) { console.warn("Supabase oturumu kapanamadı", e); } } if(firebase.auth().currentUser) { await firebase.auth().signOut(); } localStorage.clear(); setTimeout(() => { window.location.reload(true); }, 800); } catch(e) { localStorage.clear(); window.location.reload(true); } }
 
     async function HesabiTamamenSil() {
         let tel = await SecureOku("bg_t"); if (!tel) return;
@@ -1659,7 +1721,7 @@
 
         let t = document.getElementById("nav-" + s); if(t) { t.classList.add("active"); } else { s = 'urunler'; document.getElementById("nav-urunler").classList.add("active"); }
 
-        if(s === 'urunler') { document.getElementById("menu-container").style.display = "block"; if(sepet.length > 0 || aktifKullanilanCarkOdulu) document.getElementById("floating-cart").style.display = "flex"; } 
+        if(s === 'urunler') { if(Date.now() - fotoSonCekilis > 120000) { FotoHaritasiniYenile().then(degisti => { if(degisti && document.getElementById('menu-container').style.display === 'block') FotoMusteriKartlariniTazele(); }); } document.getElementById("menu-container").style.display = "block"; if(sepet.length > 0 || aktifKullanilanCarkOdulu) document.getElementById("floating-cart").style.display = "flex"; } 
         else if (s === 'sepet') { document.getElementById("cart-container").style.display = "block"; SepetEkraniniCiz(); } 
         else if (s === 'profil') { document.getElementById("profile-container").style.display = "block"; } 
         else if (s === 'firsatlar') { document.getElementById("opportunities-container").style.display = "block"; KuponlariCek(); CarkDurumunuKontrolEt(); } 
@@ -1667,9 +1729,273 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+
+    // ===========================================================
+    // BEKMEZ GO - SUPABASE FOTOGRAF ENTEGRASYONU
+    // Publishable key herkese aciktir; yetkiler sunucuda RLS ile denetlenir.
+    // Firebase urun fiyati / stogu / kasa isleyisi degistirilmez.
+    // ===========================================================
+    const FOTO_SB_URL = "https://nwzxvksywfzpvxwvtypf.supabase.co";
+    const FOTO_SB_PUBLIC_KEY = "sb_publishable_ly8sItQiSf-Sjr3OTVoKbQ_NG5-YUBe";
+    const FOTO_SB_BUCKET = "Bekmez-GO Photos";
+    const FOTO_ADMIN_UID = "9ee8f01d-80e1-4676-8c97-7fc47ddf0e99";
+    const FOTO_TABLE = "bekmez_urun_fotograflari";
+    const fotoSupabase = window.supabase && typeof window.supabase.createClient === 'function'
+        ? window.supabase.createClient(FOTO_SB_URL, FOTO_SB_PUBLIC_KEY, {
+            auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
+          }) : null;
+    let fotoHaritasi = Object.create(null);
+    let fotoSonCekilis = 0;
+    let fotoAdminUrunler = [];
+    let fotoAdminOnizlemeObjectUrl = null;
+    let fotoAdminIslemde = false;
+
+    function FotoAdminMesaj(metin, hata = false) {
+        const el = document.getElementById('photo-admin-status');
+        if(el) { el.textContent = metin; el.style.color = hata ? '#FF6B60' : '#a1a1aa'; }
+    }
+
+    function FotoUrunUrl(urunAdi) {
+        const yol = fotoHaritasi[String(urunAdi || '').trim()];
+        if(!yol || !fotoSupabase || !/^products\/[0-9a-f-]{36}\.webp$/.test(yol)) return '';
+        return fotoSupabase.storage.from(FOTO_SB_BUCKET).getPublicUrl(yol).data.publicUrl;
+    }
+
+    async function FotoHaritasiniYenile() {
+        if(!fotoSupabase) { console.warn('Supabase görsel kütüphanesi yüklenemedi.'); return false; }
+        try {
+            const {data, error} = await fotoSupabase.from(FOTO_TABLE).select('urun_adi,dosya_yolu');
+            if(error) throw error;
+            const yeni = Object.create(null);
+            for(const x of (data || [])) {
+                if(x.urun_adi && /^products\/[0-9a-f-]{36}\.webp$/.test(x.dosya_yolu || ''))
+                    yeni[x.urun_adi.trim()] = x.dosya_yolu;
+            }
+            const eski = JSON.stringify(fotoHaritasi);
+            fotoHaritasi = yeni;
+            fotoSonCekilis = Date.now();
+            return JSON.stringify(yeni) !== eski;
+        } catch(e) {
+            console.warn('Fotoğraf eşleştirmeleri henüz okunamıyor (SQL tablo kurulmuş mu?):', e.message);
+            fotoSonCekilis = Date.now();
+            return false;
+        }
+    }
+
+    function FotoMusteriKartlariniTazele() {
+        if(isAdmin) return;
+        const arama = (document.getElementById('search-input')?.value || '').trim().toLocaleLowerCase('tr-TR');
+        const gorunenler = arama ? tumUrunler.filter(u => u.pName && u.pName.toLocaleLowerCase('tr-TR').includes(arama))
+            : tumUrunler.filter(u => GetKategoriAd(u) === aktifKategori);
+        EkranaUrunleriCiz(gorunenler);
+    }
+
+    async function FotoAdminKimlik() {
+        if(!isAdmin || firebase.auth().currentUser?.email !== 'kasa@bekmez.com')
+            throw new Error('Önce Firebase kasa yönetimine giriş yapmalısınız.');
+        if(!fotoSupabase) throw new Error('Supabase kütüphanesi yüklenemedi. CSP veya ağ bağlantısını kontrol edin.');
+        const {data, error} = await fotoSupabase.auth.getUser();
+        if(error || !data?.user || data.user.id !== FOTO_ADMIN_UID)
+            throw new Error('Yetkili Supabase yönetici oturumu bulunamadı.');
+        return data.user;
+    }
+
+    async function FotoAdminHazirla() {
+        if(!isAdmin) return;
+        FotoAdminMesaj('Bağlantı kontrol ediliyor...');
+        try {
+            await FotoAdminKimlik();
+        } catch(e) {
+            document.getElementById('photo-admin-login').style.display = 'block';
+            document.getElementById('photo-admin-editor').style.display = 'none';
+            FotoAdminMesaj('Görsel yönetimi için Supabase hesabınızla giriş yapın.');
+            return;
+        }
+        document.getElementById('photo-admin-login').style.display = 'none';
+        document.getElementById('photo-admin-editor').style.display = 'block';
+        try {
+            await Promise.all([FotoAdminUrunleriYukle(), FotoHaritasiniYenile()]);
+            FotoAdminUrunSecildi();
+            FotoAdminMesaj('Fotoğraflar yönetilmeye hazır.');
+        } catch(e) {
+            FotoAdminMesaj('Ürünler yüklenemedi: ' + e.message, true);
+        }
+    }
+
+    async function FotoAdminGiris() {
+        if(!isAdmin || !fotoSupabase) { FotoAdminMesaj('Firebase admin girişi veya Supabase bağlantısı bulunamadı.', true); return; }
+        const email = document.getElementById('photo-admin-email').value.trim();
+        const password = document.getElementById('photo-admin-pass').value;
+        if(!email || !password) { FotoAdminMesaj('E-posta ve şifre gerekli.', true); return; }
+        FotoAdminMesaj('Giriş yapılıyor...');
+        try {
+            const {data, error} = await fotoSupabase.auth.signInWithPassword({email, password});
+            document.getElementById('photo-admin-pass').value = '';
+            if(error) throw error;
+            if(data.user?.id !== FOTO_ADMIN_UID) {
+                await fotoSupabase.auth.signOut();
+                throw new Error('Bu Supabase hesabına görsel düzenleme yetkisi verilmemiş.');
+            }
+            await FotoAdminHazirla();
+        } catch(e) {
+            document.getElementById('photo-admin-pass').value = '';
+            FotoAdminMesaj('Giriş başarısız: ' + e.message, true);
+        }
+    }
+
+    async function FotoAdminCikis() {
+        if(fotoSupabase) await fotoSupabase.auth.signOut();
+        document.getElementById('photo-admin-editor').style.display = 'none';
+        document.getElementById('photo-admin-login').style.display = 'block';
+        FotoAdminOnizlemeTemizle();
+        FotoAdminMesaj('Supabase görsel yönetimi oturumu kapatıldı.');
+    }
+
+    async function FotoAdminUrunleriYukle() {
+        const res = await fetch(`${FIREBASE_URL}/Menu.json?t=${Date.now()}`, {cache:'no-store'});
+        if(!res.ok) throw new Error('Firebase menüsüne erişilemedi (' + res.status + ').');
+        const json = await res.json();
+        if(json?.error) throw new Error('Firebase menü okuma yetkisi yok.');
+        fotoAdminUrunler = (Array.isArray(json?.products) ? json.products : []).filter(x => x && typeof x.pName === 'string');
+        const sec = document.getElementById('photo-admin-product');
+        sec.replaceChildren();
+        for(const urun of fotoAdminUrunler) {
+            const opt = document.createElement('option');
+            opt.value = urun.pName.trim(); opt.textContent = urun.pName;
+            sec.appendChild(opt);
+        }
+        if(!fotoAdminUrunler.length) {
+            const opt = document.createElement('option'); opt.value = ''; opt.textContent = 'Firebase menüsünde ürün bulunamadı'; sec.appendChild(opt);
+            throw new Error('Ürün listesi boş.');
+        }
+    }
+
+    function FotoAdminOnizlemeTemizle() {
+        if(fotoAdminOnizlemeObjectUrl) { URL.revokeObjectURL(fotoAdminOnizlemeObjectUrl); fotoAdminOnizlemeObjectUrl = null; }
+        const sec = document.getElementById('photo-admin-file'); if(sec) sec.value = '';
+    }
+
+    function FotoAdminUrunSecildi() {
+        FotoAdminOnizlemeTemizle();
+        const ad = document.getElementById('photo-admin-product')?.value || '';
+        const resim = document.getElementById('photo-admin-preview');
+        const bos = document.getElementById('photo-admin-empty');
+        const adres = FotoUrunUrl(ad);
+        if(resim) { resim.style.display = adres ? 'block':'none'; resim.onerror = () => {resim.style.display='none'; if(bos) bos.style.display='block';}; if(adres) resim.src = adres; else resim.removeAttribute('src'); }
+        if(bos) bos.style.display = adres ? 'none' : 'block';
+        const sil = document.getElementById('photo-admin-delete'); if(sil) sil.disabled = !adres;
+    }
+
+    function FotoDosyaSecildi() {
+        const file = document.getElementById('photo-admin-file')?.files?.[0];
+        if(!file) { FotoAdminUrunSecildi(); return; }
+        if(!['image/jpeg','image/png','image/webp'].includes(file.type)) { FotoAdminMesaj('Yalnızca JPG, PNG ve WebP seçin.',true); FotoAdminOnizlemeTemizle(); return; }
+        if(file.size > 20*1024*1024) { FotoAdminMesaj('Kaynak dosya 20 MB üstünde. Daha küçük görsel seçin.',true); FotoAdminOnizlemeTemizle(); return; }
+        if(fotoAdminOnizlemeObjectUrl) URL.revokeObjectURL(fotoAdminOnizlemeObjectUrl);
+        fotoAdminOnizlemeObjectUrl = URL.createObjectURL(file);
+        const resim = document.getElementById('photo-admin-preview');
+        resim.src = fotoAdminOnizlemeObjectUrl; resim.style.display = 'block';
+        document.getElementById('photo-admin-empty').style.display = 'none';
+        FotoAdminMesaj('Önizleme hazır. Kaydet butonu ile yükle.');
+    }
+
+    function FotoWebpHazirla(file) {
+        return new Promise((resolve, reject) => {
+            const objectUrl = URL.createObjectURL(file);
+            const img = new Image();
+            img.onload = () => {
+                URL.revokeObjectURL(objectUrl);
+                try {
+                    const max = 800, factor = Math.min(1,max / Math.max(img.naturalWidth,img.naturalHeight));
+                    const c = document.createElement('canvas');
+                    c.width = Math.max(1,Math.round(img.naturalWidth*factor));
+                    c.height = Math.max(1,Math.round(img.naturalHeight*factor));
+                    const ctx = c.getContext('2d');
+                    if(!ctx) throw new Error('Tarayıcı Canvas desteklemiyor.');
+                    ctx.drawImage(img,0,0,c.width,c.height);
+                    c.toBlob(blob => {
+                        if(!blob || blob.type !== 'image/webp') { reject(new Error('WebP dönüştürme başarısız.')); return; }
+                        if(blob.size > 2*1024*1024) { reject(new Error('Sıkıştırılmış dosya 2 MB limitini aştı.')); return; }
+                        resolve(blob);
+                    }, 'image/webp', 0.80);
+                } catch(e) { reject(e); }
+            };
+            img.onerror = () => { URL.revokeObjectURL(objectUrl); reject(new Error('Görsel okunamadı.')); };
+            img.src = objectUrl;
+        });
+    }
+
+    function FotoAdminButonlariKilitle(kilitli) {
+        fotoAdminIslemde = kilitli;
+        for(const id of ['photo-admin-save','photo-admin-delete','photo-admin-product','photo-admin-file']) {
+            const el = document.getElementById(id); if(el) el.disabled = kilitli;
+        }
+    }
+
+    async function FotoAdminKaydet() {
+        if(fotoAdminIslemde) return;
+        const urun = document.getElementById('photo-admin-product')?.value;
+        const file = document.getElementById('photo-admin-file')?.files?.[0];
+        if(!urun || !file) { FotoAdminMesaj('Önce ürün ve görsel seçin.',true); return; }
+        if(!fotoAdminUrunler.some(u => u.pName.trim() === urun)) { FotoAdminMesaj('Ürün Firebase menüsünde bulunamadı.',true); return; }
+        FotoAdminButonlariKilitle(true);
+        let yeniYol = null;
+        try {
+            await FotoAdminKimlik();
+            FotoAdminMesaj('Fotoğraf sıkıştırılıyor...');
+            const webp = await FotoWebpHazirla(file);
+            yeniYol = 'products/' + crypto.randomUUID() + '.webp';
+            FotoAdminMesaj('Supabase Storage yükleniyor...');
+            const {error: uploadError} = await fotoSupabase.storage.from(FOTO_SB_BUCKET)
+                .upload(yeniYol, webp, {contentType:'image/webp', cacheControl:'31536000', upsert:false});
+            if(uploadError) throw uploadError;
+            const eskiYol = fotoHaritasi[urun];
+            const {error: dbError} = await fotoSupabase.from(FOTO_TABLE).upsert(
+                {urun_adi:urun, dosya_yolu:yeniYol, updated_at:new Date().toISOString()}, {onConflict:'urun_adi'});
+            if(dbError) throw dbError;
+            fotoHaritasi[urun] = yeniYol;
+            fotoSonCekilis = Date.now();
+            // Veritabanı güncellemesi tamamlandı: yeni dosyayı geri alma kapsamından çıkar.
+            const kaliciYeniYol = yeniYol;
+            yeniYol = null;
+            FotoAdminUrunSecildi();
+            FotoAdminMesaj('✅ Fotoğraf başarıyla kaydedildi. Müşteri menüsünde görüntülenecek.');
+            if(eskiYol && eskiYol !== kaliciYeniYol) {
+                try {
+                    const {error: oldErr} = await fotoSupabase.storage.from(FOTO_SB_BUCKET).remove([eskiYol]);
+                    if(oldErr) console.warn('Eski görsel temizlenemedi:',oldErr.message);
+                } catch(cleanupError) { console.warn('Eski görsel temizlik isteği başarısız:', cleanupError); }
+            }
+        } catch(e) {
+            if(yeniYol && fotoSupabase) await fotoSupabase.storage.from(FOTO_SB_BUCKET).remove([yeniYol]).catch(()=>{});
+            FotoAdminMesaj('Yükleme başarısız: ' + e.message,true);
+        } finally { FotoAdminButonlariKilitle(false); }
+    }
+
+    async function FotoAdminSil() {
+        if(fotoAdminIslemde) return;
+        const urun = document.getElementById('photo-admin-product')?.value;
+        const yol = fotoHaritasi[urun];
+        if(!urun || !yol) { FotoAdminMesaj('Bu ürüne ait fotoğraf bulunamadı.',true); return; }
+        if(!window.confirm(urun + ' ürününün fotoğrafı kaldırılsın mı?')) return;
+        FotoAdminButonlariKilitle(true);
+        try {
+            await FotoAdminKimlik();
+            const {error: dbError} = await fotoSupabase.from(FOTO_TABLE).delete().eq('urun_adi', urun);
+            if(dbError) throw dbError;
+            delete fotoHaritasi[urun];
+            fotoSonCekilis = Date.now();
+            FotoAdminUrunSecildi();
+            const {error: delError} = await fotoSupabase.storage.from(FOTO_SB_BUCKET).remove([yol]);
+            FotoAdminMesaj(delError ? 'Görsel kaldırıldı; depodaki eski dosya temizlenemedi.' : '✅ Fotoğraf kaldırıldı.');
+        } catch(e) { FotoAdminMesaj('Silme başarısız: ' + e.message,true); }
+        finally { FotoAdminButonlariKilitle(false); }
+    }
+
     async function CanliMenuCek(ilkYukleme) {
         if(isAdmin || isBannedUser) return;
         try {
+            if (ilkYukleme) await FotoHaritasiniYenile();
             let pRes = await fetch(`${FIREBASE_URL}/PopulerUrunler.json?t=${Date.now()}`); let pD = await pRes.json(); if(pD && Array.isArray(pD)) populerUrunlerListesi = pD;
             let vRes = await fetch(`${FIREBASE_URL}/MenuVersion.json?t=${Date.now()}`); let vD = await vRes.json(); if (!ilkYukleme && vD && vD.v == sonMenuVersiyonu) return; if (vD) sonMenuVersiyonu = vD.v;
 
@@ -1714,7 +2040,11 @@
 
                 let kartOpaklik = stokSifirMi ? "opacity: 0.5; filter: grayscale(1);" : ""; let isPopular = ur.pName ? populerUrunlerListesi.includes(ur.pName) : false; let popularBadgeHTML = (isPopular && !stokSifirMi) ? `<div class="popular-badge">🔥 POPÜLER</div>` : "";
 
-                gridContainer.innerHTML += `<div class="product-card ripple-element" style="${kartOpaklik} animation-delay: ${i * 0.05}s;" onclick="${clickAction}">${popularBadgeHTML}<div class="product-icon-wrapper"><div class="product-icon">${icon}</div></div><div class="product-name">${escapeHTML(ur.pName)}</div><div class="product-price-badge">${badgeStr}</div></div>`;
+                const fotoUrl = FotoUrunUrl(ur.pName);
+                const fotoIcerik = fotoUrl
+                    ? `<div class="product-photo-area"><img src="${escapeHTML(fotoUrl)}" alt="${escapeHTML(ur.pName)}" loading="lazy" decoding="async" onerror="this.parentElement.classList.add('image-error')"><div class="product-icon-wrapper"><div class="product-icon">${icon}</div></div></div>`
+                    : `<div class="product-photo-area image-error"><div class="product-icon-wrapper"><div class="product-icon">${icon}</div></div></div>`;
+                gridContainer.innerHTML += `<div class="product-card ripple-element" style="${kartOpaklik} animation-delay: ${Math.min(i,10) * 0.04}s;" onclick="${clickAction}">${popularBadgeHTML}${fotoIcerik}<div class="product-name">${escapeHTML(ur.pName)}</div><div class="product-price-badge">${badgeStr}</div></div>`;
             } catch(e) {}
         });
     }
@@ -1732,6 +2062,8 @@
         try {
             HapticTitresim(); seciliUrun = tumUrunler[index]; seciliMiktar = 0; seciliFiyat = 0; seciliEkstraIstekler = []; seciliOzelEkmekTip = "Normal"; baseKgBread = 0; ekstraEkmekKg = 0; oncekiPopupFiyat = 0; oncekiPopupMiktar = 0; seciliUrunStok = 999; 
             if (seciliUrun.stockAmount != null) seciliUrunStok = parseFloat((seciliUrun.stockAmount||0).toString().replace(',', '.')); else if (seciliUrun.stock != null) seciliUrunStok = parseFloat((seciliUrun.stock||0).toString().replace(',', '.')); if (isNaN(seciliUrunStok)) seciliUrunStok = 999;
+            const popupFoto = document.getElementById("product-popup-photo");
+            if(popupFoto) { const fotoAdres = FotoUrunUrl(seciliUrun.pName); popupFoto.style.display = fotoAdres ? 'block' : 'none'; popupFoto.onerror = () => { popupFoto.style.display = 'none'; }; if(fotoAdres) popupFoto.src = fotoAdres; else popupFoto.removeAttribute('src'); }
             document.getElementById("popup-title").innerText = escapeHTML(seciliUrun.pName || "Ürün"); seciliMiktar = seciliUrun.isKg ? 1 : 1; seciliFiyat = UnityFiyatiniHesapla(seciliUrun, seciliMiktar); if (seciliUrun.isKg) baseKgBread = 4; await PopupUIYenile(false); 
 
             let pL = (seciliUrun.pName || "").toString().toLocaleLowerCase('tr-TR'); let cA = document.getElementById("popup-custom-area"); let iS = pL.includes("dürüm") || pL.includes("doner") || pL.includes("kebap"); let hI = ""; 
