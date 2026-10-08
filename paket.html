@@ -400,6 +400,8 @@
         .product-photo-area .product-icon-wrapper{display:none;margin:0;}
         .product-photo-area.image-error>img{display:none;}
         .product-photo-area.image-error .product-icon-wrapper{display:flex;}
+        /* Fotoğrafı olmayan/silinen üründe eski, küçük ve yuvarlak kategori simgesi */
+        .product-card>.product-icon-wrapper{flex-shrink:0;margin:16px auto 12px;}
         .product-card .product-name{padding:0 10px;flex:1;margin:0 0 10px;}
         .product-card .product-price-badge{width:calc(100% - 20px);}
         .product-card .popular-badge{top:9px;right:9px;}
@@ -1329,6 +1331,63 @@
         } catch(e) { console.error("Admin listeleme hatası", e); }
     }
 
+    // Bekmez GO admin acilis sesi: dis dosya/servis gerektirmeyen kisa, yumusak chime.
+    // Tarayici otomatik oynatimi engellerse ilk yonetici etkilesiminde calar.
+    let adminChimeContext = null;
+    let adminChimeCalindi = false;
+    let adminChimeBeklemede = false;
+
+    function AdminChimeSesiHazirla() {
+        const Ctx = window.AudioContext || window.webkitAudioContext;
+        if(!Ctx) return;
+        try {
+            if(!adminChimeContext) adminChimeContext = new Ctx();
+            if(adminChimeContext.state === 'suspended') {
+                const p = adminChimeContext.resume();
+                if(p && typeof p.then === 'function') p.then(() => {
+                    if(adminChimeBeklemede && isAdmin) AdminChimeCal();
+                }).catch(() => {});
+            }
+        } catch(e) { console.debug('Admin chime desteklenmiyor:',e); }
+    }
+
+    function AdminChimeCal() {
+        if(adminChimeCalindi || !isAdmin) return;
+        AdminChimeSesiHazirla();
+        const ctx = adminChimeContext;
+        if(!ctx || ctx.state !== 'running') { adminChimeBeklemede = true; return; }
+        try {
+            const t = ctx.currentTime + 0.025;
+            // Duyulabilir ama rahatsiz etmeyen uc kisa, armonik nota.
+            const notalar = [
+                {hz:659.25, basla:0.00, sure:0.22, ses:0.025},
+                {hz:830.61, basla:0.10, sure:0.28, ses:0.022},
+                {hz:1046.50, basla:0.21, sure:0.39, ses:0.016}
+            ];
+            for(const n of notalar) {
+                const o = ctx.createOscillator();
+                const g = ctx.createGain();
+                o.type = 'sine'; o.frequency.setValueAtTime(n.hz, t + n.basla);
+                g.gain.setValueAtTime(0.0001, t + n.basla);
+                g.gain.exponentialRampToValueAtTime(n.ses, t + n.basla + 0.018);
+                g.gain.exponentialRampToValueAtTime(0.0001, t + n.basla + n.sure);
+                o.connect(g); g.connect(ctx.destination);
+                o.start(t + n.basla); o.stop(t + n.basla + n.sure + 0.015);
+            }
+            adminChimeCalindi = true;
+            adminChimeBeklemede = false;
+        } catch(e) { adminChimeBeklemede = false; console.debug('Admin chime calinamadi:',e); }
+    }
+
+    // Oturum otomatik acilirsa tarayici ses icin bir dokunus bekleyebilir.
+    function AdminChimeEtkilesim() {
+        if(!adminChimeBeklemede || !isAdmin || adminChimeCalindi) return;
+        AdminChimeSesiHazirla();
+        if(adminChimeContext?.state === 'running') AdminChimeCal();
+    }
+    document.addEventListener('pointerdown', AdminChimeEtkilesim, {passive:true});
+    document.addEventListener('keydown', AdminChimeEtkilesim);
+
     async function AdminPaneleGec() {
         let user = firebase.auth().currentUser; if(!user) return;
         let idToken = await user.getIdToken(true);
@@ -1340,7 +1399,7 @@
         isAdmin = true;
         let splash = document.getElementById('splash-screen'); if (splash) { splash.style.display = 'none'; splash.style.opacity = '0'; }
         document.getElementById("main-user-ui").style.display = "none"; document.getElementById("store-closed-overlay").style.display = "none"; document.getElementById("banned-user-overlay").style.display = "none";
-        document.getElementById("admin-panel-container").style.display = "block"; AdminMusterileriListele(idToken);
+        document.getElementById("admin-panel-container").style.display = "block"; AdminChimeCal(); AdminMusterileriListele(idToken);
     }
 
     function AdminSekmeGoster(sekmeId, btn) {
@@ -1486,6 +1545,8 @@
     async function GirisYapTetikle() {
         let email = document.getElementById("login-email").value.trim().toLowerCase(); let pass = document.getElementById("login-pass").value; let btn = document.querySelector("#login-form-area .premium-submit-btn");
         if(!email || !pass) { OzelUyariGoster("Eksik Bilgi", "Lütfen e-posta ve şifrenizi girin.", "⚠"); return; }
+        // Ses izni, sadece gercek admin girisi tiklamasinda hazirlanir.
+        if(email === 'kasa@bekmez.com') AdminChimeSesiHazirla();
         btn.disabled = true; btn.innerHTML = `<div class="spinner-small"></div> Giriş Yapılıyor...`;
 
         try {
@@ -1981,6 +2042,31 @@
         }
     }
 
+    function FotoUrunResimHatasi(resim) {
+        // Silinen/bozuk URL, kategoriye ozel standart yuvarlak simgeye doner.
+        if(!resim || !resim.parentElement) return;
+        const alan = resim.closest('.product-photo-area');
+        const ikon = alan?.querySelector('.product-icon-wrapper');
+        if(alan && ikon) alan.replaceWith(ikon);
+    }
+
+    // Müşteri uygulamaya geri geldiğinde silinen görsellerin simgeye dönmesini sağla.
+    // Sürekli polling yerine görünürlük/odak değişimini kullan; ücretsiz kota dostu.
+    let fotoOdakKontrolDevamEdiyor = false;
+    async function FotoOdaklanincaKontrolEt() {
+        if(fotoOdakKontrolDevamEdiyor || isAdmin || document.hidden ||
+           document.getElementById('menu-container')?.style.display === 'none' ||
+           Date.now() - fotoSonCekilis < 45000) return;
+        fotoOdakKontrolDevamEdiyor = true;
+        try {
+            const degisti = await FotoHaritasiniYenile();
+            if(degisti && !isAdmin && document.getElementById('menu-container')?.style.display !== 'none')
+                FotoMusteriKartlariniTazele();
+        } finally { fotoOdakKontrolDevamEdiyor = false; }
+    }
+    document.addEventListener('visibilitychange', FotoOdaklanincaKontrolEt);
+    window.addEventListener('focus', FotoOdaklanincaKontrolEt);
+
     function FotoMusteriKartlariniTazele() {
         if(isAdmin) return;
         const arama = (document.getElementById('search-input')?.value || '').trim().toLocaleLowerCase('tr-TR');
@@ -2129,6 +2215,11 @@
         for(const id of ['photo-admin-save','photo-admin-delete','photo-admin-product','photo-admin-file']) {
             const el = document.getElementById(id); if(el) el.disabled = kilitli;
         }
+        if(!kilitli) {
+            const btnSil = document.getElementById('photo-admin-delete');
+            const urun = document.getElementById('photo-admin-product')?.value || '';
+            if(btnSil) btnSil.disabled = !Boolean(fotoHaritasi[urun]);
+        }
     }
 
     async function FotoAdminKaydet() {
@@ -2171,24 +2262,70 @@
         } finally { FotoAdminButonlariKilitle(false); }
     }
 
-    async function FotoAdminSil() {
+    function FotoAdminSil() {
         if(fotoAdminIslemde) return;
-        const urun = document.getElementById('photo-admin-product')?.value;
-        const yol = fotoHaritasi[urun];
-        if(!urun || !yol) { FotoAdminMesaj('Bu ürüne ait fotoğraf bulunamadı.',true); return; }
-        if(!window.confirm(urun + ' ürününün fotoğrafı kaldırılsın mı?')) return;
+        const urun = (document.getElementById('photo-admin-product')?.value || '').trim();
+        if(!urun) { FotoAdminMesaj('Önce bir ürün seçin.',true); return; }
+        if(!fotoHaritasi[urun]) {
+            FotoAdminUrunSecildi();
+            FotoAdminMesaj('Bu ürünün fotoğrafı yok. Menüsünde normal kategori simgesi gösterilecek.');
+            return;
+        }
+        // Native window.confirm bazen tarayici/PWA tarafindan engellenebiliyor.
+        SoruSor('Ürün Fotoğrafını Kaldır',
+            '<b>' + escapeHTML(urun) + '</b> görseli silinsin mi? Ürünün fiyatı, stoku ve sipariş kaydı değişmez.',
+            '🗑️', () => { void FotoAdminSilOnayla(urun); }, false);
+    }
+
+    async function FotoAdminSilOnayla(urun) {
+        if(fotoAdminIslemde || !urun) return;
         FotoAdminButonlariKilitle(true);
         try {
             await FotoAdminKimlik();
-            const {error: dbError} = await fotoSupabase.from(FOTO_TABLE).delete().eq('urun_adi', urun);
-            if(dbError) throw dbError;
+            FotoAdminMesaj('Ürün görseli veritabanından doğrulanıyor...');
+            const {data: mevcut, error: okumaHatasi} = await fotoSupabase.from(FOTO_TABLE)
+                .select('dosya_yolu').eq('urun_adi',urun).maybeSingle();
+            if(okumaHatasi) throw okumaHatasi;
+            if(!mevcut) {
+                // Baska bir oturum silmis olabilir: yerel eslesmeyi de temizle.
+                delete fotoHaritasi[urun];
+                fotoSonCekilis = Date.now();
+                FotoAdminUrunSecildi();
+                FotoAdminMesaj('Fotoğraf zaten kaldırılmış. Ürün artık normal kategori simgesiyle gösterilecek.');
+                return;
+            }
+            const yol = mevcut.dosya_yolu;
+            FotoAdminMesaj('Fotoğraf kaydı siliniyor...');
+            // select() ile gercekten silinen satiri dogrula (0 satir sessiz basari sayilmaz).
+            const {data: silinen, error: silmeHatasi} = await fotoSupabase.from(FOTO_TABLE)
+                .delete().eq('urun_adi',urun).select('urun_adi');
+            if(silmeHatasi) throw silmeHatasi;
+            if(!Array.isArray(silinen) || silinen.length !== 1)
+                throw new Error('Veritabanı silme işlemi onaylanmadı. Supabase RLS DELETE ve SELECT kurallarını kontrol edin.');
+            const {data: kalan, error: dogrulamaHatasi} = await fotoSupabase.from(FOTO_TABLE)
+                .select('urun_adi').eq('urun_adi',urun).maybeSingle();
+            if(dogrulamaHatasi) throw dogrulamaHatasi;
+            if(kalan) throw new Error('Fotoğraf kaydı hala veritabanında bulunuyor; silme işlemi tamamlanmadı.');
+
             delete fotoHaritasi[urun];
             fotoSonCekilis = Date.now();
             FotoAdminUrunSecildi();
-            const {error: delError} = await fotoSupabase.storage.from(FOTO_SB_BUCKET).remove([yol]);
-            FotoAdminMesaj(delError ? 'Görsel kaldırıldı; depodaki eski dosya temizlenemedi.' : '✅ Fotoğraf kaldırıldı.');
-        } catch(e) { FotoAdminMesaj('Silme başarısız: ' + e.message,true); }
-        finally { FotoAdminButonlariKilitle(false); }
+            // Dosyayi da temizle: buradaki hata silinen veritabani kaydini geri getirmez.
+            try {
+                const {error: dosyaHatasi} = await fotoSupabase.storage.from(FOTO_SB_BUCKET).remove([yol]);
+                if(dosyaHatasi) throw dosyaHatasi;
+                FotoAdminMesaj('✅ Fotoğraf silindi. Ürün artık normal kategori simgesiyle görünecek.');
+            } catch(dosyaHatasi) {
+                console.warn('Supabase Storage dosyasi temizlenemedi:',dosyaHatasi);
+                FotoAdminMesaj('Fotoğraf menüden kaldırıldı ve simge geri geldi; Storage dosyası temizlenemedi: ' + dosyaHatasi.message, true);
+            }
+        } catch(e) {
+            console.error('Fotoğraf kaldırma hatası:',e);
+            // Hata durumunda sayac/yerel durum senkron kalsin.
+            await FotoHaritasiniYenile();
+            FotoAdminUrunSecildi();
+            FotoAdminMesaj('Fotoğraf kaldırılamadı: ' + (e?.message || 'Bilinmeyen hata'),true);
+        } finally { FotoAdminButonlariKilitle(false); }
     }
 
     async function CanliMenuCek(ilkYukleme) {
@@ -2241,8 +2378,8 @@
 
                 const fotoUrl = FotoUrunUrl(ur.pName);
                 const fotoIcerik = fotoUrl
-                    ? `<div class="product-photo-area"><img src="${escapeHTML(fotoUrl)}" alt="${escapeHTML(ur.pName)}" loading="lazy" decoding="async" onerror="this.parentElement.classList.add('image-error')"><div class="product-icon-wrapper"><div class="product-icon">${icon}</div></div></div>`
-                    : `<div class="product-photo-area image-error"><div class="product-icon-wrapper"><div class="product-icon">${icon}</div></div></div>`;
+                    ? `<div class="product-photo-area"><img src="${escapeHTML(fotoUrl)}" alt="${escapeHTML(ur.pName)}" loading="lazy" decoding="async" onerror="FotoUrunResimHatasi(this)"><div class="product-icon-wrapper"><div class="product-icon">${icon}</div></div></div>`
+                    : `<div class="product-icon-wrapper"><div class="product-icon">${icon}</div></div>`;
                 gridContainer.innerHTML += `<div class="product-card ripple-element" style="${kartOpaklik} animation-delay: ${Math.min(i,10) * 0.04}s;" onclick="${clickAction}">${popularBadgeHTML}${fotoIcerik}<div class="product-name">${escapeHTML(ur.pName)}</div><div class="product-price-badge">${badgeStr}</div></div>`;
             } catch(e) {}
         });
