@@ -540,6 +540,26 @@
             .menu-intro *, .admin-tab, .nav-item *, .category-tabs *, .product-card { animation-duration:.01ms!important; transition-duration:.01ms!important; }
         }
 
+
+        /* Premium bildirim tercihi - düşük görsel gürültü */
+        .bg-notify-box{margin:0 0 22px;padding:18px;background:linear-gradient(140deg,rgba(255,107,0,.085),rgba(25,25,30,.88) 67%);border:1px solid rgba(255,255,255,.11);border-radius:22px;box-shadow:0 8px 28px rgba(0,0,0,.22)}
+        .bg-notify-header{display:flex;gap:12px;align-items:center;margin-bottom:9px}
+        .bg-notify-bell{width:40px;height:40px;display:grid;place-items:center;border-radius:13px;background:rgba(255,107,0,.13);color:var(--primary);font-size:19px}
+        .bg-notify-box h3{font-size:15px;line-height:1.3;margin:0;color:#fff;font-weight:800;letter-spacing:-.25px}
+        .bg-notify-help{font-size:12px;line-height:1.55;color:#acaab3;margin:0 0 14px}
+        .bg-notify-settings{display:flex;align-items:center;gap:12px;justify-content:space-between;margin:10px 0 13px;padding:10px 12px;border-radius:12px;background:rgba(0,0,0,.26)}
+        .bg-notify-settings label{font-size:13px;color:#f2f2f5;font-weight:700;cursor:pointer}
+        .bg-notify-settings input{width:19px;height:19px;accent-color:#ff6b00;cursor:pointer}
+        .bg-notify-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+        .bg-notify-actions button{min-height:43px;border-radius:13px;border:1px solid rgba(255,255,255,.11);font-family:inherit;font-size:12px;font-weight:750;cursor:pointer;padding:10px 7px;background:rgba(255,255,255,.07);color:#fff;transition:transform .15s}
+        .bg-notify-actions button:first-child{background:var(--primary);border-color:transparent}
+        .bg-notify-actions button:active{transform:scale(.97)}
+        #bg-notify-status{font-size:11px;line-height:1.5;color:#a1a1aa;margin-top:11px;min-height:17px}
+        @media(max-width:335px){.bg-notify-actions{grid-template-columns:1fr}}
+        .bg-admin-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+        .bg-admin-audio-preview{border:1px solid rgba(255,107,0,.35);color:#ff9d56;background:rgba(255,107,0,.09);border-radius:12px;padding:9px 12px;font-family:inherit;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap}
+        .bg-admin-audio-preview:active{transform:scale(.97)}
+        @media(max-width:420px){.bg-admin-actions{gap:5px}.bg-admin-audio-preview{font-size:10px;padding:8px 9px}}
     </style>
 </head>
 <body>
@@ -568,7 +588,8 @@
                 <h1>Yönetim <span>Paneli</span></h1>
                 <p>Ürünleri, müşterileri ve işletmeni tek ekrandan yönet.</p>
             </div>
-            <button class="admin-logout ripple-element" type="button" onclick="AdminCikisYap()"><svg class="ui-svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 21a7 7 0 0 1 14 0"/></svg><span>Çıkış</span></button>
+            <div class="bg-admin-actions"><button type="button" class="bg-admin-audio-preview" onclick="PremiumChimeCal('admin',true)" title="Premium karşılama sesini dinle">♪ Sesi dinle</button>
+                        <button class="admin-logout ripple-element" type="button" onclick="AdminCikisYap()"><svg class="ui-svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 21a7 7 0 0 1 14 0"/></svg><span>Çıkış</span></button></div>
         </div>
 
         <nav class="admin-tabs" role="tablist" aria-label="Yönetim bölümleri">
@@ -930,6 +951,14 @@
                 <p id="profil-alt-baslik" style="color: #a1a1aa; font-size: 14px; font-weight: 500;">Sipariş vermek için giriş yapın.</p>
             </div>
 
+            <!-- Bildirim kontrolu: OS izni yalnizca kullanici butona basinca istenir. -->
+            <section class="bg-notify-box" aria-labelledby="bg-notify-title">
+                <div class="bg-notify-header"><span class="bg-notify-bell" aria-hidden="true">♬</span><div><h3 id="bg-notify-title">Bildirim ve Ses</h3></div></div>
+                <p class="bg-notify-help">Yeni duyurular ve sipariş durumu için zarif bir bildirim sesi. Ses uygulama açıkken çalar.</p>
+                <div class="bg-notify-settings"><label for="bg-notify-sound-toggle">Premium bildirim sesi</label><input type="checkbox" id="bg-notify-sound-toggle" checked onchange="BildirimSesiTercihiKaydet(this.checked)"></div>
+                <div class="bg-notify-actions"><button type="button" onclick="BildirimIzniAc()">Bildirimlere izin ver</button><button type="button" onclick="BildirimSesiTestEt()">♪ Sesi dinle</button></div>
+                <div id="bg-notify-status" role="status" aria-live="polite">İzin durumu kontrol ediliyor…</div>
+            </section>
             <div id="auth-wrapper" class="premium-glass-card fade-up-enter">
                 <div class="premium-toggle-box">
                     <div class="premium-toggle-bg" id="auth-toggle-slider"></div>
@@ -1240,7 +1269,7 @@
     let populerUrunlerListesi = []; let aktifAdisyonDinleyiciRef = null; let menuDinleyiciRef = null; let sonCekilenAdisyonHTML = ""; let sonKuponVerisi = ""; let isProcessingOrder = false;
     let emailInterval = null; let whatsappInterval = null; let aktifWhatsappKodu = ""; let aktifWhatsappNumarasi = "";
     let sepetHatirlaticiTimer = null; let serverTimeOffset = 0; let spamTimerInterval = null; let adisyonSayacInterval = null;
-    let sistemAyarlariDinleyiciRef = null; let hedefYasaklanacakTel = "";
+    let sistemAyarlariDinleyiciRef = null; let bildirimDinleyiciRef = null; let hedefYasaklanacakTel = "";
     
     window.isAddingToCart = false; let deferredPrompt; window.isOrderFinished = false; let aktifKullanilanCarkOdulu = null; 
     
@@ -1309,8 +1338,128 @@
     async function SyncServerTime() { try { let st = Date.now(); let res = await fetch(window.location.href, { method: "HEAD", cache: "no-cache" }); let sDate = res.headers.get("Date"); if(sDate) { let serverDate = new Date(sDate).getTime(); let latency = (Date.now() - st) / 2; serverTimeOffset = (serverDate + latency) - Date.now(); } } catch(e) { serverTimeOffset = 0; } }
     function GetServerTimeFast() { return Date.now() + serverTimeOffset; }
 
-    function BildirimGonder(baslik, mesaj) { if (!("Notification" in window) || Notification.permission !== "granted") return; let ayarlar = { body: mesaj, icon: "icon-192.png", badge: "icon-192.png", vibrate: [200, 100, 200, 100, 200], requireInteraction: true }; if ('serviceWorker' in navigator) { navigator.serviceWorker.ready.then(function(r) { r.showNotification(baslik, ayarlar); }).catch(function(){}); } else { try { new Notification(baslik, ayarlar); } catch(e) {} } }
-    function SessizIzinIste() { if ("Notification" in window && Notification.permission === "default") { Notification.requestPermission(); } }
+    // Bu sürüm: sayfa açıkken Firebase duyuruları ve sipariş olayları için ses.
+    // Gerçek arka-plan web push için ayrıca FCM + service worker + sunucu gerekir.
+    const bgSesAyariAnahtar = 'bg_premium_sound_enabled';
+    let bgPremiumSesContext = null;
+    let bgSesSonCalis = 0;
+    let bgAdminSesBekliyor = false;
+    let bgAdminSesCalindi = false;
+
+    function PremiumSesHazirla() {
+        const Ctx = window.AudioContext || window.webkitAudioContext;
+        if (!Ctx) return null;
+        try {
+            if (!bgPremiumSesContext) bgPremiumSesContext = new Ctx();
+            if (bgPremiumSesContext.state === 'suspended') {
+                bgPremiumSesContext.resume().then(() => {
+                    if (bgAdminSesBekliyor && isAdmin) AdminChimeCal();
+                }).catch(() => {});
+            }
+            return bgPremiumSesContext;
+        } catch (_) { return null; }
+    }
+
+    function BildirimSesiAcikMi() {
+        try { return localStorage.getItem(bgSesAyariAnahtar) !== '0'; }
+        catch (_) { return true; }
+    }
+
+    // Tamamen özgün, otomotiv-esintili sinüs/üçgen harmonikleri.
+    // Master seviyeyi kısık tutar; dışarıdan müzik/ses dosyası yüklemez.
+    function PremiumChimeCal(tur='bildirim', test=false) {
+        if (tur === 'bildirim' && !test && !BildirimSesiAcikMi()) return false;
+        const ctx = PremiumSesHazirla();
+        if (!ctx || ctx.state !== 'running') return false;
+        if (tur === 'bildirim' && !test && performance.now() - bgSesSonCalis < 750) return false;
+        try {
+            const t0 = ctx.currentTime + .012;
+            const admin = tur === 'admin';
+            const notalar = admin
+                ? [{f:587.33,at:0,len:.39,amp:.025},{f:739.99,at:.115,len:.44,amp:.022},{f:987.77,at:.240,len:.53,amp:.018}]
+                : [{f:880,at:0,len:.29,amp:.020},{f:1174.66,at:.135,len:.40,amp:.018}];
+            const master = ctx.createGain();
+            master.gain.value = .68;
+            const filter = ctx.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.value = 3900;
+            const limiter = ctx.createDynamicsCompressor();
+            limiter.threshold.value = -22; limiter.knee.value = 6; limiter.ratio.value = 8;
+            limiter.attack.value = .005; limiter.release.value = .12;
+            master.connect(filter); filter.connect(limiter); limiter.connect(ctx.destination);
+            for(const n of notalar) {
+                for(const harmonic of [{mult:1,amp:1,wave:'sine'}, {mult:2,amp:.19,wave:'triangle'}]) {
+                    const t=t0+n.at;
+                    const o=ctx.createOscillator(), env=ctx.createGain();
+                    o.type=harmonic.wave;
+                    o.frequency.setValueAtTime(n.f*harmonic.mult,t);
+                    env.gain.setValueAtTime(.00001,t);
+                    env.gain.exponentialRampToValueAtTime(n.amp*harmonic.amp,t+.018);
+                    env.gain.exponentialRampToValueAtTime(.00001,t+n.len);
+                    o.connect(env); env.connect(master);
+                    o.start(t); o.stop(t+n.len+.025);
+                }
+            }
+            if(tur === 'bildirim') bgSesSonCalis = performance.now();
+            return true;
+        } catch (_) { return false; }
+    }
+
+    function BildirimSesiTercihiKaydet(acik) {
+        try { localStorage.setItem(bgSesAyariAnahtar, acik ? '1':'0'); } catch (_) {}
+        BildirimDurumunuGuncelle();
+        if (acik) PremiumChimeCal('bildirim',true);
+    }
+    function BildirimSesiTestEt() {
+        const oynadi = PremiumChimeCal('bildirim',true);
+        const x=document.getElementById('bg-notify-status');
+        if (!oynadi && x) x.textContent='Tarayıcı sesi engelledi. Tekrar dokunup deneyin.';
+    }
+    function BildirimDurumunuGuncelle() {
+        const cb=document.getElementById('bg-notify-sound-toggle');
+        if (cb) cb.checked=BildirimSesiAcikMi();
+        const x=document.getElementById('bg-notify-status'); if(!x) return;
+        if (!('Notification' in window)) x.textContent='Sistem bildirimleri bu tarayıcıda desteklenmiyor; sayfa içi duyurular çalışır.';
+        else if (Notification.permission === 'granted') x.textContent='Sistem bildirimlerine izin verildi. Özel ses uygulama açıkken çalar.';
+        else if (Notification.permission === 'denied') x.textContent='Sistem bildirimleri engellenmiş. Tarayıcı site ayarlarından izin verebilirsin.';
+        else x.textContent='Sistem bildirimi izni verilmedi. İstersen üstteki butondan açabilirsin.';
+    }
+    async function BildirimIzniAc() {
+        // Yalnızca doğrudan kullanıcı etkileşimi sırasında çağrılır.
+        PremiumSesHazirla();
+        if ('Notification' in window && Notification.permission === 'default') {
+            try { await Notification.requestPermission(); } catch (_) {}
+        }
+        BildirimDurumunuGuncelle();
+        if ('Notification' in window && Notification.permission === 'granted') BildirimSesiTestEt();
+    }
+    // Eski çağrıları koruyoruz, fakat menü dolaşırken izinsiz popup açmıyoruz.
+    function SessizIzinIste() { PremiumSesHazirla(); }
+
+    function BildirimGonder(baslik, mesaj, sesli=true) {
+        // Sayfa açıkken ses; OS bildiriminin kendi sesini özelleştiremeyiz.
+        if(sesli && !isAdmin && !isBannedUser) PremiumChimeCal('bildirim');
+        if (!('Notification' in window) || Notification.permission !== 'granted') return;
+        const opts = {body: String(mesaj||''), icon:'icon-192.png', badge:'icon-192.png', tag:'bekmez-go-'+String(baslik||'bilgi').slice(0,40),
+                      requireInteraction:false, silent:true};
+        // register edilmemiş SW için navigator.serviceWorker.ready beklemesi sonsuzdur.
+        // Mobilde Notification() çoğunlukla desteklenmez; uygulama içi ses/uyarı kalır.
+        (async () => {
+            try {
+                const registration = 'serviceWorker' in navigator ? await navigator.serviceWorker.getRegistration() : null;
+                if (registration && typeof registration.showNotification === 'function') {
+                    await registration.showNotification(String(baslik||'Bekmez GO'), opts);
+                } else if (!/Android|iPhone|iPad|iPod/i.test(navigator.userAgent||'')) {
+                    new Notification(String(baslik||'Bekmez GO'), opts);
+                }
+            } catch (e) { console.warn('Sistem bildirimi gösterilemedi:',e); }
+        })();
+    }
+    // Dokunma sonrasında AudioContext açılabilir; admin sesi engellenmişse bir defa tekrar denenir.
+    function BgSesKullaniciEtkilesimi(){
+        PremiumSesHazirla();
+        if(bgAdminSesBekliyor && isAdmin) AdminChimeCal();
+    }
+    document.addEventListener('pointerdown', BgSesKullaniciEtkilesimi, {passive:true});
+    document.addEventListener('keydown', BgSesKullaniciEtkilesimi);
 
     // ŞİFRE GÖSTER / GİZLE FONKSİYONU
     function SifreGosterGizle(inputId, iconSpan) {
@@ -1337,7 +1486,8 @@
 
     function SistemAyarlariniDinle() {
         if(sistemAyarlariDinleyiciRef) sistemAyarlariDinleyiciRef.off();
-        firebase.database().ref('DukkanDurumu').on('value', (snapshot) => {
+        sistemAyarlariDinleyiciRef = firebase.database().ref('DukkanDurumu');
+        sistemAyarlariDinleyiciRef.on('value', (snapshot) => {
             let data = snapshot.val(); if(!data) return;
             
             // Canlı Çark Ödüllerini Çek
@@ -1371,12 +1521,20 @@
             }
         });
 
-        firebase.database().ref('SistemBildirimleri/GenelBildirim').on('value', async (snapshot) => {
+        if (bildirimDinleyiciRef) bildirimDinleyiciRef.off();
+        bildirimDinleyiciRef = firebase.database().ref('SistemBildirimleri/GenelBildirim');
+        bildirimDinleyiciRef.on('value', async (snapshot) => {
             let bildirim = snapshot.val();
             if (bildirim && bildirim.ts) {
                 let sonGosterilen = await SecureOku("bg_last_notif_ts");
-                if (!sonGosterilen || parseInt(sonGosterilen) < bildirim.ts) {
-                    if (!isAdmin && !isBannedUser) { OzelUyariGoster(bildirim.baslik, bildirim.mesaj, "📢"); BildirimGonder(bildirim.baslik, bildirim.mesaj); await SecureKaydet("bg_last_notif_ts", bildirim.ts.toString()); }
+                const zaman = Number(bildirim.ts);
+                if (Number.isFinite(zaman) && zaman > 0 && Date.now()-zaman >= 0 && Date.now()-zaman < 86400000 &&
+                    (!sonGosterilen || Number(sonGosterilen) < zaman) && !isAdmin && !isBannedUser) {
+                    await SecureKaydet('bg_last_notif_ts', String(zaman));
+                    const baslik=String(bildirim.baslik||'Bekmez GO').slice(0,80);
+                    const mesaj=String(bildirim.mesaj||'').slice(0,500);
+                    OzelUyariGoster(baslik, escapeHTML(mesaj), '📢');
+                    BildirimGonder(baslik, mesaj);
                 }
             }
         });
@@ -1427,62 +1585,13 @@
         } catch(e) { console.error("Admin listeleme hatası", e); }
     }
 
-    // Bekmez GO admin acilis sesi: dis dosya/servis gerektirmeyen kisa, yumusak chime.
-    // Tarayici otomatik oynatimi engellerse ilk yonetici etkilesiminde calar.
-    let adminChimeContext = null;
-    let adminChimeCalindi = false;
-    let adminChimeBeklemede = false;
-
-    function AdminChimeSesiHazirla() {
-        const Ctx = window.AudioContext || window.webkitAudioContext;
-        if(!Ctx) return;
-        try {
-            if(!adminChimeContext) adminChimeContext = new Ctx();
-            if(adminChimeContext.state === 'suspended') {
-                const p = adminChimeContext.resume();
-                if(p && typeof p.then === 'function') p.then(() => {
-                    if(adminChimeBeklemede && isAdmin) AdminChimeCal();
-                }).catch(() => {});
-            }
-        } catch(e) { console.debug('Admin chime desteklenmiyor:',e); }
-    }
-
+    // Premium otomotiv-esintili özgün yönetici karşılama; sadece bir kez.
+    function AdminChimeSesiHazirla() { PremiumSesHazirla(); }
     function AdminChimeCal() {
-        if(adminChimeCalindi || !isAdmin) return;
-        AdminChimeSesiHazirla();
-        const ctx = adminChimeContext;
-        if(!ctx || ctx.state !== 'running') { adminChimeBeklemede = true; return; }
-        try {
-            const t = ctx.currentTime + 0.025;
-            // Duyulabilir ama rahatsiz etmeyen uc kisa, armonik nota.
-            const notalar = [
-                {hz:659.25, basla:0.00, sure:0.22, ses:0.025},
-                {hz:830.61, basla:0.10, sure:0.28, ses:0.022},
-                {hz:1046.50, basla:0.21, sure:0.39, ses:0.016}
-            ];
-            for(const n of notalar) {
-                const o = ctx.createOscillator();
-                const g = ctx.createGain();
-                o.type = 'sine'; o.frequency.setValueAtTime(n.hz, t + n.basla);
-                g.gain.setValueAtTime(0.0001, t + n.basla);
-                g.gain.exponentialRampToValueAtTime(n.ses, t + n.basla + 0.018);
-                g.gain.exponentialRampToValueAtTime(0.0001, t + n.basla + n.sure);
-                o.connect(g); g.connect(ctx.destination);
-                o.start(t + n.basla); o.stop(t + n.basla + n.sure + 0.015);
-            }
-            adminChimeCalindi = true;
-            adminChimeBeklemede = false;
-        } catch(e) { adminChimeBeklemede = false; console.debug('Admin chime calinamadi:',e); }
+        if(!isAdmin || bgAdminSesCalindi) return;
+        if(PremiumChimeCal('admin')) { bgAdminSesCalindi=true; bgAdminSesBekliyor=false; }
+        else bgAdminSesBekliyor=true;
     }
-
-    // Oturum otomatik acilirsa tarayici ses icin bir dokunus bekleyebilir.
-    function AdminChimeEtkilesim() {
-        if(!adminChimeBeklemede || !isAdmin || adminChimeCalindi) return;
-        AdminChimeSesiHazirla();
-        if(adminChimeContext?.state === 'running') AdminChimeCal();
-    }
-    document.addEventListener('pointerdown', AdminChimeEtkilesim, {passive:true});
-    document.addEventListener('keydown', AdminChimeEtkilesim);
 
     async function AdminPaneleGec() {
         let user = firebase.auth().currentUser; if(!user) return;
@@ -1675,6 +1784,8 @@
     function KayitOnayToggle() { let cb = document.getElementById("kayit-onay-cb"); let btn = document.getElementById("btn-email-verify"); if (cb && btn) { if (cb.checked && isPasswordValid) { btn.disabled = false; btn.style.opacity = "1"; } else { btn.disabled = true; btn.style.opacity = "0.5"; } } }
 
     firebase.auth().onAuthStateChanged(async (user) => {
+        // Dinleyiciler başlangıçta anonim açılmışsa oturum değişince yeniden yetkilendir.
+        if (document.readyState !== 'loading') SistemAyarlariniDinle();
         if (user) {
             if(user.email === "kasa@bekmez.com") { await AdminPaneleGec(); return; }
             let bekleyenTel = await SecureOku("bg_pending_tel"); let bekleyenEmail = await SecureOku("bg_pending_email");
@@ -1775,7 +1886,7 @@
         else { OzelUyariGoster("Hesap Doğrulandı! 🎉", "E-Posta adresiniz ve WhatsApp onayınız tamamlandı.", "✅"); BildirimGonder("Hesap Oluşturuldu 🎉", "Bekmez GO'ya hoş geldiniz! İndirimleri kaçırmayın."); }
         
         let gorunen = await SecureOku("bg_i") || kayitliIsim; ProfilArayuzunuGuncelle(true, gorunen);
-        if(await SecureOku("bg_active_order_id")) { SayfaGoster('gecmis'); }
+        if(await SecureOku("bg_active_order_id")) { SiparisDurumBildiriminiBaslat(await SecureOku('bg_active_order_id')); SayfaGoster('gecmis'); }
     }
 
     async function ProfiliKaydet(alertGoster = true) {
@@ -1836,6 +1947,7 @@
     }, 3500);
 
     window.addEventListener('DOMContentLoaded', async () => {
+        BildirimDurumunuGuncelle();
         if(fotoSifreAkisiAktif) {
             const s = document.getElementById('splash-screen');
             if(s) s.style.display = 'none';
@@ -1888,7 +2000,8 @@
             if(ki) { let pI = document.getElementById("prof-isim"); let cI = document.getElementById("chk-isim"); if(pI) pI.value = escapeHTML(ki); if(cI) cI.value = escapeHTML(ki); }
             if(ka) { let pA = document.getElementById("prof-adres"); let cA = document.getElementById("chk-adres"); if(pA) pA.value = escapeHTML(ka); if(cA) cA.value = escapeHTML(ka); }
 
-            await CanliMenuCek(true); MenuyuGercekZamanliDinle(); 
+            await CanliMenuCek(true); MenuyuGercekZamanliDinle();
+            try { await SiparisDurumBildiriminiBaslat(await SecureOku('bg_active_order_id')); } catch (_) {} 
             
             setInterval(async () => { if(document.getElementById("opportunities-container").style.display === "block" && !isAdmin && !isBannedUser) { await KuponlariCek(); await CarkDurumunuKontrolEt(); } }, 30000);
             
@@ -2869,6 +2982,31 @@
         else { btn.disabled = true; btn.style.opacity = "0.5"; btnText.innerHTML = `Sözleşmeyi Onaylayın`; }
     }
 
+    // İzin reddi, zaman aşımı ve GPS cihazı hatalarını ayrı mesajlarla göster.
+    function GpsPozisyonAl(options) {
+        return new Promise((resolve,reject) => {
+            if (!('geolocation' in navigator)) return reject(new Error('Bu cihazda GPS desteklenmiyor.'));
+            if (!window.isSecureContext) return reject(new Error('Konum için güvenli HTTPS bağlantısı gerekli.'));
+            navigator.geolocation.getCurrentPosition(resolve,reject,options);
+        });
+    }
+    async function GpsTeslimatKonumuAl() {
+        try {
+            return await GpsPozisyonAl({enableHighAccuracy:true,timeout:15000,maximumAge:15000});
+        } catch (e) {
+            if (e && e.code === 1) throw new Error('Konum izni reddedildi. Tarayıcı ayarlarından konuma izin verin.');
+            // GPS ilk denemede geç cevap verirse ağ destekli konuma bir kez dön.
+            if (e && (e.code === 2 || e.code === 3)) {
+                try { return await GpsPozisyonAl({enableHighAccuracy:false,timeout:12000,maximumAge:30000}); }
+                catch (second) {
+                    if (second && second.code === 1) throw new Error('Konum izni reddedildi. Tarayıcıdan konum iznini açın.');
+                    throw new Error(second && second.code === 3 ? 'Konum zaman aşımına uğradı. GPS’i açıp yeniden deneyin.' : 'Konum bulunamadı. İnternet/GPS bağlantınızı kontrol edin.');
+                }
+            }
+            throw e;
+        }
+    }
+
     async function PaketSiparisiGonder() {
         if(isProcessingOrder || (sepet.length === 0 && aktifKullanilanCarkOdulu === null)) return;
         if(!document.getElementById("legal-checkbox").checked) { OzelUyariGoster("Sözleşme Onayı", "Sözleşmeleri onaylamanız gerek.", "📝"); return; }
@@ -2892,14 +3030,29 @@
         let btnText = document.getElementById("final-btn-text"); btnText.innerHTML = `<div class="spinner-small"></div> Konum Bulunuyor...📍`;
         isProcessingOrder = true;
 
-        if (navigator.geolocation) { 
-            const checkLoc = () => { return new Promise((resolve, reject) => { navigator.geolocation.getCurrentPosition(p => resolve(p), e => reject(e), {enableHighAccuracy: true, timeout: 10000, maximumAge: 0}); }); };
-            checkLoc().then(p => {
-                let lat = p.coords.latitude; let lng = p.coords.longitude; let ms = GetDistanceKm(DUKKAN_ENLEM, DUKKAN_BOYLAM, lat, lng);
-                if (ms > MAKS_MESAFE_KM) { let do2 = document.getElementById("distance-alert-overlay"); do2.style.display = "flex"; setTimeout(() => do2.classList.add("active"), 10); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btnText.innerHTML = `${sonOdenecekFiyat.toFixed(2)} TL Öde`; return; }
-                DevamEtPaketGonder(is, tl, ad, secilenOdeme, sepet, lat, lng);
-            }).catch(e => { OzelUyariGoster("Konum Zorunlu 📍", "Sipariş verebilmek için cihazınızın konum (GPS) özelliğinin açık olması ve tarayıcıdan izin vermeniz zorunludur.", "🛑"); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btnText.innerHTML = `${sonOdenecekFiyat.toFixed(2)} TL Öde`; });
-        } else { OzelUyariGoster("Desteklenmiyor", "Cihazınız konum servisini desteklemediği için sipariş veremezsiniz.", "🛑"); isProcessingOrder = false; btn.disabled = false; btn.classList.remove("loading"); btnText.innerHTML = `${sonOdenecekFiyat.toFixed(2)} TL Öde`; }
+        try {
+            const p = await GpsTeslimatKonumuAl();
+            const lat = Number(p.coords.latitude), lng = Number(p.coords.longitude);
+            const accuracy = Number(p.coords.accuracy);
+            if (!Number.isFinite(lat) || !Number.isFinite(lng) || Math.abs(lat)>90 || Math.abs(lng)>180) throw new Error('Konum bilgisi geçersiz. Lütfen tekrar deneyin.');
+            if(!Number.isFinite(accuracy) || accuracy > 1200) throw new Error('Konumunuz yeterince hassas değil. Açık bir alanda GPS’i etkinleştirip tekrar deneyin.');
+            const ms = GetDistanceKm(DUKKAN_ENLEM, DUKKAN_BOYLAM, lat, lng);
+            // Belirsiz sınır değerinde kullanıcıyı yanlışlıkla reddetmemek için bilgilendiriyoruz.
+            if (ms > MAKS_MESAFE_KM) {
+                const do2 = document.getElementById('distance-alert-overlay');
+                do2.style.display='flex'; setTimeout(() => do2.classList.add('active'), 10);
+                return;
+            }
+            await DevamEtPaketGonder(is, tl, ad, secilenOdeme, sepet, lat, lng);
+        } catch(e) {
+            OzelUyariGoster('Konum Kontrolü 📍', escapeHTML(e?.message||'Konum alınamadı; lütfen tekrar deneyin.'), '📍');
+        } finally {
+            if(isProcessingOrder) { // Başarılı sipariş, DevamEtPaketGonder içinde zaten temizlenir.
+                isProcessingOrder=false;
+                btn.disabled=false; btn.classList.remove('loading');
+                btnText.textContent=`${sonOdenecekFiyat.toFixed(2)} TL Öde`;
+            }
+        }
     }
 
     async function DevamEtPaketGonder(isim, tel, adres, odemeTuru, temizSepet, lat = 0, lng = 0) {
@@ -2932,7 +3085,7 @@
             if (aktifKullanilanCarkOdulu !== null) { await SecureSil("bg_cark_data"); aktifKullanilanCarkOdulu = null; await fetch(`${FIREBASE_URL}/CarkKullanimlari/${tel}.json?auth=${idToken}`, { method: "DELETE" }); }
 
             await SecureKaydet("bg_active_order_id", benzersizSiparisID); await SecureKaydet("last_ord_t", tZaman.toString()); await SecureKaydet("bg_odeme_turu", odemeTuru);
-            await SecureKaydet("bg_order_timestamp", zM); await SecureSil("bg_saved_cart"); await SecureSil("bg_saved_note"); await SecureSil("bg_saved_coupon"); await SecureSil("bg_saved_cark");
+            await SecureKaydet("bg_order_timestamp", zM); await SiparisDurumBildiriminiBaslat(benzersizSiparisID); await SecureSil("bg_saved_cart"); await SecureSil("bg_saved_note"); await SecureSil("bg_saved_coupon"); await SecureSil("bg_saved_cark");
 
             HapticTitresim(); CheckoutKapat(); BasariEkraniGoster();
 
@@ -2960,8 +3113,40 @@
     }
 
     function MenuyuGercekZamanliDinle() {
+        if (menuDinleyiciRef) menuDinleyiciRef.off();
         menuDinleyiciRef = firebase.database().ref('MenuVersion');
-        menuDinleyiciRef.on('value', async (snapshot) => { let vD = snapshot.val(); if (vD && vD.v != sonMenuVersiyonu) { sonMenuVersiyonu = vD.v; await CanliMenuCek(false); } });
+        menuDinleyiciRef.on('value', async (snapshot) => {
+            const vD=snapshot.val();
+            // Versiyonu CanliMenuCek yenileyince güncelleriz; önceden değiştirmek yenilemeyi engelliyordu.
+            if (vD && vD.v != sonMenuVersiyonu) await CanliMenuCek(false);
+        }, error => console.warn('Menü dinleyicisi kapandı:',error?.code||'bağlantı'));
+    }
+
+    // Sipariş ekranından çıkılsa da müşteri, uygulama açıkken durum sesi alır.
+    // Aynı sipariş için tek canlı dinleyici, çıkışlarda kapatılır.
+    let bgDurumRef = null;
+    let bgDurumSiparisId = '';
+    async function SiparisDurumBildiriminiBaslat(siparisId) {
+        const currentUser=firebase.auth().currentUser;
+        if (!currentUser || currentUser.email === 'kasa@bekmez.com' || !siparisId) {
+            if (bgDurumRef) bgDurumRef.off(); bgDurumRef=null; bgDurumSiparisId=''; return;
+        }
+        if (siparisId===bgDurumSiparisId && bgDurumRef) return;
+        if(bgDurumRef) bgDurumRef.off();
+        bgDurumSiparisId=siparisId;
+        bgDurumRef=firebase.database().ref(`CanliPaketler/${siparisId}/durum`);
+        bgDurumRef.on('value', async snapshot => {
+            const ham=snapshot.val(); if(!ham || !firebase.auth().currentUser || isAdmin) return;
+            if(document.getElementById('history-container')?.style.display === 'block') return;
+            const durum=String(ham).toUpperCase();
+            const son=await SecureOku('bg_last_status');
+            if(durum===son) return;
+            await SecureKaydet('bg_last_status',durum);
+            if(durum.includes('TESLİM')||durum.includes('AFİYET')) BildirimGonder('Siparişin Teslim Edildi','Afiyet olsun! Bekmez GO siparişin teslim edildi.');
+            else if(durum.includes('YOLDA')||durum.includes('KURYE')) BildirimGonder('Siparişin Yolda','Kuryemiz siparişini teslim etmek üzere yola çıktı.');
+            else if(durum.includes('HAZIRLAN')||durum.includes('MUTFAK')) BildirimGonder('Mutfağa İletildi','Siparişin hazırlanmaya başladı.');
+            else if(durum.includes('İPTAL')||durum.includes('RED')) BildirimGonder('Sipariş Durumu','Siparişin iptal edildi; ayrıntılar için Takip ekranını aç.');
+        }, e => console.warn('Sipariş durum bağlantısı:', e?.code||'bağlantı'));
     }
 
     async function AdisyonuGercekZamanliDinle() {
