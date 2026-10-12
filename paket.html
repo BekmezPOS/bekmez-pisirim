@@ -1397,26 +1397,31 @@
     appCheck.activate(new firebase.appCheck.ReCaptchaEnterpriseProvider('6LfaV-AtAAAAAGqAbPWGYWxmlGfQNasMlne4iHne'), true);
 
     const orjinalFetch = window.fetch;
-    window.fetch = async function(...args) {
-        let url = args[0];
-        let options = args[1] || {};
-
-        if (typeof url === 'string' && url.includes("firebaseio.com")) {
-            try {
-                let tokenRes = await appCheck.getToken(false);
-                if (tokenRes && tokenRes.token) {
-                    if (options.headers instanceof Headers) {
-                        options.headers.set('X-Firebase-AppCheck', tokenRes.token);
-                    } else {
-                        options.headers = options.headers || {};
-                        options.headers['X-Firebase-AppCheck'] = tokenRes.token;
-                    }
-                    args[1] = options;
-                }
-            } catch(e) { console.error("App Check Hatası:", e); }
-        }
-        return orjinalFetch.apply(this, args);
+    let bgAppCheckPromise = null;
+    window.fetch = async function(input, init = {}) {
+        const url = new URL(input instanceof Request ? input.url : String(input), location.href);
+        if (url.origin !== new URL(FIREBASE_URL).origin) return orjinalFetch.call(this, input, init);
+        let tokenRes;
+        try {
+            if (!bgAppCheckPromise) bgAppCheckPromise = appCheck.getToken(false).finally(() => { bgAppCheckPromise = null; });
+            tokenRes = await bgAppCheckPromise;
+            if (!tokenRes?.token) throw new Error('Token yok');
+        } catch (_) { throw new Error('Uygulama doğrulaması başarısız (App Check). Siteyi yenileyin; sürerse web uygulamasının reCAPTCHA ve alan adı ayarları kontrol edilmeli.'); }
+        const headers = new Headers(input instanceof Request ? input.headers : undefined);
+        new Headers(init.headers).forEach((v,k) => headers.set(k,v));
+        headers.set('X-Firebase-AppCheck', tokenRes.token);
+        const controller = new AbortController();
+        const sourceSignal = init.signal || (input instanceof Request ? input.signal : null);
+        const abort = () => controller.abort();
+        if (sourceSignal?.aborted) abort(); else sourceSignal?.addEventListener('abort', abort, {once:true});
+        const timer = setTimeout(abort, 20000);
+        try { return await orjinalFetch.call(this, input, {...init, headers, signal:controller.signal}); }
+        finally { clearTimeout(timer); sourceSignal?.removeEventListener('abort', abort); }
     };
+    function SiparisHttpHatasi(status) {
+        if (status === 401 || status === 403) return new Error('Firebase siparişi reddetti (HTTP ' + status + '). Müşteri sipariş kuralları, doğrulanmış hesap ve web App Check ayarları kontrol edilmeli.');
+        return new Error('Sipariş sunucusu hata verdi (HTTP ' + status + '). Aynı sipariş için yeniden deneyebilirsiniz.');
+    }
 
     firebase.auth().languageCode = 'tr';
 
@@ -1634,7 +1639,7 @@
                 document.getElementById("cark-ui-5").innerText = CARK_ODULLERI[4] || "Pas";
             }
 
-            let kapaliGun = data.kapaliGun || "Yok"; let acilKapat = data.acilKapat || false;
+            let kapaliGun = data.kapaliGun || "Yok"; let acilKapat = data.acilKapat === true || (typeof data.acilKapat === "string" && data.acilKapat.trim().toLowerCase() === "true");
             let selectEl = document.getElementById("adm-closed-day"); if(selectEl) selectEl.value = kapaliGun;
 
             let acilBtn = document.getElementById("adm-emergency-btn");
@@ -3288,21 +3293,27 @@
             navigator.geolocation.getCurrentPosition(resolve,reject,options);
         });
     }
+    function TeslimatKonumuUygun(p) {
+        const c=p?.coords;
+        if (!c || !Number.isFinite(c.latitude) || !Number.isFinite(c.longitude) || Math.abs(c.latitude)>90 || Math.abs(c.longitude)>180 || !Number.isFinite(c.accuracy) || c.accuracy<0) return false;
+        // Büyük belirsizlik bile tamamıyla hizmet alanında kalıyorsa kullanılabilir.
+        return GetDistanceKm(DUKKAN_ENLEM, DUKKAN_BOYLAM, c.latitude, c.longitude) + c.accuracy/1000 <= MAKS_MESAFE_KM;
+    }
     async function GpsTeslimatKonumuAl() {
-        try {
-            return await GpsPozisyonAl({enableHighAccuracy:true,timeout:15000,maximumAge:15000});
-        } catch (e) {
-            if (e && e.code === 1) throw new Error('Konum izni reddedildi. Tarayıcı ayarlarından konuma izin verin.');
-            // GPS ilk denemede geç cevap verirse ağ destekli konuma bir kez dön.
-            if (e && (e.code === 2 || e.code === 3)) {
-                try { return await GpsPozisyonAl({enableHighAccuracy:false,timeout:12000,maximumAge:30000}); }
-                catch (second) {
-                    if (second && second.code === 1) throw new Error('Konum izni reddedildi. Tarayıcıdan konum iznini açın.');
-                    throw new Error(second && second.code === 3 ? 'Konum zaman aşımına uğradı. GPS’i açıp yeniden deneyin.' : 'Konum bulunamadı. İnternet/GPS bağlantınızı kontrol edin.');
-                }
+        let best = null, lastError = null;
+        for (const high of [true, false]) {
+            try {
+                const p = await GpsPozisyonAl({enableHighAccuracy:high, timeout:high?15000:12000, maximumAge:0});
+                if (!best || p.coords.accuracy < best.coords.accuracy) best=p;
+                if (TeslimatKonumuUygun(p)) return p;
+            } catch(e) {
+                lastError=e;
+                if (e?.code===1) throw new Error('Konum izni reddedildi. Windows konum ayarını ve tarayıcıdaki bu sitenin Konum iznini açın.');
+                if (!e?.code) throw e;
             }
-            throw e;
         }
+        if (best) return best;
+        throw new Error(lastError?.code===3 ? 'Konum sağlayıcısı zaman aşımına uğradı. Windows ve tarayıcı konum izinlerini kontrol edin; telefonunuzdan da deneyebilirsiniz.' : 'Cihaz konum sağlayamadı. Konum düğmesinin açık olması tek başına yeterli değildir; Windows ve bu sitenin konum izinlerini kontrol edin.');
     }
 
     async function PaketSiparisiGonder() {
@@ -3333,14 +3344,15 @@
             const lat = Number(p.coords.latitude), lng = Number(p.coords.longitude);
             const accuracy = Number(p.coords.accuracy);
             if (!Number.isFinite(lat) || !Number.isFinite(lng) || Math.abs(lat)>90 || Math.abs(lng)>180) throw new Error('Konum bilgisi geçersiz. Lütfen tekrar deneyin.');
-            if(!Number.isFinite(accuracy) || accuracy > 1200) throw new Error('Konumunuz yeterince hassas değil. Açık bir alanda GPS’i etkinleştirip tekrar deneyin.');
+            if(!Number.isFinite(accuracy) || accuracy < 0) throw new Error('Konum hassasiyet bilgisi geçersiz.');
             const ms = GetDistanceKm(DUKKAN_ENLEM, DUKKAN_BOYLAM, lat, lng);
-            // Belirsiz sınır değerinde kullanıcıyı yanlışlıkla reddetmemek için bilgilendiriyoruz.
-            if (ms > MAKS_MESAFE_KM) {
+            // Ölçüm belirsizliği dahil hizmet alanını kontrol et.
+            if (ms - accuracy/1000 > MAKS_MESAFE_KM) {
                 const do2 = document.getElementById('distance-alert-overlay');
                 do2.style.display='flex'; setTimeout(() => do2.classList.add('active'), 10);
                 return;
             }
+            if (!TeslimatKonumuUygun(p)) throw new Error('Konumunuz teslimat sınırını doğrulayacak kadar kesin değil (yaklaşık ±' + Math.round(accuracy) + ' metre). Wi-Fi ve konum izinlerini kontrol edin veya telefonunuzdan deneyin.');
             await DevamEtPaketGonder(is, tl, ad, secilenOdeme, sepet, lat, lng);
         } catch(e) {
             OzelUyariGoster('Konum Kontrolü 📍', escapeHTML(e?.message||'Konum alınamadı; lütfen tekrar deneyin.'), '📍');
@@ -3357,6 +3369,7 @@
         await SecureKaydet("bg_i", isim); await SecureKaydet("bg_a", adres);
         let btnText = document.getElementById("final-btn-text"); btnText.innerHTML = `<div class="spinner-small"></div> İletiliyor...`; window.isOrderFinished = false;
 
+        let siparisKaydedildi = false;
         try {
             let authUser = firebase.auth().currentUser;
             if (!authUser) { OzelUyariGoster("Hata", "Oturum bulunamadı, lütfen çıkış yapıp tekrar giriş yapın.", "🔒"); isProcessingOrder = false; document.getElementById("final-submit-btn").disabled = false; document.getElementById("final-submit-btn").classList.remove("loading"); btnText.innerHTML = `${sonOdenecekFiyat.toFixed(2)} TL Öde`; return; }
@@ -3374,9 +3387,34 @@
                 timestamp: tZaman, durum: "KASA ONAYI BEKLENİYOR ⏳" 
             };
 
-            let idToken = await authUser.getIdToken(true);
-            let taslakRes = await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${benzersizSiparisID}.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(taslakVerisi) });
-            if(!taslakRes.ok) throw new Error("Sipariş iletilemedi (HTTP " + taslakRes.status + ")");
+            if (!authUser.emailVerified) throw new Error('Sipariş için e-posta adresinizi doğrulamanız gerekiyor.');
+            let idToken = await authUser.getIdToken(false);
+            const pendingKey = 'bg_pending_order_' + authUser.uid;
+            let pending;
+            try { pending = JSON.parse(await SecureOku(pendingKey)); } catch(_) {}
+            if (pending?.id && pending?.data?.uid === authUser.uid) {
+                benzersizSiparisID = pending.id; taslakVerisi = pending.data;
+                tel = taslakVerisi.telefon; tZaman = taslakVerisi.timestamp;
+                zM = ZamanMuhruKodla(tZaman, benzersizSiparisID);
+            } else {
+                pending = {id:benzersizSiparisID, data:taslakVerisi};
+                await SecureKaydet(pendingKey, JSON.stringify(pending));
+            }
+            const orderUrl = `${FIREBASE_URL}/SiparisTaslaklari/${benzersizSiparisID}.json?auth=${idToken}`;
+            // Yanıt kaybolduysa aynı ID'yi kontrol et; ikinci sipariş üretme.
+            const existingRes = await fetch(orderUrl);
+            if (!existingRes.ok) throw SiparisHttpHatasi(existingRes.status);
+            const existing = await existingRes.json();
+            if (existing && existing.uid !== authUser.uid) throw new Error('Sipariş sahipliği doğrulanamadı.');
+            if (!existing) {
+                let taslakRes = await fetch(orderUrl, {method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(taslakVerisi)});
+                if (!taslakRes.ok) throw SiparisHttpHatasi(taslakRes.status);
+            }
+            siparisKaydedildi = true;
+            await SecureKaydet('bg_active_order_id', benzersizSiparisID);
+            await SecureKaydet('last_ord_t', tZaman.toString());
+            await SecureKaydet('bg_order_timestamp', zM);
+            await SecureSil(pendingKey);
 
             const profilSiparisRes = await fetch(`${FIREBASE_URL}/DoğrulanmisHesaplar/${tel}/aktifSiparis.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify({ siparisId: benzersizSiparisID, zamanMuhru: zM, odemeTuru: odemeTuru }) });
             // Siparis kaydi basariliysa profil baglantisi hatasinda ikinci siparis gonderme.
@@ -3390,7 +3428,7 @@
             HapticTitresim(); CheckoutKapat(); BasariEkraniGoster();
 
             sepet = []; aktifKuponKodu = ""; document.getElementById("siparis-notu").value = ""; SepetEkraniniCiz(); await HesaplaVeGuncelle(); seciliEkstraIstekler = []; isProcessingOrder = false;
-        } catch (e) { OzelUyariGoster("Hata", "Sipariş iletilemedi, internetinizi kontrol edin.", "📡"); isProcessingOrder = false; document.getElementById("final-submit-btn").disabled = false; document.getElementById("final-submit-btn").classList.remove("loading"); btnText.innerHTML = `${sonOdenecekFiyat.toFixed(2)} TL Öde`; }
+        } catch (e) { OzelUyariGoster(siparisKaydedildi ? "Sipariş alındı" : "Sipariş gönderimi", siparisKaydedildi ? "Sipariş kasaya kaydedildi. Takip ekranı güncellenemedi; yeni sipariş göndermeyin, sipariş geçmişini açın." : escapeHTML(e?.name === 'AbortError' ? 'Sunucu yanıtı zaman aşımına uğradı. Yeniden denediğinizde aynı sipariş kontrol edilecek.' : e?.message || 'Sunucuya ulaşılamadı. Bağlantınızı kontrol edip yeniden deneyin.'), "📡"); isProcessingOrder = false; document.getElementById("final-submit-btn").disabled = false; document.getElementById("final-submit-btn").classList.remove("loading"); btnText.innerHTML = `${sonOdenecekFiyat.toFixed(2)} TL Öde`; }
     }
 
     function CheckoutKapat() { let pu = document.getElementById("checkout-popup"); pu.classList.remove("active"); setTimeout(() => { pu.style.display = "none"; }, 500); }
