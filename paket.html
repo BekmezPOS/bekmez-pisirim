@@ -3316,11 +3316,20 @@
         throw new Error(lastError?.code===3 ? 'Konum sağlayıcısı zaman aşımına uğradı. Windows ve tarayıcı konum izinlerini kontrol edin; telefonunuzdan da deneyebilirsiniz.' : 'Cihaz konum sağlayamadı. Konum düğmesinin açık olması tek başına yeterli değildir; Windows ve bu sitenin konum izinlerini kontrol edin.');
     }
 
+    function SiparisTelefonunuStandartlastir(value) {
+        let n=String(value || '').replace(/[^0-9]/g, '');
+        if (n.length === 12 && n.startsWith('90')) n=n.slice(2);
+        if (n.length === 10) n='0'+n;
+        if (!/^0[0-9]{10}$/.test(n)) throw new Error('Telefon numarası geçersiz. Profildeki doğrulanmış telefonunuzu kontrol edin.');
+        return n;
+    }
     async function PaketSiparisiGonder() {
         if(isProcessingOrder || (sepet.length === 0 && aktifKullanilanCarkOdulu === null)) return;
         if(!document.getElementById("legal-checkbox").checked) { OzelUyariGoster("Sözleşme Onayı", "Sözleşmeleri onaylamanız gerek.", "📝"); return; }
         
-        let telControl = document.getElementById("chk-telefon").value.replace(/[^0-9]/g, '');
+        let telControl;
+        try { telControl=SiparisTelefonunuStandartlastir(document.getElementById("chk-telefon").value); }
+        catch(e) { OzelUyariGoster('Telefon Kontrolü', escapeHTML(e.message), '📞'); return; }
         if(!telControl || telControl.length < 10) { OzelUyariGoster("Telefon Doğrulaması", "Sipariş verebilmek için profil sekmesinden telefonunuzu doğrulamanız zorunludur.", "🛡"); return; }
 
         let lastOrderStr = await SecureOku("last_ord_t");
@@ -3407,6 +3416,10 @@
             const existing = await existingRes.json();
             if (existing && existing.uid !== authUser.uid) throw new Error('Sipariş sahipliği doğrulanamadı.');
             if (!existing) {
+                // Önceki başarısız denemede 0'sız kaydedilmiş telefon için aynı ID korunur.
+                tel = SiparisTelefonunuStandartlastir(taslakVerisi.telefon);
+                taslakVerisi.telefon = tel;
+                await SecureKaydet(pendingKey, JSON.stringify({id:benzersizSiparisID, data:taslakVerisi}));
                 let taslakRes = await fetch(orderUrl, {method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(taslakVerisi)});
                 if (!taslakRes.ok) throw SiparisHttpHatasi(taslakRes.status);
             }
