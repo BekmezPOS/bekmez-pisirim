@@ -1368,17 +1368,74 @@
     // ==========================================
     // 3. ADMİN PANELİ VE SİSTEM AYARLARI
     // ==========================================
+    let banDinleyicileri = [], banNesli = 0, banAuthNesli = 0, banOturumu = '';
+    function BanDinlemeyiDurdur() {
+        ++banNesli;
+        for (const {ref, callback} of banDinleyicileri) ref.off('value', callback);
+        banDinleyicileri = []; banOturumu = '';
+    }
+    function BanOturumunuKapat(uid, sebep) {
+        if (firebase.auth().currentUser?.uid !== uid || isBannedUser) return;
+        isBannedUser = true;
+        BanDinlemeyiDurdur();
+        for (const id of ['splash-screen', 'main-user-ui']) {
+            const el = document.getElementById(id); if (el) el.style.display = 'none';
+        }
+        const reason = document.getElementById('banned-reason-text');
+        if (reason) reason.textContent = sebep || 'Hesabınızın erişimi kapatıldı.';
+        const overlay = document.getElementById('banned-user-overlay');
+        if (overlay) overlay.style.display = 'flex';
+        if (aktifAdisyonDinleyiciRef) { aktifAdisyonDinleyiciRef.off(); aktifAdisyonDinleyiciRef = null; }
+        if (typeof bgDurumRef !== 'undefined' && bgDurumRef) { bgDurumRef.off(); bgDurumRef = null; }
+        firebase.auth().signOut().catch(() => {
+            if (reason) reason.textContent += ' Oturum kapatılamadı; bağlantıyı kontrol edin.';
+        });
+    }
+    function BanCanliDinle(tel) {
+        const user = firebase.auth().currentUser;
+        let phone; try { phone = SiparisTelefonunuStandartlastir(tel); } catch (_) { return false; }
+        if (!user?.emailVerified || !phone) return;
+        const key = user.uid + ':' + phone;
+        if (banOturumu === key) return;
+        BanDinlemeyiDurdur(); banOturumu = key;
+        const generation = banNesli, uid = user.uid;
+        const current = () => generation === banNesli && firebase.auth().currentUser?.uid === uid;
+        for (const alias of [phone, phone.slice(1)]) {
+            const ref = firebase.database().ref('YasakliHesaplar/' + alias);
+            const callback = snapshot => {
+                if (current() && snapshot.exists()) {
+                    const value = snapshot.val();
+                    BanOturumunuKapat(uid, typeof value?.sebep === 'string' ? value.sebep : 'Hesabınız yasaklandı.');
+                }
+            };
+            banDinleyicileri.push({ref, callback});
+            ref.on('value', callback, () => {
+                if (current()) BanOturumunuKapat(uid, 'Hesap erişimi doğrulanamadı. Bağlantı ve izinleri kontrol ederek tekrar giriş yapın.');
+            });
+        }
+    }
     async function BanKontrolu(tel) {
-        if(!tel) return false;
+        const authGeneration = banAuthNesli;
+        const user = firebase.auth().currentUser;
+        let phone; try { phone = SiparisTelefonunuStandartlastir(tel); } catch (_) { return false; }
+        if (!user?.emailVerified || !phone) return false;
         try {
-            let res = await fetch(`${FIREBASE_URL}/YasakliHesaplar/${tel}.json`); let data = await res.json();
-            if (data && data.sebep) {
-                isBannedUser = true; let splash = document.getElementById('splash-screen'); if (splash) { splash.style.display = 'none'; }
-                document.getElementById("main-user-ui").style.display = "none"; document.getElementById("banned-reason-text").innerText = escapeHTML(data.sebep); document.getElementById("banned-user-overlay").style.display = "flex";
-                return true;
+            for (const alias of [phone, phone.slice(1)]) {
+                const snapshot = await firebase.database().ref('YasakliHesaplar/' + alias).once('value');
+                if (authGeneration !== banAuthNesli || firebase.auth().currentUser?.uid !== user.uid) return true;
+                if (snapshot.exists()) {
+                    const value = snapshot.val();
+                    BanOturumunuKapat(user.uid, typeof value?.sebep === 'string' ? value.sebep : 'Hesabınız yasaklandı.');
+                    return true;
+                }
             }
-        } catch(e) {}
-        return false;
+            BanCanliDinle(phone);
+            return isBannedUser;
+        } catch (error) {
+            if (authGeneration !== banAuthNesli) return true;
+            BanOturumunuKapat(user.uid, 'Hesap erişimi doğrulanamadı. Bağlantı ve izinleri kontrol ederek tekrar giriş yapın.');
+            return true;
+        }
     }
 
     function SistemAyarlariniDinle() {
@@ -1456,6 +1513,7 @@
     }
 
     function ProfilArayuzunuGuncelle(isLoggedIn, userName = "") {
+        if (isLoggedIn && (isBannedUser || !firebase.auth().currentUser)) return;
         let anaBaslik = document.getElementById("profil-ana-baslik"); let altBaslik = document.getElementById("profil-alt-baslik"); let authWrapper = document.getElementById("auth-wrapper"); let dashboardWrapper = document.getElementById("dashboard-wrapper");
         if (isLoggedIn) {
             let kisaAd = userName && userName.trim() !== "" ? userName.trim().split(' ')[0] : "Müşterimiz";
@@ -1512,12 +1570,22 @@
     function KayitOnayToggle() { let cb = document.getElementById("kayit-onay-cb"); let btn = document.getElementById("btn-email-verify"); if (cb && btn) { if (cb.checked && isPasswordValid) { btn.disabled = false; btn.style.opacity = "1"; } else { btn.disabled = true; btn.style.opacity = "0.5"; } } }
 
     firebase.auth().onAuthStateChanged(async (user) => {
+        ++banAuthNesli;
+        BanDinlemeyiDurdur();
+        const authEpoch = banNesli;
+        if (user) { isBannedUser = false; const overlay = document.getElementById('banned-user-overlay'); if (overlay) overlay.style.display = 'none'; }
+        if (user?.emailVerified && user.uid !== 'jO9Jmp2cgXfGUfMVbv5fdlCPgV52') {
+            const tel = user.displayName || await SecureOku('bg_t');
+            if (authEpoch !== banNesli || firebase.auth().currentUser?.uid !== user.uid) return;
+            if (await BanKontrolu(tel)) return;
+        }
         // Dinleyiciler başlangıçta anonim açılmışsa oturum değişince yeniden yetkilendir.
         if (document.readyState !== 'loading') SistemAyarlariniDinle();
         if (user) {
             if (user.uid === 'jO9Jmp2cgXfGUfMVbv5fdlCPgV52') { await firebase.auth().signOut(); OzelUyariGoster('Kasa hesabı', 'Yönetim Windows kasa uygulamasına taşındı. Müşteri hesabınızla giriş yapın.', '🔒'); return; }
             
             let bekleyenTel = await SecureOku("bg_pending_tel"); let bekleyenEmail = await SecureOku("bg_pending_email");
+            if (isBannedUser || firebase.auth().currentUser?.uid !== user.uid) return;
             if (bekleyenTel && bekleyenEmail && user.email === bekleyenEmail) { await user.reload(); if (user.emailVerified) { IptalEtEpostaBekleme(false); SayfaGoster('profil'); WhatsappDoğrulamasiniBaslat(bekleyenTel, bekleyenEmail); } else { EpostaOnayiniBekle(user, bekleyenTel, bekleyenEmail); } }
         }
     });
@@ -1584,7 +1652,9 @@
     async function IptalEtWhatsappBekleme() { if(whatsappInterval) clearInterval(whatsappInterval); let wpOverlay = document.getElementById("whatsapp-wait-overlay"); if (wpOverlay) { wpOverlay.classList.remove("active"); setTimeout(() => wpOverlay.style.display = "none", 400); } let btn = document.getElementById("btn-email-verify"); if(btn) { btn.innerText = "Hesabımı Oluştur"; btn.disabled = false; } await SecureSil("bg_wp_waiting"); await SecureSil("bg_wp_kod"); await SecureSil("bg_pending_tel"); await SecureSil("bg_pending_email"); let user = firebase.auth().currentUser; if (user) { user.delete().catch(()=>{}); } firebase.auth().signOut(); OzelUyariGoster("İptal Edildi", "WhatsApp onayı yapılmadığı için işlem iptal edildi.", "❌"); }
 
     async function BasariliGirisIslemleri(formatliTel, email, isLogin = false) {
-        let user = firebase.auth().currentUser; let idToken = await user.getIdToken(true);
+        let user = firebase.auth().currentUser;
+        if (!user || isBannedUser || await BanKontrolu(formatliTel)) return;
+        let idToken = await user.getIdToken(true);
         if (user && user.displayName !== formatliTel) { await user.updateProfile({ displayName: formatliTel }).catch(()=>{}); }
         let kayitliIsim = "";
         try {
@@ -2469,6 +2539,7 @@
         return n;
     }
     async function PaketSiparisiGonder() {
+        if (isBannedUser || !firebase.auth().currentUser) return;
         if(isProcessingOrder || (sepet.length === 0 && aktifKullanilanCarkOdulu === null)) return;
         if(!document.getElementById("legal-checkbox").checked) { OzelUyariGoster("Sözleşme Onayı", "Sözleşmeleri onaylamanız gerek.", "📝"); return; }
         
@@ -2520,6 +2591,7 @@
     }
 
     async function DevamEtPaketGonder(isim, tel, adres, odemeTuru, temizSepet, lat = 0, lng = 0) {
+        if (isBannedUser || !firebase.auth().currentUser) return;
         await SecureKaydet("bg_i", isim); await SecureKaydet("bg_a", adres);
         let btnText = document.getElementById("final-btn-text"); btnText.innerHTML = `<div class="spinner-small"></div> İletiliyor...`; window.isOrderFinished = false;
 
