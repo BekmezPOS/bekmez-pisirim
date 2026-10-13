@@ -28,7 +28,7 @@
         :root{--bg-dark:#000;--bg-gradient:radial-gradient(circle at top, #111114 0%, #000 100%);--surface:rgba(24, 24, 28, 0.65);--surface-solid:#151518;--surface-hover:rgba(40, 40, 45, 0.8);--border:rgba(255, 255, 255, 0.06);--border-light:rgba(255, 255, 255, 0.03);--border-highlight:rgba(255, 255, 255, 0.12);--text-main:#fff;--text-muted:#8a8a93;--primary:#FF6B00;--gradient-fire:linear-gradient(135deg, #FF6B00 0%, #FF9500 100%);--gradient-gold:linear-gradient(135deg, #FACC15 0%, #D97706 100%);--primary-glow:rgba(255, 107, 0, 0.25);--primary-light:rgba(255, 107, 0, 0.12);--success:#34C759;--danger:#FF3B30;--warning:#FFCC00;}
         *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
         html{scroll-behavior:smooth;overscroll-behavior-y:none;}
-        body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-dark);background-image:var(--bg-gradient);color:var(--text-main);margin:0;padding:0;padding-bottom:calc(110px + env(safe-area-inset-bottom));overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;min-height:100vh;position:relative;user-select:none;-webkit-user-select:none;}
+        body{font-family:"Plus Jakarta Sans",sans-serif;background:var(--bg-dark);background-image:var(--bg-gradient);color:var(--text-main);margin:0;padding:0;padding-bottom:calc(110px + env(safe-area-inset-bottom));overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;min-height:100vh;position:relative;user-select:none;-webkit-user-select:none;}
         input,textarea,select{user-select:auto;-webkit-user-select:auto; outline:none;}
         ::-webkit-scrollbar{display:none;}
 
@@ -47,11 +47,11 @@
         @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
 
         .shimmer-btn{position:relative;overflow:hidden;}
-        .shimmer-btn::after{content:'';position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(to right,transparent,rgba(255,255,255,0.3),transparent);transform:skewX(-25deg);animation:shimmer 5s infinite cubic-bezier(0.16,1,0.3,1);}
+        .shimmer-btn::after{content:"";position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(to right,transparent,rgba(255,255,255,0.3),transparent);transform:skewX(-25deg);animation:shimmer 5s infinite cubic-bezier(0.16,1,0.3,1);}
         @keyframes shimmer{0%,50%{left:-100%;}100%{left:200%;}}
 
         .neon-border{position:relative;}
-        .neon-border::before{content:'';position:absolute;top:-2px;left:-2px;right:-2px;bottom:-2px;background:linear-gradient(90deg,#FF6B00,#FACC15,#FF6B00,#FACC15);background-size:200% 100%;border-radius:inherit;z-index:-1;animation:neonFlow 4s linear infinite;opacity:0.4;filter:blur(3px);transition:opacity 0.3s;}
+        .neon-border::before{content:"";position:absolute;top:-2px;left:-2px;right:-2px;bottom:-2px;background:linear-gradient(90deg,#FF6B00,#FACC15,#FF6B00,#FACC15);background-size:200% 100%;border-radius:inherit;z-index:-1;animation:neonFlow 4s linear infinite;opacity:0.4;filter:blur(3px);transition:opacity 0.3s;}
         .neon-border:active::before{opacity:0.7;filter:blur(5px);}
         @keyframes neonFlow{0%{background-position:0% 0%;}100%{background-position:200% 0%;}}
 
@@ -96,7 +96,7 @@
         #splash-content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;transition:transform 0.6s ease,opacity 0.5s ease;width:100%;}
         .hero-greeting{font-size:12px;color:var(--text-main);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:25px;display:flex;align-items:center;gap:10px;opacity:0;animation:fadeUp 0.6s ease forwards 0.2s;background:rgba(255,255,255,0.04);padding:8px 20px;border-radius:100px;border:1px solid var(--border);}
         .status-dot{position:relative;width:6px;height:6px;background:var(--primary);border-radius:50%;box-shadow:0 0 8px var(--primary);}
-        .status-dot::after{content:'';position:absolute;top:-4px;left:-4px;right:-4px;bottom:-4px;border-radius:50%;border:1px solid var(--primary);animation:radarPulse 2s ease infinite;}
+        .status-dot::after{content:"";position:absolute;top:-4px;left:-4px;right:-4px;bottom:-4px;border-radius:50%;border:1px solid var(--primary);animation:radarPulse 2s ease infinite;}
         @keyframes radarPulse{0%{transform:scale(0.5);opacity:1;}100%{transform:scale(2);opacity:0;}}
         .splash-logo{font-size:42px;font-weight:900;color:#fff;margin-bottom:8px;letter-spacing:-2px;line-height:1;opacity:0;transform:translateY(20px);animation:fadeUp 0.7s ease forwards 0.3s;display:flex;align-items:center;justify-content:center;}
 
@@ -176,8 +176,8 @@
            ========================================== */
         .coupon-card{display:flex;align-items:stretch;background:linear-gradient(135deg,rgba(255,107,0,0.1) 0%,rgba(255,149,0,0.05) 100%);border:1px solid rgba(255,107,0,0.2);border-radius:16px;margin-bottom:12px;overflow:hidden;opacity:0;animation:cardEntrance 0.5s ease forwards;box-shadow:0 6px 12px rgba(0,0,0,0.2);}
         .c-left{background:var(--gradient-fire);color:white;padding:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:80px;border-right:2px dashed rgba(255,255,255,0.3);position:relative;}
-        .c-left::before{content:'';position:absolute;top:-6px;right:-6px;width:12px;height:12px;background:var(--bg-dark);border-radius:50%;}
-        .c-left::after{content:'';position:absolute;bottom:-6px;right:-6px;width:12px;height:12px;background:var(--bg-dark);border-radius:50%;}
+        .c-left::before{content:"";position:absolute;top:-6px;right:-6px;width:12px;height:12px;background:var(--bg-dark);border-radius:50%;}
+        .c-left::after{content:"";position:absolute;bottom:-6px;right:-6px;width:12px;height:12px;background:var(--bg-dark);border-radius:50%;}
         .c-discount{font-size:20px;font-weight:900;line-height:1;margin-bottom:4px;}
         .c-type{font-size:9px;font-weight:800;letter-spacing:1px;}
         .c-right{padding:12px;flex:1;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;text-align:left;}
@@ -263,7 +263,7 @@
         .custom-alert-overlay.active{opacity:1;pointer-events:auto;}
         .custom-alert-box{background:linear-gradient(180deg,#1a1a24 0%,#070709 100%);padding:25px 20px;border-radius:28px;text-align:center;width:85%;max-width:320px;border:1px solid rgba(255,255,255,0.1);box-shadow:0 20px 50px rgba(0,0,0,0.6);position:relative;overflow:hidden;transform:scale(0.95);opacity:0;transition:transform 0.4s ease,opacity 0.3s ease;}
         .custom-alert-overlay.active .custom-alert-box{transform:scale(1);opacity:1;}
-        .custom-alert-glow{content:'';position:absolute;width:150px;height:150px;background:var(--warning);border-radius:50%;filter:blur(50px);opacity:0.1;top:-50px;left:50%;transform:translateX(-50%);z-index:1;pointer-events:none;}
+        .custom-alert-glow{content:"";position:absolute;width:150px;height:150px;background:var(--warning);border-radius:50%;filter:blur(50px);opacity:0.1;top:-50px;left:50%;transform:translateX(-50%);z-index:1;pointer-events:none;}
         .custom-alert-content{position:relative;z-index:2;}
         .alert-btn{width:100%;background:rgba(255,255,255,0.05);color:white;border:1px solid var(--border-highlight);padding:14px;border-radius:100px;font-weight:800;font-size:14px;transition:all 0.2s;cursor:pointer;}
         .alert-btn:active{transform:scale(0.95);background:rgba(255,255,255,0.15);border-color:transparent;}
@@ -348,39 +348,39 @@
         /* ==========================================
            11. ADMİN PANELİ ÖZEL TASARIMI
            ========================================== */
-        #admin-panel-container { background: #0A0A0C; min-height: 100vh; padding: 20px 15px; display: none; }
-        .admin-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-highlight); padding-bottom: 20px; margin-bottom: 25px; }
-        .admin-header h1 { font-size: 20px; color: white; font-weight: 900; margin: 0; letter-spacing: -0.5px; }
-        .admin-logout { background: rgba(255, 59, 48, 0.1); color: var(--danger); border: 1px solid rgba(255, 59, 48, 0.3); padding: 8px 16px; border-radius: 8px; font-weight: 800; font-size: 12px; cursor: pointer; transition: 0.3s; }
         
-        .admin-tabs { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; margin-bottom: 25px; }
-        .admin-tab { background: #151518; border: 1px solid var(--border-highlight); color: #8a8a93; padding: 12px 18px; border-radius: 12px; font-weight: 800; font-size: 12px; white-space: nowrap; cursor: pointer; transition: 0.3s; }
-        .admin-tab.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 15px rgba(255, 107, 0, 0.3); }
+        
+        
+        
+        
+        
+        
+        
 
-        .admin-section { display: none; animation: fadeUpEnter 0.4s ease forwards; }
-        .admin-section.active { display: block; }
         
-        .admin-card { background: rgba(20, 20, 25, 0.8); border: 1px solid var(--border-highlight); border-radius: 16px; padding: 20px; margin-bottom: 20px; }
-        .admin-card h2 { font-size: 15px; color: white; margin: 0 0 15px 0; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 10px; }
         
-        .admin-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .stat-box { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; text-align: center; }
-        .stat-val { font-size: 28px; font-weight: 900; color: var(--primary); margin-bottom: 5px; }
-        .stat-title { font-size: 10px; font-weight: 700; color: #a1a1aa; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        
+        
+        
+        
+        
+        
+        
 
-        .admin-input { width: 100%; background: #000; border: 1px solid var(--border-highlight); color: white; padding: 14px; border-radius: 10px; font-family: inherit; font-size: 13px; font-weight: 600; margin-bottom: 15px; }
-        .admin-input:focus { border-color: var(--primary); outline: none; }
-        .admin-btn { background: var(--success); color: white; border: none; width: 100%; padding: 14px; border-radius: 10px; font-weight: 800; font-size: 14px; cursor: pointer; box-shadow: 0 4px 15px rgba(52, 199, 89, 0.2); }
-        .admin-btn.danger { background: var(--danger); box-shadow: 0 4px 15px rgba(255, 59, 48, 0.2); }
+        
+        
+        
+        
         
         /* MÜŞTERİ YÖNETİMİ ÖZEL CSS */
-        .user-mng-card { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-bottom: 12px; display:flex; justify-content:space-between; align-items:center; }
-        .user-mng-info { display: flex; flex-direction: column; gap: 6px; }
-        .user-mng-actions { display: flex; flex-direction: column; gap: 8px; }
-        .btn-ban { background: rgba(255, 59, 48, 0.1); color: var(--danger); border: 1px solid rgba(255,59,48,0.3); padding: 8px 12px; border-radius: 8px; font-weight: 700; font-size: 11px; cursor: pointer; transition: 0.3s; }
-        .btn-unban { background: rgba(52, 199, 89, 0.1); color: var(--success); border: 1px solid rgba(52,199,89,0.3); padding: 8px 12px; border-radius: 8px; font-weight: 700; font-size: 11px; cursor: pointer; transition: 0.3s; }
+        
+        
+        
+        
+        
         .btn-del { background: transparent; color: #a1a1aa; border: 1px dashed rgba(255,255,255,0.2); padding: 8px 12px; border-radius: 8px; font-weight: 700; font-size: 11px; cursor: pointer; transition: 0.3s; }
-        .btn-ban:active, .btn-unban:active, .btn-del:active { transform: scale(0.95); }
+         .btn-del:active { transform: scale(0.95); }
 
         /* KILL-SWITCH EKRANI (DÜKKAN KAPALI) */
         #store-closed-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.95); backdrop-filter: blur(20px); z-index: 9999999; display: none; align-items: center; justify-content: center; flex-direction: column; text-align: center; padding: 20px; }
@@ -407,29 +407,29 @@
         .product-card .product-price-badge{width:calc(100% - 20px);}
         .product-card .popular-badge{top:9px;right:9px;}
         .product-popup-photo{width:100%;max-height:230px;aspect-ratio:16/10;object-fit:cover;border-radius:16px;margin:0 0 16px;display:none;}
-        .photo-admin-grid{display:grid;grid-template-columns:1fr;gap:14px;}
-        .photo-admin-preview{width:100%;max-width:350px;aspect-ratio:1/1;object-fit:cover;display:none;background:#111;border:1px solid rgba(255,255,255,.1);border-radius:18px;margin:10px auto;}
-        .photo-admin-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;}
-        .photo-admin-actions>button{flex:1;min-width:110px;}
-        .photo-admin-help{font-size:12px;line-height:1.55;color:#a1a1aa;margin:0 0 12px;}
-        .photo-admin-note{font-size:12px;margin:12px 0;min-height:22px;color:#a1a1aa;overflow-wrap:anywhere;}
-        .photo-admin-login{border:1px solid rgba(255,107,0,.25);background:rgba(255,107,0,.055);padding:16px;border-radius:16px;margin-bottom:14px;}
-        .photo-admin-file{width:100%;font:600 12px inherit;color:#ddd;padding:10px 0;}
-        .photo-admin-file::file-selector-button{background:#27272b;color:white;border:1px solid #4b4b55;border-radius:10px;padding:10px;margin-right:10px;cursor:pointer;}
+        
+        
+        
+        
+        
+        
+        
+        
+        
 
 
         /* SUPABASE YÖNETİCİ ŞİFRESİ - aynı paket.html içinde, ek sayfa yok */
-        #photo-password-overlay{position:fixed;inset:0;z-index:2147483647;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.96);overflow-y:auto;}
-        #photo-password-overlay.photo-password-open{display:flex;}
-        .photo-password-card{width:100%;max-width:430px;max-height:calc(100dvh - 32px);overflow:auto;border:1px solid rgba(255,255,255,.12);background:linear-gradient(155deg,#202026,#0a0a0d);padding:25px 22px;border-radius:25px;box-shadow:0 20px 60px rgba(0,0,0,.7);}
-        .photo-password-card h2{font-size:23px;margin:0 0 10px;line-height:1.2;}
-        .photo-password-card p{font-size:13px;line-height:1.55;color:#a1a1aa;}
-        .photo-password-card label{display:block;font-size:12px;font-weight:800;margin-bottom:7px;}
-        .photo-password-card input{width:100%;height:50px;border-radius:12px;border:1px solid #44444b;background:#08080b;color:white;padding:0 13px;font-size:15px;margin-bottom:14px;}
-        .photo-password-card input:focus{outline:2px solid rgba(255,107,0,.45);border-color:#ff6b00;}
-        .photo-password-card [hidden]{display:none!important;}
-        .photo-password-card .password-feedback{font-size:12px;line-height:1.5;margin-top:12px;min-height:19px;overflow-wrap:anywhere;}
-        .photo-password-card button:disabled{opacity:.6;cursor:wait;}
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
     
         /* =======================================================
            BEKMEZ GO / PREMIUM EXPERIENCE 2026
@@ -479,7 +479,7 @@
         .product-card>.product-icon-wrapper .product-icon { font-size:28px; }
         .product-card .product-name { align-self:stretch; display:block; padding:0 12px; margin:0 0 13px; font-size:13px; min-height:32px; line-height:1.35; font-weight:750; text-align:left; letter-spacing:-.2px; }
         .product-card .product-price-badge { align-self:stretch; width:calc(100% - 24px); margin:0 12px; display:flex; align-items:center; justify-content:space-between; gap:5px; text-align:left; padding:10px 11px; background:#282329; border:1px solid rgba(255,132,52,.17); border-radius:12px; font-size:12px; color:#fff; font-weight:800; }
-        .product-card .product-price-badge:after { content:'+'; width:22px; height:22px; flex-shrink:0; display:grid; place-items:center; background:#ff7a1c; color:white; border-radius:7px; font-size:18px; font-weight:600; line-height:1; }
+        .product-card .product-price-badge:after { content:"+"; width:22px; height:22px; flex-shrink:0; display:grid; place-items:center; background:#ff7a1c; color:white; border-radius:7px; font-size:18px; font-weight:600; line-height:1; }
         .product-card .popular-badge { background:rgba(20,16,13,.90); color:#ffb56f; border:1px solid rgba(255,144,37,.25); box-shadow:0 4px 14px rgba(0,0,0,.24); border-radius:8px; padding:6px 8px; font-size:9px; }
         .page-title { letter-spacing:-.75px; font-size:23px; margin:23px 16px 20px; }
         .bottom-nav { width:min(calc(100% - 20px),620px); left:50%; bottom:calc(10px + env(safe-area-inset-bottom)); transform:translateX(-50%); padding:7px; gap:2px; border:1px solid rgba(255,255,255,.11); border-radius:23px; background:rgba(18,18,22,.96); box-shadow:0 15px 40px rgba(0,0,0,.55),inset 0 1px rgba(255,255,255,.07); }
@@ -492,53 +492,53 @@
         .nav-badge { top:1px; right:16%; margin:0; border-color:#1b1b20; }
         .floating-cart { bottom:calc(92px + env(safe-area-inset-bottom)); }
         /* Yönetim paneli: özellikle mobilde bütün bölümler aynı anda görülebilir. */
-        #admin-panel-container { background:radial-gradient(ellipse 80% 320px at 50% 0,rgba(255,107,0,.065),transparent),#0c0c0e; padding:16px max(14px,env(safe-area-inset-left)) 65px; }
-        .admin-header { max-width:1050px; margin:4px auto 20px; padding:23px 21px; background:linear-gradient(120deg,#211e1e,#171619 68%,#151518); border:1px solid rgba(255,255,255,.075); border-radius:24px; box-shadow:0 12px 30px rgba(0,0,0,.24); gap:12px; }
-        .admin-header-copy { min-width:0; flex:1; }
-        .admin-eyebrow { display:flex; align-items:center; gap:7px; font-size:9px; font-weight:800; color:#ffad6a; letter-spacing:1.1px; line-height:1.5; }
-        .admin-eyebrow-dot { width:7px; height:7px; background:#ff8726; border-radius:50%; box-shadow:0 0 0 3px rgba(255,107,0,.13); }
-        .admin-header h1 { font-size:clamp(22px,4vw,30px); line-height:1.15; letter-spacing:-.85px; margin:12px 0 6px; }
-        .admin-header h1 span { color:#ff8e35; }
-        .admin-header p { color:#b4adb0; font-size:12px; line-height:1.5; max-width:410px; margin:0; font-weight:500; }
-        .admin-logout { display:flex; align-items:center; justify-content:center; gap:7px; flex-shrink:0; border-radius:12px; padding:10px 12px; border-color:rgba(255,255,255,.11); color:#f0d8d1; background:rgba(255,255,255,.055); font-size:11px; box-shadow:none; }
-        .admin-logout svg { width:15px; height:15px; }
-        .admin-tabs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); max-width:1050px; margin:0 auto 21px; gap:10px; overflow:visible; padding:0; }
-        .admin-tab { display:flex; align-items:center; justify-content:flex-start; text-align:left; gap:11px; min-width:0; min-height:76px; background:linear-gradient(135deg,#1c1c20,#151518); color:#f0f0f3; border:1px solid rgba(255,255,255,.09); border-radius:17px; padding:12px; box-shadow:0 6px 16px rgba(0,0,0,.12); white-space:normal; transition:background .2s,border-color .2s,box-shadow .2s; }
-        .admin-tab.active { background:linear-gradient(140deg,rgba(255,109,22,.19),rgba(32,26,25,.99)); color:white; border-color:rgba(255,145,64,.48); box-shadow:0 6px 23px rgba(255,94,0,.09),inset 0 1px rgba(255,255,255,.035); }
-        .admin-tab-icon { display:grid; place-items:center; flex-shrink:0; width:37px; height:37px; border:1px solid rgba(255,255,255,.075); background:#28272c; border-radius:12px; color:#bbbcc4; }
-        .admin-tab.active .admin-tab-icon { background:rgba(255,116,29,.21); border-color:rgba(255,149,72,.18); color:#ff9b52; }
-        .admin-tab-icon svg { width:19px; height:19px; stroke-width:1.8; }
-        .admin-tab-text { min-width:0; display:flex; flex-direction:column; gap:5px; }
-        .admin-tab-text strong { font-size:12px; font-weight:800; line-height:1.25; }
-        .admin-tab-text small { font-size:10px; font-weight:550; color:#a4a4ad; line-height:1.25; }
-        .admin-tab.active .admin-tab-text small { color:#e0b89d; }
-        .admin-tab-chevron { display:none; }
-        .admin-section { max-width:1050px; margin:0 auto; }
-        .admin-card { background:linear-gradient(155deg,#1b1b20,#141418); border:1px solid rgba(255,255,255,.075); padding:20px; border-radius:21px; box-shadow:0 10px 28px rgba(0,0,0,.17); }
-        .admin-card h2 { font-size:16px; letter-spacing:-.35px; padding-bottom:14px; margin-bottom:16px; }
-        .admin-input { border-radius:12px; background:#0f0f12; border-color:rgba(255,255,255,.11); min-height:47px; }
-        .admin-btn { min-height:46px; border-radius:13px; }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         .premium-dash-tabs { gap:9px; }
         .premium-dash-tab { border-radius:13px; font-size:12px; line-height:1.3; min-height:50px; }
         .premium-dash-tab.active { background:rgba(255,107,0,.12); }
         @media(min-width:700px) {
-            .admin-tabs { grid-template-columns:repeat(3,minmax(0,1fr)); }
+            
             .grid-container { grid-template-columns:repeat(3,minmax(0,1fr)); }
             .menu-intro { margin-top:26px; }
-            .admin-tab { min-height:85px; }
-            .admin-tab-text strong { font-size:14px; }
+            
+            
         }
         @media(max-width:370px) {
-            .admin-tab { padding:9px; gap:8px; }
-            .admin-tab-icon { width:32px; height:32px; }
-            .admin-tab-text strong { font-size:11px; }
-            .admin-tab-text small { font-size:9px; }
+            
+            
+            
+            
             .nav-item { font-size:9px; }
             .category-tabs .tab-btn { padding:10px 11px; }
             .menu-intro { padding:21px 18px; }
         }
         @media(prefers-reduced-motion:reduce) {
-            .menu-intro *, .admin-tab, .nav-item *, .category-tabs *, .product-card { animation-duration:.01ms!important; transition-duration:.01ms!important; }
+            .menu-intro *, .nav-item *, .category-tabs *, .product-card { animation-duration:.01ms!important; transition-duration:.01ms!important; }
         }
 
 
@@ -549,213 +549,16 @@
         .bg-notify-box h3{font-size:15px;line-height:1.3;margin:0;color:#fff;font-weight:800;letter-spacing:-.25px}
         .bg-notify-help{font-size:12px;line-height:1.55;color:#acaab3;margin:0 0 14px}
         #bg-notify-status{font-size:11px;line-height:1.5;color:#a1a1aa;margin-top:11px;min-height:17px}
-        .bg-admin-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
-        .bg-admin-audio-preview{border:1px solid rgba(255,107,0,.35);color:#ff9d56;background:rgba(255,107,0,.09);border-radius:12px;padding:9px 12px;font-family:inherit;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap}
-        .bg-admin-audio-preview:active{transform:scale(.97)}
-        @media(max-width:420px){.bg-admin-actions{gap:5px}.bg-admin-audio-preview{font-size:10px;padding:8px 9px}}
-    </style>
+        
+        
+        
+        
+    
+.customer-action-btn{background:#ff6b00;color:white;border:0;border-radius:12px;padding:14px;font-weight:800;cursor:pointer}
+</style>
 </head>
 <body>
-    <!-- ADMİN YASAKLAMA / BAN MODALI -->
-    <div id="admin-prompt-overlay" class="custom-alert-overlay" onclick="KapatAdminPrompt(event)">
-        <div class="custom-alert-box" id="admin-prompt-box">
-            <div class="custom-alert-glow" style="background: var(--danger);"></div>
-            <div class="custom-alert-content">
-                <div style="font-size: 55px; margin-bottom: 20px;">🔨</div>
-                <h3 style="margin: 0 0 14px 0; font-weight: 900; font-size: 20px; color: var(--text-main); letter-spacing:-0.5px;">Kullanıcıyı Yasakla</h3>
-                <p style="color: var(--text-muted); font-size: 13px; font-weight: 600; margin: 0 0 20px 0; line-height: 1.5;">Bu müşterinin uygulamaya girmesini kalıcı olarak engelleyeceksiniz. Lütfen müşterinin göreceği bir sebep yazın.</p>
-                <input type="text" id="admin-ban-reason" class="admin-input" placeholder="Örn: Sahte sipariş, Kuryeye hakaret vs.">
-                <div style="display:flex; gap:10px;">
-                    <button onclick="KapatAdminPrompt(event, true)" class="alert-btn ripple-element" style="background: rgba(255,255,255,0.05); color:white; flex:1;">İptal</button>
-                    <button id="admin-prompt-yes-btn" class="alert-btn ripple-element" style="background: var(--danger); border-color:transparent; color:white; flex:1;">Yasakla</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- SADECE ADMİN GİRİŞİNDE GÖZÜKECEK PANEL -->
-    <div id="admin-panel-container">
-        <div class="admin-header">
-            <div class="admin-header-copy">
-                <span class="admin-eyebrow"><span class="admin-eyebrow-dot"></span> BEKMEZ GO / KONTROL MERKEZİ</span>
-                <h1>Yönetim <span>Paneli</span></h1>
-                <p>Ürünleri, müşterileri ve işletmeni tek ekrandan yönet.</p>
-            </div>
-            <div class="bg-admin-actions"><button type="button" class="bg-admin-audio-preview" onclick="PremiumChimeCal('admin',true)" title="Premium karşılama sesini dinle">♪ Sesi dinle</button>
-                        <button class="admin-logout ripple-element" type="button" onclick="AdminCikisYap()"><svg class="ui-svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 21a7 7 0 0 1 14 0"/></svg><span>Çıkış</span></button></div>
-        </div>
-
-        <nav class="admin-tabs" role="tablist" aria-label="Yönetim bölümleri">
-            <button type="button" class="admin-tab active" role="tab" aria-selected="true" aria-controls="admin-sec-istatistik" onclick="AdminSekmeGoster('istatistik',this)"><span class="admin-tab-icon"><svg class="ui-svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg></span><span class="admin-tab-text"><strong>Genel Bakış</strong><small>Müşteri özeti</small></span><span class="admin-tab-chevron" aria-hidden="true">›</span></button>
-            <button type="button" class="admin-tab" role="tab" aria-selected="false" aria-controls="admin-sec-fotograflar" onclick="AdminSekmeGoster('fotograflar',this)"><span class="admin-tab-icon"><svg class="ui-svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 16-6-6-8 9"/></svg></span><span class="admin-tab-text"><strong>Ürün Görselleri</strong><small>Fotoğraf yönetimi</small></span><span class="admin-tab-chevron" aria-hidden="true">›</span></button>
-            <button type="button" class="admin-tab" role="tab" aria-selected="false" aria-controls="admin-sec-musteri" onclick="AdminSekmeGoster('musteri',this)"><span class="admin-tab-icon"><svg class="ui-svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1a6 6 0 0 1 12 0v1M17 5a3 3 0 0 1 0 6M17 14a5 5 0 0 1 4 5v1"/></svg></span><span class="admin-tab-text"><strong>Müşteriler</strong><small>Hesap ve erişim</small></span><span class="admin-tab-chevron" aria-hidden="true">›</span></button>
-            <button type="button" class="admin-tab" role="tab" aria-selected="false" aria-controls="admin-sec-cark" onclick="AdminSekmeGoster('cark',this)"><span class="admin-tab-icon"><svg class="ui-svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 12h18M12 8H8a3 3 0 0 1-1-5.8c2.2-.8 4.4 3.8 5 5.8ZM12 8h4a3 3 0 0 0 1-5.8c-2.2-.8-4.4 3.8-5 5.8Z"/></svg></span><span class="admin-tab-text"><strong>Ödül Çarkı</strong><small>Hediye seçenekleri</small></span><span class="admin-tab-chevron" aria-hidden="true">›</span></button>
-            <button type="button" class="admin-tab" role="tab" aria-selected="false" aria-controls="admin-sec-bildirim" onclick="AdminSekmeGoster('bildirim',this)"><span class="admin-tab-icon"><svg class="ui-svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 8-3 10h18c0-2-3-3-3-10ZM10 22h4"/></svg></span><span class="admin-tab-text"><strong>Duyurular</strong><small>Müşteri mesajları</small></span><span class="admin-tab-chevron" aria-hidden="true">›</span></button>
-            <button type="button" class="admin-tab" role="tab" aria-selected="false" aria-controls="admin-sec-sistem" onclick="AdminSekmeGoster('sistem',this)"><span class="admin-tab-icon"><svg class="ui-svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="m19.4 15 .1.1 1.8 1.4-2 3.4-2.1-.8a8 8 0 0 1-2 1.1L14.8 22h-4l-.4-1.8a8 8 0 0 1-2-1.1l-2.1.8-2-3.4L6.1 15a8 8 0 0 1 0-2l-1.8-1.4 2-3.4 2.1.8a8 8 0 0 1 2-1.1L10.8 6h4l.4 1.9a8 8 0 0 1 2 1.1l2.1-.8 2 3.4L19.5 13a8 8 0 0 1-.1 2Z" transform="translate(-.8 -2) scale(1.07)"/></svg></span><span class="admin-tab-text"><strong>İşletme</strong><small>Açılış ve güvenlik</small></span><span class="admin-tab-chevron" aria-hidden="true">›</span></button>
-        </nav>
-
-        <!-- 1. İSTATİSTİKLER -->
-        <div id="admin-sec-istatistik" class="admin-section active">
-            <div class="admin-stats-grid" style="margin-bottom: 20px;">
-                <div class="stat-box">
-                    <div class="stat-val" id="adm-total-user">0</div>
-                    <div class="stat-title">Aktif Müşteri</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-val" id="adm-deleted-user" style="color: var(--danger);">0</div>
-                    <div class="stat-title">Silinen Hesap</div>
-                </div>
-            </div>
-
-            <div class="admin-card">
-                <h2>Son Katılan Müşteriler</h2>
-                <div id="adm-recent-users">
-                    <div style="color: #a1a1aa; font-size: 12px; text-align: center;">Yükleniyor...</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 2. MÜŞTERİ YÖNETİMİ SEKMESİ -->
-        <div id="admin-sec-musteri" class="admin-section">
-            <div class="admin-card">
-                <h2>Müşteri Hesapları</h2>
-                <p style="font-size: 11px; color: #a1a1aa; margin-bottom: 15px;">Tüm müşterilerinizi buradan görebilir, sahte/hayalet hesapları silebilir veya sipariş vermesini istemediğiniz kişileri engelleyebilirsiniz.</p>
-                
-                <div id="adm-full-user-list">
-                    <div class="spinner-small" style="margin: 0 auto; display: block;"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 3. ÇARK YÖNETİMİ -->
-        <div id="admin-sec-cark" class="admin-section">
-            <div class="admin-card">
-                <h2>Ödül Çarkını Düzenle</h2>
-                <p style="font-size: 11px; color: #a1a1aa; margin-bottom: 15px;">Kullanıcıların çarkı çevirdiğinde kazanacağı 5 farklı ihtimali belirleyin. (Örn: "1 Lt Kola", "Pas")</p>
-                
-                <input type="text" id="adm-cark-1" class="admin-input" placeholder="1. Dilim İçeriği">
-                <input type="text" id="adm-cark-2" class="admin-input" placeholder="2. Dilim İçeriği">
-                <input type="text" id="adm-cark-3" class="admin-input" placeholder="3. Dilim İçeriği">
-                <input type="text" id="adm-cark-4" class="admin-input" placeholder="4. Dilim İçeriği">
-                <input type="text" id="adm-cark-5" class="admin-input" placeholder="5. Dilim İçeriği">
-                
-                <button class="admin-btn ripple-element" onclick="AdminCarkKaydet()">Çarkı Güncelle</button>
-            </div>
-        </div>
-
-        <!-- 4. PUSH BİLDİRİM -->
-        <div id="admin-sec-bildirim" class="admin-section">
-            <div class="admin-card">
-                <h2>Müşterilerine Duyuru Gönder</h2>
-                <p style="font-size: 11px; color: #a1a1aa; margin-bottom: 15px;">Uygulamaya giren tüm müşterilerin ekranında belirecek bir sistem mesajı oluşturun.</p>
-                
-                <input type="text" id="adm-notif-title" class="admin-input" placeholder="Bildirim Başlığı (Örn: Hafta Sonu İndirimi!)">
-                <textarea id="adm-notif-body" class="admin-input" rows="4" placeholder="Mesaj içeriğinizi buraya yazın..." style="resize: none;"></textarea>
-                
-                <button class="admin-btn ripple-element" style="background: var(--primary);" onclick="AdminBildirimGonder()">Tüm Müşterilere Gönder</button>
-            </div>
-        </div>
-
-        <!-- 5. SİSTEM AYARLARI (KAPALI GÜNLER) -->
-        <div id="admin-sec-sistem" class="admin-section">
-            <div class="admin-card">
-                <h2>İşletme Çalışma Durumu</h2>
-                <p style="font-size: 11px; color: #a1a1aa; margin-bottom: 15px;">Dükkanın zorunlu kapalı olacağı günü seçin. O gün geldiğinde müşteriler sisteme giremez.</p>
-                
-                <select id="adm-closed-day" class="admin-input">
-                    <option value="Yok">Her Gün Açık</option>
-                    <option value="Monday">Pazartesi Kapalı</option>
-                    <option value="Tuesday">Salı Kapalı</option>
-                    <option value="Wednesday">Çarşamba Kapalı</option>
-                    <option value="Thursday">Perşembe Kapalı</option>
-                    <option value="Friday">Cuma Kapalı</option>
-                    <option value="Saturday">Cumartesi Kapalı</option>
-                    <option value="Sunday">Pazar Kapalı</option>
-                </select>
-                
-                <button class="admin-btn ripple-element" onclick="AdminKapanisGununuKaydet()">Ayarı Kaydet</button>
-            </div>
-
-            <div class="admin-card" style="border-color: rgba(255,59,48,0.3);">
-                <h2 style="color: var(--danger);">Acil Durum (Manuel Kapatma)</h2>
-                <p style="font-size: 11px; color: #a1a1aa; margin-bottom: 15px;">Eğer olağanüstü bir durum varsa (elektrik kesintisi vb.), uygulamayı anında herkese kapatabilirsiniz.</p>
-                
-                <button class="admin-btn danger ripple-element" id="adm-emergency-btn" onclick="AdminAcilDurumKapat()">DÜKKANI ŞİMDİ KAPAT</button>
-            </div>
-        </div>
-
-        <!-- Yalnizca Firebase kasa yonetimi icinden gorunur. Gercek yetki Supabase RLS ile saglanir. -->
-        <div id="admin-sec-fotograflar" class="admin-section">
-            <div class="admin-card">
-                <h2>Ürün Fotoğrafları</h2>
-                <p class="photo-admin-help">Ürünleri mevcut Firebase menüsünden okur. Fotoğraflar Supabase Storage'da tutulur; kasa fiyatı ve stok bilgileri değiştirilmez.</p>
-                <div id="photo-admin-login" class="photo-admin-login">
-                    <p class="photo-admin-help">Fotoğraf yüklemek için oluşturduğun <b>Supabase yönetici hesabıyla</b> da giriş yap. Firebase kasa şifresi buraya girilmez.</p>
-                    <input id="photo-admin-email" type="email" class="admin-input" placeholder="Supabase yönetici e-postası" autocomplete="username">
-                    <input id="photo-admin-pass" type="password" class="admin-input" placeholder="Supabase şifresi" autocomplete="current-password">
-                    <button class="admin-btn" type="button" style="background:var(--primary)" onclick="FotoAdminGiris()">Görsel Yönetimine Giriş</button>
-                    <button class="btn-del" type="button" style="margin-top:12px;width:100%;padding:12px;" onclick="FotoSifrePanelAc()">Supabase şifremi oluştur / unuttum</button>
-                </div>
-                <div id="photo-admin-editor" style="display:none;">
-                    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;">
-                        <span style="font-size:12px;color:var(--success);font-weight:800;">🔒 Yetkili yönetici oturumu açık</span>
-                        <button type="button" class="btn-del" onclick="FotoAdminCikis()">Supabase'den Çık</button>
-                    </div>
-                    <label for="photo-admin-product" style="font-size:12px;font-weight:800;">Fotoğrafı ayarlanacak ürün</label>
-                    <select id="photo-admin-product" class="admin-input" onchange="FotoAdminUrunSecildi()">
-                        <option value="">Ürünler yükleniyor...</option>
-                    </select>
-                    <img id="photo-admin-preview" class="photo-admin-preview" alt="Ürün fotoğrafı önizlemesi">
-                    <p id="photo-admin-empty" class="photo-admin-help" style="text-align:center;margin:12px 0;">Bu ürün için henüz fotoğraf yüklenmedi.</p>
-                    <label for="photo-admin-file" style="font-size:12px;font-weight:800;">Yeni fotoğraf seç (JPG, PNG veya WebP)</label>
-                    <input id="photo-admin-file" class="photo-admin-file" type="file" accept="image/jpeg,image/png,image/webp" onchange="FotoDosyaSecildi()">
-                    <p class="photo-admin-help">Fotoğraflar tarayıcıda en fazla 800×800 piksel WebP'ye dönüştürülür. Yükleme sınırı 2 MB'dır.</p>
-                    <div class="photo-admin-actions">
-                        <button id="photo-admin-save" class="admin-btn" type="button" style="background:var(--primary)" onclick="FotoAdminKaydet()">Yükle / Değiştir</button>
-                        <button id="photo-admin-delete" class="admin-btn danger" type="button" onclick="FotoAdminSil()">Fotoğrafı Kaldır</button>
-                    </div>
-                </div>
-                <p id="photo-admin-status" class="photo-admin-note" role="status" aria-live="polite"></p>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- Supabase şifre kurtarma. E-posta dönüşü paket.html içinde tamamlanır. -->
-    <div id="photo-password-overlay" role="dialog" aria-modal="true" aria-labelledby="photo-password-heading">
-      <div class="photo-password-card">
-        <div style="font-size:12px;color:#ff9500;letter-spacing:1px;font-weight:900;margin-bottom:15px;">BEKMEZ GO • GÖRSEL YÖNETİMİ</div>
-        <section id="photo-password-request">
-          <h2 id="photo-password-heading">Supabase şifreni oluştur</h2>
-          <p>Bu işlem sadece ürün görsellerini yöneten Supabase hesabının şifresi içindir. Firebase kasa şifreni veya veritabanı şifreni kullanma.</p>
-          <form id="photo-password-request-form" onsubmit="FotoSifreMailGonder(event)">
-            <label for="photo-reset-email">Supabase yönetici e-postası</label>
-            <input id="photo-reset-email" type="email" autocomplete="email" required maxlength="254" placeholder="ornek@eposta.com">
-            <button id="photo-reset-send" class="admin-btn" style="background:var(--primary)" type="submit">Şifre belirleme bağlantısı gönder</button>
-          </form>
-          <p id="photo-reset-request-status" class="password-feedback" role="status" aria-live="polite"></p>
-          <button class="btn-del" style="width:100%;padding:11px;" type="button" onclick="FotoSifrePanelKapat()">Geri dön</button>
-        </section>
-        <section id="photo-password-new" hidden>
-          <h2>Yeni şifreni belirle</h2>
-          <p>E-posta bağlantısı doğrulandı. Güçlü ve başka yerde kullanmadığın bir şifre seç.</p>
-          <form id="photo-password-update-form" onsubmit="FotoSifreKaydet(event)">
-            <label for="photo-reset-new-password">Yeni şifre (en az 12 karakter)</label>
-            <input id="photo-reset-new-password" type="password" minlength="12" autocomplete="new-password" required>
-            <label for="photo-reset-confirm-password">Yeni şifre tekrar</label>
-            <input id="photo-reset-confirm-password" type="password" minlength="12" autocomplete="new-password" required>
-            <button id="photo-reset-save" class="admin-btn" style="background:var(--primary)" type="submit">Yeni şifreyi kaydet</button>
-          </form>
-          <p id="photo-reset-save-status" class="password-feedback" role="status" aria-live="polite"></p>
-        </section>
-        <section id="photo-password-done" hidden>
-          <h2>✓ Şifren kaydedildi</h2>
-          <p>Artık Firebase kasa yönetimine girip <b>Ürün Görselleri</b> sekmesinde bu Supabase şifresiyle giriş yapabilirsin.</p>
-          <button class="admin-btn" style="background:var(--primary)" type="button" onclick="window.location.href='https://bekmezpos.github.io/bekmez-pisirim/paket.html'">Bekmez GO'ya dön</button>
-        </section>
-      </div>
-    </div>
-
+    
     <!-- DÜKKAN KAPALI EKRANI (Tüm Kullanıcılara Gözükecek) -->
     <div id="store-closed-overlay">
         <div style="font-size: 60px; margin-bottom: 20px;">🛑</div>
@@ -769,7 +572,7 @@
         <h1>Erişim Engellendi</h1>
         <p>Hesabınız sistem yöneticisi tarafından kalıcı olarak askıya alınmıştır.</p>
         <div class="banned-reason-box">Sebep: <span id="banned-reason-text">...</span></div>
-        <button class="admin-btn ripple-element" style="margin-top:20px; width:auto; padding:10px 20px;" onclick="window.location.reload(true);">Sayfayı Yenile</button>
+        <button class="customer-action-btn ripple-element" style="margin-top:20px; width:auto; padding:10px 20px;" onclick="window.location.reload(true);">Sayfayı Yenile</button>
     </div>
 
     <!-- ALT YAPI (MEVCUT HTML) -->
@@ -1262,13 +1065,12 @@
     let populerUrunlerListesi = []; let aktifAdisyonDinleyiciRef = null; let menuDinleyiciRef = null; let sonCekilenAdisyonHTML = ""; let sonKuponVerisi = ""; let isProcessingOrder = false;
     let emailInterval = null; let whatsappInterval = null; let aktifWhatsappKodu = ""; let aktifWhatsappNumarasi = "";
     let sepetHatirlaticiTimer = null; let serverTimeOffset = 0; let spamTimerInterval = null; let adisyonSayacInterval = null;
-    let sistemAyarlariDinleyiciRef = null; let bildirimDinleyiciRef = null; let hedefYasaklanacakTel = "";
+    let sistemAyarlariDinleyiciRef = null; let bildirimDinleyiciRef = null;
     
     window.isAddingToCart = false; let deferredPrompt; window.isOrderFinished = false; let aktifKullanilanCarkOdulu = null; 
     
     // GÜVENLİK VE ROL DURUMLARI
     let isStoreClosed = false; 
-    let isAdmin = false; 
     let isBannedUser = false;
 
     // ==========================================
@@ -1309,7 +1111,7 @@
     }
     function SepetHatirlatmaKontrol() {
         const signature = CartSignature();
-        if (!signature || isAdmin || isBannedUser || isStoreClosed || localStorage.getItem('bg_active_order_id')) return false;
+        if (!signature || isBannedUser || isStoreClosed || localStorage.getItem('bg_active_order_id')) return false;
         const last = Number(localStorage.getItem(BG_CART_TIME_KEY));
         const age = Date.now() - last;
         if (!Number.isFinite(last) || last <= 0 || age < BG_CART_DELAY_MS || age > 48*60*60*1000) return false;
@@ -1359,7 +1161,7 @@
             const oldJSON=localStorage.getItem(BG_PRICE_CACHE_KEY);
             const old=oldJSON ? JSON.parse(oldJSON) : null;
             localStorage.setItem(BG_PRICE_CACHE_KEY,JSON.stringify(latest));
-            if(!old || typeof old!=='object' || Array.isArray(old) || isAdmin || isBannedUser) return;
+            if(!old || typeof old!=='object' || Array.isArray(old) || isBannedUser) return;
             const drops=Object.entries(latest).filter(([name,price])=>
                 Object.prototype.hasOwnProperty.call(old,name) &&
                 Number.isFinite(Number(old[name])) && Number(old[name])>price);
@@ -1377,14 +1179,14 @@
         navigator.serviceWorker.addEventListener('message', event=>{
             const msg=event.data;
             if (!msg || msg.type!=='BEKMEZ_PUSH_OPEN' || !['urunler','sepet','gecmis','profil','firsatlar'].includes(msg.page)) return;
-            if (!isAdmin && !isBannedUser && !isStoreClosed && typeof SayfaGoster==='function') SayfaGoster(msg.page);
+            if (!isBannedUser && !isStoreClosed && typeof SayfaGoster==='function') SayfaGoster(msg.page);
         });
     }
     window.addEventListener('load',()=>{
         PushServisCalistir();
         const requested=new URLSearchParams(location.search).get('bildirim');
         if(['urunler','sepet','gecmis','profil','firsatlar'].includes(requested)) {
-            setTimeout(()=>{if(!isAdmin && !isBannedUser && !isStoreClosed) SayfaGoster(requested);},3200);
+            setTimeout(()=>{if(!isBannedUser && !isStoreClosed) SayfaGoster(requested);},3200);
             history.replaceState(null,'',location.pathname);
         }
         // Arka planda sure sinirlandirilabilir, sayfaya donunce yeniden kontrol et.
@@ -1472,64 +1274,22 @@
     function KapatUyariModal(e, force=false) { if(force || e.target === document.getElementById("custom-alert-overlay") || e.target === document.getElementById("distance-alert-overlay")) { let p = document.getElementById("custom-alert-overlay"); let d = document.getElementById("distance-alert-overlay"); p.classList.remove("active"); d.classList.remove("active"); setTimeout(() => { p.style.display = "none"; d.style.display = "none"; }, 400); } }
     function SoruSor(baslik, metin, ikon, evetCallback, isDanger=false) { document.getElementById("confirm-title").innerText = baslik; document.getElementById("confirm-text").innerHTML = GuvenliUyariIcerigi(metin); document.getElementById("confirm-icon").innerText = ikon; let btn = document.getElementById("confirm-yes-btn"); let box = document.getElementById("confirm-box"); let glow = document.getElementById("confirm-glow"); if(isDanger) { btn.style.background = "var(--danger)"; btn.innerText = "İptal Et"; box.style.borderColor = "var(--danger)"; glow.style.background = "var(--danger)"; } else { btn.style.background = "var(--primary)"; btn.innerText = "Onayla"; box.style.borderColor = "var(--primary)"; glow.style.background = "var(--primary)"; } document.getElementById("confirm-yes-btn").onclick = () => { KapatConfirmModal(null, true); if(evetCallback) evetCallback(); }; let p = document.getElementById("confirm-overlay"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10); }
     function KapatConfirmModal(e, force=false) { if(force || e.target === document.getElementById("confirm-overlay")) { let p = document.getElementById("confirm-overlay"); p.classList.remove("active"); setTimeout(() => p.style.display = "none", 400); } }
-    function KapatAdminPrompt(e, force=false) { if(force || e.target === document.getElementById("admin-prompt-overlay")) { let p = document.getElementById("admin-prompt-overlay"); p.classList.remove("active"); setTimeout(() => p.style.display = "none", 400); } }
+    
 
     async function SyncServerTime() { try { let st = Date.now(); let res = await fetch(window.location.href, { method: "HEAD", cache: "no-cache" }); let sDate = res.headers.get("Date"); if(sDate) { let serverDate = new Date(sDate).getTime(); let latency = (Date.now() - st) / 2; serverTimeOffset = (serverDate + latency) - Date.now(); } } catch(e) { serverTimeOffset = 0; } }
     function GetServerTimeFast() { return Date.now() + serverTimeOffset; }
 
     // Ucretsiz: Firebase olaylari sayfa calisirken sessiz sistem bildirimi olusturur.
     // Sayfa tamamen kapaliysa tetikleyici olmadigindan otomatik push yoktur.
-    let bgPremiumSesContext = null;
-    let bgAdminSesBekliyor = false;
-    let bgAdminSesCalindi = false;
+    
+    
+    
 
-    function PremiumSesHazirla() {
-        const Ctx = window.AudioContext || window.webkitAudioContext;
-        if (!Ctx) return null;
-        try {
-            if (!bgPremiumSesContext) bgPremiumSesContext = new Ctx();
-            if (bgPremiumSesContext.state === 'suspended') {
-                bgPremiumSesContext.resume().then(() => {
-                    if (bgAdminSesBekliyor && isAdmin) AdminChimeCal();
-                }).catch(() => {});
-            }
-            return bgPremiumSesContext;
-        } catch (_) { return null; }
-    }
+    
 
     // Tamamen özgün, otomotiv-esintili sinüs/üçgen harmonikleri.
     // Master seviyeyi kısık tutar; dışarıdan müzik/ses dosyası yüklemez.
-    function PremiumChimeCal(tur='admin', test=false) {
-        // Bildirim chime'i kaldırıldı. Sadece yönetim paneli açılışı seslidir.
-        if (tur !== 'admin') return false;
-        const ctx = PremiumSesHazirla();
-        if (!ctx || ctx.state !== 'running') return false;
-        try {
-            const t0 = ctx.currentTime + .012;
-            const notalar = [{f:587.33,at:0,len:.39,amp:.025},{f:739.99,at:.115,len:.44,amp:.022},{f:987.77,at:.240,len:.53,amp:.018}];
-            const master = ctx.createGain();
-            master.gain.value = .68;
-            const filter = ctx.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.value = 3900;
-            const limiter = ctx.createDynamicsCompressor();
-            limiter.threshold.value = -22; limiter.knee.value = 6; limiter.ratio.value = 8;
-            limiter.attack.value = .005; limiter.release.value = .12;
-            master.connect(filter); filter.connect(limiter); limiter.connect(ctx.destination);
-            for(const n of notalar) {
-                for(const harmonic of [{mult:1,amp:1,wave:'sine'}, {mult:2,amp:.19,wave:'triangle'}]) {
-                    const t=t0+n.at;
-                    const o=ctx.createOscillator(), env=ctx.createGain();
-                    o.type=harmonic.wave;
-                    o.frequency.setValueAtTime(n.f*harmonic.mult,t);
-                    env.gain.setValueAtTime(.00001,t);
-                    env.gain.exponentialRampToValueAtTime(n.amp*harmonic.amp,t+.018);
-                    env.gain.exponentialRampToValueAtTime(.00001,t+n.len);
-                    o.connect(env); env.connect(master);
-                    o.start(t); o.stop(t+n.len+.025);
-                }
-            }
-            return true;
-        } catch (_) { return false; }
-    }
+    
 
     function BildirimDurumunuGuncelle() {
         const x = document.getElementById('bg-notify-status');
@@ -1549,7 +1309,7 @@
     // Ayrı ayar düğmesi gerekmeksizin ilk gerçek kullanıcı etkileşiminde sor.
     let bgBildirimIzinIstegiBasladi = false;
     function BildirimIzniIlkEtkilesimdeIste() {
-        if (bgBildirimIzinIstegiBasladi || fotoSifreAkisiAktif || isAdmin || isBannedUser) return;
+        if (bgBildirimIzinIstegiBasladi || isBannedUser) return;
         if (!window.isSecureContext || !('Notification' in window) || Notification.permission !== 'default') return;
         try {
             if (sessionStorage.getItem('bg_notify_permission_asked') === '1') return;
@@ -1574,8 +1334,7 @@
     function SessizIzinIste() { /* Otomatik izin, ilk kullanici etkileşiminde sorulur. */ }
 
     function BildirimGonder(baslik, mesaj, sesli=true, hedef=null) {
-        // Bildirimleri ses olmadan göster; sadece admin panelinin açılış chime'i korunur.
-        if (!('Notification' in window) || Notification.permission !== 'granted') return;
+                if (!('Notification' in window) || Notification.permission !== 'granted') return;
         const name=String(baslik||'bilgi');
         const page=hedef || (/sepet/i.test(name) ? 'sepet' : /sipari[şs]|kurye|mutfak|teslim/i.test(name) ? 'gecmis' : /indirim/i.test(name) ? 'urunler' : /duyuru/i.test(name) ? 'firsatlar' : 'profil');
         const opts = {body: String(mesaj||''), icon:'icon-192.png', badge:'icon-192.png', tag:'bekmez-go-'+name.slice(0,40),
@@ -1593,9 +1352,8 @@
             } catch (e) { console.warn('Sistem bildirimi gösterilemedi:',e); }
         })();
     }
-    // Dokunma sonrasında AudioContext açılabilir; admin sesi engellenmişse bir defa tekrar denenir.
-    function BgSesKullaniciEtkilesimi(){
-        if(bgAdminSesBekliyor && isAdmin) AdminChimeCal();
+        function BgSesKullaniciEtkilesimi(){
+        
     }
     document.addEventListener('pointerdown', BgSesKullaniciEtkilesimi, {passive:true});
     document.addEventListener('keydown', BgSesKullaniciEtkilesimi);
@@ -1611,7 +1369,7 @@
     // 3. ADMİN PANELİ VE SİSTEM AYARLARI
     // ==========================================
     async function BanKontrolu(tel) {
-        if(!tel || isAdmin) return false;
+        if(!tel) return false;
         try {
             let res = await fetch(`${FIREBASE_URL}/YasakliHesaplar/${tel}.json`); let data = await res.json();
             if (data && data.sebep) {
@@ -1640,22 +1398,15 @@
             }
 
             let kapaliGun = data.kapaliGun || "Yok"; let acilKapat = data.acilKapat === true || (typeof data.acilKapat === "string" && data.acilKapat.trim().toLowerCase() === "true");
-            let selectEl = document.getElementById("adm-closed-day"); if(selectEl) selectEl.value = kapaliGun;
-
-            let acilBtn = document.getElementById("adm-emergency-btn");
-            if(acilBtn) {
-                if(acilKapat) { acilBtn.innerText = "DÜKKANI GERİ AÇ"; acilBtn.style.background = "var(--success)"; }
-                else { acilBtn.innerText = "DÜKKANI ŞİMDİ KAPAT"; acilBtn.style.background = "var(--danger)"; }
-            }
 
             let currentDay = new Date().toLocaleDateString("en-US", {weekday: "long"});
             let isClosedToday = (currentDay === kapaliGun) || acilKapat;
             
             let overlay = document.getElementById("store-closed-overlay"); let userUI = document.getElementById("main-user-ui");
-            if (isClosedToday && !isAdmin && !isBannedUser) {
+            if (isClosedToday && !isBannedUser) {
                 isStoreClosed = true; if(userUI) userUI.style.display = "none";
                 if(overlay) { overlay.style.display = "flex"; document.getElementById("store-closed-msg").innerText = acilKapat ? "Beklenmedik bir durum sebebiyle şu an sipariş alamıyoruz." : "Bugün dinleniyoruz. Yarın tekrar hizmetinizdeyiz!"; }
-            } else if (!isClosedToday && !isAdmin && !isBannedUser) {
+            } else if (!isClosedToday && !isBannedUser) {
                 isStoreClosed = false; if(overlay) overlay.style.display = "none"; if(userUI) userUI.style.display = "block";
             }
         });
@@ -1668,7 +1419,7 @@
                 let sonGosterilen = await SecureOku("bg_last_notif_ts");
                 const zaman = Number(bildirim.ts);
                 if (Number.isFinite(zaman) && zaman > 0 && Date.now()-zaman >= 0 && Date.now()-zaman < 86400000 &&
-                    (!sonGosterilen || Number(sonGosterilen) < zaman) && !isAdmin && !isBannedUser) {
+                    (!sonGosterilen || Number(sonGosterilen) < zaman) && !isBannedUser) {
                     await SecureKaydet('bg_last_notif_ts', String(zaman));
                     const baslik=String(bildirim.baslik||'Bekmez GO').slice(0,80);
                     const mesaj=String(bildirim.mesaj||'').slice(0,500);
@@ -1678,317 +1429,6 @@
             }
         });
     }
-
-    let adminTelefonAnahtarlari = [];
-    let adminTelefonKaynakYollari = Object.create(null);
-    let adminListeIstekNo = 0;
-    const ADMIN_HESAP_YOLLARI = ['DoğrulanmisHesaplar', 'DogrulanmisHesaplar'];
-
-    async function AdminMusterileriListele(idToken) {
-        const istekNo = ++adminListeIstekNo;
-        const recentList = document.getElementById('adm-recent-users');
-        const fullList = document.getElementById('adm-full-user-list');
-        if(!recentList || !fullList) return;
-        try {
-            // Kasa hesabinin RTDB Rules ile sunucuda yetkilendirildigini dogrula.
-            await AdminYetkiliToken(false);
-            const authQ = '?auth=' + encodeURIComponent(idToken);
-            const paths = ADMIN_HESAP_YOLLARI;
-            const responses = await Promise.all([
-                ...paths.map(p => fetch(`${FIREBASE_URL}/${encodeURIComponent(p)}.json${authQ}`, {cache:'no-store'})),
-                fetch(`${FIREBASE_URL}/SilinmisHesaplar.json${authQ}`, {cache:'no-store'}),
-                fetch(`${FIREBASE_URL}/YasakliHesaplar.json${authQ}`, {cache:'no-store'})
-            ]);
-            const results = await Promise.all(responses.map(r => r.json().catch(()=>null)));
-            if(istekNo !== adminListeIstekNo) return;
-            const kaynaklar = Object.create(null);
-            const kullanicilar = new Map();
-            let basariliYol = 0;
-            const engellenenYollar = [];
-            paths.forEach((p, i) => {
-                const body=results[i];
-                if(!responses[i].ok || (body && body.error)) {
-                    engellenenYollar.push(p + ' (HTTP ' + responses[i].status + ')');
-                    return;
-                }
-                basariliYol++;
-                if(body && typeof body === 'object' && !Array.isArray(body)) {
-                    Object.entries(body).forEach(([tel,u]) => {
-                        if(!u || typeof u !== 'object' || Array.isArray(u)) return;
-                        if(!kaynaklar[tel]) kaynaklar[tel] = [];
-                        kaynaklar[tel].push(p);
-                        // Primary = current accented Web path. Merge without duplicate accounts.
-                        if(!kullanicilar.has(tel) || p === paths[0])
-                            kullanicilar.set(tel, {tel, ad:String(u.isim || 'İsimsiz Müşteri'),
-                                tarih:u.sonGiris || u.kayitZamani || u.tarih || ''});
-                    });
-                }
-            });
-            if(basariliYol === 0) {
-                throw new Error('Firebase müşteri kayıtlarını okumayı reddetti. Rules ve App Check ayarlarını kontrol edin: ' + engellenenYollar.join(', '));
-            }
-            adminTelefonKaynakYollari = kaynaklar;
-            const delData = responses[2].ok && results[2] && !results[2].error ? results[2] : {};
-            const banData = responses[3].ok && results[3] && !results[3].error ? results[3] : {};
-            const usersArray = Array.from(kullanicilar.values());
-            usersArray.sort((a,b) => (Number(new Date(b.tarih)) || Number(b.tarih) || 0) - (Number(new Date(a.tarih)) || Number(a.tarih) || 0));
-            adminTelefonAnahtarlari = usersArray.map(u => u.tel);
-            document.getElementById('adm-total-user').textContent = String(usersArray.length);
-            document.getElementById('adm-deleted-user').textContent = String(delData && typeof delData==='object' ? Object.keys(delData).length : 0);
-
-            const warning = engellenenYollar.length
-                ? `<div role="alert" style="color:#ffc37d;padding:12px;font-size:12px">Bazı hesap yolları okunamadı: ${escapeHTML(engellenenYollar.join(', '))}. Liste eksik olabilir.</div>` : '';
-            if(!usersArray.length) {
-                const empty='<div style="color:#a1a1aa;text-align:center;font-size:12px;padding:12px">Müşteri kaydı bulunamadı.</div>';
-                recentList.innerHTML = warning + empty;
-                fullList.innerHTML = warning + empty;
-                return;
-            }
-            let recent='';
-            for(let i=0; i<Math.min(usersArray.length,10); i++) {
-                const u=usersArray[i];
-                recent+=`<div class="user-list-item" style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between"><span style="color:white;font-weight:800">${escapeHTML(u.ad)}</span><span style="color:var(--text-muted);font-size:10px">${escapeHTML(u.tel)}</span></div>`;
-            }
-            recentList.innerHTML=warning + recent;
-            let full='';
-            usersArray.forEach((u,i)=>{
-                const isBan=!!(banData && banData[u.tel]);
-                const banButton=isBan ? `<button class="btn-unban ripple-element" onclick="AdminYasakKaldira(adminTelefonAnahtarlari[${i}])">Ban Kaldır</button>`
-                    : `<button class="btn-ban ripple-element" onclick="AdminKullaniciYasaklaModalAc(adminTelefonAnahtarlari[${i}])">Yasakla</button>`;
-                const reason=isBan ? `<span style="color:var(--danger);font-size:10px">Sebep: ${escapeHTML(String(banData[u.tel].sebep||''))}</span>` : '';
-                full+=`<div class="user-mng-card"><div class="user-mng-info"><span style="color:white;font-weight:800;font-size:14px">${escapeHTML(u.ad)}</span><span style="color:var(--primary);font-size:11px;font-weight:600">${escapeHTML(u.tel)}</span>${reason}</div><div class="user-mng-actions">${banButton}<button class="btn-del ripple-element" onclick="AdminKullaniciSil(adminTelefonAnahtarlari[${i}])">Hesabı Sil</button></div></div>`;
-            });
-            fullList.innerHTML=warning + full;
-        } catch(err) {
-            if(istekNo !== adminListeIstekNo) return;
-            const safe=escapeHTML(err && err.message || 'Bilinmeyen hata');
-            recentList.innerHTML=`<div role="alert" style="color:#ff9b91;padding:12px">Müşteriler yüklenemedi: ${safe}</div>`;
-            fullList.innerHTML=recentList.innerHTML;
-            console.warn('Admin müşteri listeleme başarısız (hassas veri loglanmadı).');
-        }
-    }
-
-    // Premium otomotiv-esintili özgün yönetici karşılama; sadece bir kez.
-    function AdminChimeSesiHazirla() { PremiumSesHazirla(); }
-    function AdminChimeCal() {
-        if(!isAdmin || bgAdminSesCalindi) return;
-        if(PremiumChimeCal('admin')) { bgAdminSesCalindi=true; bgAdminSesBekliyor=false; }
-        else bgAdminSesBekliyor=true;
-    }
-
-    // Yonetim yetkisi herkese acik /DukkanDurumu yerine server tarafinda
-    // sadece kasa hesabinin okuyabildigi /BulutYedek uzerinden kontrol edilir.
-    const BG_ADMIN_EMAIL='kasa@bekmez.com';
-    const BG_ADMIN_IDLE_MS=15 * 60 * 1000;
-    let bgAdminLastActivity=Date.now();
-    let bgAdminLogoutInProgress=false;
-    let bgAdminVerifiedUid=null;
-    let bgAdminVerifiedUntil=0;
-    let bgAdminRecentAuthUntil=0;
-
-    async function AdminYetkiliToken(hassas=false) {
-        const auth=firebase.auth();
-        const user=auth.currentUser;
-        if(!user || (user.email || '').toLowerCase() !== BG_ADMIN_EMAIL) throw new Error('Yönetici hesabı doğrulanamadı.');
-        if(isAdmin && Date.now()-bgAdminLastActivity > BG_ADMIN_IDLE_MS) {
-            await AdminGuvenliZamanAsimi();
-            throw new Error('Yonetici oturumu zaman asimina ugradi.');
-        }
-        const token=await user.getIdToken(true);
-        // Firebase RTDB Rules ile korunan yol: normal musteri icin 401/403.
-        if(bgAdminVerifiedUid !== user.uid || Date.now()>bgAdminVerifiedUntil) {
-            const ctrl=await fetch(`${FIREBASE_URL}/BulutYedek.json?auth=${encodeURIComponent(token)}&shallow=true`,{cache:'no-store'});
-            if(!ctrl.ok) throw new Error('Veritabanı yönetici erişimini reddetti.');
-            const result=await ctrl.json();
-            if(result && result.error) throw new Error('Sunucu yönetici yetkisi bulunamadı.');
-            bgAdminVerifiedUid=user.uid;
-            bgAdminVerifiedUntil=Date.now()+30000;
-        }
-        if(hassas && Date.now()>bgAdminRecentAuthUntil) {
-            const ok=await AdminIkinciSifreKontrolu(user);
-            if(!ok) throw new Error('Hassas işlem için tekrar şifre doğrulaması gereklidir.');
-            bgAdminRecentAuthUntil=Date.now()+5*60*1000;
-        }
-        return token;
-    }
-
-    // Kritik degisikliklerden once Firebase parola ile yeniden kimlik dogrulama.
-    // Parola sadece bu formda kullanilir; localStorage veya veritabanina yazilmaz.
-    function AdminIkinciSifreKontrolu(user) {
-        return new Promise(resolve=>{
-            const back=document.createElement('div');
-            back.id='bg-admin-reauth';
-            back.style.cssText='position:fixed;inset:0;z-index:2147483646;background:rgba(0,0,0,.93);display:flex;align-items:center;justify-content:center;padding:18px';
-            const form=document.createElement('form');
-            form.style.cssText='width:100%;max-width:380px;padding:26px;border-radius:22px;border:1px solid rgba(255,255,255,.15);background:#18181c;color:#fff;font-family:inherit;box-shadow:0 18px 60px #000';
-            const title=document.createElement('h3');title.textContent='Yönetici güvenlik onayı';title.style.cssText='margin:0 0 9px;font-size:21px';
-            const desc=document.createElement('p');desc.textContent='Bu kritik işlemi onaylamak için kasa şifreni yeniden gir.';desc.style.cssText='color:#b7b7be;font-size:13px;line-height:1.5';
-            const input=document.createElement('input');input.type='password';input.autocomplete='current-password';input.required=true;input.placeholder='Kasa şifresi';input.style.cssText='width:100%;padding:15px;border-radius:12px;background:#08080b;border:1px solid #444;color:#fff;font-size:15px;margin:12px 0';
-            const note=document.createElement('div');note.setAttribute('role','alert');note.style.cssText='min-height:20px;color:#ff8d75;font-size:12px;margin-bottom:9px';
-            const actions=document.createElement('div');actions.style.cssText='display:flex;gap:10px';
-            const cancel=document.createElement('button');cancel.type='button';cancel.textContent='Vazgeç';cancel.style.cssText='flex:1;padding:13px;border:0;border-radius:12px;background:#36363b;color:white';
-            const submit=document.createElement('button');submit.type='submit';submit.textContent='Doğrula';submit.style.cssText='flex:1;padding:13px;border:0;border-radius:12px;background:#ff6b00;color:white;font-weight:800';
-            actions.append(cancel,submit);form.append(title,desc,input,note,actions);back.append(form);document.body.append(back);
-            let finished=false;
-            const done=value=>{if(finished)return;finished=true;input.value='';back.remove();resolve(value);};
-            cancel.addEventListener('click',()=>done(false));
-            form.addEventListener('submit',async e=>{
-                e.preventDefault();submit.disabled=true;cancel.disabled=true;note.textContent='Doğrulaniyor...';
-                try {
-                    const password=input.value;
-                    const credential=firebase.auth.EmailAuthProvider.credential(user.email,password);
-                    input.value='';
-                    await user.reauthenticateWithCredential(credential);
-                    done(true);
-                } catch(_){note.textContent='Şifre doğrulanamadı. Tekrar dene.';submit.disabled=false;cancel.disabled=false;input.value='';input.focus();}
-            });
-            input.focus();
-        });
-    }
-
-    async function AdminGuvenliZamanAsimi() {
-        if(bgAdminLogoutInProgress || !isAdmin)return;
-        bgAdminLogoutInProgress=true;isAdmin=false;
-        bgAdminVerifiedUid=null;bgAdminVerifiedUntil=0;bgAdminRecentAuthUntil=0;
-        const panel=document.getElementById('admin-panel-container');
-        if(panel)panel.style.display='none';
-        try{if(fotoSupabase)await fotoSupabase.auth.signOut();}catch(_){}
-        try{await firebase.auth().signOut();}catch(_){}
-        try{window.sessionStorage.clear();}catch(_){}
-        window.location.reload();
-    }
-    ['pointerdown','keydown','touchstart'].forEach(ev=>document.addEventListener(ev,()=>{
-        if(isAdmin && !bgAdminLogoutInProgress) bgAdminLastActivity=Date.now();
-    },{passive:true}));
-    setInterval(()=>{if(isAdmin && Date.now()-bgAdminLastActivity>BG_ADMIN_IDLE_MS) AdminGuvenliZamanAsimi();},30000);
-    document.addEventListener('visibilitychange',()=>{
-        if(!document.hidden && isAdmin && Date.now()-bgAdminLastActivity>BG_ADMIN_IDLE_MS) AdminGuvenliZamanAsimi();
-    });
-
-    async function AdminPaneleGec() {
-        try { await AdminYetkiliToken(); }
-        catch(_) {
-            isAdmin=false;
-            document.getElementById('admin-panel-container').style.display='none';
-            OzelUyariGoster('Yönetim Erişimi Engellendi','Sunucu yönetici yetkisini doğrulamadı.','🔒');
-            try{await firebase.auth().signOut();}catch(e){}
-            return;
-        }
-        isAdmin=true;
-        bgAdminLastActivity=Date.now();
-        const splash=document.getElementById('splash-screen');if(splash){splash.style.display='none';splash.style.opacity='0';}
-        document.getElementById('main-user-ui').style.display='none';
-        document.getElementById('store-closed-overlay').style.display='none';
-        document.getElementById('banned-user-overlay').style.display='none';
-        document.getElementById('admin-panel-container').style.display='block';
-        AdminChimeCal();
-        const user=firebase.auth().currentUser;
-        if(user)AdminMusterileriListele(await user.getIdToken(true));
-    }
-
-    function AdminSekmeGoster(sekmeId, btn) {
-        if(!isAdmin || bgAdminLogoutInProgress || !bgAdminVerifiedUid) return;
-        document.querySelectorAll('.admin-tab').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
-        if (btn) { btn.classList.add('active'); btn.setAttribute('aria-selected','true'); }
-        document.querySelectorAll(".admin-section").forEach(s => { s.classList.remove("active"); });
-        let target = document.getElementById("admin-sec-" + sekmeId); if(target) target.classList.add("active");
-        if(sekmeId === 'fotograflar') FotoAdminHazirla();
-        if(sekmeId === 'musteri' || sekmeId === 'istatistik') { let user = firebase.auth().currentUser; if(user) user.getIdToken(true).then(token => AdminMusterileriListele(token)); }
-    }
-
-    function AdminKullaniciYasaklaModalAc(tel) {
-        if(!isAdmin || !bgAdminVerifiedUid) return;
-        hedefYasaklanacakTel = tel; document.getElementById("admin-ban-reason").value = "";
-        document.getElementById("admin-prompt-yes-btn").onclick = () => { let reason = document.getElementById("admin-ban-reason").value.trim() || "Kural İhlali"; AdminGercektenYasakla(hedefYasaklanacakTel, reason); KapatAdminPrompt(null, true); };
-        let p = document.getElementById("admin-prompt-overlay"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10);
-    }
-
-    async function AdminGercektenYasakla(tel, sebep) {
-        try {
-            let idToken = await AdminYetkiliToken(true);
-            let payload = { sebep: sebep, ts: Date.now() };
-            let res = await fetch(`${FIREBASE_URL}/YasakliHesaplar/${tel}.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(payload) });
-            if(!res.ok) throw new Error("Veritabanı yazma izni reddedildi. (App Check hatası)");
-            OzelUyariGoster("Yasaklandı", `${tel} numaralı müşteri kalıcı olarak engellendi.`, "🔨"); AdminMusterileriListele(idToken); 
-        } catch(e) { OzelUyariGoster("Hata", e.message, "❌"); }
-    }
-
-    async function AdminYasakKaldira(tel) {
-        SoruSor("Yasağı Kaldır", "Bu müşterinin engeli kaldırılacak. Emin misiniz?", "🔓", async () => {
-            try {
-                let idToken = await AdminYetkiliToken(true);
-                let res = await fetch(`${FIREBASE_URL}/YasakliHesaplar/${tel}.json?auth=${idToken}`, { method: "DELETE" });
-                if(!res.ok) throw new Error("İşlem reddedildi.");
-                OzelUyariGoster("Kaldırıldı", `${tel} numaralı müşterinin engeli açıldı.`, "✅"); AdminMusterileriListele(idToken);
-            } catch(e) { OzelUyariGoster("Hata", e.message, "❌"); }
-        });
-    }
-
-    async function AdminKullaniciSil(tel) {
-        SoruSor("Hesabı Sil", "Bu müşterinin veritabanındaki kaydı <b>kalıcı olarak silinecek</b>.<br><br>Emin misiniz?", "🗑", async () => {
-            try {
-                let idToken = await AdminYetkiliToken(true);
-                await fetch(`${FIREBASE_URL}/CarkKullanimlari/${tel}.json?auth=${idToken}`, { method: "DELETE" });
-                await fetch(`${FIREBASE_URL}/YasakliHesaplar/${tel}.json?auth=${idToken}`, { method: "DELETE" });
-                await fetch(`${FIREBASE_URL}/SilinmisHesaplar/${tel}.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify({ silinmeZamani: Date.now(), byAdmin: true }) });
-                const kaynakYollari = adminTelefonKaynakYollari[tel] || ['DoğrulanmisHesaplar'];
-                for(const yol of kaynakYollari) {
-                    const res = await fetch(`${FIREBASE_URL}/${encodeURIComponent(yol)}/${encodeURIComponent(tel)}.json?auth=${encodeURIComponent(idToken)}`, { method: "DELETE" });
-                    if(!res.ok) throw new Error('Hesap kaydı silinemedi: ' + yol + ' (HTTP ' + res.status + ')');
-                }
-                OzelUyariGoster("Silindi", `${tel} numaralı hesap veritabanından imha edildi.`, "✅"); AdminMusterileriListele(idToken); 
-            } catch(e) { OzelUyariGoster("Hata", e.message, "❌"); }
-        }, true); 
-    }
-
-    async function AdminCarkKaydet() {
-        let d1 = document.getElementById("adm-cark-1").value || "Ekstra Patates"; let d2 = document.getElementById("adm-cark-2").value || "Pas"; let d3 = document.getElementById("adm-cark-3").value || "1 Lt İçecek"; let d4 = document.getElementById("adm-cark-4").value || "Pas"; let d5 = document.getElementById("adm-cark-5").value || "Fırın Sütlaç";
-        let yeniOduller = [d1, d2, d3, d4, d5];
-        try {
-            let idToken = await AdminYetkiliToken(true);
-            let res = await fetch(`${FIREBASE_URL}/DukkanDurumu/CarkOdulleri.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(yeniOduller) });
-            if(!res.ok) throw new Error("Veritabanı reddetti (App Check hatası olabilir)");
-            OzelUyariGoster("Başarılı", "Çark ödülleri başarıyla güncellendi.", "✅");
-        } catch(e) { OzelUyariGoster("Hata", e.message, "❌"); }
-    }
-
-    async function AdminBildirimGonder() {
-        let t = document.getElementById("adm-notif-title").value.trim(); let b = document.getElementById("adm-notif-body").value.trim();
-        if(!t || !b) { OzelUyariGoster("Hata", "Başlık ve mesaj boş olamaz.", "⚠"); return; }
-        SoruSor("Dikkat", "Bu bildirim uygulamaya giren <b>TÜM MÜŞTERİLERİN</b> ekranında aniden belirecek. Göndermek istediğinize emin misiniz?", "📢", async () => {
-            try {
-                let idToken = await AdminYetkiliToken(true);
-                let payload = { baslik: t, mesaj: b, ts: Date.now() };
-                let res = await fetch(`${FIREBASE_URL}/SistemBildirimleri/GenelBildirim.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(payload) });
-                if(!res.ok) throw new Error("İşlem reddedildi. Kuralları veya AppCheck'i kontrol edin.");
-                OzelUyariGoster("Duyuru Kaydedildi", "Duyuru uygulaması çalışan müşterilere ulaşır. Tamamen kapalı cihazlara otomatik push gönderilmez.", "✅"); document.getElementById("adm-notif-title").value = ""; document.getElementById("adm-notif-body").value = "";
-            } catch(e) { OzelUyariGoster("Hata", e.message, "❌");}
-        }, true);
-    }
-
-    async function AdminKapanisGununuKaydet() {
-        let secim = document.getElementById("adm-closed-day").value;
-        try {
-            let idToken = await AdminYetkiliToken(true);
-            let res = await fetch(`${FIREBASE_URL}/DukkanDurumu/kapaliGun.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(secim) });
-            if(!res.ok) throw new Error("Erişim engellendi.");
-            OzelUyariGoster("Başarılı", "Haftalık kapanış günü ayarlandı.", "✅");
-        } catch(e) { OzelUyariGoster("Hata", e.message, "❌"); }
-    }
-
-    async function AdminAcilDurumKapat() {
-        let acilBtn = document.getElementById("adm-emergency-btn"); let suanKapalimi = acilBtn.innerText.includes("AÇ"); let yeniDurum = !suanKapalimi;
-        SoruSor("Sistem Kill-Switch", yeniDurum ? "Tüm sipariş akışı durdurulacak ve müşteriler ekrandan atılacak! Emin misiniz?" : "Dükkan tekrar aktif edilecek. Emin misiniz?", "⚠️", async () => {
-            try {
-                let idToken = await AdminYetkiliToken(true);
-                let res = await fetch(`${FIREBASE_URL}/DukkanDurumu/acilKapat.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify(yeniDurum) });
-                if(!res.ok) throw new Error("Sistem reddetti. Token geçersiz.");
-                OzelUyariGoster("Başarılı", yeniDurum ? "SİSTEM KAPATILDI." : "SİSTEM AÇILDI.", "✅");
-            } catch(e) { OzelUyariGoster("Hata", e.message, "❌"); }
-        }, yeniDurum); 
-    }
-
-    async function AdminCikisYap() { SoruSor("Oturumu Kapat", "Admin panelinden çıkış yapmak üzeresiniz.", "🚪", async () => { await TemizleOturumVerileri(); }, false); }
 
     // ==========================================
     // 4. MÜŞTERİ AUTH, KAYIT VE PROFİL
@@ -2035,16 +1475,14 @@
     async function GirisYapTetikle() {
         let email = document.getElementById("login-email").value.trim().toLowerCase(); let pass = document.getElementById("login-pass").value; let btn = document.querySelector("#login-form-area .premium-submit-btn");
         if(!email || !pass) { OzelUyariGoster("Eksik Bilgi", "Lütfen e-posta ve şifrenizi girin.", "⚠"); return; }
-        // Ses izni, sadece gercek admin girisi tiklamasinda hazirlanir.
-        if(email === 'kasa@bekmez.com') AdminChimeSesiHazirla();
+                
         btn.disabled = true; btn.innerHTML = `<div class="spinner-small"></div> Giriş Yapılıyor...`;
 
         try {
-            await firebase.auth().setPersistence(email === 'kasa@bekmez.com'
-                ? firebase.auth.Auth.Persistence.SESSION : firebase.auth.Auth.Persistence.LOCAL);
-            let userCred = await firebase.auth().signInWithEmailAndPassword(email, pass); let user = userCred.user;
+            await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+            let userCred = await firebase.auth().signInWithEmailAndPassword(email, pass); let user = userCred.user; if (user.uid === 'jO9Jmp2cgXfGUfMVbv5fdlCPgV52') { await firebase.auth().signOut(); OzelUyariGoster('Kasa hesabı', 'Yönetim Windows kasa uygulamasına taşındı. Müşteri hesabınızla giriş yapın.', '🔒'); return; }
             document.getElementById('login-pass').value='';
-            if(email === "kasa@bekmez.com") { await AdminPaneleGec(); return; }
+            
 
             let foundTel = user.displayName;
             if (!foundTel || foundTel.length < 10) {
@@ -2075,10 +1513,8 @@
         // Dinleyiciler başlangıçta anonim açılmışsa oturum değişince yeniden yetkilendir.
         if (document.readyState !== 'loading') SistemAyarlariniDinle();
         if (user) {
-            if((user.email || '').toLowerCase() === "kasa@bekmez.com") {
-                try { await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION); } catch(_) {}
-                await AdminPaneleGec(); return;
-            }
+            if (user.uid === 'jO9Jmp2cgXfGUfMVbv5fdlCPgV52') { await firebase.auth().signOut(); OzelUyariGoster('Kasa hesabı', 'Yönetim Windows kasa uygulamasına taşındı. Müşteri hesabınızla giriş yapın.', '🔒'); return; }
+            
             let bekleyenTel = await SecureOku("bg_pending_tel"); let bekleyenEmail = await SecureOku("bg_pending_email");
             if (bekleyenTel && bekleyenEmail && user.email === bekleyenEmail) { await user.reload(); if (user.emailVerified) { IptalEtEpostaBekleme(false); SayfaGoster('profil'); WhatsappDoğrulamasiniBaslat(bekleyenTel, bekleyenEmail); } else { EpostaOnayiniBekle(user, bekleyenTel, bekleyenEmail); } }
         }
@@ -2194,7 +1630,7 @@
 
     function SadeceCikisYap() { SoruSor("Oturumu Kapat", "Cihazınızdaki mevcut oturumu kapatmak istediğinize emin misiniz?", "🚪", async () => { HapticTitresim(); document.body.innerHTML += `<div style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999999;display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;font-weight:bold;backdrop-filter:blur(10px);"><div class="spinner"></div><div style="margin-top:20px; font-size:18px;">Güvenli Çıkış Yapılıyor...</div></div>`; await TemizleOturumVerileri(); }, false); }
 
-    async function TemizleOturumVerileri() { try { await PushCihazKaydiniSil(); if (fotoSupabase) { try { await fotoSupabase.auth.signOut(); } catch(e) { console.warn("Supabase oturumu kapanamadı", e); } } if(firebase.auth().currentUser) { await firebase.auth().signOut(); } localStorage.clear(); sessionStorage.clear(); bgAdminVerifiedUid=null; bgAdminVerifiedUntil=0; bgAdminRecentAuthUntil=0; setTimeout(() => { window.location.reload(true); }, 800); } catch(e) { localStorage.clear(); window.location.reload(true); } }
+    async function TemizleOturumVerileri() { try { await PushCihazKaydiniSil();  if(firebase.auth().currentUser) { await firebase.auth().signOut(); } localStorage.clear(); sessionStorage.clear();  setTimeout(() => { window.location.reload(true); }, 800); } catch(e) { localStorage.clear(); window.location.reload(true); } }
 
     async function HesabiTamamenSil() {
         let tel = await SecureOku("bg_t"); if (!tel) return;
@@ -2241,11 +1677,7 @@
 
     window.addEventListener('DOMContentLoaded', async () => {
         BildirimDurumunuGuncelle();
-        if(fotoSifreAkisiAktif) {
-            const s = document.getElementById('splash-screen');
-            if(s) s.style.display = 'none';
-            return;
-        }
+        
         try {
             SyncServerTime(); 
             if(typeof SistemAyarlariniDinle === "function") SistemAyarlariniDinle();
@@ -2277,7 +1709,7 @@
                 try {
                     let authUser = firebase.auth().currentUser;
                     if (authUser) {
-                        if(authUser.email === "kasa@bekmez.com") { await AdminPaneleGec(); return; }
+                        
                         let idToken = await authUser.getIdToken(true);
                         let adisyonRes = await fetch(`${FIREBASE_URL}/DoğrulanmisHesaplar/${kt}/aktifSiparis.json?auth=${idToken}&t=${Date.now()}`);
                         let adisyonData = await adisyonRes.json();
@@ -2296,7 +1728,7 @@
             await CanliMenuCek(true); MenuyuGercekZamanliDinle();
             try { await SiparisDurumBildiriminiBaslat(await SecureOku('bg_active_order_id')); } catch (_) {} 
             
-            setInterval(async () => { if(document.getElementById("opportunities-container").style.display === "block" && !isAdmin && !isBannedUser) { await KuponlariCek(); await CarkDurumunuKontrolEt(); } }, 30000);
+            setInterval(async () => { if(document.getElementById("opportunities-container").style.display === "block" && !isBannedUser) { await KuponlariCek(); await CarkDurumunuKontrolEt(); } }, 30000);
             
             try { let kS = await SecureOku("bg_saved_cart"); if(kS) { sepet = JSON.parse(kS); if(sepet.length > 0) { document.getElementById("nav-sepet-badge").innerText = sepet.length; document.getElementById("nav-sepet-badge").classList.add("show"); document.getElementById("floating-cart").style.display = "flex"; HesaplaVeGuncelle(); } } } catch(e) {}
             PushSepetDurumuYansit();
@@ -2313,7 +1745,7 @@
                 splash.style.opacity = '0'; 
                 setTimeout(async () => { 
                     splash.style.display = 'none'; 
-                    if(isAdmin || isBannedUser) return;
+                    if(isBannedUser) return;
                     try {
                         let siparisId = await SecureOku("bg_active_order_id");
                         if(siparisId) {
@@ -2334,7 +1766,7 @@
     }
 
     function SayfaGoster(s) {
-        if(isStoreClosed || isAdmin || isBannedUser) return;
+        if(isStoreClosed || isBannedUser) return;
         HapticTitresim(); SessizIzinIste(); if (aktifAdisyonDinleyiciRef) { aktifAdisyonDinleyiciRef.off(); aktifAdisyonDinleyiciRef = null; }
         document.getElementById("menu-container").style.display = "none"; document.getElementById("cart-container").style.display = "none"; document.getElementById("profile-container").style.display = "none"; document.getElementById("history-container").style.display = "none"; document.getElementById("opportunities-container").style.display = "none"; document.getElementById("floating-cart").style.display = "none";
         document.querySelectorAll('.nav-item').forEach(el => { el.classList.remove('active'); el.removeAttribute('aria-current'); });
@@ -2359,170 +1791,24 @@
     const FOTO_SB_URL = "https://nwzxvksywfzpvxwvtypf.supabase.co";
     const FOTO_SB_PUBLIC_KEY = "sb_publishable_ly8sItQiSf-Sjr3OTVoKbQ_NG5-YUBe";
     const FOTO_SB_BUCKET = "Bekmez-GO Photos";
-    const FOTO_ADMIN_UID = "9ee8f01d-80e1-4676-8c97-7fc47ddf0e99";
     const FOTO_TABLE = "bekmez_urun_fotograflari";
-    // Yonetici Supabase refresh token'ini kalici localStorage'a yazmayiz.
-    // Eski surumun projeye ait kalici oturumu kullanilmayacak (tekrar giris gerekir).
-    try { localStorage.removeItem('sb-nwzxvksywfzpvxwvtypf-auth-token'); } catch (_) {}
-    const fotoSupabase = window.supabase && typeof window.supabase.createClient === 'function'
-        ? window.supabase.createClient(FOTO_SB_URL, FOTO_SB_PUBLIC_KEY, {
-            auth: { persistSession: true, storage: window.sessionStorage, storageKey: 'bekmez-photo-admin-session-v2', autoRefreshToken: true, detectSessionInUrl: true, flowType: 'implicit' }
-          }) : null;
-
-    // ===========================================================
-    // SUPABASE ŞİFRE KURTARMA - AYNI paket.html SAYFASINDA
-    // Not: parola yalnızca Supabase Auth'a gönderilir, Firebase'e yazılmaz.
-    // ===========================================================
-    const FOTO_SIFRE_DONUS_URL = 'https://bekmezpos.github.io/bekmez-pisirim/paket.html';
-    const fotoSifreGelenHash = new URLSearchParams(window.location.hash.substring(1));
-    const fotoSifreGelenQuery = new URLSearchParams(window.location.search);
-    const fotoSifreGelenKurtarma = fotoSifreGelenHash.get('type') === 'recovery' || fotoSifreGelenQuery.get('type') === 'recovery';
-    const fotoSifreGelenAccessToken = fotoSifreGelenHash.get('access_token');
-    const fotoSifreGelenHata = fotoSifreGelenHash.get('error_code') || fotoSifreGelenHash.get('error_description') || fotoSifreGelenQuery.get('error_code') || fotoSifreGelenQuery.get('error_description');
-    let fotoSifreAkisiAktif = Boolean(fotoSifreGelenKurtarma || fotoSifreGelenHata);
-    let fotoSifreKurtarmaOnayli = false;
-    let fotoSifreKurtarmaKontrol = false;
-
-    function FotoSifreMesaj(id, mesaj, hata = false) {
-        const el = document.getElementById(id);
-        if(el) { el.textContent = mesaj; el.style.color = hata ? '#ff8585' : '#bce7c1'; }
-    }
-    function FotoSifreBolumAc(bolum) {
-        for(const [kimlik, isim] of [['photo-password-request','request'],['photo-password-new','new'],['photo-password-done','done']]) {
-            const el = document.getElementById(kimlik);
-            if(el) el.hidden = isim !== bolum;
-        }
-    }
-    function FotoSifrePanelGoster() {
-        const overlay = document.getElementById('photo-password-overlay');
-        if(overlay) overlay.classList.add('photo-password-open');
-    }
-    function FotoSifrePanelAc() {
-        if(!isAdmin || firebase.auth().currentUser?.email !== 'kasa@bekmez.com') {
-            FotoAdminMesaj('Şifre bağlantısını yalnızca Firebase kasa yönetiminden isteyebilirsin.',true);
-            return;
-        }
-        fotoSifreAkisiAktif = true;
-        FotoSifreBolumAc('request');
-        const email = document.getElementById('photo-admin-email')?.value || '';
-        const input = document.getElementById('photo-reset-email');
-        if(input) input.value = email;
-        FotoSifreMesaj('photo-reset-request-status','');
-        FotoSifrePanelGoster();
-    }
-    function FotoSifrePanelKapat() {
-        // Kurtarma linkiyle girildiyse, hassas URL parametreleri korunmasın.
-        if(fotoSifreGelenKurtarma || fotoSifreGelenHata) {
-            window.location.replace(FOTO_SIFRE_DONUS_URL);
-            return;
-        }
-        const overlay = document.getElementById('photo-password-overlay');
-        if(overlay) overlay.classList.remove('photo-password-open');
-        fotoSifreAkisiAktif = false;
-    }
-    async function FotoSifreMailGonder(event) {
-        event.preventDefault();
-        const btn = document.getElementById('photo-reset-send');
-        const email = document.getElementById('photo-reset-email')?.value.trim() || '';
-        if(!email || !fotoSupabase) {
-            FotoSifreMesaj('photo-reset-request-status','E-posta veya Supabase bağlantısı eksik.',true);
-            return;
-        }
-        btn.disabled = true;
-        FotoSifreMesaj('photo-reset-request-status','Şifre belirleme e-postası isteniyor...');
+    // Clear only this project's previous photo-management sessions; customer cart/order data stays.
+    for (const storageName of ['localStorage', 'sessionStorage']) {
         try {
-            const {error} = await fotoSupabase.auth.resetPasswordForEmail(email, {redirectTo: FOTO_SIFRE_DONUS_URL});
-            if(error) throw error;
-            FotoSifreMesaj('photo-reset-request-status','E-posta hesabı kayıtlıysa bir şifre belirleme bağlantısı gönderildi. Gelen kutusunu ve spam klasörünü kontrol et.');
-        } catch(e) {
-            FotoSifreMesaj('photo-reset-request-status','E-posta gönderimi başarısız: '+(e?.message||'Bilinmeyen hata'),true);
-        } finally { btn.disabled = false; }
-    }
-    async function FotoSifreKurtarmaDoğrula() {
-        if(fotoSifreKurtarmaOnayli || fotoSifreKurtarmaKontrol || !fotoSupabase) return;
-        fotoSifreKurtarmaKontrol = true;
-        try {
-            const {data,error} = await fotoSupabase.auth.getUser();
-            if(error || !data?.user || data.user.id !== FOTO_ADMIN_UID) throw new Error('Kurtarma bağlantısı yönetici hesabıyla eşleşmiyor. Yeni bağlantı iste.');
-            fotoSifreKurtarmaOnayli = true;
-            FotoSifreBolumAc('new');
-            FotoSifrePanelGoster();
-            // SDK tokeni işledikten sonra URL'deki erişim bilgilerini kaldır.
-            history.replaceState(null, '', window.location.pathname);
-        } catch(e) {
-            FotoSifreBolumAc('request');
-            FotoSifrePanelGoster();
-            FotoSifreMesaj('photo-reset-request-status', e.message, true);
-        } finally { fotoSifreKurtarmaKontrol = false; }
-    }
-    async function FotoSifreKaydet(event) {
-        event.preventDefault();
-        if(!fotoSifreKurtarmaOnayli || !fotoSupabase) {
-            FotoSifreMesaj('photo-reset-save-status','Önce e-posta bağlantısını doğrula.',true);
-            return;
-        }
-        const yeni = document.getElementById('photo-reset-new-password').value;
-        const tekrar = document.getElementById('photo-reset-confirm-password').value;
-        if(yeni.length < 12 || yeni !== tekrar) {
-            FotoSifreMesaj('photo-reset-save-status','Şifre en az 12 karakter olmalı ve her iki alan aynı olmalı.',true);
-            return;
-        }
-        const btn = document.getElementById('photo-reset-save');
-        btn.disabled = true;
-        FotoSifreMesaj('photo-reset-save-status','Şifre kaydediliyor...');
-        try {
-            // Tekrar doğrula: yanlış Supabase kullanıcısının parolası değiştirilmesin.
-            const {data:current,error:currentError} = await fotoSupabase.auth.getUser();
-            if(currentError || current?.user?.id !== FOTO_ADMIN_UID) throw new Error('Yönetici oturumu geçersiz.');
-            const {error} = await fotoSupabase.auth.updateUser({password:yeni});
-            if(error) throw error;
-            document.getElementById('photo-reset-new-password').value = '';
-            document.getElementById('photo-reset-confirm-password').value = '';
-            const {error:logoutErr} = await fotoSupabase.auth.signOut();
-            if(logoutErr) console.warn('Parola değişti, ancak oturum kapatma hatası:',logoutErr.message);
-            history.replaceState(null,'',window.location.pathname);
-            FotoSifreBolumAc('done');
-            FotoSifreMesaj('photo-reset-save-status','');
-        } catch(e) {
-            FotoSifreMesaj('photo-reset-save-status','Şifre kaydedilemedi: '+(e?.message||'Bilinmeyen hata'),true);
-        } finally {btn.disabled = false;}
-    }
-    // CALLBACK: ağ çağrısı callback içinde beklenmez; auth kitaplığında kilitlenme olmasın.
-    if(fotoSupabase) {
-        fotoSupabase.auth.onAuthStateChange((event, session) => {
-            if(event === 'PASSWORD_RECOVERY' && session && fotoSifreGelenKurtarma) {
-                setTimeout(FotoSifreKurtarmaDoğrula, 0);
+            const storage=window[storageName];
+            for (let i=storage.length-1;i>=0;i--) {
+                const key=storage.key(i);
+                if (key && (key.startsWith('sb-nwzxvksywfzpvxwvtypf-') || key.startsWith('bekmez-photo-'))) storage.removeItem(key);
             }
-        });
+        } catch (_) {}
     }
-    if(fotoSifreAkisiAktif) {
-        FotoSifreBolumAc('request');
-        FotoSifrePanelGoster();
-        if(fotoSifreGelenHata) FotoSifreMesaj('photo-reset-request-status','Bağlantının süresi dolmuş veya bağlantı geçersiz. Yeni bağlantı iste.',true);
-        else FotoSifreMesaj('photo-reset-request-status','Şifre kurtarma bağlantısı doğrulanıyor...');
-        if(!fotoSupabase) FotoSifreMesaj('photo-reset-request-status','Supabase kütüphanesi yüklenemedi.',true);
-        else if(fotoSifreGelenKurtarma) {
-            // PASSWORD_RECOVERY olayı yakalanamazsa yalnızca URL'deki aynı tokenla oluşturulmuş oturumu kabul et.
-            setTimeout(async () => {
-                if(fotoSifreKurtarmaOnayli) return;
-                const {data,error} = await fotoSupabase.auth.getSession();
-                if(!error && data?.session && fotoSifreGelenAccessToken && data.session.access_token === fotoSifreGelenAccessToken) return FotoSifreKurtarmaDoğrula();
-                FotoSifreMesaj('photo-reset-request-status','Kurtarma bağlantısı geçersiz veya süresi dolmuş. Yeni bağlantı iste.',true);
-            }, 1700);
-        }
-    }
-
+    const oldFragment=new URLSearchParams(location.hash.slice(1));
+    if(oldFragment.has('access_token') || oldFragment.has('refresh_token')) history.replaceState(null,'',location.pathname+location.search);
+    const fotoSupabase = window.supabase?.createClient(FOTO_SB_URL, FOTO_SB_PUBLIC_KEY, {
+        auth: {persistSession:false, autoRefreshToken:false, detectSessionInUrl:false}
+    }) || null;
     let fotoHaritasi = Object.create(null);
     let fotoSonCekilis = 0;
-    let fotoAdminUrunler = [];
-    let fotoAdminOnizlemeObjectUrl = null;
-    let fotoAdminIslemde = false;
-
-    function FotoAdminMesaj(metin, hata = false) {
-        const el = document.getElementById('photo-admin-status');
-        if(el) { el.textContent = metin; el.style.color = hata ? '#FF6B60' : '#a1a1aa'; }
-    }
-
     function FotoUrunUrl(urunAdi) {
         const yol = fotoHaritasi[String(urunAdi || '').trim()];
         if(!yol || !fotoSupabase || !/^products\/[0-9a-f-]{36}\.webp$/.test(yol)) return '';
@@ -2562,13 +1848,13 @@
     // Sürekli polling yerine görünürlük/odak değişimini kullan; ücretsiz kota dostu.
     let fotoOdakKontrolDevamEdiyor = false;
     async function FotoOdaklanincaKontrolEt() {
-        if(fotoOdakKontrolDevamEdiyor || isAdmin || document.hidden ||
+        if(fotoOdakKontrolDevamEdiyor || document.hidden ||
            document.getElementById('menu-container')?.style.display === 'none' ||
            Date.now() - fotoSonCekilis < 45000) return;
         fotoOdakKontrolDevamEdiyor = true;
         try {
             const degisti = await FotoHaritasiniYenile();
-            if(degisti && !isAdmin && document.getElementById('menu-container')?.style.display !== 'none')
+            if(degisti && document.getElementById('menu-container')?.style.display !== 'none')
                 FotoMusteriKartlariniTazele();
         } finally { fotoOdakKontrolDevamEdiyor = false; }
     }
@@ -2576,268 +1862,15 @@
     window.addEventListener('focus', FotoOdaklanincaKontrolEt);
 
     function FotoMusteriKartlariniTazele() {
-        if(isAdmin) return;
+        
         const arama = (document.getElementById('search-input')?.value || '').trim().toLocaleLowerCase('tr-TR');
         const gorunenler = arama ? tumUrunler.filter(u => u.pName && u.pName.toLocaleLowerCase('tr-TR').includes(arama))
             : tumUrunler.filter(u => GetKategoriAd(u) === aktifKategori);
         EkranaUrunleriCiz(gorunenler);
     }
 
-    async function FotoAdminKimlik() {
-        if(!isAdmin || firebase.auth().currentUser?.email !== 'kasa@bekmez.com')
-            throw new Error('Önce Firebase kasa yönetimine giriş yapmalısınız.');
-        if(!fotoSupabase) throw new Error('Supabase kütüphanesi yüklenemedi. CSP veya ağ bağlantısını kontrol edin.');
-        const {data, error} = await fotoSupabase.auth.getUser();
-        if(error || !data?.user || data.user.id !== FOTO_ADMIN_UID)
-            throw new Error('Yetkili Supabase yönetici oturumu bulunamadı.');
-        return data.user;
-    }
-
-    async function FotoAdminHazirla() {
-        if(!isAdmin) return;
-        FotoAdminMesaj('Bağlantı kontrol ediliyor...');
-        try {
-            await FotoAdminKimlik();
-        } catch(e) {
-            document.getElementById('photo-admin-login').style.display = 'block';
-            document.getElementById('photo-admin-editor').style.display = 'none';
-            FotoAdminMesaj('Görsel yönetimi için Supabase hesabınızla giriş yapın.');
-            return;
-        }
-        document.getElementById('photo-admin-login').style.display = 'none';
-        document.getElementById('photo-admin-editor').style.display = 'block';
-        try {
-            await Promise.all([FotoAdminUrunleriYukle(), FotoHaritasiniYenile()]);
-            FotoAdminUrunSecildi();
-            FotoAdminMesaj('Fotoğraflar yönetilmeye hazır.');
-        } catch(e) {
-            FotoAdminMesaj('Ürünler yüklenemedi: ' + e.message, true);
-        }
-    }
-
-    async function FotoAdminGiris() {
-        if(!isAdmin || !fotoSupabase) { FotoAdminMesaj('Firebase admin girişi veya Supabase bağlantısı bulunamadı.', true); return; }
-        const email = document.getElementById('photo-admin-email').value.trim();
-        const password = document.getElementById('photo-admin-pass').value;
-        if(!email || !password) { FotoAdminMesaj('E-posta ve şifre gerekli.', true); return; }
-        FotoAdminMesaj('Giriş yapılıyor...');
-        try {
-            const {data, error} = await fotoSupabase.auth.signInWithPassword({email, password});
-            document.getElementById('photo-admin-pass').value = '';
-            if(error) throw error;
-            if(data.user?.id !== FOTO_ADMIN_UID) {
-                await fotoSupabase.auth.signOut();
-                throw new Error('Bu Supabase hesabına görsel düzenleme yetkisi verilmemiş.');
-            }
-            await FotoAdminHazirla();
-        } catch(e) {
-            document.getElementById('photo-admin-pass').value = '';
-            FotoAdminMesaj('Giriş başarısız: ' + e.message, true);
-        }
-    }
-
-    async function FotoAdminCikis() {
-        if(fotoSupabase) await fotoSupabase.auth.signOut();
-        document.getElementById('photo-admin-editor').style.display = 'none';
-        document.getElementById('photo-admin-login').style.display = 'block';
-        FotoAdminOnizlemeTemizle();
-        FotoAdminMesaj('Supabase görsel yönetimi oturumu kapatıldı.');
-    }
-
-    async function FotoAdminUrunleriYukle() {
-        const res = await fetch(`${FIREBASE_URL}/Menu.json?t=${Date.now()}`, {cache:'no-store'});
-        if(!res.ok) throw new Error('Firebase menüsüne erişilemedi (' + res.status + ').');
-        const json = await res.json();
-        if(json?.error) throw new Error('Firebase menü okuma yetkisi yok.');
-        fotoAdminUrunler = (Array.isArray(json?.products) ? json.products : []).filter(x => x && typeof x.pName === 'string');
-        const sec = document.getElementById('photo-admin-product');
-        sec.replaceChildren();
-        for(const urun of fotoAdminUrunler) {
-            const opt = document.createElement('option');
-            opt.value = urun.pName.trim(); opt.textContent = urun.pName;
-            sec.appendChild(opt);
-        }
-        if(!fotoAdminUrunler.length) {
-            const opt = document.createElement('option'); opt.value = ''; opt.textContent = 'Firebase menüsünde ürün bulunamadı'; sec.appendChild(opt);
-            throw new Error('Ürün listesi boş.');
-        }
-    }
-
-    function FotoAdminOnizlemeTemizle() {
-        if(fotoAdminOnizlemeObjectUrl) { URL.revokeObjectURL(fotoAdminOnizlemeObjectUrl); fotoAdminOnizlemeObjectUrl = null; }
-        const sec = document.getElementById('photo-admin-file'); if(sec) sec.value = '';
-    }
-
-    function FotoAdminUrunSecildi() {
-        FotoAdminOnizlemeTemizle();
-        const ad = document.getElementById('photo-admin-product')?.value || '';
-        const resim = document.getElementById('photo-admin-preview');
-        const bos = document.getElementById('photo-admin-empty');
-        const adres = FotoUrunUrl(ad);
-        if(resim) { resim.style.display = adres ? 'block':'none'; resim.onerror = () => {resim.style.display='none'; if(bos) bos.style.display='block';}; if(adres) resim.src = adres; else resim.removeAttribute('src'); }
-        if(bos) bos.style.display = adres ? 'none' : 'block';
-        const sil = document.getElementById('photo-admin-delete'); if(sil) sil.disabled = !adres;
-    }
-
-    function FotoDosyaSecildi() {
-        const file = document.getElementById('photo-admin-file')?.files?.[0];
-        if(!file) { FotoAdminUrunSecildi(); return; }
-        if(!['image/jpeg','image/png','image/webp'].includes(file.type)) { FotoAdminMesaj('Yalnızca JPG, PNG ve WebP seçin.',true); FotoAdminOnizlemeTemizle(); return; }
-        if(file.size > 20*1024*1024) { FotoAdminMesaj('Kaynak dosya 20 MB üstünde. Daha küçük görsel seçin.',true); FotoAdminOnizlemeTemizle(); return; }
-        if(fotoAdminOnizlemeObjectUrl) URL.revokeObjectURL(fotoAdminOnizlemeObjectUrl);
-        fotoAdminOnizlemeObjectUrl = URL.createObjectURL(file);
-        const resim = document.getElementById('photo-admin-preview');
-        resim.src = fotoAdminOnizlemeObjectUrl; resim.style.display = 'block';
-        document.getElementById('photo-admin-empty').style.display = 'none';
-        FotoAdminMesaj('Önizleme hazır. Kaydet butonu ile yükle.');
-    }
-
-    function FotoWebpHazirla(file) {
-        return new Promise((resolve, reject) => {
-            const objectUrl = URL.createObjectURL(file);
-            const img = new Image();
-            img.onload = () => {
-                URL.revokeObjectURL(objectUrl);
-                try {
-                    const max = 800, factor = Math.min(1,max / Math.max(img.naturalWidth,img.naturalHeight));
-                    const c = document.createElement('canvas');
-                    c.width = Math.max(1,Math.round(img.naturalWidth*factor));
-                    c.height = Math.max(1,Math.round(img.naturalHeight*factor));
-                    const ctx = c.getContext('2d');
-                    if(!ctx) throw new Error('Tarayıcı Canvas desteklemiyor.');
-                    ctx.drawImage(img,0,0,c.width,c.height);
-                    c.toBlob(blob => {
-                        if(!blob || blob.type !== 'image/webp') { reject(new Error('WebP dönüştürme başarısız.')); return; }
-                        if(blob.size > 2*1024*1024) { reject(new Error('Sıkıştırılmış dosya 2 MB limitini aştı.')); return; }
-                        resolve(blob);
-                    }, 'image/webp', 0.80);
-                } catch(e) { reject(e); }
-            };
-            img.onerror = () => { URL.revokeObjectURL(objectUrl); reject(new Error('Görsel okunamadı.')); };
-            img.src = objectUrl;
-        });
-    }
-
-    function FotoAdminButonlariKilitle(kilitli) {
-        fotoAdminIslemde = kilitli;
-        for(const id of ['photo-admin-save','photo-admin-delete','photo-admin-product','photo-admin-file']) {
-            const el = document.getElementById(id); if(el) el.disabled = kilitli;
-        }
-        if(!kilitli) {
-            const btnSil = document.getElementById('photo-admin-delete');
-            const urun = document.getElementById('photo-admin-product')?.value || '';
-            if(btnSil) btnSil.disabled = !Boolean(fotoHaritasi[urun]);
-        }
-    }
-
-    async function FotoAdminKaydet() {
-        if(fotoAdminIslemde) return;
-        const urun = document.getElementById('photo-admin-product')?.value;
-        const file = document.getElementById('photo-admin-file')?.files?.[0];
-        if(!urun || !file) { FotoAdminMesaj('Önce ürün ve görsel seçin.',true); return; }
-        if(!fotoAdminUrunler.some(u => u.pName.trim() === urun)) { FotoAdminMesaj('Ürün Firebase menüsünde bulunamadı.',true); return; }
-        FotoAdminButonlariKilitle(true);
-        let yeniYol = null;
-        try {
-            await FotoAdminKimlik();
-            FotoAdminMesaj('Fotoğraf sıkıştırılıyor...');
-            const webp = await FotoWebpHazirla(file);
-            yeniYol = 'products/' + crypto.randomUUID() + '.webp';
-            FotoAdminMesaj('Supabase Storage yükleniyor...');
-            const {error: uploadError} = await fotoSupabase.storage.from(FOTO_SB_BUCKET)
-                .upload(yeniYol, webp, {contentType:'image/webp', cacheControl:'31536000', upsert:false});
-            if(uploadError) throw uploadError;
-            const eskiYol = fotoHaritasi[urun];
-            const {error: dbError} = await fotoSupabase.from(FOTO_TABLE).upsert(
-                {urun_adi:urun, dosya_yolu:yeniYol, updated_at:new Date().toISOString()}, {onConflict:'urun_adi'});
-            if(dbError) throw dbError;
-            fotoHaritasi[urun] = yeniYol;
-            fotoSonCekilis = Date.now();
-            // Veritabanı güncellemesi tamamlandı: yeni dosyayı geri alma kapsamından çıkar.
-            const kaliciYeniYol = yeniYol;
-            yeniYol = null;
-            FotoAdminUrunSecildi();
-            FotoAdminMesaj('✅ Fotoğraf başarıyla kaydedildi. Müşteri menüsünde görüntülenecek.');
-            if(eskiYol && eskiYol !== kaliciYeniYol) {
-                try {
-                    const {error: oldErr} = await fotoSupabase.storage.from(FOTO_SB_BUCKET).remove([eskiYol]);
-                    if(oldErr) console.warn('Eski görsel temizlenemedi:',oldErr.message);
-                } catch(cleanupError) { console.warn('Eski görsel temizlik isteği başarısız:', cleanupError); }
-            }
-        } catch(e) {
-            if(yeniYol && fotoSupabase) await fotoSupabase.storage.from(FOTO_SB_BUCKET).remove([yeniYol]).catch(()=>{});
-            FotoAdminMesaj('Yükleme başarısız: ' + e.message,true);
-        } finally { FotoAdminButonlariKilitle(false); }
-    }
-
-    function FotoAdminSil() {
-        if(fotoAdminIslemde) return;
-        const urun = (document.getElementById('photo-admin-product')?.value || '').trim();
-        if(!urun) { FotoAdminMesaj('Önce bir ürün seçin.',true); return; }
-        if(!fotoHaritasi[urun]) {
-            FotoAdminUrunSecildi();
-            FotoAdminMesaj('Bu ürünün fotoğrafı yok. Menüsünde normal kategori simgesi gösterilecek.');
-            return;
-        }
-        // Native window.confirm bazen tarayici/PWA tarafindan engellenebiliyor.
-        SoruSor('Ürün Fotoğrafını Kaldır',
-            '<b>' + escapeHTML(urun) + '</b> görseli silinsin mi? Ürünün fiyatı, stoku ve sipariş kaydı değişmez.',
-            '🗑️', () => { void FotoAdminSilOnayla(urun); }, false);
-    }
-
-    async function FotoAdminSilOnayla(urun) {
-        if(fotoAdminIslemde || !urun) return;
-        FotoAdminButonlariKilitle(true);
-        try {
-            await FotoAdminKimlik();
-            FotoAdminMesaj('Ürün görseli veritabanından doğrulanıyor...');
-            const {data: mevcut, error: okumaHatasi} = await fotoSupabase.from(FOTO_TABLE)
-                .select('dosya_yolu').eq('urun_adi',urun).maybeSingle();
-            if(okumaHatasi) throw okumaHatasi;
-            if(!mevcut) {
-                // Baska bir oturum silmis olabilir: yerel eslesmeyi de temizle.
-                delete fotoHaritasi[urun];
-                fotoSonCekilis = Date.now();
-                FotoAdminUrunSecildi();
-                FotoAdminMesaj('Fotoğraf zaten kaldırılmış. Ürün artık normal kategori simgesiyle gösterilecek.');
-                return;
-            }
-            const yol = mevcut.dosya_yolu;
-            FotoAdminMesaj('Fotoğraf kaydı siliniyor...');
-            // select() ile gercekten silinen satiri dogrula (0 satir sessiz basari sayilmaz).
-            const {data: silinen, error: silmeHatasi} = await fotoSupabase.from(FOTO_TABLE)
-                .delete().eq('urun_adi',urun).select('urun_adi');
-            if(silmeHatasi) throw silmeHatasi;
-            if(!Array.isArray(silinen) || silinen.length !== 1)
-                throw new Error('Veritabanı silme işlemi onaylanmadı. Supabase RLS DELETE ve SELECT kurallarını kontrol edin.');
-            const {data: kalan, error: dogrulamaHatasi} = await fotoSupabase.from(FOTO_TABLE)
-                .select('urun_adi').eq('urun_adi',urun).maybeSingle();
-            if(dogrulamaHatasi) throw dogrulamaHatasi;
-            if(kalan) throw new Error('Fotoğraf kaydı hala veritabanında bulunuyor; silme işlemi tamamlanmadı.');
-
-            delete fotoHaritasi[urun];
-            fotoSonCekilis = Date.now();
-            FotoAdminUrunSecildi();
-            // Dosyayi da temizle: buradaki hata silinen veritabani kaydini geri getirmez.
-            try {
-                const {error: dosyaHatasi} = await fotoSupabase.storage.from(FOTO_SB_BUCKET).remove([yol]);
-                if(dosyaHatasi) throw dosyaHatasi;
-                FotoAdminMesaj('✅ Fotoğraf silindi. Ürün artık normal kategori simgesiyle görünecek.');
-            } catch(dosyaHatasi) {
-                console.warn('Supabase Storage dosyasi temizlenemedi:',dosyaHatasi);
-                FotoAdminMesaj('Fotoğraf menüden kaldırıldı ve simge geri geldi; Storage dosyası temizlenemedi: ' + dosyaHatasi.message, true);
-            }
-        } catch(e) {
-            console.error('Fotoğraf kaldırma hatası:',e);
-            // Hata durumunda sayac/yerel durum senkron kalsin.
-            await FotoHaritasiniYenile();
-            FotoAdminUrunSecildi();
-            FotoAdminMesaj('Fotoğraf kaldırılamadı: ' + (e?.message || 'Bilinmeyen hata'),true);
-        } finally { FotoAdminButonlariKilitle(false); }
-    }
-
     async function CanliMenuCek(ilkYukleme) {
-        if(isAdmin || isBannedUser) return;
+        if(isBannedUser) return;
         try {
             if (ilkYukleme) await FotoHaritasiniYenile();
             let pRes = await fetch(`${FIREBASE_URL}/PopulerUrunler.json?t=${Date.now()}`); let pD = await pRes.json(); if(pD && Array.isArray(pD)) populerUrunlerListesi = pD;
@@ -2860,7 +1893,7 @@
                 if (ilkYukleme) { document.getElementById("kategori-sekmeleri").style.display = "flex"; KategoriSec(aktifKategori); } 
                 else { if (document.getElementById("menu-container").style.display === "block") { if (document.getElementById('tab-Arama').style.display === "flex") { UrunAra(); } else { KategoriSec(aktifKategori); } } }
             }
-        } catch(error) { if (ilkYukleme && !isAdmin && !isBannedUser) { document.getElementById("menu-grid").innerHTML = `<div class="empty-state-box">${emptyCartSVG}<p>Bağlantı Hatası!</p></div>`; } }
+        } catch(error) { if (ilkYukleme && !isBannedUser) { document.getElementById("menu-grid").innerHTML = `<div class="empty-state-box">${emptyCartSVG}<p>Bağlantı Hatası!</p></div>`; } }
     }
 
     function GetKategoriAd(u) { try { if (u.categoryIndex !== undefined && u.categoryIndex !== null) { let c = parseInt(u.categoryIndex); if(c===1) return "İçecek"; if(c===2) return "Ekstra"; if(c===0) return "Ana Yemek"; } if (!u.pName) return "Ana Yemek"; let ad = u.pName.toString().toLocaleLowerCase('tr-TR'); if (ad.includes("cola") || ad.includes("ayran") || ad.includes("su") || ad.includes("şalgam") || ad.includes("fanta")) return "İçecek"; if (ad.includes("ekmek") || ad.includes("salata") || ad.includes("ezme") || ad.includes("patates")) return "Ekstra"; return "Ana Yemek"; } catch(e) { return "Ana Yemek"; } }
@@ -2945,6 +1978,17 @@
         if (btnObj) document.getElementById('menu-section-title')?.scrollIntoView({behavior:'smooth',block:'nearest'});
     }
     function ExtractBreadTotal(itemName, isKg, amount) { let lowerName = itemName.toLocaleLowerCase('tr-TR'); let totalBread = 0; let multiplier = 1; let matchQty = itemName.match(/^([0-9]+)x\s/); if (matchQty) { multiplier = parseInt(matchQty[1]); } if (isKg) { if (amount === 0.25) totalBread = 1; else if (amount === 0.50) totalBread = 2; else if (amount === 0.75) totalBread = 3; else totalBread = amount * 4; if (lowerName.includes("ekmeksiz")) { totalBread = 0; } else { let matchOnly = lowerName.match(/sadece\s+([0-9]+)\s+ekmek/i); if (matchOnly) { totalBread = parseFloat(matchOnly[1]) * multiplier; } else { let matchAdd = lowerName.match(/\+([0-9]+)\s+ek/i); if (matchAdd) { totalBread += (parseFloat(matchAdd[1]) * multiplier); } } } } else { let isSpecial = lowerName.includes("dürüm") || (lowerName.includes("doner") || lowerName.includes("döner")) || lowerName.includes("kebap"); if (isSpecial) { totalBread = amount * 2; if (lowerName.includes("1.5 ekmek") || lowerName.includes("1.5 lavaş")) { totalBread = amount * 1.5; } else if (lowerName.includes("3 ekmek") || lowerName.includes("3 lavaş")) { totalBread = amount * 3; } else if (lowerName.includes("ekmeksiz") || lowerName.includes("lavaşsız")) { totalBread = 0; } } } return totalBread; }
+    function SunucuSepetiHatasi(items) {
+        if(!Array.isArray(items)||items.length<1||items.length>50) return 'Sipariş 1–50 farklı sepet satırı içermeli.';
+        for(const item of items) {
+            if(!item||typeof item.rawName!=='string'||!item.rawName.trim()||item.rawName.length>200||typeof item.tamIsim!=='string'||!item.tamIsim.trim()||item.tamIsim.length>200) return 'Sepetteki ürün bilgisi geçersiz veya fazla uzun.';
+            if(!Number.isFinite(item.miktar)||item.miktar<=0||item.miktar>1000) return 'Bir sepet satırındaki miktar en fazla 1000 olabilir.';
+            const prefix=item.tamIsim.match(/^([0-9]+)x\s/);
+            const count=item.quantity ?? (prefix?Number(prefix[1]):1);
+            if(!Number.isInteger(count)||count<1||count>1000||(prefix&&Number(prefix[1])!==count)) return 'Sepetteki porsiyon sayısı geçersiz.';
+        }
+        return '';
+    }
     function UrunStogu(urun) {
         const raw=urun?.stockAmount ?? urun?.stock;
         if (raw === null || raw === undefined || String(raw).trim() === '') return 0;
@@ -3169,7 +2213,7 @@
                 let k = data[key];
                 if (k.discountAmount && k.isAppCoupon === true) {
                     hasKupon = true;
-                    list.innerHTML += `<div class="coupon-card ripple-element"><div class="c-left"><span class="c-discount">${k.discountAmount}₺</span><span class="c-type">İNDİRİM</span></div><div class="c-right"><div class="c-title">${k.targetProduct && k.targetProduct !== "Herşey" ? escapeHTML(k.targetProduct) + " için geçerli!" : "Tüm menüde geçerli!"}</div><div class="c-code">${escapeHTML(key)}</div><div class="c-limit">Alt Limit: ${k.bottomLimit} TL</div><div class="c-btn" onclick="KuponKopyala('${escapeHTML(key)}')">Kodu Kopyala</div></div></div>`;
+                    list.innerHTML += `<div class="coupon-card ripple-element"><div class="c-left"><span class="c-discount">${escapeHTML(k.discountAmount)}₺</span><span class="c-type">İNDİRİM</span></div><div class="c-right"><div class="c-title">${k.targetProduct && k.targetProduct !== "Herşey" ? escapeHTML(k.targetProduct) + " için geçerli!" : "Tüm menüde geçerli!"}</div><div class="c-code">${escapeHTML(key)}</div><div class="c-limit">Alt Limit: ${escapeHTML(k.bottomLimit)} TL</div><div class="c-btn" onclick="${escapeHTML('KuponKopyala(' + JSON.stringify(key) + ')')}">Kodu Kopyala</div></div></div>`;
                 }
             }
             if (!hasKupon) list.innerHTML = `<div class="empty-state-box">${emptyCouponSVG}<p>Aktif kampanya bulunmuyor 😔</p></div>`;
@@ -3483,7 +2527,7 @@
             if (!authUser) { OzelUyariGoster("Hata", "Oturum bulunamadı, lütfen çıkış yapıp tekrar giriş yapın.", "🔒"); isProcessingOrder = false; document.getElementById("final-submit-btn").disabled = false; document.getElementById("final-submit-btn").classList.remove("loading"); btnText.innerHTML = `${sonOdenecekFiyat.toFixed(2)} TL Öde`; return; }
 
             let benzersizSiparisID = generateUUID();
-            let sunucuyaGidecekSepet = temizSepet.map(u => ({ rawName: u.rawName, tamIsim: (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName, miktar: (u.baseStockAmount * u.quantity) }));
+            let sunucuyaGidecekSepet = temizSepet.map(u => ({ rawName: u.rawName, tamIsim: (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName, miktar: (u.baseStockAmount * u.quantity), quantity: u.quantity }));
 
             let tZaman = Date.now(); let zM = ZamanMuhruKodla(tZaman, benzersizSiparisID);
 
@@ -3515,6 +2559,8 @@
             const existing = await existingRes.json();
             if (existing && existing.uid !== authUser.uid) throw new Error('Sipariş sahipliği doğrulanamadı.');
             if (!existing) {
+                const cartFormatError=SunucuSepetiHatasi(taslakVerisi.sepet);
+                if(cartFormatError) {await SecureSil(pendingKey);throw new Error(cartFormatError);}
                 const menuRes=await fetch(`${FIREBASE_URL}/Menu.json?t=${Date.now()}`);
                 if(!menuRes.ok) throw new Error('Güncel stok bilgisi alınamadı (HTTP '+menuRes.status+').');
                 const menuData=await menuRes.json();
@@ -3586,15 +2632,13 @@
     let bgDurumSiparisId = '';
     async function SiparisDurumBildiriminiBaslat(siparisId) {
         const currentUser=firebase.auth().currentUser;
-        if (!currentUser || currentUser.email === 'kasa@bekmez.com' || !siparisId) {
-            if (bgDurumRef) bgDurumRef.off(); bgDurumRef=null; bgDurumSiparisId=''; return;
-        }
+        
         if (siparisId===bgDurumSiparisId && bgDurumRef) return;
         if(bgDurumRef) bgDurumRef.off();
         bgDurumSiparisId=siparisId;
         bgDurumRef=firebase.database().ref(`CanliPaketler/${siparisId}/durum`);
         bgDurumRef.on('value', async snapshot => {
-            const ham=snapshot.val(); if(!ham || !firebase.auth().currentUser || isAdmin) return;
+            const ham=snapshot.val(); if(!ham || !firebase.auth().currentUser) return;
             if(document.getElementById('history-container')?.style.display === 'block') return;
             const durum=String(ham).toUpperCase();
             const son=await SecureOku('bg_last_status');
