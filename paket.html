@@ -1492,8 +1492,10 @@
             if(foundTel && foundTel.length >= 10) { let isBan = await BanKontrolu(foundTel); if(isBan) { await firebase.auth().signOut(); btn.disabled = false; btn.innerText = "Giriş Yap"; return; } await BasariliGirisIslemleri(foundTel, email, true); } 
             else { firebase.auth().signOut(); OzelUyariGoster("Güvenlik Güncellemesi", "Sistem güvenliği nedeniyle telefon numaranız eşleşmedi. Lütfen tekrar kayıt olun.", "🛡️"); AuthModuDegistir('register'); }
         } catch(e) { OzelUyariGoster("Giriş Başarısız", "Şifreniz veya E-Postanız hatalı.", "❌"); }
-        document.getElementById('login-pass').value='';
-        btn.disabled = false; btn.innerText = "Giriş Yap";
+        finally {
+            document.getElementById('login-pass').value='';
+            btn.disabled = false; btn.innerText = "Giriş Yap";
+        }
     }
 
     function FormatTelefon(input) { let val = input.value.replace(/[^0-9]/g, ''); if (val.startsWith('0')) { val = val.substring(1); } if (val.length > 10) { val = val.substring(0, 10); } input.value = val; let chk = document.getElementById('chk-telefon'); if (chk) chk.value = val; }
