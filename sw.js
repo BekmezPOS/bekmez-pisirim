@@ -1,12 +1,12 @@
-/* Bekmez GO — Service Worker v12.
+/* Bekmez GO — Service Worker v13.
  * paket.html ile aynı klasörde sw.js olarak yayımlayın.
  * Statik dosya önbelleği ve yerel bildirim tıklamaları.
  * FCM/kapalı uygulamaya otomatik push/çevrimdışı sipariş içermez.
  */
 'use strict';
-const CACHE_NAME = 'bekmez-go-v12-premium-wheel';
+const CACHE_NAME = 'bekmez-go-v13-original-ui-wheel-fix';
 const APP_URL = new URL('./paket.html', self.registration.scope);
-const ASSETS = ['./paket.html', './manifest.json', './icon-192.png', './icon-512.png']
+const ASSETS = ['./paket.html', './manifest.json', './icon-192.png', './icon-app.svg']
   .map(path => new URL(path, self.registration.scope).href);
 const ASSET_PATHS = new Set(ASSETS.map(url => new URL(url).pathname));
 const PAGES = new Set(['urunler', 'sepet', 'gecmis', 'profil', 'firsatlar']);
