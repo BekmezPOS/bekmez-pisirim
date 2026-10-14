@@ -564,6 +564,14 @@
 .legal-section{padding:12px 0;border-bottom:1px solid var(--border-highlight)}.legal-section summary{cursor:pointer;color:var(--text-main);font-weight:700}.legal-section p{margin:10px 0;color:var(--text-muted)}.legal-footer{font-size:12px;padding:16px 0;color:var(--text-muted)}
 #legal-popup a{display:inline-block;color:var(--primary);padding:8px 0}button:focus-visible,a:focus-visible,summary:focus-visible,[role="button"]:focus-visible{outline:2px solid var(--primary);outline-offset:3px}#custom-alert-icon svg{width:42px;height:42px}
 </style>
+<style>
+#cark-popup .popup-header{align-items:center;gap:12px;margin-bottom:24px}
+#cark-popup-title{flex:1;text-align:left;margin:0}
+.cark-close-btn{flex:0 0 44px;width:44px;height:44px;display:grid;place-items:center;padding:0;border-radius:50%;border:1px solid var(--border-highlight);background:rgba(255,255,255,.06);color:var(--text-main);cursor:pointer;position:relative;z-index:20}
+.cark-close-btn:hover{background:rgba(255,255,255,.12)}.cark-close-btn:active{transform:scale(.95)}
+#cark-popup .popup-content{max-height:calc(100dvh - 24px);overflow-y:auto}
+#cark-durum-metni{min-height:42px}
+</style>
 </head>
 <body>
     
@@ -885,21 +893,21 @@
         </div>
 
         <!-- ÇARK POPUP -->
-        <div id="cark-popup" class="popup-overlay" onclick="if(event.target === this) CarkPopupKapat();">
+        <div id="cark-popup" class="popup-overlay" aria-labelledby="cark-popup-title" onclick="if(event.target === this) CarkPopupKapat();">
             <div class="popup-content" style="text-align: center;">
                 <div class="popup-drag-handle"></div>
-                <div class="popup-header"><h3 class="popup-title" style="font-size:22px;">Haftalık Şans Çarkı</h3><button type="button" class="alert-btn" aria-label="Çarkı kapat" onclick="CarkPopupKapat()">×</button></div>
+                <div class="popup-header"><h3 id="cark-popup-title" class="popup-title" style="font-size:22px;">Haftalık Şans Çarkı</h3><button id="cark-close-btn" type="button" class="cark-close-btn ripple-element" aria-label="Çarkı kapat" onclick="CarkPopupKapat()"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
                 <div style="position:relative;">
                     <div class="cark-ok"></div>
                     <div class="cark-kutu" id="cark-element">
-                        <div class="cark-dilim-yazi" style="transform: rotate(36deg); color:white;"><span id="cark-ui-1">🍟 Ekstra Patates</span></div>
-                        <div class="cark-dilim-yazi" style="transform: rotate(108deg); color:white;"><span id="cark-ui-2">😔 Pas</span></div>
-                        <div class="cark-dilim-yazi" style="transform: rotate(180deg); color:black;"><span id="cark-ui-3">🥤 1 Lt İçecek</span></div>
-                        <div class="cark-dilim-yazi" style="transform: rotate(252deg); color:white;"><span id="cark-ui-4">😔 Pas</span></div>
-                        <div class="cark-dilim-yazi" style="transform: rotate(324deg); color:black;"><span id="cark-ui-5">🍰 Fırın Sütlaç</span></div>
+                        <div class="cark-dilim-yazi" style="transform: rotate(-54deg); color:white;"><span id="cark-ui-1">🍟 Ekstra Patates</span></div>
+                        <div class="cark-dilim-yazi" style="transform: rotate(18deg); color:white;"><span id="cark-ui-2">😔 Pas</span></div>
+                        <div class="cark-dilim-yazi" style="transform: rotate(90deg); color:black;"><span id="cark-ui-3">🥤 1 Lt İçecek</span></div>
+                        <div class="cark-dilim-yazi" style="transform: rotate(162deg); color:white;"><span id="cark-ui-4">😔 Pas</span></div>
+                        <div class="cark-dilim-yazi" style="transform: rotate(234deg); color:black;"><span id="cark-ui-5">🍰 Fırın Sütlaç</span></div>
                     </div>
                 </div>
-                <p id="cark-durum-metni" style="color:var(--text-muted); font-weight:700; font-size:14px; margin-bottom:20px;">Sadece 7 günde 1 kez çevirebilirsin.</p>
+                <p id="cark-durum-metni" role="status" aria-live="polite" aria-atomic="true" style="color:var(--text-muted); font-weight:700; font-size:14px; margin-bottom:20px;">Sadece 7 günde 1 kez çevirebilirsin.</p>
                 <button id="cark-cevir-btn" class="order-btn shimmer-btn neon-border ripple-element" onclick="CarkCevir()">Şansımı Dene!</button>
             </div>
         </div>
@@ -1287,7 +1295,7 @@
     function PremiumDialogClose(id){const p=document.getElementById(id);if(!p)return;p.classList.remove('active');p.style.display='none';const prior=premiumDialogFocus.get(id);premiumDialogFocus.delete(id);if(!premiumDialogFocus.size)document.body.style.overflow='';if(prior?.isConnected)prior.focus();}
     function OzelUyariGoster(baslik,metin,ikon){document.getElementById('custom-alert-title').textContent=baslik;document.getElementById('custom-alert-text').innerHTML=GuvenliUyariIcerigi(metin);document.getElementById('custom-alert-icon').innerHTML=PremiumIcon(/🔒|🛡/.test(ikon)?'lock':/✅|🎉/.test(ikon)?'check':/⚠|❌|🚫/.test(ikon)?'warning':'info');PremiumDialogOpen('custom-alert-overlay');}
     function KapatUyariModal(e,force=false){for(const id of ['custom-alert-overlay','distance-alert-overlay']){const p=document.getElementById(id);if(force||e?.target===p)PremiumDialogClose(id);}}
-    document.addEventListener('keydown',event=>{const ids=['custom-alert-overlay','confirm-overlay','legal-popup','distance-alert-overlay'];const id=ids.find(id=>document.getElementById(id)?.style.display==='flex');if(!id)return;const p=document.getElementById(id);if(event.key==='Escape'){event.preventDefault();PremiumDialogClose(id);return;}if(event.key!=='Tab')return;const list=[...p.querySelectorAll('button:not(:disabled),a[href],summary,input:not(:disabled),[tabindex="0"]')].filter(x=>x.getClientRects().length);if(!list.length){event.preventDefault();p.focus();return;}const first=list[0],last=list[list.length-1];if(event.shiftKey&&(document.activeElement===first||!p.contains(document.activeElement))){event.preventDefault();last.focus();}else if(!event.shiftKey&&(document.activeElement===last||!p.contains(document.activeElement))){event.preventDefault();first.focus();}});
+    document.addEventListener('keydown',event=>{const ids=['custom-alert-overlay','confirm-overlay','legal-popup','distance-alert-overlay','cark-popup'];const id=ids.find(id=>document.getElementById(id)?.style.display==='flex');if(!id)return;const p=document.getElementById(id);if(event.key==='Escape'){event.preventDefault();PremiumDialogClose(id);return;}if(event.key!=='Tab')return;const list=[...p.querySelectorAll('button:not(:disabled),a[href],summary,input:not(:disabled),[tabindex="0"]')].filter(x=>x.getClientRects().length);if(!list.length){event.preventDefault();p.focus();return;}const first=list[0],last=list[list.length-1];if(event.shiftKey&&(document.activeElement===first||!p.contains(document.activeElement))){event.preventDefault();last.focus();}else if(!event.shiftKey&&(document.activeElement===last||!p.contains(document.activeElement))){event.preventDefault();first.focus();}});
 
     function SoruSor(baslik, metin, ikon, evetCallback, isDanger=false) { document.getElementById("confirm-title").innerText = baslik; document.getElementById("confirm-text").innerHTML = GuvenliUyariIcerigi(metin); document.getElementById("confirm-icon").innerText = ikon; let btn = document.getElementById("confirm-yes-btn"); let box = document.getElementById("confirm-box"); let glow = document.getElementById("confirm-glow"); if(isDanger) { btn.style.background = "var(--danger)"; btn.innerText = "İşlemi Onayla"; box.style.borderColor = "var(--danger)"; glow.style.background = "var(--danger)"; } else { btn.style.background = "var(--primary)"; btn.innerText = "Onayla"; box.style.borderColor = "var(--primary)"; glow.style.background = "var(--primary)"; } document.getElementById("confirm-yes-btn").onclick = () => { KapatConfirmModal(null, true); if(evetCallback) evetCallback(); }; PremiumDialogOpen('confirm-overlay'); }
     function KapatConfirmModal(e,force=false){if(force||e?.target===document.getElementById('confirm-overlay'))PremiumDialogClose('confirm-overlay');}
@@ -1464,11 +1472,7 @@
             // Canlı Çark Ödüllerini Çek
             if(data.CarkOdulleri) {
                 CARK_ODULLERI = data.CarkOdulleri;
-                document.getElementById("cark-ui-1").innerText = CARK_ODULLERI[0] || "Pas";
-                document.getElementById("cark-ui-2").innerText = CARK_ODULLERI[1] || "Pas";
-                document.getElementById("cark-ui-3").innerText = CARK_ODULLERI[2] || "Pas";
-                document.getElementById("cark-ui-4").innerText = CARK_ODULLERI[3] || "Pas";
-                document.getElementById("cark-ui-5").innerText = CARK_ODULLERI[4] || "Pas";
+                if(!wheelRequest&&document.getElementById('cark-popup').style.display!=='flex')WheelPaintRewards(CARK_ODULLERI);
             }
 
             let kapaliGun = data.kapaliGun || "Yok"; let acilKapat = data.acilKapat === true || (typeof data.acilKapat === "string" && data.acilKapat.trim().toLowerCase() === "true");
@@ -2355,6 +2359,15 @@
     async function KuponuIptalEt(sM = false) { if(!sM) HapticTitresim(); aktifKuponKodu = ""; aktifKuponIndirimTutari = 0; aktifKuponAltLimit = 0; aktifKuponHedefUrun = "Herşey"; let iE = document.getElementById("coupon-code"); if(iE) iE.value = ""; KuponArayuzunuGuncelle(); if(!sM) await HesaplaVeGuncelle(); }
     function KuponArayuzunuGuncelle() { let b = document.getElementById("coupon-apply-btn"); let m = document.getElementById("coupon-message"); let iE = document.getElementById("coupon-code"); if(aktifKuponIndirimTutari > 0) { b.style.background = "var(--danger)"; b.style.color = "white"; b.innerText = "İptal Et"; b.onclick = () => KuponuIptalEt(false); if(iE) { iE.disabled = true; iE.style.opacity = "0.6"; } m.innerHTML = `<span style="color: var(--success);">✓ ${aktifKuponIndirimTutari} TL İndirim!</span>`; } else { b.style.background = "rgba(255,255,255,0.05)"; b.style.color = "var(--text-main)"; b.innerText = "Uygula"; b.onclick = KuponSorgula; if(iE) { iE.disabled = false; iE.style.opacity = "1"; } m.innerHTML = ""; } }
 
+    function WheelIsPass(value){return /\bpas\b/iu.test(String(value||''));}
+    function WheelPaintRewards(rewards=CARK_ODULLERI){
+        for(let index=0;index<5;index++){
+            const label=document.getElementById('cark-ui-'+(index+1));if(!label)continue;
+            label.textContent=typeof rewards?.[index]==='string'?rewards[index]:'Pas';
+            // Conic gradients start at 12 o'clock; CSS rotate starts at 3 o'clock.
+            label.parentElement.style.transform=`rotate(${index*72+36-90}deg)`;
+        }
+    }
     // Set to your existing Worker's HTTPS /wheel/spin endpoint after deployment.
     const WHEEL_API_URL = 'https://bekmez-kasa.arifbekmez63.workers.dev/wheel/spin';
     let wheelRequest = null, wheelSessionEpoch = 0;
@@ -2369,7 +2382,7 @@
     function WheelResetSession() {
         ++wheelSessionEpoch; aktifKullanilanCarkOdulu = null;
         const popup = document.getElementById('cark-popup');
-        if (popup) { popup.classList.remove('active'); popup.style.display = 'none'; }
+        if(popup)CarkPopupKapat();
         for (const id of ['aktif-cark-hediye-kutusu', 'aktif-hediye-uyari']) {
             const el = document.getElementById(id); if (el) el.style.display = 'none';
         }
@@ -2401,7 +2414,7 @@
         if(desc)desc.textContent='Doğrulanmış hesabınıza özel haftalık fırsat.';if(btn)btn.textContent='Çarkı aç';
         try {
             const reward=await WheelReward(identity);if(!reward||!WheelStillCurrent(identity.user,identity.epoch))return;
-            if(/\bPas\b/u.test(reward.odul)){if(desc)desc.textContent='Bu haftanın hakkı kullanıldı. Yeni hakkınız süre dolunca açılır.';if(btn)btn.textContent='Bilgi';return;}if(banner)banner.style.display='none';
+            if(WheelIsPass(reward.odul)){if(desc)desc.textContent='Bu haftanın hakkı kullanıldı. Yeni hakkınız süre dolunca açılır.';if(btn)btn.textContent='Bilgi';return;}if(banner)banner.style.display='none';
             if(box)box.style.display='block';document.getElementById('kazanilan-odul-yazi').textContent=reward.odul;
             const days=Math.max(1,Math.ceil((reward.bitis-WheelNow())/86400000));document.getElementById('kazanilan-sure-yazi').textContent=days+' gün içinde kullanabilirsiniz.';
         } catch (_) { if(desc)desc.textContent='Fırsat bilgisi alınamadı. Bağlantınızı kontrol edin.'; }
@@ -2411,14 +2424,16 @@
         try{if(await WheelWait(BanKontrolu(identity.tel))||!WheelStillCurrent(identity.user,identity.epoch))return;}catch(_){OzelUyariGoster('Kontrol tamamlanamadı','Bağlantınızı kontrol ederek tekrar deneyin.','ℹ');return;}
         let reward;try{reward=await WheelReward(identity);}catch(_){OzelUyariGoster('Bilgi alınamadı','Çark hakkınız doğrulanamadı. Lütfen bağlantınızı kontrol edip tekrar deneyin.','📡');return;}
         if(!WheelStillCurrent(identity.user,identity.epoch))return;
-        if(reward){await CarkDurumunuKontrolEt();OzelUyariGoster('Bu haftanın hakkı kullanıldı','Mevcut ödülünüz Fırsatlar ekranında. Yeni hakkınız yedi günlük süre sonunda açılır.','ℹ');return;}
+        if(reward){await CarkDurumunuKontrolEt();const message=WheelIsPass(reward.odul)?'Bu haftaki kayıtlı sonucunuz Pas. Yeni hakkınız yedi günlük süre sonunda açılır.':'Bu haftaki ödülünüz: '+escapeHTML(reward.odul)+'. Fırsatlar ekranından kullanabilirsiniz.';OzelUyariGoster('Bu haftanın hakkı kullanıldı',message,'ℹ');return;}
         if(!WHEEL_API_URL){OzelUyariGoster('Çark şu anda kullanılamıyor','Kampanya kısa süre içinde yeniden kullanıma açılacak. Diğer fırsatları keşfedebilirsiniz.','ℹ');return;}
+        if(wheelRequest){OzelUyariGoster('Çark işlemi sürüyor','Sonuç kaydedildiğinde Fırsatlar ekranından görebilirsiniz.','ℹ');return;}
+        WheelPaintRewards(CARK_ODULLERI);
         document.getElementById('cark-element').style.transform='rotate(0deg)';document.getElementById('cark-element').style.transition='none';
-        const button=document.getElementById('cark-cevir-btn');button.style.display='block';button.disabled=!!wheelRequest;
+        const button=document.getElementById('cark-cevir-btn');button.style.display='block';button.disabled=!!wheelRequest;button.textContent='Şansımı Dene!';
         document.getElementById('cark-durum-metni').textContent='Haftada bir hak. Sonuç hesabınıza güvenli şekilde kaydedilir.';
-        const p=document.getElementById('cark-popup');p.style.display='flex';setTimeout(()=>{if(WheelStillCurrent(identity.user,identity.epoch))p.classList.add('active');},10);
+        PremiumDialogOpen('cark-popup');
     }
-    function CarkPopupKapat() { const p=document.getElementById('cark-popup');p.classList.remove('active');p.style.display='none'; }
+    function CarkPopupKapat(){PremiumDialogClose('cark-popup');}
     function WheelError(code, message) { const error=new Error(message); error.code=code; return error; }
     function WheelWait(promise, milliseconds=12000) {
         let timer;
@@ -2490,16 +2505,19 @@
             const data=await WheelSend(identity,crypto.randomUUID());
             if(!data||!WheelStillCurrent(identity.user,identity.epoch))return;
             if(!data.ok||data.uid!==identity.user.uid||typeof data.odul!=='string'||!data.odul.trim()||data.odul.length>100||!Number.isInteger(data.index)||data.index<0||data.index>4||!Number.isFinite(data.bitis)||data.bitis<=WheelNow())throw WheelError('RESULT_INVALID','Çark sonucu doğrulanamadı. Fırsatlar ekranından ödülünüzü kontrol edin.');
-            for(let i=0;i<5;i++){const label=document.getElementById('cark-ui-'+(i+1));if(label&&i===data.index)label.textContent=data.odul;}
+            operation.completed=true;
+            if(button)button.textContent='Çark dönüyor…';
+            const labels=Array.from({length:5},(_,index)=>CARK_ODULLERI[index]||'Pas');
+            labels[data.index]=data.odul;WheelPaintRewards(labels);
             const wheel=document.getElementById('cark-element');wheel.style.transition='transform 4s cubic-bezier(0.1,0.7,0.1,1)';wheel.style.transform=`rotate(${2160+360-data.index*72-36}deg)`;
             document.getElementById('cark-durum-metni').textContent='Sonuç hesabınıza kaydedildi. Çark dönüyor…';
             await new Promise(resolve=>setTimeout(resolve,4100));if(!WheelStillCurrent(identity.user,identity.epoch))return;
-            document.getElementById('cark-durum-metni').textContent=/\bPas\b/u.test(data.odul)?'Bu kez ödül çıkmadı. Yeni haftada tekrar bekleriz.':'Ödülünüz: '+data.odul;
+            document.getElementById('cark-durum-metni').textContent=WheelIsPass(data.odul)?'Sonuç: Pas. Bu kez ödül çıkmadı; yeni hakkınız süre dolunca açılır.':'Kazandınız: '+data.odul;
             WheelDiagnostic('complete');await CarkDurumunuKontrolEt();
         }catch(error){
             WheelDiagnostic('failed',window.BekmezCarkTeshis?.status||0,error.code||'CLIENT_ERROR');
             if(WheelSession())OzelUyariGoster('Çark işlemi tamamlanamadı',error.message,'ℹ');
-        }finally{if(wheelRequest===operation){wheelRequest=null;if(button)button.disabled=false;}}
+        }finally{if(wheelRequest===operation){wheelRequest=null;if(button){button.disabled=!!operation.completed;if(operation.completed)button.textContent='Sonuç kaydedildi';}}}
     }
     function WheelNow(){return typeof GetServerTimeFast==='function'?GetServerTimeFast():Date.now();}
     async function WheelRestoreGift(saved){
@@ -2507,7 +2525,7 @@
         const identity=await WheelIdentity(false);if(!identity)return false;
         try{
             const reward=await WheelReward(identity);
-            if(!reward||reward.odul!==saved||/\bPas\b/u.test(reward.odul)||!WheelStillCurrent(identity.user,identity.epoch))return false;
+            if(!reward||reward.odul!==saved||WheelIsPass(reward.odul)||!WheelStillCurrent(identity.user,identity.epoch))return false;
             aktifKullanilanCarkOdulu=reward.odul;
             document.getElementById('aktif-hediye-uyari').style.display='block';
             document.getElementById('sepet-hediye-yazi').textContent=reward.odul+' — kasa onayıyla';return true;
@@ -2516,7 +2534,7 @@
 
     async function CarkHediyesiniKullan() {
         const identity=await WheelIdentity();if(!identity)return;
-        try {const reward=await WheelReward(identity);if(!reward||/\bPas\b/u.test(reward.odul)){OzelUyariGoster('Ödül bulunamadı','Kullanılabilir ödülünüz bulunmuyor.','ℹ');return;}
+        try {const reward=await WheelReward(identity);if(!reward||WheelIsPass(reward.odul)){OzelUyariGoster('Ödül bulunamadı','Kullanılabilir ödülünüz bulunmuyor.','ℹ');return;}
             if(!WheelStillCurrent(identity.user,identity.epoch))return;aktifKullanilanCarkOdulu=reward.odul;
             document.getElementById('aktif-cark-hediye-kutusu').style.display='none';document.getElementById('aktif-hediye-uyari').style.display='block';document.getElementById('sepet-hediye-yazi').textContent=reward.odul+' — kasa onayıyla';
             SayfaGoster('sepet');await HesaplaVeGuncelle();
@@ -2711,7 +2729,7 @@
                 if(taslakVerisi.carkOdulu) {
                     const identity=await WheelIdentity(false);
                     const reward=identity?await WheelReward(identity):null;
-                    if(!reward||reward.odul!==taslakVerisi.carkOdulu||/\bPas\b/u.test(reward.odul)) {
+                    if(!reward||reward.odul!==taslakVerisi.carkOdulu||WheelIsPass(reward.odul)) {
                         await SecureSil(pendingKey);aktifKullanilanCarkOdulu=null;
                         throw new Error('Çark ödülünüz doğrulanamadı. Ödülü sepetten çıkarıp yeniden deneyin.');
                     }
