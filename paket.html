@@ -2,15 +2,15 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <!-- CSP Sıkılaştırıldı: Canlı Sistem reCAPTCHA Enterprise ve Google İzinleri Eklendi -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://*.firebaseio.com https://*.firebaseapp.com https://*.googleapis.com https://*.gstatic.com; script-src 'self' 'unsafe-inline' https://*.gstatic.com https://*.firebaseapp.com https://www.google.com https://apis.google.com https://*.firebaseio.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://*.visa.com https://upload.wikimedia.org https://nwzxvksywfzpvxwvtypf.supabase.co; frame-src 'self' https://www.google.com https://recaptcha.google.com https://*.firebaseapp.com; connect-src 'self' wss://*.firebaseio.com https://*.firebaseio.com https://*.googleapis.com https://www.google.com https://*.gstatic.com https://nwzxvksywfzpvxwvtypf.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self';">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://*.firebaseio.com https://*.firebaseapp.com https://*.googleapis.com https://*.gstatic.com; script-src 'self' 'unsafe-inline' https://*.gstatic.com https://*.firebaseapp.com https://www.google.com https://apis.google.com https://*.firebaseio.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://*.visa.com https://upload.wikimedia.org https://nwzxvksywfzpvxwvtypf.supabase.co; frame-src 'self' https://www.google.com https://recaptcha.google.com https://*.firebaseapp.com; connect-src 'self' https://*.workers.dev wss://*.firebaseio.com https://*.firebaseio.com https://*.googleapis.com https://www.google.com https://*.gstatic.com https://nwzxvksywfzpvxwvtypf.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self';">
     <title>Bekmez GO - Premium Paket</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#FF6B00">
+    <meta name="theme-color" content="#111415">
     <link rel="apple-touch-icon" href="icon-192.png">
 
     <!-- FIREBASE 10 COMPAT SÜRÜMÜ VE APP CHECK -->
@@ -556,6 +556,18 @@
     
 .customer-action-btn{background:#ff6b00;color:white;border:0;border-radius:12px;padding:14px;font-weight:800;cursor:pointer}
 </style>
+<style>
+/* Bekmez GO • customer interface / 2026-10 */
+:root{--bg-dark:#111415;--bg-gradient:none;--surface:#1b2021;--surface-solid:#1b2021;--surface-hover:#252c2c;--border:#303838;--border-light:#283030;--border-highlight:#465150;--text-main:#f6f4ed;--text-muted:#b0b9b5;--primary:#f5b879;--primary-light:#342b22;--primary-glow:transparent;--gradient-fire:linear-gradient(120deg,#d98c49,#ecaa6d);--gradient-gold:linear-gradient(120deg,#d8b27b,#edcb99);--success:#91c9a7;--danger:#ff918b;--warning:#edcb99}
+body{background:#111415;line-height:1.5}button,input,textarea,select{font-family:inherit}button{touch-action:manipulation}button:disabled{cursor:not-allowed;opacity:.55}button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible,[tabindex]:focus-visible{outline:3px solid #f5b879!important;outline-offset:4px}input,textarea,select{font-size:16px!important}a{color:var(--primary)}
+#main-user-ui{max-width:1100px;margin:0 auto}.app-header{border-bottom:1px solid var(--border);background:#111415!important;box-shadow:none!important}.brand-name,.page-title,.popup-title,.pwa-title{text-shadow:none!important;letter-spacing:-.6px}.page-title{font-size:25px;font-weight:750;margin:26px 18px 20px}.menu-intro{background:#202827!important;border:1px solid #34403b!important;border-radius:22px!important;box-shadow:none!important}.menu-kicker{color:#e5bb8d!important}.menu-intro-decoration{opacity:.15!important}.menu-section-head{padding-top:10px}.menu-intro h1{font-weight:750;letter-spacing:-1px}.search-input,.premium-input,.checkout-input,.note-input{background:#151a1b!important;border:1px solid #414b49!important;box-shadow:none!important;border-radius:12px!important;color:var(--text-main)!important}.search-input::placeholder,input::placeholder,textarea::placeholder{color:#9ca8a3!important;opacity:1}.search-container{margin-bottom:20px}.category-tabs{gap:9px;padding-bottom:14px}.tab-btn{background:#1b2021!important;border:1px solid #343d3a!important;box-shadow:none!important;border-radius:12px!important;min-height:44px}.tab-btn.active{background:#e8a66d!important;color:#1c211e!important;border-color:#e8a66d!important}.grid-container{gap:16px;padding:0 18px}.product-card{background:#1b2021!important;border:1px solid #333d39!important;border-radius:18px!important;box-shadow:none!important}.product-card .product-name{font-size:14px;font-weight:650;line-height:1.5;margin-top:3px;min-height:42px}.product-photo-area{background:#242b29!important;border-radius:14px!important}.product-card .product-price-badge{background:#252d29!important;border-color:#38463d!important;color:#f1d0ab!important;border-radius:10px}.product-card .product-price-badge:after{background:#e8a66d;color:#18211b}.popular-badge{box-shadow:none!important}.cart-item,.premium-glass-card,.order-panel,.receipt-card,.coupon-card,.aktif-hediye-kart,.empty-state-box{background:#1b2021!important;border:1px solid #36403c!important;box-shadow:none!important;border-radius:18px!important}.cart-item-name{font-weight:700;line-height:1.5}.cart-item-price{color:#f1c99f}.premium-glass-card{padding:24px 20px!important}.premium-label,.p-sec-title{font-size:13px!important;font-weight:650!important;letter-spacing:.1px!important}.premium-page-container{max-width:760px;margin:0 auto}.premium-toggle-box{background:#111715!important;box-shadow:none!important}.premium-toggle-bg{background:#344139!important;box-shadow:none!important}.premium-toggle-btn{min-height:44px}.premium-submit-btn,.order-btn,.pwa-main-btn,.floating-btn{box-shadow:none!important;border-radius:13px!important;min-height:48px;color:#19201b!important;font-weight:750!important}.premium-cark-banner{background:#28352d!important;border:1px solid #465b4c!important;box-shadow:none!important;border-radius:20px!important}.coupon-card{overflow:hidden}.c-title,.c-discount{color:#e5bf8e!important}.c-btn{background:#313e34!important;color:#f3d2a9!important;border:1px solid #50654f!important;border-radius:10px!important;min-height:44px}.bottom-nav{background:rgba(24,31,28,.98)!important;border:1px solid #414e44!important;border-radius:20px;box-shadow:0 8px 24px #0005!important}.nav-item{color:#b6c0b8;font-size:11px}.nav-item.active{background:#354338!important;color:#f3c595!important}.nav-item .nav-icon{filter:none!important}.nav-badge{background:#df9e65;color:#161d18}.floating-cart{filter:none!important}.popup-content,.custom-alert-box,.pwa-content-box{background:#1c2421!important;border:1px solid #465249!important;box-shadow:0 24px 80px #0008!important;border-radius:24px!important;max-height:90dvh;overflow-y:auto}.popup-content{padding:24px!important}.popup-overlay,.custom-alert-overlay{background:#080e0bd9!important;backdrop-filter:blur(6px)}.custom-alert-box{padding:30px 26px!important;text-align:left!important;max-width:430px!important}.custom-alert-box h3{font-size:22px!important;font-weight:750!important;line-height:1.35}.custom-alert-box p{font-size:14px!important;line-height:1.75!important;font-weight:450!important;color:#bec8c0!important}.alert-btn{min-height:48px;border-radius:12px!important;box-shadow:none!important;background:#e8aa74;color:#172019!important;font-weight:750!important}#custom-alert-icon{width:48px;height:48px;display:grid;place-items:center;border-radius:14px;background:#354336;color:#f5c68f;font-size:25px!important;margin-bottom:20px!important}.popup-header button{min-width:44px!important;min-height:44px!important}.legal-summary{padding:17px 18px;background:#2a382e;border:1px solid #465e49;border-radius:14px;color:#e2e9df;margin:0 0 18px;font-size:14px}.legal-section{border-bottom:1px solid #3c4940;padding:15px 0}.legal-section summary{cursor:pointer;font-size:15px;font-weight:700;color:#f2e9d9;min-height:32px}.legal-section p{font-size:14px;line-height:1.8;color:#bdc9c0;margin:10px 0 0}.legal-footer{font-size:12px;color:#abbbae;padding-top:18px}#legal-body{font-size:14px!important;max-height:65dvh!important;padding-right:8px!important;user-select:text;-webkit-user-select:text}#legal-popup .popup-content{max-width:620px;width:100%}#legal-popup .popup-title{font-size:21px!important}#legal-popup a{display:inline-block;padding:8px 0}.legal-link{cursor:pointer;text-decoration:underline;text-underline-offset:3px}.modern-checkbox-container label,#legal-checkbox+label{font-size:13px!important;line-height:1.7!important}.embers-container,.aura-bg,.custom-alert-glow,.pwa-icon-glow{display:none!important}.shimmer-btn:after,.neon-border:before,.status-dot:after{animation:none!important;display:none!important}.pwa-icon{animation:none!important}.military-security-badge{box-shadow:none!important}.empty-state-box svg{opacity:.65}.cart-btn,.bread-btn,.p-c-btn{min-width:44px;min-height:44px}.secure-footer{color:#a8b6ab!important}.footer-text{font-size:12px;color:#a8b6ab!important}::-webkit-scrollbar{display:block;width:5px;height:4px}::-webkit-scrollbar-thumb{background:#506052;border-radius:8px}
+@media(min-width:900px){.grid-container{grid-template-columns:repeat(4,minmax(0,1fr))}.app-header{padding:24px}.menu-intro{margin:26px 18px}.popup-overlay{align-items:center!important}.popup-content{max-width:620px}.custom-alert-box{width:430px}.product-card:hover{border-color:#857257!important;transform:translateY(-2px)}}
+@media(max-width:390px){.grid-container{gap:10px;padding:0 12px}.product-card .product-name{font-size:13px}.premium-glass-card{padding:20px 16px!important}.popup-content{padding:20px 16px!important}.custom-alert-box{padding:24px 20px!important}.nav-item{font-size:10px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+.product-icon svg{width:40px;height:40px;color:#dfb886}.product-icon-wrapper{background:#29332e!important;box-shadow:none!important;border:1px solid #465347!important}.bg-notify-box{background:#1b2420!important;border-color:#36483c!important;box-shadow:none!important}.premium-submit-btn:not(:disabled){background:#e8aa74!important}.menu-kicker-dot{background:#d8b27b!important;box-shadow:none!important}.menu-intro:before,.menu-intro:after{display:none!important}.menu-intro h1 em,.menu-section-kicker{color:#e8ba8c!important}.premium-glass-card.fade-up-enter{opacity:1}.c-b-title{font-size:17px;font-weight:700}.c-b-desc{font-size:13px;color:#bdc9c0;margin-top:6px}.c-b-btn{font-size:13px;border:1px solid #647b64;border-radius:10px;padding:9px 12px;white-space:nowrap}#cark-banner{gap:14px}.password-toggle{min-width:44px;min-height:44px;display:grid;place-items:center}.legal-footer{padding-bottom:4px}
+
+</style>
 </head>
 <body>
     
@@ -594,7 +606,7 @@
                 <h2 class="pwa-title">Bekmez GO'yu<br><span style="color:var(--primary);">Telefonunuza Kurun</span></h2>
                 <p class="pwa-desc">Sıra beklemeden paket siparişi verin, kuponları kaçırmayın ve lezzete tek tıkla ulaşın.</p>
                 <button class="pwa-main-btn shimmer-btn neon-border ripple-element" onclick="TetiklePwaPrompt()">Uygulamayı İndir</button>
-                <p style="font-size:11px; color:var(--text-muted); margin-top:20px; font-weight:600;">*Cihazınızda yer kaplamaz, anında kurulur.</p>
+                <p style="font-size:11px; color:var(--text-muted); margin-top:20px; font-weight:600;">Ana ekranınızdan hızlı erişim için tarayıcınıza ekleyin.</p>
             </div>
         </div>
 
@@ -687,9 +699,9 @@
         <!-- FIRSATLAR VE ÇARK EKRANI -->
         <div id="opportunities-container" style="display: none;">
             <h2 class="page-title">Sana Özel Fırsatlar</h2>
-            <div id="cark-banner" class="premium-cark-banner ripple-element" onclick="CarkPopupAc()">
+            <div id="cark-banner" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();CarkPopupAc();}" class="premium-cark-banner ripple-element" onclick="CarkPopupAc()">
                 <div class="c-b-content">
-                    <div class="c-b-title">🎰 Haftalık Şans Çarkı</div>
+                    <div class="c-b-title">Haftalık Şans Çarkı</div>
                     <div class="c-b-desc" id="cark-banner-desc">Sürpriz hediyeler seni bekliyor!</div>
                 </div>
                 <div class="c-b-btn" id="cark-banner-btn">Çevir</div>
@@ -749,7 +761,7 @@
 
             <!-- Bildirimler: sistem izni ilk uygun kullanıcı etkileşiminde otomatik istenir. -->
             <section class="bg-notify-box" aria-labelledby="bg-notify-title">
-                <div class="bg-notify-header"><span class="bg-notify-bell" aria-hidden="true">🔔</span><div><h3 id="bg-notify-title">Telefon Bildirimleri</h3></div></div>
+                <div class="bg-notify-header"><span class="bg-notify-bell" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg></span><div><h3 id="bg-notify-title">Telefon Bildirimleri</h3></div></div>
                 <p class="bg-notify-help">Sepet hatırlatmaları, fırsatlar, duyurular ve sipariş güncellemeleri için izin otomatik istenir. Özel bildirim sesi kullanılmaz. Bildirimler uygulama çalışırken gösterilir.</p>
                 <div id="bg-notify-status" role="status" aria-live="polite">Bildirim izni kontrol ediliyor…</div>
             </section>
@@ -761,15 +773,15 @@
                 </div>
 
                 <!-- GİRİŞ FORMU -->
-                <div id="login-form-area" class="auth-form fade-up-enter">
+                <div id="login-form-area" aria-label="Müşteri girişi" class="auth-form fade-up-enter">
                     <div class="premium-input-group">
-                        <input type="email" id="login-email" class="premium-input" placeholder=" " required autocomplete="off">
-                        <label class="premium-label">E-Posta Adresi</label>
+                        <input type="email" id="login-email" class="premium-input" placeholder=" " required autocomplete="username">
+                        <label class="premium-label" for="login-email">E-Posta Adresi</label>
                     </div>
                     <div class="premium-input-group">
-                        <input type="password" id="login-pass" class="premium-input" placeholder=" " required autocomplete="off">
+                        <input type="password" id="login-pass" class="premium-input" placeholder=" " required autocomplete="current-password">
                         <label class="premium-label">Şifre</label>
-                        <span class="password-toggle" onclick="SifreGosterGizle('login-pass', this)">
+                        <span class="password-toggle" role="button" tabindex="0" aria-label="Şifreyi göster veya gizle" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}" onclick="SifreGosterGizle('login-pass', this)">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                         </span>
                     </div>
@@ -794,7 +806,7 @@
                     <div class="premium-input-group">
                         <input type="password" id="prof-password" class="premium-input" placeholder=" " required autocomplete="off" onkeyup="CanliSifreKontrolu(this.value)">
                         <label class="premium-label">Güçlü Bir Şifre Belirleyin</label>
-                        <span class="password-toggle" onclick="SifreGosterGizle('prof-password', this)">
+                        <span class="password-toggle" role="button" tabindex="0" aria-label="Şifreyi göster veya gizle" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}" onclick="SifreGosterGizle('prof-password', this)">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                         </span>
                     </div>
@@ -821,8 +833,8 @@
                 <div class="military-security-badge" id="auth-security-badge">
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
                     <div>
-                        <strong>Google Firebase Altyapısı</strong>
-                        <span>Tüm verileriniz JWT Token bazlı kimlik doğrulama ile güvendedir.</span>
+                        <strong>Hesap güvenliği</strong>
+                        <span>Hesap işlemleri doğrulanmış oturum üzerinden yürütülür.</span>
                     </div>
                 </div>
             </div>
@@ -880,7 +892,7 @@
         <div id="cark-popup" class="popup-overlay" onclick="if(event.target === this) CarkPopupKapat();">
             <div class="popup-content" style="text-align: center;">
                 <div class="popup-drag-handle"></div>
-                <h3 class="popup-title" style="margin-bottom: 30px; font-size:24px;">Haftalık Şans Çarkı</h3>
+                <div class="popup-header"><h3 class="popup-title" style="font-size:22px;">Haftalık Şans Çarkı</h3><button type="button" class="alert-btn" aria-label="Çarkı kapat" onclick="CarkPopupKapat()">×</button></div>
                 <div style="position:relative;">
                     <div class="cark-ok"></div>
                     <div class="cark-kutu" id="cark-element">
@@ -946,7 +958,7 @@
                 <!-- KVKK VE SÖZLEŞMELER -->
                 <div style="margin: 15px 0 25px 0; display: flex; align-items: flex-start; gap: 12px; padding: 0 5px;">
                     <input type="checkbox" id="legal-checkbox" onchange="TogglePayButton()" style="width: 22px; height: 22px; accent-color: var(--primary); margin-top: 2px; cursor: pointer;">
-                    <label for="legal-checkbox" style="font-size: 11px; color: var(--text-muted); line-height: 1.5; cursor: pointer;"><a class="legal-link" onclick="AcSozlesme('kvkk'); event.preventDefault();">KVKK Aydınlatma Metni</a>, <a class="legal-link" onclick="AcSozlesme('mesafeli'); event.preventDefault();">Mesafeli Satış Sözleşmesi</a>, <a class="legal-link" onclick="AcSozlesme('teslimat'); event.preventDefault();">Teslimat Şartları</a> ve <a class="legal-link" onclick="AcSozlesme('iptal'); event.preventDefault();">İptal Koşulları</a>'nı okudum ve onaylıyorum.</label>
+                    <label for="legal-checkbox" style="font-size: 11px; color: var(--text-muted); line-height: 1.5; cursor: pointer;"><a class="legal-link" onclick="AcSozlesme('kvkk'); event.preventDefault();">KVKK Aydınlatma Metni</a>, <a class="legal-link" onclick="AcSozlesme('mesafeli'); event.preventDefault();">Mesafeli Satış Sözleşmesi</a>, <a class="legal-link" onclick="AcSozlesme('teslimat'); event.preventDefault();">Teslimat Şartları</a> ve <a class="legal-link" onclick="AcSozlesme('iptal'); event.preventDefault();">İptal Koşulları</a>'nı okudum; satış ve teslimat koşullarını kabul ediyorum. KVKK bağlantısı bilgilendirme içindir.</label>
                 </div>
                 
                 <div class="military-security-badge" style="margin-bottom: 15px;">
@@ -980,7 +992,7 @@
         </div>
     </div>
 
-    <div id="confirm-overlay" class="custom-alert-overlay" onclick="KapatConfirmModal(event)">
+    <div id="confirm-overlay" aria-labelledby="confirm-title" aria-describedby="confirm-text" class="custom-alert-overlay" onclick="KapatConfirmModal(event)">
         <div class="custom-alert-box" id="confirm-box" style="border-color: var(--danger);">
             <div class="custom-alert-glow" id="confirm-glow" style="background: var(--danger);"></div>
             <div class="custom-alert-content">
@@ -995,7 +1007,7 @@
         </div>
     </div>
     
-    <div id="legal-popup" class="popup-overlay" onclick="if(event.target === this) KapatSozlesme();">
+    <div id="legal-popup" aria-labelledby="legal-title" class="popup-overlay" onclick="if(event.target === this) KapatSozlesme();">
         <div class="popup-content" style="max-height: 85vh;">
             <div class="popup-drag-handle"></div>
             <div class="popup-header">
@@ -1006,14 +1018,14 @@
         </div>
     </div>
     
-    <div id="custom-alert-overlay" class="custom-alert-overlay" onclick="KapatUyariModal(event)">
+    <div id="custom-alert-overlay" aria-labelledby="custom-alert-title" aria-describedby="custom-alert-text" class="custom-alert-overlay" onclick="KapatUyariModal(event)">
         <div class="custom-alert-box" id="custom-alert-box">
             <div class="custom-alert-glow" id="custom-alert-glow"></div>
             <div class="custom-alert-content">
                 <div id="custom-alert-icon" style="font-size: 55px; margin-bottom: 20px;">⚠️</div>
                 <h3 id="custom-alert-title" style="margin: 0 0 14px 0; font-weight: 900; font-size: 22px; color: var(--text-main); letter-spacing:-0.5px;">Uyarı</h3>
                 <p id="custom-alert-text" style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;"></p>
-                <button onclick="KapatUyariModal(event, true)" class="alert-btn ripple-element" style="overflow:hidden;">Tamam, Anladım</button>
+                <button onclick="KapatUyariModal(event, true)" class="alert-btn ripple-element" style="overflow:hidden;">Anladım</button>
             </div>
         </div>
     </div>
@@ -1270,10 +1282,19 @@
         walk(t.content,safe); return safe.innerHTML;
     }
 
-    function OzelUyariGoster(baslik, metin, ikon) { document.getElementById("custom-alert-title").innerText = baslik; document.getElementById("custom-alert-text").innerHTML = GuvenliUyariIcerigi(metin); document.getElementById("custom-alert-icon").innerText = ikon; let p = document.getElementById("custom-alert-overlay"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10); }
-    function KapatUyariModal(e, force=false) { if(force || e.target === document.getElementById("custom-alert-overlay") || e.target === document.getElementById("distance-alert-overlay")) { let p = document.getElementById("custom-alert-overlay"); let d = document.getElementById("distance-alert-overlay"); p.classList.remove("active"); d.classList.remove("active"); setTimeout(() => { p.style.display = "none"; d.style.display = "none"; }, 400); } }
-    function SoruSor(baslik, metin, ikon, evetCallback, isDanger=false) { document.getElementById("confirm-title").innerText = baslik; document.getElementById("confirm-text").innerHTML = GuvenliUyariIcerigi(metin); document.getElementById("confirm-icon").innerText = ikon; let btn = document.getElementById("confirm-yes-btn"); let box = document.getElementById("confirm-box"); let glow = document.getElementById("confirm-glow"); if(isDanger) { btn.style.background = "var(--danger)"; btn.innerText = "İptal Et"; box.style.borderColor = "var(--danger)"; glow.style.background = "var(--danger)"; } else { btn.style.background = "var(--primary)"; btn.innerText = "Onayla"; box.style.borderColor = "var(--primary)"; glow.style.background = "var(--primary)"; } document.getElementById("confirm-yes-btn").onclick = () => { KapatConfirmModal(null, true); if(evetCallback) evetCallback(); }; let p = document.getElementById("confirm-overlay"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10); }
-    function KapatConfirmModal(e, force=false) { if(force || e.target === document.getElementById("confirm-overlay")) { let p = document.getElementById("confirm-overlay"); p.classList.remove("active"); setTimeout(() => p.style.display = "none", 400); } }
+    function PremiumIcon(kind='info') {
+        const paths={info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/>',lock:'<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V6a4 4 0 0 1 8 0v4"/>',check:'<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>',warning:'<path d="m12 3 10 18H2L12 3ZM12 9v5M12 17h.01"/>',food:'<path d="M4 16h16M6 16a6 6 0 0 1 12 0M12 8V6M3 20h18"/>',drink:'<path d="M6 6h12l-2 15H8L6 6ZM13 6l2-4h4M8 11h8"/>',side:'<path d="M3 12h18a9 9 0 0 1-18 0ZM7 8l3 4M12 4v8M17 7l-2 5"/>',gift:'<rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 12h18M12 8H8a3 3 0 1 1 3-3l1 3Zm0 0h4a3 3 0 1 0-3-3l-1 3Z"/>',bell:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/>'};
+        return '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(paths[kind]||paths.info)+'</svg>';
+    }
+    const premiumDialogFocus=new Map();
+    function PremiumDialogOpen(id){const p=document.getElementById(id);if(!p)return;if(!premiumDialogFocus.has(id))premiumDialogFocus.set(id,document.activeElement);document.body.style.overflow='hidden';p.style.display='flex';p.classList.add('active');p.setAttribute('role','dialog');p.setAttribute('aria-modal','true');p.tabIndex=-1;requestAnimationFrame(()=>{if(p.style.display!=='none')(p.querySelector('button,summary,[href],input')||p).focus();});}
+    function PremiumDialogClose(id){const p=document.getElementById(id);if(!p)return;p.classList.remove('active');p.style.display='none';const prior=premiumDialogFocus.get(id);premiumDialogFocus.delete(id);if(!premiumDialogFocus.size)document.body.style.overflow='';if(prior?.isConnected)prior.focus();}
+    function OzelUyariGoster(baslik,metin,ikon){document.getElementById('custom-alert-title').textContent=baslik;document.getElementById('custom-alert-text').innerHTML=GuvenliUyariIcerigi(metin);document.getElementById('custom-alert-icon').innerHTML=PremiumIcon(/🔒|🛡/.test(ikon)?'lock':/✅|🎉/.test(ikon)?'check':/⚠|❌|🚫/.test(ikon)?'warning':'info');PremiumDialogOpen('custom-alert-overlay');}
+    function KapatUyariModal(e,force=false){for(const id of ['custom-alert-overlay','distance-alert-overlay']){const p=document.getElementById(id);if(force||e?.target===p)PremiumDialogClose(id);}}
+    document.addEventListener('keydown',event=>{const ids=['custom-alert-overlay','confirm-overlay','legal-popup','distance-alert-overlay'];const id=ids.find(id=>document.getElementById(id)?.style.display==='flex');if(!id)return;const p=document.getElementById(id);if(event.key==='Escape'){event.preventDefault();PremiumDialogClose(id);return;}if(event.key!=='Tab')return;const list=[...p.querySelectorAll('button:not(:disabled),a[href],summary,input:not(:disabled),[tabindex="0"]')].filter(x=>x.getClientRects().length);if(!list.length){event.preventDefault();p.focus();return;}const first=list[0],last=list[list.length-1];if(event.shiftKey&&(document.activeElement===first||!p.contains(document.activeElement))){event.preventDefault();last.focus();}else if(!event.shiftKey&&(document.activeElement===last||!p.contains(document.activeElement))){event.preventDefault();first.focus();}});
+
+    function SoruSor(baslik, metin, ikon, evetCallback, isDanger=false) { document.getElementById("confirm-title").innerText = baslik; document.getElementById("confirm-text").innerHTML = GuvenliUyariIcerigi(metin); document.getElementById("confirm-icon").innerText = ikon; let btn = document.getElementById("confirm-yes-btn"); let box = document.getElementById("confirm-box"); let glow = document.getElementById("confirm-glow"); if(isDanger) { btn.style.background = "var(--danger)"; btn.innerText = "İşlemi Onayla"; box.style.borderColor = "var(--danger)"; glow.style.background = "var(--danger)"; } else { btn.style.background = "var(--primary)"; btn.innerText = "Onayla"; box.style.borderColor = "var(--primary)"; glow.style.background = "var(--primary)"; } document.getElementById("confirm-yes-btn").onclick = () => { KapatConfirmModal(null, true); if(evetCallback) evetCallback(); }; PremiumDialogOpen('confirm-overlay'); }
+    function KapatConfirmModal(e,force=false){if(force||e?.target===document.getElementById('confirm-overlay'))PremiumDialogClose('confirm-overlay');}
     
 
     async function SyncServerTime() { try { let st = Date.now(); let res = await fetch(window.location.href, { method: "HEAD", cache: "no-cache" }); let sDate = res.headers.get("Date"); if(sDate) { let serverDate = new Date(sDate).getTime(); let latency = (Date.now() - st) / 2; serverTimeOffset = (serverDate + latency) - Date.now(); } } catch(e) { serverTimeOffset = 0; } }
@@ -1570,6 +1591,8 @@
     function KayitOnayToggle() { let cb = document.getElementById("kayit-onay-cb"); let btn = document.getElementById("btn-email-verify"); if (cb && btn) { if (cb.checked && isPasswordValid) { btn.disabled = false; btn.style.opacity = "1"; } else { btn.disabled = true; btn.style.opacity = "0.5"; } } }
 
     firebase.auth().onAuthStateChanged(async (user) => {
+        WheelResetSession();
+        void CarkDurumunuKontrolEt();
         ++banAuthNesli;
         BanDinlemeyiDurdur();
         const authEpoch = banNesli;
@@ -1722,7 +1745,7 @@
                     let idToken = await authUser.getIdToken(true);
                     document.body.innerHTML += `<div style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999999;display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;font-weight:bold;backdrop-filter:blur(10px);"><div class="spinner" style="border-top-color:var(--danger);"></div><div style="margin-top:20px; font-size:18px;">Verileriniz İmha Ediliyor...</div></div>`;
                     
-                    await fetch(`${FIREBASE_URL}/CarkKullanimlari/${tel}.json?auth=${idToken}`, { method: "DELETE" });
+                    /* Ödül kaydı yalnız yetkili sunucu/kasa tarafından yönetilir. */
                     let temizTel = tel.replace(/[^0-9]/g, ''); await fetch(`${FIREBASE_URL}/WhatsappOnayliNumaralar/${temizTel}.json?auth=${idToken}`, { method: "DELETE" });
                     await fetch(`${FIREBASE_URL}/SilinmisHesaplar/${tel}.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify({ silinmeZamani: Date.now() }) });
                     
@@ -1800,7 +1823,7 @@
             await CanliMenuCek(true); MenuyuGercekZamanliDinle();
             try { await SiparisDurumBildiriminiBaslat(await SecureOku('bg_active_order_id')); } catch (_) {} 
             
-            setInterval(async () => { if(document.getElementById("opportunities-container").style.display === "block" && !isBannedUser) { await KuponlariCek(); await CarkDurumunuKontrolEt(); } }, 30000);
+            setInterval(async () => { if(document.getElementById("opportunities-container").style.display === "block" && !isBannedUser) { await KuponlariCek(); } }, 30000);
             
             try { let kS = await SecureOku("bg_saved_cart"); if(kS) { sepet = JSON.parse(kS); if(sepet.length > 0) { document.getElementById("nav-sepet-badge").innerText = sepet.length; document.getElementById("nav-sepet-badge").classList.add("show"); document.getElementById("floating-cart").style.display = "flex"; HesaplaVeGuncelle(); } } } catch(e) {}
             PushSepetDurumuYansit();
@@ -1985,7 +2008,7 @@
 
         urunListesi.forEach((ur, i) => {
             try {
-                let tur = GetKategoriAd(ur); let icon = "🥩"; if(tur === "İçecek") icon = "🥤"; else if(tur === "Ekstra") icon = "🍟";
+                let tur = GetKategoriAd(ur); let icon = PremiumIcon(tur === "İçecek" ? "drink" : tur === "Ekstra" ? "side" : "food");
                 let orjinalIndex = tumUrunler.findIndex(u => u.pName === ur.pName); if (orjinalIndex === -1) orjinalIndex = 0;
                 
                 let stok = UrunStogu(ur);
@@ -1994,7 +2017,7 @@
                 let p1KgStr = escapeHTML((ur.price1Kg || "0").toString()); let currentPrice = parseFloat(p1KgStr.replace(',', '.')) || 0; let oldP = history[ur.pName] || currentPrice || 0;
                 let badgeStr = ""; if (stokSifirMi) { badgeStr = `TÜKENDİ`; } else if (currentPrice < oldP) { badgeStr = `<span style="text-decoration: line-through; opacity: 0.6; font-size: 11px; margin-right: 5px; font-weight: 600;">${oldP.toString().replace('.',',')} ₺</span><span style="color: var(--success); font-weight: 900; font-size: 14px; text-shadow: 0 0 10px rgba(52, 199, 89, 0.4);">${p1KgStr} ₺</span>`; } else { badgeStr = `${p1KgStr} ₺`; }
 
-                let kartOpaklik = stokSifirMi ? "opacity: 0.5; filter: grayscale(1);" : ""; let isPopular = ur.pName ? populerUrunlerListesi.includes(ur.pName) : false; let popularBadgeHTML = (isPopular && !stokSifirMi) ? `<div class="popular-badge">🔥 POPÜLER</div>` : "";
+                let kartOpaklik = stokSifirMi ? "opacity: 0.5; filter: grayscale(1);" : ""; let isPopular = ur.pName ? populerUrunlerListesi.includes(ur.pName) : false; let popularBadgeHTML = (isPopular && !stokSifirMi) ? `<div class="popular-badge">POPÜLER</div>` : "";
 
                 const fotoUrl = FotoUrunUrl(ur.pName);
                 const fotoIcerik = fotoUrl
@@ -2336,119 +2359,105 @@
     async function KuponuIptalEt(sM = false) { if(!sM) HapticTitresim(); aktifKuponKodu = ""; aktifKuponIndirimTutari = 0; aktifKuponAltLimit = 0; aktifKuponHedefUrun = "Herşey"; let iE = document.getElementById("coupon-code"); if(iE) iE.value = ""; KuponArayuzunuGuncelle(); if(!sM) await HesaplaVeGuncelle(); }
     function KuponArayuzunuGuncelle() { let b = document.getElementById("coupon-apply-btn"); let m = document.getElementById("coupon-message"); let iE = document.getElementById("coupon-code"); if(aktifKuponIndirimTutari > 0) { b.style.background = "var(--danger)"; b.style.color = "white"; b.innerText = "İptal Et"; b.onclick = () => KuponuIptalEt(false); if(iE) { iE.disabled = true; iE.style.opacity = "0.6"; } m.innerHTML = `<span style="color: var(--success);">✓ ${aktifKuponIndirimTutari} TL İndirim!</span>`; } else { b.style.background = "rgba(255,255,255,0.05)"; b.style.color = "var(--text-main)"; b.innerText = "Uygula"; b.onclick = KuponSorgula; if(iE) { iE.disabled = false; iE.style.opacity = "1"; } m.innerHTML = ""; } }
 
+    // Set to your existing Worker's HTTPS /wheel/spin endpoint after deployment.
+    const WHEEL_API_URL = '';
+    let wheelRequest = null, wheelSessionEpoch = 0;
+    function WheelSession() {
+        const user = firebase.auth().currentUser;
+        if (!user || !user.emailVerified || isBannedUser || user.uid === 'jO9Jmp2cgXfGUfMVbv5fdlCPgV52') return null;
+        return user;
+    }
+    function WheelStillCurrent(user, epoch) {
+        return epoch === wheelSessionEpoch && WheelSession()?.uid === user.uid;
+    }
+    function WheelResetSession() {
+        ++wheelSessionEpoch; aktifKullanilanCarkOdulu = null;
+        const popup = document.getElementById('cark-popup');
+        if (popup) { popup.classList.remove('active'); popup.style.display = 'none'; }
+        for (const id of ['aktif-cark-hediye-kutusu', 'aktif-hediye-uyari']) {
+            const el = document.getElementById(id); if (el) el.style.display = 'none';
+        }
+    }
+    async function WheelIdentity(showNotice = true) {
+        const user = WheelSession();
+        if (!user) {
+            if (showNotice) { SayfaGoster('profil'); OzelUyariGoster('Hesabınıza giriş yapın', 'Çark ve ödüller yalnızca e-postası doğrulanmış müşteri hesaplarına açıktır.', '🔒'); }
+            return null;
+        }
+        const epoch = wheelSessionEpoch;
+        let tel;
+        try { tel = SiparisTelefonunuStandartlastir(user.displayName || await SecureOku('bg_t')); }
+        catch (_) { if (showNotice) OzelUyariGoster('Telefon doğrulaması gerekli', 'Hesabınızdaki telefon doğrulamasını tamamlayın.', '🔒'); return null; }
+        return WheelStillCurrent(user, epoch) ? {user, tel, epoch} : null;
+    }
+    async function WheelReward(identity) {
+        const snapshot = await firebase.database().ref('CarkKullanimlari/' + identity.tel).once('value');
+        if (!WheelStillCurrent(identity.user, identity.epoch)) return null;
+        const record = snapshot.val();
+        return record && typeof record.odul === 'string' && record.odul.length <= 100 && Number.isFinite(record.bitis) && record.bitis > Date.now() && (!record.uid || record.uid === identity.user.uid) ? record : null;
+    }
     async function CarkDurumunuKontrolEt() {
-        let b = document.getElementById("cark-banner"); let t = document.getElementById("cark-banner-desc"); let btn = document.getElementById("cark-banner-btn"); let aHK = document.getElementById("aktif-cark-hediye-kutusu");
-        let cDataRaw = await SecureOku("bg_cark_data"); let tel = await SecureOku("bg_t");
-        
-        if (!tel) { if(b) b.style.display = "flex"; if(t) t.innerText = "Giriş yap ve şansını dene!"; if(btn) btn.innerText = "Giriş Yap"; if(aHK) aHK.style.display = "none"; return; }
-        
-        if (cDataRaw) {
-            try {
-                let dec = decodeURIComponent(atob(cDataRaw)); let parts = dec.split("|||");
-                if (parts.length === 4 && parts[2] === CARK_LEGACY_MARKER && parts[3] === tel) {
-                    let odul = parts[0]; let bitis = parseInt(parts[1]); let sTime = await GetServerTimeFast();
-                    if (sTime < bitis) {
-                        if (odul === "😔 Pas") { if(b) b.style.display = "none"; if(aHK) aHK.style.display = "none"; } 
-                        else {
-                            if(b) b.style.display = "none";
-                            if(aHK) {
-                                aHK.style.display = "block";
-                                document.getElementById("kazanilan-odul-yazi").innerText = escapeHTML(odul);
-                                let kalanSaat = Math.floor((bitis - sTime) / 3600000); let kalanGun = Math.floor(kalanSaat / 24);
-                                document.getElementById("kazanilan-sure-yazi").innerText = `Kalan Süre: ${kalanGun > 0 ? kalanGun + " Gün" : kalanSaat + " Saat"}`;
-                            }
-                            if (aktifKullanilanCarkOdulu === odul) { document.getElementById("aktif-hediye-uyari").style.display = "block"; document.getElementById("sepet-hediye-yazi").innerText = `${escapeHTML(odul)} Hediyesi Eklendi!`; if(aHK) aHK.style.display = "none"; } else { document.getElementById("aktif-hediye-uyari").style.display = "none"; }
-                        }
-                        return;
-                    } else { await SecureSil("bg_cark_data"); }
-                } else { await SecureSil("bg_cark_data"); }
-            } catch(e) { await SecureSil("bg_cark_data"); }
-        }
-        if(b) b.style.display = "flex"; if(t) t.innerText = "Sürpriz hediyeler seni bekliyor!"; if(btn) btn.innerText = "Çevir"; if(aHK) aHK.style.display = "none"; document.getElementById("aktif-hediye-uyari").style.display = "none";
+        const banner=document.getElementById('cark-banner'), desc=document.getElementById('cark-banner-desc'), btn=document.getElementById('cark-banner-btn');
+        const box=document.getElementById('aktif-cark-hediye-kutusu');
+        if (banner) banner.style.display='flex'; if (box) box.style.display='none';
+        const identity=await WheelIdentity(false);
+        if (!identity) { aktifKullanilanCarkOdulu=null; if(desc)desc.textContent='Hesabınıza giriş yaparak fırsatları keşfedin.';if(btn)btn.textContent='Giriş yap';return; }
+        if(desc)desc.textContent='Doğrulanmış hesabınıza özel haftalık fırsat.';if(btn)btn.textContent='Çarkı aç';
+        try {
+            const reward=await WheelReward(identity);if(!reward||!WheelStillCurrent(identity.user,identity.epoch))return;
+            if(banner)banner.style.display='none';if(/\bPas\b/u.test(reward.odul))return;
+            if(box)box.style.display='block';document.getElementById('kazanilan-odul-yazi').textContent=reward.odul;
+            const days=Math.max(1,Math.ceil((reward.bitis-Date.now())/86400000));document.getElementById('kazanilan-sure-yazi').textContent=days+' gün içinde kullanabilirsiniz.';
+        } catch (_) { if(desc)desc.textContent='Fırsat bilgisi alınamadı. Bağlantınızı kontrol edin.'; }
     }
-
     async function CarkPopupAc() {
-        let tel = await SecureOku("bg_t");
-        if (!tel) { OzelUyariGoster("Giriş Yapmalısın", "Çarkı çevirmek için giriş yapman veya kayıt olman gerekiyor.", "🔒"); return; }
-        
-        let cDataRaw = await SecureOku("bg_cark_data");
-        if (cDataRaw) {
-            try {
-                let dec = decodeURIComponent(atob(cDataRaw)); let parts = dec.split("|||");
-                if (parts.length === 4 && parseInt(parts[1]) > await GetServerTimeFast()) { OzelUyariGoster("Zaten Çevirdin", "Çark hakkını zaten kullanmışsın. Yeni hakkını haftaya bekle!", "⏳"); return; }
-            } catch(e){}
-        }
-
-        let uAuth = firebase.auth().currentUser;
-        if(uAuth) {
-            try {
-                let idToken = await uAuth.getIdToken(true);
-                let carkRes = await fetch(`${FIREBASE_URL}/CarkKullanimlari/${tel}.json?auth=${idToken}&t=${Date.now()}`);
-                let carkData = await carkRes.json();
-                if (carkData && !carkData.error && carkData.bitis && await GetServerTimeFast() < carkData.bitis) {
-                    await SecureKaydet("bg_cark_data", btoa(encodeURIComponent(`${carkData.odul}|||${carkData.bitis}|||${CARK_LEGACY_MARKER}|||${tel}`)));
-                    CarkDurumunuKontrolEt(); OzelUyariGoster("Zaten Çevirdin", "Hesabınızda aktif bir çark çevirme kaydı bulundu.", "⏳"); return;
-                }
-            } catch(e){}
-        }
-
-        HapticTitresim();
-        document.getElementById("cark-element").style.transform = "rotate(0deg)"; document.getElementById("cark-element").style.transition = "none";
-        document.getElementById("cark-cevir-btn").style.display = "block"; document.getElementById("cark-durum-metni").innerText = "Sadece 7 günde 1 kez çevirebilirsin.";
-        let p = document.getElementById("cark-popup"); p.style.display = "flex"; setTimeout(() => { p.classList.add("active"); }, 10);
+        const identity=await WheelIdentity();if(!identity)return;
+        if(await BanKontrolu(identity.tel)||!WheelStillCurrent(identity.user,identity.epoch))return;
+        let reward;try{reward=await WheelReward(identity);}catch(_){OzelUyariGoster('Bilgi alınamadı','Çark hakkınız doğrulanamadı. Lütfen bağlantınızı kontrol edip tekrar deneyin.','📡');return;}
+        if(!WheelStillCurrent(identity.user,identity.epoch))return;
+        if(reward){await CarkDurumunuKontrolEt();OzelUyariGoster('Bu haftanın hakkı kullanıldı','Mevcut ödülünüz Fırsatlar ekranında. Yeni hakkınız yedi günlük süre sonunda açılır.','ℹ');return;}
+        if(!WHEEL_API_URL){OzelUyariGoster('Çark şu anda kullanılamıyor','Kampanya kısa süre içinde yeniden kullanıma açılacak. Diğer fırsatları keşfedebilirsiniz.','ℹ');return;}
+        document.getElementById('cark-element').style.transform='rotate(0deg)';document.getElementById('cark-element').style.transition='none';
+        const button=document.getElementById('cark-cevir-btn');button.style.display='block';button.disabled=!!wheelRequest;
+        document.getElementById('cark-durum-metni').textContent='Haftada bir hak. Sonuç hesabınıza güvenli şekilde kaydedilir.';
+        const p=document.getElementById('cark-popup');p.style.display='flex';setTimeout(()=>{if(WheelStillCurrent(identity.user,identity.epoch))p.classList.add('active');},10);
     }
-
-    function CarkPopupKapat() { let p = document.getElementById("cark-popup"); p.classList.remove("active"); setTimeout(() => { p.style.display = "none"; }, 500); }
-
+    function CarkPopupKapat() { const p=document.getElementById('cark-popup');p.classList.remove('active');p.style.display='none'; }
     async function CarkCevir() {
-        let btn = document.getElementById("cark-cevir-btn"); btn.style.display = "none"; document.getElementById("cark-durum-metni").innerText = "Çark dönüyor... Şans seninle olsun! 🎰"; HapticTitresim();
-        
-        let kazananIndex = Math.floor(Math.random() * 5); let dilimDerecesi = 360 / 5; let ekstraDonus = 360 * 6;
-        let hedefDerece = ekstraDonus + (360 - (kazananIndex * dilimDerecesi)) - (dilimDerecesi / 2);
-        
-        let cark = document.getElementById("cark-element"); cark.style.transition = "transform 4s cubic-bezier(0.1, 0.7, 0.1, 1)"; cark.style.transform = `rotate(${hedefDerece}deg)`;
-        
-        setTimeout(async () => {
-            HapticTitresim(); let odul = CARK_ODULLERI[kazananIndex]; let tel = await SecureOku("bg_t");
-            if (odul === "😔 Pas") {
-                document.getElementById("cark-durum-metni").innerText = "Maalesef pas geldi 😔 Haftaya tekrar dene!";
-                let b = document.getElementById("cark-banner"); if(b) b.style.display = "none";
-            } else {
-                document.getElementById("cark-durum-metni").innerText = `Tebrikler! ${odul} Kazandın! 🎉`;
-                BildirimGonder("Tebrikler! 🎉", `${odul} kazandın. Hemen kullanabilirsin.`);
-            }
-            
-            let sTime = await GetServerTimeFast(); let bitisSuresi = sTime + (7 * 24 * 60 * 60 * 1000); // 7 Gün
-            await SecureKaydet("bg_cark_data", btoa(encodeURIComponent(`${odul}|||${bitisSuresi}|||${CARK_LEGACY_MARKER}|||${tel}`)));
-            
-            let uAuth = firebase.auth().currentUser;
-            if(uAuth) {
-                try {
-                    let idToken = await uAuth.getIdToken(true);
-                    let res = await fetch(`${FIREBASE_URL}/CarkKullanimlari/${tel}.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify({ odul: odul, bitis: bitisSuresi }) });
-                    if(!res.ok) throw new Error("Çark kaydedilemedi.");
-                } catch(e){}
-            }
-            setTimeout(() => { CarkPopupKapat(); CarkDurumunuKontrolEt(); }, 3000);
-        }, 4000);
+        if(wheelRequest)return;
+        const operation={};wheelRequest=operation;const button=document.getElementById('cark-cevir-btn');if(button)button.disabled=true;
+        try {
+            const identity=await WheelIdentity();if(!identity)return;
+            if(await BanKontrolu(identity.tel)||!WheelStillCurrent(identity.user,identity.epoch))return;
+            const url=new URL(WHEEL_API_URL);if(url.protocol!=='https:'||!url.hostname.endsWith('.workers.dev')||url.pathname!=='/wheel/spin'||url.search||url.username||url.password)throw Error('Çark kampanyası şu anda kullanılamıyor.');
+            document.getElementById('cark-durum-metni').textContent='Hakkınız doğrulanıyor…';
+            const [idToken,check]=await Promise.all([identity.user.getIdToken(false),appCheck.getToken(false)]);
+            if(!WheelStillCurrent(identity.user,identity.epoch))return;
+            const requestId=crypto.randomUUID();const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),28000);
+            let response,data;
+            try{response=await fetch(url.href,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+idToken,'X-Firebase-AppCheck':check.token},body:JSON.stringify({telefon:identity.tel,requestId}),signal:controller.signal,cache:'no-store'});data=await response.json();}finally{clearTimeout(timeout);}
+            if(!WheelStillCurrent(identity.user,identity.epoch))return;
+            if(!response.ok){const messages={WEEKLY_LIMIT:'Bu haftanın çark hakkı kullanıldı. Yeni hakkınız yedi gün sonra açılır.',ACCOUNT_BLOCKED:'Hesabınızın kampanya erişimi kapatılmış.',PHONE_NOT_VERIFIED:'Telefon doğrulamanızı tamamlayın.',RATE_LIMITED:'Çok sık işlem yapıldı. Bir süre sonra tekrar deneyin.',LOGIN_REQUIRED:'Oturumunuz doğrulanamadı. Tekrar giriş yapın.'};throw Error(messages[data.code]||'Çark sonucu alınamadı. Bağlantınızı kontrol ederek tekrar deneyin.');}
+            if(!data.ok||data.uid!==identity.user.uid||typeof data.odul!=='string'||data.odul.length>100||!Number.isInteger(data.index)||data.index<0||data.index>4||!Number.isFinite(data.bitis)||data.bitis<=Date.now())throw Error('Çark sonucu doğrulanamadı.');
+            for(let i=0;i<5;i++){const label=document.getElementById('cark-ui-'+(i+1));if(label&&i===data.index)label.textContent=data.odul;}
+            const wheel=document.getElementById('cark-element');wheel.style.transition='transform 4s cubic-bezier(0.1,0.7,0.1,1)';wheel.style.transform=`rotate(${2160+360-data.index*72-36}deg)`;
+            document.getElementById('cark-durum-metni').textContent='Sonuç hesabınıza kaydedildi. Çark dönüyor…';
+            await new Promise(resolve=>setTimeout(resolve,4100));if(!WheelStillCurrent(identity.user,identity.epoch))return;
+            document.getElementById('cark-durum-metni').textContent=/\bPas\b/u.test(data.odul)?'Bu kez ödül çıkmadı. Yeni haftada tekrar bekleriz.':'Ödülünüz: '+data.odul;
+            await CarkDurumunuKontrolEt();
+        } catch(error) { if(WheelSession())OzelUyariGoster('Çark işlemi tamamlanamadı',error.name==='AbortError'?'Yanıt gecikti. Fırsatlar ekranından kayıtlı ödülünüzü kontrol edin.':error.message,'ℹ'); }
+        finally { if(wheelRequest===operation){wheelRequest=null;if(button)button.disabled=false;} }
     }
-
-    async function CarkHediyesiniKullan() { 
-        let cDataRaw = await SecureOku("bg_cark_data"); let tel = await SecureOku("bg_t"); 
-        if (cDataRaw) { 
-            try { 
-                let dec = decodeURIComponent(atob(cDataRaw)); let parts = dec.split("|||"); 
-                if (parts.length === 4 && parts[2] === CARK_LEGACY_MARKER && parts[3] === tel) { 
-                    aktifKullanilanCarkOdulu = parts[0]; 
-                    document.getElementById("aktif-cark-hediye-kutusu").style.display = "none"; document.getElementById("aktif-hediye-uyari").style.display = "block"; document.getElementById("sepet-hediye-yazi").innerText = `${escapeHTML(aktifKullanilanCarkOdulu)} Hediyesi Eklendi!`; 
-                    SayfaGoster('sepet'); OzelUyariGoster("Hediye Eklendi", `${escapeHTML(aktifKullanilanCarkOdulu)} sepetinize hediye olarak tanımlandı.`, "🎁"); 
-                    await HesaplaVeGuncelle(); 
-                } 
-            } catch(e) {} 
-        } 
+    async function CarkHediyesiniKullan() {
+        const identity=await WheelIdentity();if(!identity)return;
+        try {const reward=await WheelReward(identity);if(!reward||/\bPas\b/u.test(reward.odul)){OzelUyariGoster('Ödül bulunamadı','Kullanılabilir ödülünüz bulunmuyor.','ℹ');return;}
+            if(!WheelStillCurrent(identity.user,identity.epoch))return;aktifKullanilanCarkOdulu=reward.odul;
+            document.getElementById('aktif-cark-hediye-kutusu').style.display='none';document.getElementById('aktif-hediye-uyari').style.display='block';document.getElementById('sepet-hediye-yazi').textContent=reward.odul+' — kasa onayıyla';
+            SayfaGoster('sepet');await HesaplaVeGuncelle();
+        }catch(_){OzelUyariGoster('Ödül doğrulanamadı','Bağlantınızı kontrol ederek tekrar deneyin.','📡');}
     }
+    async function CarkHediyesiIptal(){aktifKullanilanCarkOdulu=null;document.getElementById('aktif-hediye-uyari').style.display='none';await CarkDurumunuKontrolEt();await HesaplaVeGuncelle();}
 
-    async function CarkHediyesiIptal() { aktifKullanilanCarkOdulu = null; document.getElementById("aktif-hediye-uyari").style.display = "none"; OzelUyariGoster("Hediye Çıkarıldı", "Hediye sepetten çıkarıldı, cüzdanınızda bekliyor.", "ℹ"); await CarkDurumunuKontrolEt(); await HesaplaVeGuncelle(); }
 
     // ==========================================
     // 7. SIFIR GÜVEN (ZERO-TRUST) SİPARİŞ VE HESAPLAMA
@@ -2541,7 +2550,7 @@
     async function PaketSiparisiGonder() {
         if (isBannedUser || !firebase.auth().currentUser) return;
         if(isProcessingOrder || (sepet.length === 0 && aktifKullanilanCarkOdulu === null)) return;
-        if(!document.getElementById("legal-checkbox").checked) { OzelUyariGoster("Sözleşme Onayı", "Sözleşmeleri onaylamanız gerek.", "📝"); return; }
+        if(!document.getElementById("legal-checkbox").checked) { OzelUyariGoster("Sözleşme Onayı", "Lütfen sipariş koşullarını inceleyip kabul kutusunu işaretleyin.", "📝"); return; }
         
         let telControl;
         try { telControl=SiparisTelefonunuStandartlastir(document.getElementById("chk-telefon").value); }
@@ -2660,7 +2669,7 @@
             // Siparis kaydi basariliysa profil baglantisi hatasinda ikinci siparis gonderme.
             if(!profilSiparisRes.ok) console.warn("Siparis kaydedildi; profil takip baglantisi guncellenemedi:", profilSiparisRes.status);
 
-            if (aktifKullanilanCarkOdulu !== null) { await SecureSil("bg_cark_data"); aktifKullanilanCarkOdulu = null; await fetch(`${FIREBASE_URL}/CarkKullanimlari/${tel}.json?auth=${idToken}`, { method: "DELETE" }); }
+            if (aktifKullanilanCarkOdulu !== null) { await SecureSil("bg_cark_data"); aktifKullanilanCarkOdulu = null; /* Ödül kaydı yalnız yetkili sunucu/kasa tarafından yönetilir. */ }
 
             await SecureKaydet("bg_active_order_id", benzersizSiparisID); await SecureKaydet("last_ord_t", tZaman.toString()); await SecureKaydet("bg_odeme_turu", odemeTuru);
             await SecureKaydet("bg_order_timestamp", zM); await SiparisDurumBildiriminiBaslat(benzersizSiparisID); await SecureSil("bg_saved_cart"); await SecureSil("bg_saved_note"); await SecureSil("bg_saved_coupon"); await SecureSil("bg_saved_cark");
@@ -2840,8 +2849,46 @@
         }, false);
     }
 
-    function AcSozlesme(tip) { let t = "", m = ""; if (tip === "kvkk") { t = "KVKK Aydınlatma Metni"; m = "Bekmez Pişirim Gıda Ltd. Şti. olarak kişisel verileriniz AES-256 ve Google Firebase standartlarında korunmaktadır. Bilgileriniz 3. şahıslarla paylaşılmaz."; } else if (tip === "mesafeli") { t = "Mesafeli Satış Sözleşmesi"; m = "6502 sayılı Tüketicinin Korunması Hakkında Kanun uyarınca gıda maddeleri için iade ve cayma hakkı bulunmamaktadır."; } else if (tip === "teslimat") { t = "Teslimat Şartları"; m = "Siparişleriniz ortalama 30-45 dk içerisinde teslim edilmektedir. Yoğunluk ve hava durumuna göre değişiklik gösterebilir."; } else if (tip === "iptal") { t = "İptal Koşulları"; m = "Siparişinizi restoran onayına kadar (ilk 3 dakika) iptal edebilirsiniz. Hazırlanmaya başlanan ürünlerde iptal gerçekleştirilemez."; } document.getElementById("legal-title").innerText = t; document.getElementById("legal-body").innerText = m; let p = document.getElementById("legal-popup"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10); }
-    function KapatSozlesme() { let p = document.getElementById("legal-popup"); p.classList.remove("active"); setTimeout(() => p.style.display = "none", 400); }
+    /* İşletme tarafından yayından önce doldurulmalıdır. Markayı tüzel kişi unvanı olarak kullanmayın. */
+    const LEGAL_BUSINESS = { controllerName: '', address: '', applicationContact: '', taxInfo: '', retentionPolicy: '', transferDetails: '' };
+    const LEGAL_CONTENT = {
+      kvkk: {title:'Kişisel verileriniz',summary:'Hangi bilgileri neden kullandığımızı ve haklarınızı burada inceleyebilirsiniz. Bu bilgilendirme, açık rıza talebi değildir.',sections:()=>[
+        ['Veri sorumlusu ve başvuru', LEGAL_BUSINESS.controllerName && LEGAL_BUSINESS.address && LEGAL_BUSINESS.applicationContact ? `${LEGAL_BUSINESS.controllerName}. Adres: ${LEGAL_BUSINESS.address}. Başvuru: ${LEGAL_BUSINESS.applicationContact}.` : 'Veri sorumlusunun resmi unvanı, adresi ve başvuru kanalı işletme tarafından henüz tamamlanmamıştır. Bu bölüm nihai aydınlatma metni değildir. Bilgi almak için işletmeyle iletişime geçin.'],
+        ['Toplanan bilgiler ve kullanım amaçları','Hesap için e-posta ve telefon; sipariş için ad, teslimat adresi, sepet ve sipariş bilgileri kullanılır. Konum izni verirseniz teslimat bölgesini kontrol etmek için konumunuz alınır. Hesap ve oturum bilgileri cihazınızda saklanabilir. Güvenlik ve kötüye kullanım kontrollerinde kimlik doğrulama bilgileri işlenir.'],
+        ['Toplama yöntemi ve hukuki sebepler','Bilgiler uygulamadaki formlar, hesap doğrulaması ve izin verdiğiniz cihaz özellikleri üzerinden elektronik olarak alınır. Siparişin kurulması ve ifası için gerekli veriler sözleşmenin ifası; mevzuatın zorunlu kıldığı işlemler hukuki yükümlülük kapsamında değerlendirilebilir. İşletme, her veri işleme amacı için geçerli hukuki sebebi ve varsa açık rıza gerektiren süreçleri ayrıca belirlemelidir.'],
+        ['Hizmet sağlayıcılar ve aktarım',LEGAL_BUSINESS.transferDetails || 'Uygulama Google Firebase, Cloudflare ve görseller için Supabase hizmetlerini kullanır; doğrulama/iletişimde WhatsApp kullanılabilir. Bu hizmetler veri işlenmesine ve yapılandırmaya göre yurt dışına aktarıma yol açabilir. İşletme, alıcıları, aktarım amaçlarını ve uygulanacak hukuki güvenceleri yayından önce bu alanda açıklamalıdır.'],
+        ['Saklama ve cihaz izinleri',LEGAL_BUSINESS.retentionPolicy || 'Saklama süreleri ve silme politikası işletme tarafından belirlenmelidir. Hesabı uygulamadan silmek, mevzuat gereği saklanan tüm kayıtların anında silindiği anlamına gelmez. Konum ve bildirim izinlerini cihazınızın veya tarayıcınızın ayarlarından yönetebilirsiniz.'],
+        ['Haklarınız','KVKK madde 11 kapsamında verilerinizin işlenip işlenmediğini öğrenme, bilgi isteme, işlenme amacını ve aktarılan kişileri öğrenme; düzeltme, şartları varsa silme/yok etme ve ilgili kişilere bildirim isteme; yalnız otomatik analizle aleyhinize çıkan sonuca itiraz etme ve hukuka aykırı işleme nedeniyle zararın giderilmesini talep etme haklarınız vardır. Başvurunuzu yukarıdaki veri sorumlusu kanalına iletebilirsiniz.']
+      ]},
+      mesafeli:{title:'Sipariş ve satış bilgileri',summary:'Siparişi göndermeden önce ürünleri, miktarları, toplam bedeli ve teslimat adresini kontrol edin.',sections:()=>[
+        ['Satıcı bilgileri',LEGAL_BUSINESS.controllerName && LEGAL_BUSINESS.address ? `${LEGAL_BUSINESS.controllerName} — ${LEGAL_BUSINESS.address}. ${LEGAL_BUSINESS.taxInfo}` : 'Satıcının resmi unvanı, açık adresi ve gerekli kayıt/iletişim bilgileri işletme tarafından tamamlanmalıdır. Bu bilgilendirme tek başına eksiksiz mesafeli satış sözleşmesi değildir.'],
+        ['Siparişin durumu','Gönderilen sipariş kasa onayını bekler. Güncel durumu Siparişlerim ekranından takip edin. Bağlantı kesildiğinde tekrar sipariş oluşturmadan önce bu ekranı kontrol edin.'],
+        ['Bedel ve teslimat','Ürünler, miktarlar ve uygulanan indirimler sepetinizde gösterilir. Teslimat adresinin doğruluğundan emin olun. İşletme; ödeme yöntemi, varsa ek ücretler ve teslimat şartlarını sipariş öncesinde açıkça bildirmelidir.'],
+        ['Tüketici hakları','Çabuk bozulabilen veya son kullanma tarihi geçebilecek mallar gibi mevzuattaki istisnalar cayma hakkını etkileyebilir. Bu durum ayıplı, eksik veya yanlış ürün teslimindeki yasal haklarınızı ortadan kaldırmaz. Uyuşmazlıklarda mevzuata göre tüketici hakem heyeti veya tüketici mahkemesine başvurulabilir.']
+      ]},
+      teslimat:{title:'Teslimat hakkında',summary:'Doğru adres ve ulaşılabilir bir telefon, siparişinizin sorunsuz ulaşmasını sağlar.',sections:()=>[
+        ['Teslimat bölgesi','Uygulama konumunuzu teslimat alanıyla karşılaştırır. Konum alınamazsa tarayıcı ve işletim sistemi izinlerini kontrol edin. İşletmenin belirlediği teslimat alanı dışında sipariş kabul edilmeyebilir.'],
+        ['Adres ve teslimat süresi','Açık adresinizi, bina/daire bilgilerini ve gerekiyorsa teslimat notunu yazın. Hazırlık, yoğunluk ve yol koşulları teslimat süresini etkileyebilir. Bu metin kesin bir teslimat süresi taahhüdü içermez; siparişinizin durumunu takip ekranından kontrol edin.'],
+        ['Eksik veya yanlış teslimat','Sorunu ve sipariş bilginizi işletmeye iletin. Sipariş kayıtlarını ve varsa ilgili görselleri koruyun. Yasal haklarınız saklıdır.']
+      ]},
+      iptal:{title:'İptal ve destek',summary:'Siparişinizi değiştirmek veya bir sorun bildirmek için durumuna göre aşağıdaki yolu izleyin.',sections:()=>[
+        ['Kasa onayından önce','Siparişlerim ekranında iptal seçeneği görünüyorsa iptal talebini buradan gönderin. İşlemin tamamlandığını güncel sipariş durumundan doğrulayın.'],
+        ['Kasa onayından sonra','Hazırlık başlamışsa uygulamadan iptal seçeneği bulunmayabilir. İşletmeyle iletişime geçin; talebiniz siparişin durumu ve yasal haklarınız çerçevesinde değerlendirilir.'],
+        ['İade ve sorun çözümü','Gıda ürünlerinde cayma hakkının istisnaları bulunabilir. Eksik, yanlış veya ayıplı teslimatla ilgili haklarınız korunur. İşletmeye sipariş numaranızla ulaşın; gerekli düzeltme veya iade süreci somut duruma göre belirlenir.']
+      ]}
+    };
+    function AcSozlesme(tip) {
+      const info=LEGAL_CONTENT[tip];if(!info)return;
+      document.getElementById('legal-title').textContent=info.title;
+      const body=document.getElementById('legal-body');body.replaceChildren();
+      const intro=document.createElement('p');intro.className='legal-summary';intro.textContent=info.summary;body.append(intro);
+      info.sections().forEach(([title,text],index)=>{const section=document.createElement('details');section.className='legal-section';section.open=index===0;const heading=document.createElement('summary');heading.textContent=title;const p=document.createElement('p');p.textContent=text;section.append(heading,p);body.append(section);});
+      const footer=document.createElement('div');footer.className='legal-footer';footer.textContent='Bekmez GO · Bilgilendirme merkezi';body.append(footer);
+      const contact=document.createElement('a');contact.href='https://wa.me/'+DUKKAN_WHATSAPP_NUMARASI;contact.target='_blank';contact.rel='noopener noreferrer';contact.textContent='İşletmeyle iletişime geç';body.append(contact);
+      PremiumDialogOpen('legal-popup');body.scrollTop=0;
+    }
+    function KapatSozlesme(){PremiumDialogClose('legal-popup');}
+
 
     function TetiklePwaPrompt() { if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.then((c) => { if (c.outcome === 'accepted') { CloseFullscreenPrompt(); } deferredPrompt = null; }); } else { OzelUyariGoster("Zaten Yüklü", "Uygulama cihazınıza zaten yüklü veya tarayıcınız PWA desteklemiyor. (Safari: Paylaş > Ana Ekrana Ekle)", "ℹ"); } }
     function CloseFullscreenPrompt() { let e = document.getElementById('pwa-fullscreen-prompt'); e.classList.remove('active'); setTimeout(() => { e.style.display = 'none'; }, 400); }
