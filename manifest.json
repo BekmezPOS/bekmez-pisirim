@@ -3,8 +3,8 @@
   "short_name": "Bekmez GO",
   "start_url": "/bekmez-pisirim/paket.html",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#FF6B00",
+  "background_color": "#111415",
+  "theme_color": "#111415",
   "scope": "/bekmez-pisirim/",
   "icons": [
     {
