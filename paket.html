@@ -2360,7 +2360,7 @@ body{background:#111415;line-height:1.5}button,input,textarea,select{font-family
     function KuponArayuzunuGuncelle() { let b = document.getElementById("coupon-apply-btn"); let m = document.getElementById("coupon-message"); let iE = document.getElementById("coupon-code"); if(aktifKuponIndirimTutari > 0) { b.style.background = "var(--danger)"; b.style.color = "white"; b.innerText = "İptal Et"; b.onclick = () => KuponuIptalEt(false); if(iE) { iE.disabled = true; iE.style.opacity = "0.6"; } m.innerHTML = `<span style="color: var(--success);">✓ ${aktifKuponIndirimTutari} TL İndirim!</span>`; } else { b.style.background = "rgba(255,255,255,0.05)"; b.style.color = "var(--text-main)"; b.innerText = "Uygula"; b.onclick = KuponSorgula; if(iE) { iE.disabled = false; iE.style.opacity = "1"; } m.innerHTML = ""; } }
 
     // Set to your existing Worker's HTTPS /wheel/spin endpoint after deployment.
-    const WHEEL_API_URL = '';
+    const WHEEL_API_URL = 'https://bekmez-kasa.arifbekmez63.workers.dev/wheel/spin';
     let wheelRequest = null, wheelSessionEpoch = 0;
     function WheelSession() {
         const user = firebase.auth().currentUser;
