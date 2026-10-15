@@ -571,6 +571,18 @@
 .cark-close-btn:hover{background:rgba(255,255,255,.12)}.cark-close-btn:active{transform:scale(.95)}
 #cark-popup .popup-content{max-height:calc(100dvh - 24px);overflow-y:auto}
 #cark-durum-metni{min-height:42px}
+#cark-result-popup{align-items:center;justify-content:center;padding:16px;z-index:2100}
+#cark-result-popup .popup-content{max-width:400px;max-height:calc(100dvh - 32px);border:1px solid var(--border-highlight);border-radius:24px;padding:24px;text-align:center;transform:none;box-sizing:border-box}
+.cark-result-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}
+.cark-result-label{color:var(--text-muted);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+#cark-result-icon{width:56px;height:56px;margin:0 auto 16px;border-radius:18px;display:grid;place-items:center;background:var(--primary-light);color:var(--primary)}
+#cark-result-icon svg{width:28px;height:28px}
+#cark-result-title{font-size:22px;margin:0 0 10px;color:var(--text-main)}
+#cark-result-prize{font-size:26px;font-weight:900;line-height:1.3;overflow-wrap:anywhere;color:var(--primary);margin:0 0 16px}
+#cark-result-description{font-size:14px;line-height:1.65;color:var(--text-muted);margin:0}
+#cark-result-expiry{font-size:12px;line-height:1.6;color:var(--text-muted);margin:14px 0 22px}
+#cark-result-primary{width:100%;min-height:48px;margin:0}
+#cark-result-later{min-height:44px;width:100%;margin-top:8px;border:0;background:transparent;color:var(--text-muted);font:inherit;font-size:13px;font-weight:700;cursor:pointer}
 </style>
 </head>
 <body>
@@ -909,6 +921,20 @@
                 </div>
                 <p id="cark-durum-metni" role="status" aria-live="polite" aria-atomic="true" style="color:var(--text-muted); font-weight:700; font-size:14px; margin-bottom:20px;">Sadece 7 günde 1 kez çevirebilirsin.</p>
                 <button id="cark-cevir-btn" class="order-btn shimmer-btn neon-border ripple-element" onclick="CarkCevir()">Şansımı Dene!</button>
+            </div>
+        </div>
+
+        <!-- Doğrulanmış çark sonucu: ödül ve Pas aynı pencerede gösterilir. -->
+        <div id="cark-result-popup" class="popup-overlay" role="dialog" aria-modal="true" aria-labelledby="cark-result-title" aria-describedby="cark-result-prize cark-result-description cark-result-expiry" onclick="if(event.target === this) WheelResultClose();">
+            <div class="popup-content">
+                <div class="cark-result-header"><span class="cark-result-label">Haftalık şans çarkı</span><button id="cark-result-close" type="button" class="cark-close-btn ripple-element" aria-label="Çark sonucunu kapat" onclick="WheelResultClose()"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+                <div id="cark-result-icon" aria-hidden="true"></div>
+                <h3 id="cark-result-title">Çark sonucunuz</h3>
+                <p id="cark-result-prize"></p>
+                <p id="cark-result-description"></p>
+                <p id="cark-result-expiry"></p>
+                <button id="cark-result-primary" type="button" class="order-btn ripple-element">Tamam</button>
+                <button id="cark-result-later" type="button" onclick="WheelResultClose()">Daha sonra</button>
             </div>
         </div>
 
@@ -1295,7 +1321,7 @@
     function PremiumDialogClose(id){const p=document.getElementById(id);if(!p)return;p.classList.remove('active');p.style.display='none';const prior=premiumDialogFocus.get(id);premiumDialogFocus.delete(id);if(!premiumDialogFocus.size)document.body.style.overflow='';if(prior?.isConnected)prior.focus();}
     function OzelUyariGoster(baslik,metin,ikon){document.getElementById('custom-alert-title').textContent=baslik;document.getElementById('custom-alert-text').innerHTML=GuvenliUyariIcerigi(metin);document.getElementById('custom-alert-icon').innerHTML=PremiumIcon(/🔒|🛡/.test(ikon)?'lock':/✅|🎉/.test(ikon)?'check':/⚠|❌|🚫/.test(ikon)?'warning':'info');PremiumDialogOpen('custom-alert-overlay');}
     function KapatUyariModal(e,force=false){for(const id of ['custom-alert-overlay','distance-alert-overlay']){const p=document.getElementById(id);if(force||e?.target===p)PremiumDialogClose(id);}}
-    document.addEventListener('keydown',event=>{const ids=['custom-alert-overlay','confirm-overlay','legal-popup','distance-alert-overlay','cark-popup'];const id=ids.find(id=>document.getElementById(id)?.style.display==='flex');if(!id)return;const p=document.getElementById(id);if(event.key==='Escape'){event.preventDefault();PremiumDialogClose(id);return;}if(event.key!=='Tab')return;const list=[...p.querySelectorAll('button:not(:disabled),a[href],summary,input:not(:disabled),[tabindex="0"]')].filter(x=>x.getClientRects().length);if(!list.length){event.preventDefault();p.focus();return;}const first=list[0],last=list[list.length-1];if(event.shiftKey&&(document.activeElement===first||!p.contains(document.activeElement))){event.preventDefault();last.focus();}else if(!event.shiftKey&&(document.activeElement===last||!p.contains(document.activeElement))){event.preventDefault();first.focus();}});
+    document.addEventListener('keydown',event=>{const ids=['custom-alert-overlay','confirm-overlay','legal-popup','distance-alert-overlay','cark-result-popup','cark-popup'];const id=ids.find(id=>document.getElementById(id)?.style.display==='flex');if(!id)return;const p=document.getElementById(id);if(event.key==='Escape'){event.preventDefault();PremiumDialogClose(id);return;}if(event.key!=='Tab')return;const list=[...p.querySelectorAll('button:not(:disabled),a[href],summary,input:not(:disabled),[tabindex="0"]')].filter(x=>x.getClientRects().length);if(!list.length){event.preventDefault();p.focus();return;}const first=list[0],last=list[list.length-1];if(event.shiftKey&&(document.activeElement===first||!p.contains(document.activeElement))){event.preventDefault();last.focus();}else if(!event.shiftKey&&(document.activeElement===last||!p.contains(document.activeElement))){event.preventDefault();first.focus();}});
 
     function SoruSor(baslik, metin, ikon, evetCallback, isDanger=false) { document.getElementById("confirm-title").innerText = baslik; document.getElementById("confirm-text").innerHTML = GuvenliUyariIcerigi(metin); document.getElementById("confirm-icon").innerText = ikon; let btn = document.getElementById("confirm-yes-btn"); let box = document.getElementById("confirm-box"); let glow = document.getElementById("confirm-glow"); if(isDanger) { btn.style.background = "var(--danger)"; btn.innerText = "İşlemi Onayla"; box.style.borderColor = "var(--danger)"; glow.style.background = "var(--danger)"; } else { btn.style.background = "var(--primary)"; btn.innerText = "Onayla"; box.style.borderColor = "var(--primary)"; glow.style.background = "var(--primary)"; } document.getElementById("confirm-yes-btn").onclick = () => { KapatConfirmModal(null, true); if(evetCallback) evetCallback(); }; PremiumDialogOpen('confirm-overlay'); }
     function KapatConfirmModal(e,force=false){if(force||e?.target===document.getElementById('confirm-overlay'))PremiumDialogClose('confirm-overlay');}
@@ -2323,6 +2349,8 @@
 
         let tries = parseInt(await SecureOku("cpn_try") || "0");
         let blockTime = parseInt(await SecureOku("cpn_blk") || "0");
+        // Süresi dolan bekleme yeniden başlamamalı; bu sayaç yalnız arayüz içindir.
+        if(blockTime > 0 && Date.now() >= blockTime) { tries = 0; await SecureSil("cpn_try"); await SecureSil("cpn_blk"); }
         if(Date.now() < blockTime) { OzelUyariGoster("Engellendi", "Çok fazla hatalı deneme yaptınız. 15 Dakika sonra tekrar deneyin.", "🚫"); return; }
         if(tries >= 5) { await SecureKaydet("cpn_blk", Date.now() + (15*60000)); OzelUyariGoster("Kilitlendi", "5 Hatalı deneme sebebiyle kupon sistemi 15 dk kilitlendi.", "🔒"); return; }
 
@@ -2334,7 +2362,7 @@
             b.disabled = false; b.innerText = "Uygula";
             
             if(d && !d.error && d.discountAmount > 0 && d.remainingUses > 0) { 
-                await SecureSil("cpn_try"); 
+                await SecureSil("cpn_try"); await SecureSil("cpn_blk");
                 if (d.isAppCoupon !== true) { KuponuIptalEt(true); OzelUyariGoster("Sadece Mağazada", "Bu kupon sadece restoran içi siparişlerde geçerlidir.", "🚫"); return; }
                 let aU = (d.targetProduct && d.targetProduct !== "") ? d.targetProduct : "Herşey"; let uS = false; let hM = ""; 
                 
@@ -2351,7 +2379,8 @@
                 await HesaplaVeGuncelle(); KuponArayuzunuGuncelle(); 
             } else { 
                 await SecureKaydet("cpn_try", tries + 1);
-                await KuponuIptalEt(true); OzelUyariGoster("Geçersiz", `Hatalı, tükenmiş veya süresi dolmuş kod. (${5 - tries} hakkınız kaldı)`, "❌"); 
+                if(tries + 1 >= 5) await SecureKaydet("cpn_blk", Date.now() + 15*60000);
+                await KuponuIptalEt(true); OzelUyariGoster("Geçersiz", tries + 1 >= 5 ? "5 hatalı deneme yaptınız. 15 dakika sonra tekrar deneyebilirsiniz." : `Hatalı, tükenmiş veya süresi dolmuş kod. (${4 - tries} hakkınız kaldı)`, "❌");
             } 
         } catch(e) { b.disabled = false; b.innerText = "Uygula"; OzelUyariGoster("Hata", "Bağlantı hatası.", "📡"); }
     }
@@ -2383,6 +2412,7 @@
         ++wheelSessionEpoch; aktifKullanilanCarkOdulu = null;
         const popup = document.getElementById('cark-popup');
         if(popup)CarkPopupKapat();
+        WheelResultClose();
         for (const id of ['aktif-cark-hediye-kutusu', 'aktif-hediye-uyari']) {
             const el = document.getElementById(id); if (el) el.style.display = 'none';
         }
@@ -2424,7 +2454,7 @@
         try{if(await WheelWait(BanKontrolu(identity.tel))||!WheelStillCurrent(identity.user,identity.epoch))return;}catch(_){OzelUyariGoster('Kontrol tamamlanamadı','Bağlantınızı kontrol ederek tekrar deneyin.','ℹ');return;}
         let reward;try{reward=await WheelReward(identity);}catch(_){OzelUyariGoster('Bilgi alınamadı','Çark hakkınız doğrulanamadı. Lütfen bağlantınızı kontrol edip tekrar deneyin.','📡');return;}
         if(!WheelStillCurrent(identity.user,identity.epoch))return;
-        if(reward){await CarkDurumunuKontrolEt();const message=WheelIsPass(reward.odul)?'Bu haftaki kayıtlı sonucunuz Pas. Yeni hakkınız yedi günlük süre sonunda açılır.':'Bu haftaki ödülünüz: '+escapeHTML(reward.odul)+'. Fırsatlar ekranından kullanabilirsiniz.';OzelUyariGoster('Bu haftanın hakkı kullanıldı',message,'ℹ');return;}
+        if(reward){WheelShowResult(reward,identity,true);void CarkDurumunuKontrolEt();return;}
         if(!WHEEL_API_URL){OzelUyariGoster('Çark şu anda kullanılamıyor','Kampanya kısa süre içinde yeniden kullanıma açılacak. Diğer fırsatları keşfedebilirsiniz.','ℹ');return;}
         if(wheelRequest){OzelUyariGoster('Çark işlemi sürüyor','Sonuç kaydedildiğinde Fırsatlar ekranından görebilirsiniz.','ℹ');return;}
         WheelPaintRewards(CARK_ODULLERI);
@@ -2434,6 +2464,22 @@
         PremiumDialogOpen('cark-popup');
     }
     function CarkPopupKapat(){PremiumDialogClose('cark-popup');}
+    function WheelResultClose(){PremiumDialogClose('cark-result-popup');}
+    function WheelShowResult(record,identity,existing=false){
+        // Sonuç istemcide üretilmez. Yalnız doğrulanmış sunucu yanıtı/kayıt gösterilir.
+        if(!identity||!WheelStillCurrent(identity.user,identity.epoch)||!record||typeof record.odul!=='string'||!record.odul.trim()||record.odul.length>100||!Number.isFinite(record.bitis)||record.bitis<=WheelNow()||(record.uid&&record.uid!==identity.user.uid))return false;
+        const pass=WheelIsPass(record.odul);
+        const date=new Date(record.bitis).toLocaleString('tr-TR',{day:'numeric',month:'long',hour:'2-digit',minute:'2-digit',timeZone:'Europe/Istanbul'});
+        document.getElementById('cark-result-icon').innerHTML=PremiumIcon(pass?'info':'check');
+        document.getElementById('cark-result-title').textContent=pass?'Bu tur Pas geldi':existing?'Kayıtlı ödülünüz':'Tebrikler, kazandınız!';
+        document.getElementById('cark-result-prize').textContent=record.odul;
+        document.getElementById('cark-result-description').textContent=pass?'Bu kez ödül çıkmadı. Yeni hakkınız açıldığında tekrar şansınızı deneyebilirsiniz.':'Ödülünüz hesabınıza kaydedildi. Siparişinize ekleyebilir, kasa onayıyla kullanabilirsiniz.';
+        document.getElementById('cark-result-expiry').textContent=(pass?'Yeni çark hakkınız: ':'Son kullanım: ')+date+' (Türkiye saati)';
+        const primary=document.getElementById('cark-result-primary');primary.textContent=pass?'Tamam':'Sepete ekle';primary.disabled=false;
+        primary.onclick=async()=>{if(primary.disabled)return;primary.disabled=true;WheelResultClose();if(!pass&&WheelStillCurrent(identity.user,identity.epoch))await CarkHediyesiniKullan();};
+        document.getElementById('cark-result-later').style.display=pass?'none':'block';
+        CarkPopupKapat();PremiumDialogOpen('cark-result-popup');return true;
+    }
     function WheelError(code, message) { const error=new Error(message); error.code=code; return error; }
     function WheelWait(promise, milliseconds=12000) {
         let timer;
@@ -2513,6 +2559,8 @@
             document.getElementById('cark-durum-metni').textContent='Sonuç hesabınıza kaydedildi. Çark dönüyor…';
             await new Promise(resolve=>setTimeout(resolve,4100));if(!WheelStillCurrent(identity.user,identity.epoch))return;
             document.getElementById('cark-durum-metni').textContent=WheelIsPass(data.odul)?'Sonuç: Pas. Bu kez ödül çıkmadı; yeni hakkınız süre dolunca açılır.':'Kazandınız: '+data.odul;
+            // Kullanıcı X/Escape ile kapattıysa sonuç penceresini zorla yeniden açma.
+            if(document.getElementById('cark-popup').style.display==='flex')WheelShowResult(data,identity,!!data.existing);
             WheelDiagnostic('complete');await CarkDurumunuKontrolEt();
         }catch(error){
             WheelDiagnostic('failed',window.BekmezCarkTeshis?.status||0,error.code||'CLIENT_ERROR');
