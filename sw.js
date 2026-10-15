@@ -1,10 +1,10 @@
-/* Bekmez GO — Service Worker v14.
+/* Bekmez GO — Service Worker v15.
  * paket.html ile aynı klasörde sw.js olarak yayımlayın.
  * Statik dosya önbelleği ve yerel bildirim tıklamaları.
  * FCM/kapalı uygulamaya otomatik push/çevrimdışı sipariş içermez.
  */
 'use strict';
-const CACHE_NAME = 'bekmez-go-v14-wheel-alignment';
+const CACHE_NAME = 'bekmez-go-v15-wheel-result';
 const APP_URL = new URL('./paket.html', self.registration.scope);
 const ASSETS = ['./paket.html', './manifest.json', './icon-192.png', './icon-app.svg']
   .map(path => new URL(path, self.registration.scope).href);
