@@ -1317,7 +1317,7 @@
         return '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(paths[kind]||paths.info)+'</svg>';
     }
     const premiumDialogFocus=new Map();
-    function PremiumDialogOpen(id){const p=document.getElementById(id);if(!p)return;if(!premiumDialogFocus.has(id))premiumDialogFocus.set(id,document.activeElement);document.body.style.overflow='hidden';p.style.display='flex';p.classList.add('active');p.setAttribute('role','dialog');p.setAttribute('aria-modal','true');p.tabIndex=-1;requestAnimationFrame(()=>{if(p.style.display!=='none')(p.querySelector('button,summary,[href],input')||p).focus();});}
+    function PremiumDialogOpen(id){const p=document.getElementById(id);if(!p)return;if(!premiumDialogFocus.has(id))premiumDialogFocus.set(id,document.activeElement);document.body.style.overflow='hidden';p.style.display='flex';p.classList.add('active');p.setAttribute('role','dialog');p.setAttribute('aria-modal','true');p.tabIndex=-1;requestAnimationFrame(()=>{if(p.style.display!=='none'&&!p.contains(document.activeElement))(p.querySelector('button,summary,[href],input')||p).focus();});}
     function PremiumDialogClose(id){const p=document.getElementById(id);if(!p)return;p.classList.remove('active');p.style.display='none';const prior=premiumDialogFocus.get(id);premiumDialogFocus.delete(id);if(!premiumDialogFocus.size)document.body.style.overflow='';if(prior?.isConnected)prior.focus();}
     function OzelUyariGoster(baslik,metin,ikon){document.getElementById('custom-alert-title').textContent=baslik;document.getElementById('custom-alert-text').innerHTML=GuvenliUyariIcerigi(metin);document.getElementById('custom-alert-icon').innerHTML=PremiumIcon(/🔒|🛡/.test(ikon)?'lock':/✅|🎉/.test(ikon)?'check':/⚠|❌|🚫/.test(ikon)?'warning':'info');PremiumDialogOpen('custom-alert-overlay');}
     function KapatUyariModal(e,force=false){for(const id of ['custom-alert-overlay','distance-alert-overlay']){const p=document.getElementById(id);if(force||e?.target===p)PremiumDialogClose(id);}}
@@ -1442,51 +1442,19 @@
             if (reason) reason.textContent += ' Oturum kapatılamadı; bağlantıyı kontrol edin.';
         });
     }
-    function BanCanliDinle(tel) {
-        const user = firebase.auth().currentUser;
-        let phone; try { phone = SiparisTelefonunuStandartlastir(tel); } catch (_) { return false; }
-        if (!user?.emailVerified || !phone) return;
-        const key = user.uid + ':' + phone;
-        if (banOturumu === key) return;
-        BanDinlemeyiDurdur(); banOturumu = key;
-        const generation = banNesli, uid = user.uid;
-        const current = () => generation === banNesli && firebase.auth().currentUser?.uid === uid;
-        for (const alias of [phone, phone.slice(1)]) {
-            const ref = firebase.database().ref('YasakliHesaplar/' + alias);
-            const callback = snapshot => {
-                if (current() && snapshot.exists()) {
-                    const value = snapshot.val();
-                    BanOturumunuKapat(uid, typeof value?.sebep === 'string' ? value.sebep : 'Hesabınız yasaklandı.');
-                }
-            };
-            banDinleyicileri.push({ref, callback});
-            ref.on('value', callback, () => {
-                if (current()) BanOturumunuKapat(uid, 'Hesap erişimi doğrulanamadı. Bağlantı ve izinleri kontrol ederek tekrar giriş yapın.');
-            });
-        }
+    function BanCanliDinle(tel){
+      const user=firebase.auth().currentUser;if(!user?.emailVerified)return;
+      const key=user.uid;if(banOturumu===key)return;BanDinlemeyiDurdur();banOturumu=key;
+      const generation=banNesli,uid=user.uid,ref=firebase.database().ref('HesapErisimleri/'+uid);
+      const current=()=>generation===banNesli&&firebase.auth().currentUser?.uid===uid;
+      const callback=snapshot=>{const value=snapshot.val();if(current()&&(value?.banned===true||value?.deleted===true))BanOturumunuKapat(uid,value.sebep||'Hesabınızın erişimi kapatıldı.');};
+      banDinleyicileri.push({ref,callback});ref.on('value',callback,()=>{if(current())BanOturumunuKapat(uid,'Hesap erişimi doğrulanamadı. Bağlantı ve izinleri kontrol ederek tekrar giriş yapın.');});
     }
-    async function BanKontrolu(tel) {
-        const authGeneration = banAuthNesli;
-        const user = firebase.auth().currentUser;
-        let phone; try { phone = SiparisTelefonunuStandartlastir(tel); } catch (_) { return false; }
-        if (!user?.emailVerified || !phone) return false;
-        try {
-            for (const alias of [phone, phone.slice(1)]) {
-                const snapshot = await firebase.database().ref('YasakliHesaplar/' + alias).once('value');
-                if (authGeneration !== banAuthNesli || firebase.auth().currentUser?.uid !== user.uid) return true;
-                if (snapshot.exists()) {
-                    const value = snapshot.val();
-                    BanOturumunuKapat(user.uid, typeof value?.sebep === 'string' ? value.sebep : 'Hesabınız yasaklandı.');
-                    return true;
-                }
-            }
-            BanCanliDinle(phone);
-            return isBannedUser;
-        } catch (error) {
-            if (authGeneration !== banAuthNesli) return true;
-            BanOturumunuKapat(user.uid, 'Hesap erişimi doğrulanamadı. Bağlantı ve izinleri kontrol ederek tekrar giriş yapın.');
-            return true;
-        }
+    async function BanKontrolu(tel){
+      const user=firebase.auth().currentUser;if(!user?.emailVerified)return false;
+      const epoch=banAuthNesli;
+      try{const snap=await firebase.database().ref('HesapErisimleri/'+user.uid).once('value');if(epoch!==banAuthNesli||firebase.auth().currentUser?.uid!==user.uid)return true;const v=snap.val();if(v?.banned===true||v?.deleted===true){BanOturumunuKapat(user.uid,v.sebep||'Hesabınızın erişimi kapatıldı.');return true;}BanCanliDinle(tel);return isBannedUser;}
+      catch(_){if(epoch===banAuthNesli)BanOturumunuKapat(user.uid,'Hesap erişimi doğrulanamadı. Bağlantıyı kontrol edin.');return true;}
     }
 
     function SistemAyarlariniDinle() {
@@ -1503,7 +1471,7 @@
 
             let kapaliGun = data.kapaliGun || "Yok"; let acilKapat = data.acilKapat === true || (typeof data.acilKapat === "string" && data.acilKapat.trim().toLowerCase() === "true");
 
-            let currentDay = new Date().toLocaleDateString("en-US", {weekday: "long"});
+            let currentDay = new Date().toLocaleDateString("en-US", {weekday: "long",timeZone:"Europe/Istanbul"});
             let isClosedToday = (currentDay === kapaliGun) || acilKapat;
             
             let overlay = document.getElementById("store-closed-overlay"); let userUI = document.getElementById("main-user-ui");
@@ -1591,12 +1559,11 @@
 
             let foundTel = user.displayName;
             if (!foundTel || foundTel.length < 10) {
-                let idToken = await user.getIdToken(true);
-                try { let res = await fetch(`${FIREBASE_URL}/DoğrulanmisHesaplar.json?auth=${idToken}`); let allUsers = await res.json(); if (allUsers && !allUsers.error) { for(let tel in allUsers) { if(allUsers[tel].email && allUsers[tel].email.toLowerCase() === email) { foundTel = tel; await user.updateProfile({ displayName: foundTel }); break; } } } } catch(err) {}
+                const own=await CustomerService('/profile/find',{});foundTel=own.telefon;
             }
             if(foundTel && foundTel.length >= 10) { let isBan = await BanKontrolu(foundTel); if(isBan) { await firebase.auth().signOut(); btn.disabled = false; btn.innerText = "Giriş Yap"; return; } await BasariliGirisIslemleri(foundTel, email, true); } 
             else { firebase.auth().signOut(); OzelUyariGoster("Güvenlik Güncellemesi", "Sistem güvenliği nedeniyle telefon numaranız eşleşmedi. Lütfen tekrar kayıt olun.", "🛡️"); AuthModuDegistir('register'); }
-        } catch(e) { OzelUyariGoster("Giriş Başarısız", "Şifreniz veya E-Postanız hatalı.", "❌"); }
+        } catch(e) { OzelUyariGoster('Giriş tamamlanamadı',escapeHTML(e.code?.startsWith('auth/')?'E-posta ve şifrenizi kontrol edin.':e.message||'Hesabınız doğrulanamadı.'),'ℹ'); }
         finally {
             document.getElementById('login-pass').value='';
             btn.disabled = false; btn.innerText = "Giriş Yap";
@@ -1636,6 +1603,7 @@
             let bekleyenTel = await SecureOku("bg_pending_tel"); let bekleyenEmail = await SecureOku("bg_pending_email");
             if (isBannedUser || firebase.auth().currentUser?.uid !== user.uid) return;
             if (bekleyenTel && bekleyenEmail && user.email === bekleyenEmail) { await user.reload(); if (user.emailVerified) { IptalEtEpostaBekleme(false); SayfaGoster('profil'); WhatsappDoğrulamasiniBaslat(bekleyenTel, bekleyenEmail); } else { EpostaOnayiniBekle(user, bekleyenTel, bekleyenEmail); } }
+            else if(user.emailVerified&&(user.displayName||await SecureOku('bg_t')))await BasariliGirisIslemleri(user.displayName||await SecureOku('bg_t'),user.email,true,true);
         }
     });
 
@@ -1649,139 +1617,109 @@
         let formatliTel = "0" + telInput; let autoPass = passInput; btn.innerHTML = `<div class="spinner-small"></div> Kontrol Ediliyor...`; btn.disabled = true;
         try {
             let banliMi = await BanKontrolu(formatliTel); if(banliMi) { btn.innerText = "Hesabımı Oluştur"; btn.disabled = false; return; }
-            try { let banRes = await fetch(`${FIREBASE_URL}/SilinmisHesaplar/${formatliTel}.json`); let banData = await banRes.json(); if (banData && banData.silinmeZamani) { let passedMs = Date.now() - banData.silinmeZamani; let sevenDaysMs = 7 * 24 * 60 * 60 * 1000; if (passedMs < sevenDaysMs) { let leftDays = Math.ceil((sevenDaysMs - passedMs) / (1000 * 60 * 60 * 24)); OzelUyariGoster("Kayıt Engeli 🛑", `Aynı numara ile <b>${leftDays} gün</b> boyunca tekrar kayıt yapılamaz.`, "⏳"); btn.innerText = "Hesabımı Oluştur"; btn.disabled = false; return; } } } catch(e) {}
-            try { let userCred = await firebase.auth().createUserWithEmailAndPassword(emailInput, autoPass); await userCred.user.sendEmailVerification(); await SecureKaydet("bg_pending_tel", formatliTel); await SecureKaydet("bg_pending_email", emailInput); EpostaOnayiniBekle(userCred.user, formatliTel, emailInput); } catch (error) { if (error.code === 'auth/email-already-in-use') { try { let userCred = await firebase.auth().signInWithEmailAndPassword(emailInput, autoPass); await userCred.user.updateProfile({ displayName: formatliTel }); await handleVerifiedUser(userCred, formatliTel, emailInput); } catch(loginErr) { btn.innerText = "Hesabımı Oluştur"; btn.disabled = false; OzelUyariGoster("E-Posta Uyuşmazlığı", "Bu e-posta adresi başka bir hesaba ait veya şifrenizi yanlış girdiniz.", "❌"); } } else { btn.innerText = "Hesabımı Oluştur"; btn.disabled = false; OzelUyariGoster("Kayıt Hatası", escapeHTML(error.message), "❌"); } }
+
+            try { let userCred = await firebase.auth().createUserWithEmailAndPassword(emailInput, autoPass); await userCred.user.sendEmailVerification(); await SecureKaydet("bg_pending_tel", formatliTel); await SecureKaydet("bg_pending_email", emailInput); EpostaOnayiniBekle(userCred.user, formatliTel, emailInput); } catch (error) { if (error.code === 'auth/email-already-in-use') { try { let userCred = await firebase.auth().signInWithEmailAndPassword(emailInput, autoPass); await handleVerifiedUser(userCred, formatliTel, emailInput); } catch(loginErr) { btn.innerText = "Hesabımı Oluştur"; btn.disabled = false; OzelUyariGoster("E-Posta Uyuşmazlığı", "Bu e-posta adresi başka bir hesaba ait veya şifrenizi yanlış girdiniz.", "❌"); } } else { btn.innerText = "Hesabımı Oluştur"; btn.disabled = false; OzelUyariGoster("Kayıt Hatası", escapeHTML(error.message), "❌"); } }
         } catch (e) { btn.innerText = "Hesabımı Oluştur"; btn.disabled = false; OzelUyariGoster("İşlem Başarısız", "Bağlantı hatası oluştu.", "📡"); }
     }
 
-    async function handleVerifiedUser(userCred, formatliTel, emailInput) { if(userCred.user.emailVerified) { await WhatsappIkinciDoğrulama(formatliTel, emailInput, true); } else { await userCred.user.sendEmailVerification(); await SecureKaydet("bg_pending_tel", formatliTel); await SecureKaydet("bg_pending_email", emailInput); EpostaOnayiniBekle(userCred.user, formatliTel, emailInput); } }
+    async function handleVerifiedUser(userCred, formatliTel, emailInput) { if(userCred.user.emailVerified) { await WhatsappDoğrulamasiniBaslat(formatliTel, emailInput, true); } else { await userCred.user.sendEmailVerification(); await SecureKaydet("bg_pending_tel", formatliTel); await SecureKaydet("bg_pending_email", emailInput); EpostaOnayiniBekle(userCred.user, formatliTel, emailInput); } }
 
     function EpostaOnayiniBekle(user, formatliTel, email) {
         let p = document.getElementById("email-wait-overlay"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10);
-        if(emailInterval) clearInterval(emailInterval); emailInterval = setInterval(async () => { try { await user.reload(); if (user.emailVerified) { clearInterval(emailInterval); p.classList.remove("active"); setTimeout(() => p.style.display = "none", 400); WhatsappDoğrulamasiniBaslat(formatliTel, email); } } catch(e) {} }, 3000);
+        if(emailInterval) clearInterval(emailInterval); emailInterval = setInterval(async () => { try { await user.reload(); if (user.emailVerified) { await user.getIdToken(true);clearInterval(emailInterval); p.classList.remove("active"); setTimeout(() => p.style.display = "none", 400); WhatsappDoğrulamasiniBaslat(formatliTel, email); } } catch(e) {} }, 3000);
     }
 
     async function IptalEtEpostaBekleme(tamamenIptal = false) {
         if(emailInterval) clearInterval(emailInterval);
-        if(tamamenIptal) { await SecureSil("bg_pending_tel"); await SecureSil("bg_pending_email"); let user = firebase.auth().currentUser; if(user) { user.delete().catch(()=>{}).then(() => firebase.auth().signOut()); } }
+        if(tamamenIptal) { await SecureSil("bg_pending_tel"); await SecureSil("bg_pending_email"); let user = firebase.auth().currentUser; if(user) { await firebase.auth().signOut(); } }
         let p = document.getElementById("email-wait-overlay"); if(p) { p.classList.remove("active"); setTimeout(() => p.style.display = "none", 400); } let btn = document.getElementById("btn-email-verify"); if(btn) { btn.innerText = "Hesabımı Oluştur"; btn.disabled = false; }
     }
 
-    async function WhatsappDoğrulamasiniBaslat(formatliTel, email, isLogin = false) {
-        let kaydedilmisKod = await SecureOku("bg_wp_kod"); if (kaydedilmisKod) { aktifWhatsappKodu = kaydedilmisKod; } else { let rastgeleKod = Math.floor(1000 + Math.random() * 9000); aktifWhatsappKodu = `BKMZ-${rastgeleKod}`; await SecureKaydet("bg_wp_kod", aktifWhatsappKodu); }
-        aktifWhatsappNumarasi = formatliTel.replace(/[^0-9]/g, ''); if (aktifWhatsappNumarasi.startsWith("0")) aktifWhatsappNumarasi = aktifWhatsappNumarasi.substring(1); if (aktifWhatsappNumarasi.startsWith("90")) aktifWhatsappNumarasi = aktifWhatsappNumarasi.substring(2);
-        let wpOverlay = document.getElementById("whatsapp-wait-overlay"); if(!wpOverlay) { wpOverlay = document.createElement("div"); wpOverlay.id = "whatsapp-wait-overlay"; wpOverlay.className = "custom-alert-overlay"; wpOverlay.style.zIndex = "9999999"; document.body.appendChild(wpOverlay); }
-        wpOverlay.innerHTML = `<div class="custom-alert-box" style="border-color: #25D366;"><div class="custom-alert-glow" style="background: #25D366;"></div><div class="custom-alert-content"><div style="font-size: 55px; margin-bottom: 20px;">💬</div><h3 style="margin: 0 0 14px 0; font-weight: 900; font-size: 20px; color: var(--text-main); letter-spacing:-0.5px;">Son Bir Adım Kaldı!</h3><p style="color: var(--text-muted); font-size: 13px; font-weight: 600; margin: 0 0 20px 0; line-height: 1.5;">E-postanız onaylandı! ✅<br>Lütfen telefon numaranızı WhatsApp üzerinden ücretsiz olarak doğrulayın.</p><div style="background: rgba(0,0,0,0.5); padding: 15px; border-radius: 12px; border: 1px dashed #25D366; margin-bottom: 20px;"><span style="font-size: 11px; color: #A1A1AA; font-weight: 800; display: block; margin-bottom: 5px;">ONAY KODUNUZ:</span><span style="font-size: 24px; color: white; font-weight: 900; letter-spacing: 2px;">${escapeHTML(aktifWhatsappKodu)}</span></div><button id="wp-onay-btn" onclick="WhatsappMesajiGonder()" class="shimmer-btn" style="width:100%; background: #25D366; color: white; border: none; padding: 16px; border-radius: 100px; font-weight: 800; font-size: 15px; box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4); margin-bottom: 15px; cursor: pointer; transition: all 0.3s;">WhatsApp'ı Aç ve Onayla</button><button onclick="IptalEtWhatsappBekleme()" class="alert-btn" style="background: rgba(255,255,255,0.05); color:white; border: 1px solid var(--border-highlight);">Vazgeç</button><div id="wp-dinleme-yazisi" style="font-size: 13px; color: var(--success); margin-top: 15px; font-weight: 800; display: none;">Sistem WhatsApp'ı Dinliyor... 👀</div></div></div>`;
-        wpOverlay.style.display = "flex"; setTimeout(() => wpOverlay.classList.add("active"), 10);
-        if(whatsappInterval) clearInterval(whatsappInterval);
-        whatsappInterval = setInterval(async () => {
-            try {
-                let url = `${FIREBASE_URL}/WhatsappOnayliNumaralar/${aktifWhatsappKodu}.json?t=${Date.now()}`; let res = await fetch(url, { cache: "no-store" }); let data = await res.json();
-                if (data && (data.onaylandi === 1 || data.onaylandi === true)) {
-                    clearInterval(whatsappInterval); fetch(`${FIREBASE_URL}/WhatsappOnayliNumaralar/${aktifWhatsappKodu}.json`, { method: "DELETE" }).catch(()=>{});
-                    if (wpOverlay) { wpOverlay.classList.remove("active"); setTimeout(() => wpOverlay.style.display = "none", 400); }
-                    let hamGercekTel = data.gercekTel ? data.gercekTel.toString() : ""; let formTel = aktifWhatsappNumarasi.slice(-10); let wpGercekTel = hamGercekTel.slice(-10);
-                    if (wpGercekTel === formTel && wpGercekTel.length === 10) { await BasariliGirisIslemleri(formatliTel, email, isLogin); } 
-                    else {
-                        let user = firebase.auth().currentUser; if (user) { await user.delete().catch(()=>{}); } firebase.auth().signOut();
-                        await SecureSil("bg_wp_waiting"); await SecureSil("bg_wp_kod"); await SecureSil("bg_pending_tel"); await SecureSil("bg_pending_email");
-                        let btn = document.getElementById("btn-email-verify"); if (btn) { btn.innerText = "Hesabımı Oluştur"; btn.disabled = false; }
-                        if (typeof KayitOnayToggle === "function") KayitOnayToggle();
-                        OzelUyariGoster("Güvenlik İhlali", `Sistem sahte veya uyuşmayan bir işlem tespit etti.<br>Lütfen kendi gerçek numaranızla giriş yapınız.`, "🚫");
-                    }
-                }
-            } catch(e) {}
-        }, 3000);
+    let phoneVerificationRef=null,phoneVerificationTimer=null,phoneVerificationOpening=false;
+    function PhoneVerificationStop(){if(phoneVerificationRef){phoneVerificationRef.off();phoneVerificationRef=null;}if(phoneVerificationTimer){clearTimeout(phoneVerificationTimer);phoneVerificationTimer=null;}}
+    async function WhatsappDoğrulamasiniBaslat(formatliTel,email,isLogin=false){
+      if(phoneVerificationOpening)return;phoneVerificationOpening=true;
+      try{
+        const phone=SiparisTelefonunuStandartlastir(formatliTel),user=WheelSession();if(!user)return;
+        const epoch=wheelSessionEpoch,result=await CustomerService('/profile/verification',{telefon:phone});
+        if(!WheelStillCurrent(user,epoch))return;
+        if(result.verified){await BasariliGirisIslemleri(phone,email,true);return;}
+        if(!/^BKMZ-[A-F0-9]{32}$/.test(result.code||''))throw new Error('Doğrulama yanıtı geçersiz.');
+        aktifWhatsappKodu=result.code;aktifWhatsappNumarasi=phone.slice(1);
+        await SecureKaydet('bg_wp_kod',result.code);await SecureKaydet('bg_pending_tel',phone);await SecureKaydet('bg_pending_email',user.email);
+        let overlay=document.getElementById('whatsapp-wait-overlay');if(!overlay){overlay=document.createElement('div');overlay.id='whatsapp-wait-overlay';overlay.className='custom-alert-overlay';document.body.appendChild(overlay);}
+        overlay.style.zIndex='65000';overlay.innerHTML=`<div class="custom-alert-box"><div class="custom-alert-content"><h3>Telefonunuzu doğrulayın</h3><p style="line-height:1.6;color:var(--text-muted)">WhatsApp düğmesine basıp hazır mesajı kendi numaranızdan gönderin. İşletme, gönderen numarayı kontrol edip kasadan onay verecek. Bu ekran onay geldiğinde kendiliğinden kapanır.</p><div style="padding:16px;border:1px dashed var(--border-highlight);border-radius:14px;overflow-wrap:anywhere;font:600 14px monospace">${escapeHTML(result.code)}</div><p style="color:var(--text-muted);font-size:12px">Kod 10 dakika geçerlidir. Mesajı ${escapeHTML(phone)} numarasından gönderin.</p><button id="wp-onay-btn" class="premium-submit-btn" onclick="WhatsappMesajiGonder()">WhatsApp mesajını gönder</button><button class="alert-btn" onclick="IptalEtWhatsappBekleme()">Şimdilik kapat</button><div id="wp-dinleme-yazisi" style="display:none;margin-top:12px;color:var(--success)">İşletmenin onayı bekleniyor…</div></div></div>`;
+        overlay.style.display='flex';setTimeout(()=>overlay.classList.add('active'),10);
+        PhoneVerificationStop();phoneVerificationRef=firebase.database().ref('DogrulamaIstekleri/'+user.uid);
+        let completing=false;
+        phoneVerificationRef.on('value',async snapshot=>{
+          if(!WheelStillCurrent(user,epoch)||completing)return;
+          const record=snapshot.val();if(record?.code!==result.code)return;
+          if(record.state==='approved'){completing=true;PhoneVerificationStop();overlay.classList.remove('active');overlay.style.display='none';await BasariliGirisIslemleri(phone,email,isLogin);}
+        },()=>{PhoneVerificationStop();OzelUyariGoster('Doğrulama bağlantısı kesildi','Sayfayı yenileyip aynı hesabınızla devam edin.','ℹ');});
+        phoneVerificationTimer=setTimeout(()=>{PhoneVerificationStop();const text=document.getElementById('wp-dinleme-yazisi');if(text){text.style.display='block';text.textContent='Kodun süresi doldu. Kapatıp yeniden doğrulama başlatabilirsiniz.';}},Math.max(1000,result.expiresAt-Date.now()));
+      }catch(e){OzelUyariGoster('Telefon doğrulanamadı',escapeHTML(e.message||'Bağlantınızı kontrol edin.'),'ℹ');}
+      finally{phoneVerificationOpening=false;const button=document.getElementById('btn-email-verify');if(button){button.disabled=false;button.textContent='Hesabımı Oluştur';}}
     }
 
     async function WhatsappIkinciDoğrulama(formatliTel, email, isLogin) { if(isLogin) { await BasariliGirisIslemleri(formatliTel, email, true); return; } WhatsappDoğrulamasiniBaslat(formatliTel, email); }
 
     async function WhatsappMesajiGonder() { HapticTitresim(); let dinlemeYazisi = document.getElementById("wp-dinleme-yazisi"); if (dinlemeYazisi) dinlemeYazisi.style.display = "block"; let btn = document.getElementById("wp-onay-btn"); if (btn) { btn.innerHTML = `<div class="spinner-small"></div> <span style="vertical-align:middle;">Onay Bekleniyor...</span>`; btn.style.background = "#1da851"; btn.style.boxShadow = "0 0 15px rgba(37, 211, 102, 0.8)"; } let mesaj = "Merhaba Bekmez GO. Hesabımı onaylamak için kodum: " + aktifWhatsappKodu; let url = `https://wa.me/${DUKKAN_WHATSAPP_NUMARASI}?text=${encodeURIComponent(mesaj)}`; await SecureKaydet("bg_wp_waiting", "true"); window.location.href = url; }
 
-    async function IptalEtWhatsappBekleme() { if(whatsappInterval) clearInterval(whatsappInterval); let wpOverlay = document.getElementById("whatsapp-wait-overlay"); if (wpOverlay) { wpOverlay.classList.remove("active"); setTimeout(() => wpOverlay.style.display = "none", 400); } let btn = document.getElementById("btn-email-verify"); if(btn) { btn.innerText = "Hesabımı Oluştur"; btn.disabled = false; } await SecureSil("bg_wp_waiting"); await SecureSil("bg_wp_kod"); await SecureSil("bg_pending_tel"); await SecureSil("bg_pending_email"); let user = firebase.auth().currentUser; if (user) { user.delete().catch(()=>{}); } firebase.auth().signOut(); OzelUyariGoster("İptal Edildi", "WhatsApp onayı yapılmadığı için işlem iptal edildi.", "❌"); }
+    async function IptalEtWhatsappBekleme() { PhoneVerificationStop(); if(whatsappInterval) clearInterval(whatsappInterval); let wpOverlay = document.getElementById("whatsapp-wait-overlay"); if (wpOverlay) { wpOverlay.classList.remove("active"); setTimeout(() => wpOverlay.style.display = "none", 400); } let btn = document.getElementById("btn-email-verify"); if(btn) { btn.innerText = "Hesabımı Oluştur"; btn.disabled = false; } await SecureSil("bg_wp_waiting"); await SecureSil("bg_wp_kod"); await SecureSil("bg_pending_tel"); await SecureSil("bg_pending_email"); let user = firebase.auth().currentUser; if (user) { /* Doğrulama iptali mevcut hesabı silmez. */ } firebase.auth().signOut(); OzelUyariGoster("İptal Edildi", "WhatsApp onayı yapılmadığı için işlem iptal edildi.", "❌"); }
 
-    async function BasariliGirisIslemleri(formatliTel, email, isLogin = false) {
-        let user = firebase.auth().currentUser;
-        if (!user || isBannedUser || await BanKontrolu(formatliTel)) return;
-        let idToken = await user.getIdToken(true);
-        if (user && user.displayName !== formatliTel) { await user.updateProfile({ displayName: formatliTel }).catch(()=>{}); }
-        let kayitliIsim = "";
-        try {
-            let dbKontrol = await fetch(`${FIREBASE_URL}/DoğrulanmisHesaplar/${formatliTel}.json?auth=${idToken}`); let dbData = await dbKontrol.json();
-            kayitliIsim = (dbData && dbData.isim) ? dbData.isim : ""; let kayitliAdres = (dbData && dbData.adres) ? dbData.adres : "";
-            let profIsimEl = document.getElementById("prof-isim"); if (profIsimEl && !profIsimEl.value && kayitliIsim) profIsimEl.value = kayitliIsim;
-            let profAdresEl = document.getElementById("prof-adres"); if (profAdresEl && !profAdresEl.value && kayitliAdres) profAdresEl.value = kayitliAdres;
-            if (!dbData || !dbData.email) { await fetch(`${FIREBASE_URL}/DoğrulanmisHesaplar/${formatliTel}.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify({ email: email, tarih: new Date().toLocaleString(), kayitZamani: Date.now() }) }); } 
-            else { await fetch(`${FIREBASE_URL}/DoğrulanmisHesaplar/${formatliTel}.json?auth=${idToken}`, { method: "PATCH", body: JSON.stringify({ sonGiris: new Date().toLocaleString() }) }); }
-            await fetch(`${FIREBASE_URL}/SilinmisHesaplar/${formatliTel}.json?auth=${idToken}`, { method: "DELETE" });
-        } catch (error) {}
-
-        await SecureSil("bg_wp_waiting"); await SecureSil("bg_wp_kod"); await SecureSil("bg_pending_tel"); await SecureSil("bg_pending_email"); await SecureKaydet("bg_t", formatliTel); 
-        let displayTel = formatliTel.startsWith("0") ? formatliTel.substring(1) : formatliTel; let chkTel = document.getElementById("chk-telefon"); if(chkTel) chkTel.value = displayTel;
-        await ProfiliKaydet(false);
-
-        try {
-            let carkRes = await fetch(`${FIREBASE_URL}/CarkKullanimlari/${formatliTel}.json?auth=${idToken}&t=${Date.now()}`); let carkData = await carkRes.json(); let sTime = await GetServerTimeFast();
-            if (carkData && carkData.bitis && sTime < carkData.bitis) { await SecureKaydet("bg_cark_data", btoa(encodeURIComponent(`${carkData.odul}|||${carkData.bitis}|||${CARK_LEGACY_MARKER}|||${formatliTel}`))); } else { await SecureSil("bg_cark_data"); }
-        } catch(e) {}
-
-        try {
-            let adisyonRes = await fetch(`${FIREBASE_URL}/DoğrulanmisHesaplar/${formatliTel}/aktifSiparis.json?auth=${idToken}&t=${Date.now()}`); let adisyonData = await adisyonRes.json();
-            if(adisyonData && adisyonData.siparisId) { await SecureKaydet("bg_active_order_id", adisyonData.siparisId); await SecureKaydet("bg_order_timestamp", adisyonData.zamanMuhru); if(adisyonData.odemeTuru) await SecureKaydet("bg_odeme_turu", adisyonData.odemeTuru); }
-        } catch(e) {}
-
-        if(isLogin) { OzelUyariGoster("Tekrar Hoş Geldiniz! 👋", "Hesabınıza başarıyla giriş yapıldı.", "✅"); BildirimGonder("Hoş Geldiniz 👋", "Bekmez GO hesabınıza başarıyla giriş yapıldı."); } 
-        else { OzelUyariGoster("Hesap Doğrulandı! 🎉", "E-Posta adresiniz ve WhatsApp onayınız tamamlandı.", "✅"); BildirimGonder("Hesap Oluşturuldu 🎉", "Bekmez GO'ya hoş geldiniz! İndirimleri kaçırmayın."); }
-        
-        let gorunen = await SecureOku("bg_i") || kayitliIsim; ProfilArayuzunuGuncelle(true, gorunen);
-        PushSepetDurumuYansit();
-        // Ucretsiz yerel sistem: FCM cihaz kaydi gerekmiyor.
-        if(await SecureOku("bg_active_order_id")) { SiparisDurumBildiriminiBaslat(await SecureOku('bg_active_order_id')); SayfaGoster('gecmis'); }
+    let profileSyncRequest=null;
+    function SyncCustomerProfile(phone){
+      const user=WheelSession(),epoch=wheelSessionEpoch;if(!user)return Promise.reject(new Error('Müşteri oturumu gerekli.'));
+      if(profileSyncRequest?.uid===user.uid&&profileSyncRequest.phone===phone&&profileSyncRequest.epoch===epoch&&profileSyncRequest.until>Date.now())return profileSyncRequest.promise;
+      const entry={uid:user.uid,phone,epoch,until:Date.now()+30000};
+      entry.promise=CustomerService('/profile/sync',{telefon:phone}).catch(error=>{if(profileSyncRequest===entry)profileSyncRequest=null;throw error;});profileSyncRequest=entry;return entry.promise;
+    }
+    async function BasariliGirisIslemleri(formatliTel,email,isLogin=false,silent=false){
+      const user=WheelSession();if(!user)return false;
+      try{
+        const phone=SiparisTelefonunuStandartlastir(formatliTel),epoch=wheelSessionEpoch;
+        const result=await SyncCustomerProfile(phone);if(!WheelStillCurrent(user,epoch))return false;
+        if(user.displayName!==phone)await user.updateProfile({displayName:phone});
+        const profile=result.profile||{};
+        await SecureKaydet('bg_t',phone);await SecureKaydet('bg_i',profile.isim||'');await SecureKaydet('bg_a',profile.adres||'');
+        for(const key of ['bg_wp_waiting','bg_wp_kod','bg_pending_tel','bg_pending_email'])await SecureSil(key);
+        for(const [id,value] of [['prof-isim',profile.isim||''],['chk-isim',profile.isim||''],['prof-adres',profile.adres||''],['chk-adres',profile.adres||''],['chk-telefon',phone.slice(1)]]){const el=document.getElementById(id);if(el)el.value=value;}
+        const order=profile.aktifSiparis;
+        if(order?.siparisId){await SecureKaydet('bg_active_order_id',order.siparisId);if(Number.isFinite(order.timestamp))await SecureKaydet('bg_order_timestamp',ZamanMuhruKodla(order.timestamp,order.siparisId));if(order.odemeTuru)await SecureKaydet('bg_odeme_turu',order.odemeTuru);}else await SecureSil('bg_active_order_id');
+        BanCanliDinle(phone);ProfilArayuzunuGuncelle(true,profile.isim||'');await CarkDurumunuKontrolEt();PushSepetDurumuYansit();
+        if(!silent)OzelUyariGoster(isLogin?'Hoş geldiniz':'Hesabınız doğrulandı',isLogin?'Hesabınıza giriş yapıldı.':'Telefon ve e-posta doğrulamanız tamamlandı. Ad ve teslimat adresinizi kaydedebilirsiniz.','✅');
+        if(order?.siparisId){await SiparisDurumBildiriminiBaslat(order.siparisId);if(!silent)SayfaGoster('gecmis');}
+        return true;
+      }catch(e){OzelUyariGoster('Hesap doğrulanamadı',escapeHTML(e.message||'Sunucuya ulaşılamadı. Kaydınız değiştirilmedi.'),'ℹ');return false;}
+    }
+    async function ProfiliKaydet(alertGoster=true){
+      const user=WheelSession();if(!user){if(alertGoster)OzelUyariGoster('Giriş yapın','Bilgilerinizi kaydetmek için doğrulanmış müşteri hesabınızla giriş yapın.','🔒');return false;}
+      try{
+        const phone=SiparisTelefonunuStandartlastir(await SecureOku('bg_t')),isim=document.getElementById('prof-isim')?.value.trim()||'',adres=document.getElementById('prof-adres')?.value.trim()||'';
+        await CustomerService('/profile/update',{telefon:phone,isim,adres});
+        await SecureKaydet('bg_i',isim);await SecureKaydet('bg_a',adres);for(const [id,value]of [['chk-isim',isim],['chk-adres',adres]]){const el=document.getElementById(id);if(el)el.value=value;}
+        if(alertGoster){ProfilArayuzunuGuncelle(true,isim);OzelUyariGoster('Kaydedildi','Profil bilgileriniz sunucuya kaydedildi.','✅');}return true;
+      }catch(e){if(alertGoster)OzelUyariGoster('Kaydedilemedi',escapeHTML(e.message||'Bağlantınızı kontrol edin. Önceki kaydınız korunuyor.'),'ℹ');return false;}
     }
 
-    async function ProfiliKaydet(alertGoster = true) {
-        let isimInput = document.getElementById("prof-isim"); let adresInput = document.getElementById("prof-adres");
-        let i = isimInput ? escapeHTML(isimInput.value.trim()) : ""; let a = adresInput ? escapeHTML(adresInput.value.trim()) : "";
-        await SecureKaydet("bg_i", i); await SecureKaydet("bg_a", a);
-        let chkIsim = document.getElementById("chk-isim"); let chkAdres = document.getElementById("chk-adres"); if(chkIsim) chkIsim.value = i; if(chkAdres) chkAdres.value = a;
-        let tel = await SecureOku("bg_t"); let authUser = firebase.auth().currentUser;
-        if(tel && authUser) { try { let idToken = await authUser.getIdToken(true); await fetch(`${FIREBASE_URL}/DoğrulanmisHesaplar/${tel}.json?auth=${idToken}`, { method: "PATCH", body: JSON.stringify({ isim: i, adres: a }) }); } catch(e){} }
-        if(alertGoster) { HapticTitresim(); OzelUyariGoster("Başarılı", "Profil bilgileriniz kaydedildi.", "✅"); ProfilArayuzunuGuncelle(true, i); }
-    }
-
-    function SadeceCikisYap() { SoruSor("Oturumu Kapat", "Cihazınızdaki mevcut oturumu kapatmak istediğinize emin misiniz?", "🚪", async () => { HapticTitresim(); document.body.innerHTML += `<div style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999999;display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;font-weight:bold;backdrop-filter:blur(10px);"><div class="spinner"></div><div style="margin-top:20px; font-size:18px;">Güvenli Çıkış Yapılıyor...</div></div>`; await TemizleOturumVerileri(); }, false); }
+    function SadeceCikisYap() { SoruSor("Oturumu Kapat", "Cihazınızdaki mevcut oturumu kapatmak istediğinize emin misiniz?", "🚪", async () => { HapticTitresim(); document.body.insertAdjacentHTML("beforeend", `<div style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999999;display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;font-weight:bold;backdrop-filter:blur(10px);"><div class="spinner"></div><div style="margin-top:20px; font-size:18px;">Güvenli Çıkış Yapılıyor...</div></div>`); await TemizleOturumVerileri(); }, false); }
 
     async function TemizleOturumVerileri() { try { await PushCihazKaydiniSil();  if(firebase.auth().currentUser) { await firebase.auth().signOut(); } localStorage.clear(); sessionStorage.clear();  setTimeout(() => { window.location.reload(true); }, 800); } catch(e) { localStorage.clear(); window.location.reload(true); } }
 
-    async function HesabiTamamenSil() {
-        let tel = await SecureOku("bg_t"); if (!tel) return;
-        try {
-            let authUser = firebase.auth().currentUser; if(!authUser) return; let idToken = await authUser.getIdToken(true);
-            let res = await fetch(`${FIREBASE_URL}/DoğrulanmisHesaplar/${tel}.json?auth=${idToken}`); let d = await res.json();
-            if (d && d.kayitZamani) {
-                let gecenZamanMs = Date.now() - d.kayitZamani; let yediGunMs = 7 * 24 * 60 * 60 * 1000;
-                if (gecenZamanMs < yediGunMs) { let kalanGun = Math.ceil((yediGunMs - gecenZamanMs) / (1000 * 60 * 60 * 24)); OzelUyariGoster("Güvenlik Kilidi 🛡️", `Hesabınızı silebilmek için <b>${kalanGun} gün</b> daha beklemelisiniz.`, "⏳"); return; }
-            }
-        } catch(e) {}
-
-        SoruSor("Hesabı Kalıcı Olarak Sil", "<b>DİKKAT!</b> Hesabınız, kayıtlı bilgileriniz ve çark haklarınız <b>kalıcı olarak silinecektir!</b><br><br>Emin misiniz?", "⚠️", async () => {
-            HapticTitresim(); let authUser = firebase.auth().currentUser;
-            if (authUser) {
-                try {
-                    let idToken = await authUser.getIdToken(true);
-                    document.body.innerHTML += `<div style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999999;display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;font-weight:bold;backdrop-filter:blur(10px);"><div class="spinner" style="border-top-color:var(--danger);"></div><div style="margin-top:20px; font-size:18px;">Verileriniz İmha Ediliyor...</div></div>`;
-                    
-                    /* Ödül kaydı yalnız yetkili sunucu/kasa tarafından yönetilir. */
-                    let temizTel = tel.replace(/[^0-9]/g, ''); await fetch(`${FIREBASE_URL}/WhatsappOnayliNumaralar/${temizTel}.json?auth=${idToken}`, { method: "DELETE" });
-                    await fetch(`${FIREBASE_URL}/SilinmisHesaplar/${tel}.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify({ silinmeZamani: Date.now() }) });
-                    
-                    let res = await fetch(`${FIREBASE_URL}/DoğrulanmisHesaplar/${tel}.json?auth=${idToken}`, { method: "DELETE" });
-                    if(!res.ok) throw new Error("Silme işlemi sunucu tarafından reddedildi.");
-                    
-                    await authUser.delete(); await TemizleOturumVerileri(); 
-                } catch (error) { if (error.code === 'auth/requires-recent-login') { OzelUyariGoster("Oturum Zaman Aşımı", "Hesabınızı silebilmek için güvenlik sebebiyle önce Çıkış Yapıp tekrar Giriş yapmalısınız.", "🔒"); } else { OzelUyariGoster("Hata", error.message, "❌"); } }
-            } else { OzelUyariGoster("Hata", "Oturum bağlantısı kopmuş, lütfen tekrar giriş yapın.", "🔌"); }
-        }, true);
+    async function HesabiTamamenSil(){
+      const user=WheelSession();if(!user)return;
+      SoruSor('Hesabı sil','Profiliniz kapatılacak. Devam eden sipariş varsa silme yapılamaz. Tamamlanan sipariş ve mali kayıtlar işletmenin saklama politikasına tabidir. Devam edilsin mi?','⚠️',async()=>{
+        let overlay;
+        try{
+          const info=await user.getIdTokenResult(false);if(!Number.isFinite(Number(info.claims.auth_time))||Date.now()/1000-Number(info.claims.auth_time)>300){OzelUyariGoster('Yeniden giriş gerekli','Hesap silmeden önce çıkış yapıp tekrar giriş yapın; ardından silme işlemini yeniden başlatın.','🔒');return;}
+          overlay=document.createElement('div');overlay.className='custom-alert-overlay active';overlay.style.cssText='display:flex;z-index:65000';const message=document.createElement('div');message.className='custom-alert-box';message.textContent='Hesabınız kapatılıyor…';overlay.appendChild(message);document.body.appendChild(overlay);
+          const phone=SiparisTelefonunuStandartlastir(await SecureOku('bg_t'));await CustomerService('/profile/delete',{telefon:phone,confirm:'HESABIMI_SIL'});
+          try{await user.delete();}catch(_){if(overlay)overlay.remove();OzelUyariGoster('Profil kapatıldı','Profilinizin sipariş erişimi kapatıldı. Firebase giriş hesabının silinmesi tamamlanamadı; işletmeyle iletişime geçin.','ℹ');await firebase.auth().signOut();return;}
+          await TemizleOturumVerileri();
+        }catch(e){if(overlay)overlay.remove();OzelUyariGoster('Hesap silinemedi',escapeHTML(e.message||'Bağlantınızı kontrol edin. İşlem tamamlanmadı.'),'ℹ');}
+        finally{if(overlay)overlay.remove();}
+      },true);
     }
     // ==========================================
     // 5. MENÜ LİSTELEME VE ÇARK BAŞLANGICI
@@ -1822,7 +1760,7 @@
             let ki = null, ka = null;
             try { ki = await SecureOku("bg_i"); ka = await SecureOku("bg_a"); } catch(e) {}
             
-            if (kt) { 
+            if (kt && WheelSession()) { 
                 ProfilArayuzunuGuncelle(true, ki || "");
                 let displayTel = kt.startsWith("0") ? kt.substring(1) : kt;
                 let chkTel = document.getElementById("chk-telefon"); if (chkTel) chkTel.value = displayTel; 
@@ -1831,20 +1769,19 @@
                     let authUser = firebase.auth().currentUser;
                     if (authUser) {
                         
-                        let idToken = await authUser.getIdToken(true);
-                        let adisyonRes = await fetch(`${FIREBASE_URL}/DoğrulanmisHesaplar/${kt}/aktifSiparis.json?auth=${idToken}&t=${Date.now()}`);
-                        let adisyonData = await adisyonRes.json();
+                        const sync=await SyncCustomerProfile(SiparisTelefonunuStandartlastir(kt));
+                        let adisyonData=sync.profile?.aktifSiparis;
                         if(adisyonData && adisyonData.siparisId) {
                             await SecureKaydet("bg_active_order_id", adisyonData.siparisId);
-                            await SecureKaydet("bg_order_timestamp", adisyonData.zamanMuhru);
+                            if(Number.isFinite(adisyonData.timestamp))await SecureKaydet("bg_order_timestamp",ZamanMuhruKodla(adisyonData.timestamp,adisyonData.siparisId));else if(adisyonData.zamanMuhru)await SecureKaydet("bg_order_timestamp",adisyonData.zamanMuhru);
                             if(adisyonData.odemeTuru) await SecureKaydet("bg_odeme_turu", adisyonData.odemeTuru);
                         } else { await SecureSil("bg_active_order_id"); }
                     }
                 } catch(e) {}
             } else { ProfilArayuzunuGuncelle(false); }
             
-            if(ki) { let pI = document.getElementById("prof-isim"); let cI = document.getElementById("chk-isim"); if(pI) pI.value = escapeHTML(ki); if(cI) cI.value = escapeHTML(ki); }
-            if(ka) { let pA = document.getElementById("prof-adres"); let cA = document.getElementById("chk-adres"); if(pA) pA.value = escapeHTML(ka); if(cA) cA.value = escapeHTML(ka); }
+            if(ki) { let pI = document.getElementById("prof-isim"); let cI = document.getElementById("chk-isim"); if(pI) pI.value = ki; if(cI) cI.value = ki; }
+            if(ka) { let pA = document.getElementById("prof-adres"); let cA = document.getElementById("chk-adres"); if(pA) pA.value = ka; if(cA) cA.value = ka; }
 
             await CanliMenuCek(true); MenuyuGercekZamanliDinle();
             try { await SiparisDurumBildiriminiBaslat(await SecureOku('bg_active_order_id')); } catch (_) {} 
@@ -1872,7 +1809,7 @@
                         if(siparisId) {
                             let authUser = firebase.auth().currentUser; let urlStr = `${FIREBASE_URL}/CanliPaketler/${siparisId}.json`; let taslakUrl = `${FIREBASE_URL}/SiparisTaslaklari/${siparisId}.json`;
                             if(authUser) { let idToken = await authUser.getIdToken(true); urlStr += `?auth=${idToken}`; taslakUrl += `?auth=${idToken}`; }
-                            let res = await fetch(urlStr); let d = await res.json(); let tRes = await fetch(taslakUrl); let tD = await tRes.json();
+                            let res = await fetch(urlStr); let tRes = await fetch(taslakUrl); if(!res.ok||!tRes.ok)throw new Error("Sipariş bilgisi alınamadı"); let d=await res.json(); let tD=await tRes.json();
                             
                             if ((!d || d.error) && (!tD || tD.error)) { await SecureSil("bg_active_order_id"); await SecureSil("bg_last_status"); SayfaGoster('urunler'); return; }
 
@@ -2325,7 +2262,7 @@
     // ==========================================
     async function KuponlariCek() {
         try {
-            let mR = await fetch(`${FIREBASE_URL}/Kuponlar.json?t=${Date.now()}`);
+            let mR = await fetch(`${FIREBASE_URL}/KuponlarPublic.json?t=${Date.now()}`);
             let data = await mR.json(); let list = document.getElementById("firsatlar-list");
             if (!data || data.error) { list.innerHTML = `<div class="empty-state-box">${emptyCouponSVG}<p>Aktif kampanya bulunmuyor 😔</p></div>`; return; }
             let yeniVeri = JSON.stringify(data); if (sonKuponVerisi === yeniVeri) return; sonKuponVerisi = yeniVeri;
@@ -2357,7 +2294,7 @@
         b.innerHTML = `<div class="spinner-small" style="margin-right:0;"></div>`; b.disabled = true; 
         
         try {
-            let res = await fetch(`${FIREBASE_URL}/Kuponlar/${gK}.json?t=${Date.now()}`);
+            let res = await fetch(`${FIREBASE_URL}/KuponlarPublic/${gK}.json?t=${Date.now()}`);
             let d = await res.json();
             b.disabled = false; b.innerText = "Uygula";
             
@@ -2388,7 +2325,7 @@
     async function KuponuIptalEt(sM = false) { if(!sM) HapticTitresim(); aktifKuponKodu = ""; aktifKuponIndirimTutari = 0; aktifKuponAltLimit = 0; aktifKuponHedefUrun = "Herşey"; let iE = document.getElementById("coupon-code"); if(iE) iE.value = ""; KuponArayuzunuGuncelle(); if(!sM) await HesaplaVeGuncelle(); }
     function KuponArayuzunuGuncelle() { let b = document.getElementById("coupon-apply-btn"); let m = document.getElementById("coupon-message"); let iE = document.getElementById("coupon-code"); if(aktifKuponIndirimTutari > 0) { b.style.background = "var(--danger)"; b.style.color = "white"; b.innerText = "İptal Et"; b.onclick = () => KuponuIptalEt(false); if(iE) { iE.disabled = true; iE.style.opacity = "0.6"; } m.innerHTML = `<span style="color: var(--success);">✓ ${aktifKuponIndirimTutari} TL İndirim!</span>`; } else { b.style.background = "rgba(255,255,255,0.05)"; b.style.color = "var(--text-main)"; b.innerText = "Uygula"; b.onclick = KuponSorgula; if(iE) { iE.disabled = false; iE.style.opacity = "1"; } m.innerHTML = ""; } }
 
-    function WheelIsPass(value){return /\bpas\b/iu.test(String(value||''));}
+    function WheelIsPass(value){return String(value||'').trim().replace(/^[^\p{L}]+|[^\p{L}]+$/gu,'').toLocaleLowerCase('tr-TR')==='pas';}
     function WheelPaintRewards(rewards=CARK_ODULLERI){
         for(let index=0;index<5;index++){
             const label=document.getElementById('cark-ui-'+(index+1));if(!label)continue;
@@ -2409,6 +2346,7 @@
         return epoch === wheelSessionEpoch && WheelSession()?.uid === user.uid;
     }
     function WheelResetSession() {
+        PhoneVerificationStop();
         ++wheelSessionEpoch; aktifKullanilanCarkOdulu = null;
         const popup = document.getElementById('cark-popup');
         if(popup)CarkPopupKapat();
@@ -2433,7 +2371,9 @@
         const snapshot = await WheelWait(firebase.database().ref('CarkKullanimlari/' + identity.tel).once('value'));
         if (!WheelStillCurrent(identity.user, identity.epoch)) return null;
         const record = snapshot.val();
-        return record && typeof record.odul === 'string' && record.odul.length <= 100 && Number.isFinite(record.bitis) && record.bitis > WheelNow() && (!record.uid || record.uid === identity.user.uid) ? record : null;
+        if(!record||typeof record.odul!=='string'||record.odul.length>100||!Number.isFinite(record.bitis)||record.bitis<=WheelNow()||record.uid&&record.uid!==identity.user.uid)return null;
+        if(record.spinId){const ledger=await WheelWait(firebase.database().ref('MusteriIslemleri/'+identity.tel+'/usedRewards').once('value'));const used=ledger.val()?.[record.spinId];if(used?.orderId){let state='';try{const status=await WheelWait(firebase.database().ref('KasaSiparisDurumlari/'+used.orderId).once('value'));state=status.val()?.status||'';}catch(_){}if(!['cancelled','rejected'].includes(state))record.usedOrderId=used.orderId;}}
+        return WheelStillCurrent(identity.user,identity.epoch)?record:null;
     }
     async function CarkDurumunuKontrolEt() {
         const banner=document.getElementById('cark-banner'), desc=document.getElementById('cark-banner-desc'), btn=document.getElementById('cark-banner-btn');
@@ -2444,6 +2384,7 @@
         if(desc)desc.textContent='Doğrulanmış hesabınıza özel haftalık fırsat.';if(btn)btn.textContent='Çarkı aç';
         try {
             const reward=await WheelReward(identity);if(!reward||!WheelStillCurrent(identity.user,identity.epoch))return;
+            if(reward.usedOrderId){if(desc)desc.textContent='Çark ödülünüz siparişinizde kullanıldı. Yeni hakkınız süre dolunca açılır.';if(btn)btn.textContent='Bilgi';return;}
             if(WheelIsPass(reward.odul)){if(desc)desc.textContent='Bu haftanın hakkı kullanıldı. Yeni hakkınız süre dolunca açılır.';if(btn)btn.textContent='Bilgi';return;}if(banner)banner.style.display='none';
             if(box)box.style.display='block';document.getElementById('kazanilan-odul-yazi').textContent=reward.odul;
             const days=Math.max(1,Math.ceil((reward.bitis-WheelNow())/86400000));document.getElementById('kazanilan-sure-yazi').textContent=days+' gün içinde kullanabilirsiniz.';
@@ -2468,16 +2409,16 @@
     function WheelShowResult(record,identity,existing=false){
         // Sonuç istemcide üretilmez. Yalnız doğrulanmış sunucu yanıtı/kayıt gösterilir.
         if(!identity||!WheelStillCurrent(identity.user,identity.epoch)||!record||typeof record.odul!=='string'||!record.odul.trim()||record.odul.length>100||!Number.isFinite(record.bitis)||record.bitis<=WheelNow()||(record.uid&&record.uid!==identity.user.uid))return false;
-        const pass=WheelIsPass(record.odul);
+        const pass=WheelIsPass(record.odul),used=!!record.usedOrderId;
         const date=new Date(record.bitis).toLocaleString('tr-TR',{day:'numeric',month:'long',hour:'2-digit',minute:'2-digit',timeZone:'Europe/Istanbul'});
         document.getElementById('cark-result-icon').innerHTML=PremiumIcon(pass?'info':'check');
-        document.getElementById('cark-result-title').textContent=pass?'Bu tur Pas geldi':existing?'Kayıtlı ödülünüz':'Tebrikler, kazandınız!';
+        document.getElementById('cark-result-title').textContent=used?'Ödülünüz siparişte kullanıldı':pass?'Bu tur Pas geldi':existing?'Kayıtlı ödülünüz':'Tebrikler, kazandınız!';
         document.getElementById('cark-result-prize').textContent=record.odul;
-        document.getElementById('cark-result-description').textContent=pass?'Bu kez ödül çıkmadı. Yeni hakkınız açıldığında tekrar şansınızı deneyebilirsiniz.':'Ödülünüz hesabınıza kaydedildi. Siparişinize ekleyebilir, kasa onayıyla kullanabilirsiniz.';
+        document.getElementById('cark-result-description').textContent=used?'Bu ödül başka bir siparişte tekrar kullanılamaz. Yeni çark hakkınız süre dolunca açılır.':pass?'Bu kez ödül çıkmadı. Yeni hakkınız açıldığında tekrar şansınızı deneyebilirsiniz.':'Ödülünüz hesabınıza kaydedildi. Menüden seçtiğiniz bir ürünle birlikte siparişinize ücretsiz ekleyebilirsiniz.';
         document.getElementById('cark-result-expiry').textContent=(pass?'Yeni çark hakkınız: ':'Son kullanım: ')+date+' (Türkiye saati)';
-        const primary=document.getElementById('cark-result-primary');primary.textContent=pass?'Tamam':'Sepete ekle';primary.disabled=false;
-        primary.onclick=async()=>{if(primary.disabled)return;primary.disabled=true;WheelResultClose();if(!pass&&WheelStillCurrent(identity.user,identity.epoch))await CarkHediyesiniKullan();};
-        document.getElementById('cark-result-later').style.display=pass?'none':'block';
+        const primary=document.getElementById('cark-result-primary');primary.textContent=pass||used?'Tamam':'Sepete ekle';primary.disabled=false;
+        primary.onclick=async()=>{if(primary.disabled)return;primary.disabled=true;WheelResultClose();if(!pass&&!used&&WheelStillCurrent(identity.user,identity.epoch))await CarkHediyesiniKullan();};
+        document.getElementById('cark-result-later').style.display=pass||used?'none':'block';
         CarkPopupKapat();PremiumDialogOpen('cark-result-popup');return true;
     }
     function WheelError(code, message) { const error=new Error(message); error.code=code; return error; }
@@ -2518,7 +2459,7 @@
             if(!WheelStillCurrent(identity.user,identity.epoch))return null;
             const [idToken,check]=tokens;
             if(typeof idToken!=='string'||!idToken||typeof check?.token!=='string'||!check.token)throw WheelError('SECURITY_TOKEN_UNAVAILABLE','Güvenlik kontrolü tamamlanamadı. Sayfayı yenileyin.');
-            const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),18000);
+            const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),30000);
             let response,data;
             try {
                 WheelDiagnostic('request');
@@ -2576,15 +2517,15 @@
             if(!reward||reward.odul!==saved||WheelIsPass(reward.odul)||!WheelStillCurrent(identity.user,identity.epoch))return false;
             aktifKullanilanCarkOdulu=reward.odul;
             document.getElementById('aktif-hediye-uyari').style.display='block';
-            document.getElementById('sepet-hediye-yazi').textContent=reward.odul+' — kasa onayıyla';return true;
+            document.getElementById('sepet-hediye-yazi').textContent=reward.odul+' — siparişe ücretsiz eklenir';return true;
         }catch(_){return false;}
     }
 
     async function CarkHediyesiniKullan() {
         const identity=await WheelIdentity();if(!identity)return;
-        try {const reward=await WheelReward(identity);if(!reward||WheelIsPass(reward.odul)){OzelUyariGoster('Ödül bulunamadı','Kullanılabilir ödülünüz bulunmuyor.','ℹ');return;}
+        try {const reward=await WheelReward(identity);if(!reward||reward.usedOrderId||WheelIsPass(reward.odul)){OzelUyariGoster('Ödül bulunamadı','Kullanılabilir ödülünüz bulunmuyor.','ℹ');return;}
             if(!WheelStillCurrent(identity.user,identity.epoch))return;aktifKullanilanCarkOdulu=reward.odul;
-            document.getElementById('aktif-cark-hediye-kutusu').style.display='none';document.getElementById('aktif-hediye-uyari').style.display='block';document.getElementById('sepet-hediye-yazi').textContent=reward.odul+' — kasa onayıyla';
+            document.getElementById('aktif-cark-hediye-kutusu').style.display='none';document.getElementById('aktif-hediye-uyari').style.display='block';document.getElementById('sepet-hediye-yazi').textContent=reward.odul+' — siparişe ücretsiz eklenir';
             SayfaGoster('sepet');await HesaplaVeGuncelle();
         }catch(_){OzelUyariGoster('Ödül doğrulanamadı','Bağlantınızı kontrol ederek tekrar deneyin.','📡');}
     }
@@ -2599,7 +2540,7 @@
         sepet.forEach(u => { hamToplamFiyat += (u.basePrice * u.quantity); });
 
         if (aktifKuponIndirimTutari > 0) {
-            if (hamToplamFiyat >= aktifKuponAltLimit) {
+            if (hamToplamFiyat >= aktifKuponAltLimit && sepet.length>0 && (aktifKuponHedefUrun==='Herşey'||sepet.every(u=>u.rawName===aktifKuponHedefUrun))) {
                 sonOdenecekFiyat = hamToplamFiyat - aktifKuponIndirimTutari;
                 if (sonOdenecekFiyat < 0) sonOdenecekFiyat = 0;
                 document.getElementById("eski-fiyat-ustu-cizik").innerText = hamToplamFiyat.toFixed(2) + " TL";
@@ -2625,7 +2566,8 @@
     }
 
     async function CheckoutPopupAc() { 
-        if(sepet.length === 0 && aktifKullanilanCarkOdulu === null) return; 
+        if(!WheelSession()){SayfaGoster('profil');OzelUyariGoster('Hesabınıza giriş yapın','Sipariş için e-postası ve telefonu doğrulanmış müşteri hesabınızla giriş yapın.','🔒');return;}
+        if(!SepetteUcretliUrunVar()) {OzelUyariGoster('Sepetinize ürün ekleyin','Çark hediyesi ve kupon, menüden eklediğiniz bir ürünle birlikte kullanılabilir.','🛒');return;} 
         if(await SecureOku("bg_active_order_id")) { OzelUyariGoster("Siparişiniz Yolda", "Mevcut siparişiniz teslim edilmeden veya iptal edilmeden yeni bir sipariş oluşturamazsınız.", "🛵"); return; }
         
         let chkIsim = document.getElementById("chk-isim"); let chkAdres = document.getElementById("chk-adres");
@@ -2637,7 +2579,7 @@
 
     function TogglePayButton() {
         let chk = document.getElementById("legal-checkbox"); let btn = document.getElementById("final-submit-btn"); let btnText = document.getElementById("final-btn-text");
-        if (chk && chk.checked) { btn.disabled = false; btn.style.opacity = "1"; btnText.innerHTML = `${sonOdenecekFiyat.toFixed(2)} TL Öde`; } 
+        if (chk && chk.checked && !isProcessingOrder && SepetteUcretliUrunVar()) { btn.disabled = false; btn.style.opacity = "1"; btnText.innerHTML = `${sonOdenecekFiyat.toFixed(2)} TL Öde`; } 
         else { btn.disabled = true; btn.style.opacity = "0.5"; btnText.innerHTML = `Sözleşmeyi Onaylayın`; }
     }
 
@@ -2681,7 +2623,7 @@
     }
     async function PaketSiparisiGonder() {
         if (isBannedUser || !firebase.auth().currentUser) return;
-        if(isProcessingOrder || (sepet.length === 0 && aktifKullanilanCarkOdulu === null)) return;
+        if(isProcessingOrder)return; if(!SepetteUcretliUrunVar()){OzelUyariGoster('Sepetinize ürün ekleyin','Sipariş için menüden en az bir ürün seçin. Çark hediyesi tek başına gönderilemez.','🛒');return;}
         if(!document.getElementById("legal-checkbox").checked) { OzelUyariGoster("Sözleşme Onayı", "Lütfen sipariş koşullarını inceleyip kabul kutusunu işaretleyin.", "📝"); return; }
         
         let telControl;
@@ -2693,7 +2635,7 @@
         if(lastOrderStr && Date.now() - parseInt(lastOrderStr) < 180000) { OzelUyariGoster("Spam Koruması", "Yeni sipariş vermek için lütfen 3 dakika bekleyin.", "⏳"); return; }
 
         HapticTitresim();
-        let is = escapeHTML(document.getElementById("chk-isim").value.trim()).substring(0, 50); let tl = telControl; let ad = escapeHTML(document.getElementById("chk-adres").value.trim()).substring(0, 250); let secilenOdeme = escapeHTML(document.getElementById("odeme-turu-secim").value);
+        let is = document.getElementById("chk-isim").value.trim().substring(0,120); let tl = telControl; let ad = document.getElementById("chk-adres").value.trim().substring(0,2500); let secilenOdeme = document.getElementById("odeme-turu-secim").value;
 
         let hV = false; 
         if(is.length < 3) { document.getElementById("chk-isim").classList.add("input-error"); setTimeout(() => document.getElementById("chk-isim").classList.remove("input-error"), 500); hV = true; } 
@@ -2719,7 +2661,7 @@
                 return;
             }
             if (!TeslimatKonumuUygun(p)) throw new Error('Konumunuz teslimat sınırını doğrulayacak kadar kesin değil (yaklaşık ±' + Math.round(accuracy) + ' metre). Wi-Fi ve konum izinlerini kontrol edin veya telefonunuzdan deneyin.');
-            await DevamEtPaketGonder(is, tl, ad, secilenOdeme, sepet, lat, lng);
+            await DevamEtPaketGonder(is, tl, ad, secilenOdeme, sepet, lat, lng, accuracy);
         } catch(e) {
             OzelUyariGoster('Konum Kontrolü 📍', escapeHTML(e?.message||'Konum alınamadı; lütfen tekrar deneyin.'), '📍');
         } finally {
@@ -2731,93 +2673,70 @@
         }
     }
 
-    async function DevamEtPaketGonder(isim, tel, adres, odemeTuru, temizSepet, lat = 0, lng = 0) {
-        if (isBannedUser || !firebase.auth().currentUser) return;
-        await SecureKaydet("bg_i", isim); await SecureKaydet("bg_a", adres);
-        let btnText = document.getElementById("final-btn-text"); btnText.innerHTML = `<div class="spinner-small"></div> İletiliyor...`; window.isOrderFinished = false;
+    function SepetteUcretliUrunVar(){return sepet.some(u=>u&&Number.isFinite(u.basePrice)&&u.basePrice>0&&Number.isFinite(u.baseStockAmount)&&u.baseStockAmount>0&&Number.isInteger(u.quantity)&&u.quantity>0&&u.rawName!=='CARK_ODULU_SYS'&&u.rawName!=='INDIRIM_KUPON_SYS');}
+    function OrderServiceMessage(code){return ({
+      PHONE_AMBIGUOUS:'Hesabınız birden fazla telefon kaydıyla eşleşti. İşletmeden kayıtların birleştirilmesini isteyin.',
+      PHONE_UNAVAILABLE:'Bu numaranın doğrulaması tamamlanamadı. Kendi telefon numaranızı kullanın veya işletmeyle iletişime geçin.',
+      VERIFICATION_LIMIT:'Bugünkü telefon doğrulama sınırına ulaştınız. İşletmeyle iletişime geçin.',INVALID_PROFILE:'Ad veya adres alanı sınırı aşıldı.',RECENT_LOGIN_REQUIRED:'Güvenlik için çıkış yapıp yeniden giriş yapın.',CUSTOMER_NOT_CONFIGURED:'Hesap hizmeti henüz yapılandırılmamış. İşletmeyle iletişime geçin.',
 
-        let siparisKaydedildi = false;
-        try {
-            let authUser = firebase.auth().currentUser;
-            if (!authUser) { OzelUyariGoster("Hata", "Oturum bulunamadı, lütfen çıkış yapıp tekrar giriş yapın.", "🔒"); isProcessingOrder = false; document.getElementById("final-submit-btn").disabled = false; document.getElementById("final-submit-btn").classList.remove("loading"); btnText.innerHTML = `${sonOdenecekFiyat.toFixed(2)} TL Öde`; return; }
-
-            let benzersizSiparisID = generateUUID();
-            let sunucuyaGidecekSepet = temizSepet.map(u => ({ rawName: u.rawName, tamIsim: (u.quantity > 1 ? u.quantity + "x " : "") + u.baseName, miktar: (u.baseStockAmount * u.quantity), quantity: u.quantity }));
-
-            let tZaman = Date.now(); let zM = ZamanMuhruKodla(tZaman, benzersizSiparisID);
-
-            let taslakVerisi = { 
-                uid: authUser.uid, telefon: tel, musteriAd: isim, adres: adres, odemeTuru: odemeTuru, 
-                siparisNotu: escapeHTML(document.getElementById("siparis-notu").value.trim()), 
-                kuponKodu: aktifKuponKodu, carkOdulu: aktifKullanilanCarkOdulu, 
-                sepet: sunucuyaGidecekSepet, gpsInfo: { latitude: lat, longitude: lng }, 
-                timestamp: tZaman, durum: "KASA ONAYI BEKLENİYOR ⏳" 
-            };
-
-            if (!authUser.emailVerified) throw new Error('Sipariş için e-posta adresinizi doğrulamanız gerekiyor.');
-            let idToken = await authUser.getIdToken(false);
-            const pendingKey = 'bg_pending_order_' + authUser.uid;
-            let pending;
-            try { pending = JSON.parse(await SecureOku(pendingKey)); } catch(_) {}
-            if (pending?.id && pending?.data?.uid === authUser.uid) {
-                benzersizSiparisID = pending.id; taslakVerisi = pending.data;
-                tel = taslakVerisi.telefon; tZaman = taslakVerisi.timestamp;
-                zM = ZamanMuhruKodla(tZaman, benzersizSiparisID);
-            } else {
-                pending = {id:benzersizSiparisID, data:taslakVerisi};
-                await SecureKaydet(pendingKey, JSON.stringify(pending));
-            }
-            const orderUrl = `${FIREBASE_URL}/SiparisTaslaklari/${benzersizSiparisID}.json?auth=${idToken}`;
-            // Yanıt kaybolduysa aynı ID'yi kontrol et; ikinci sipariş üretme.
-            const existingRes = await fetch(orderUrl);
-            if (!existingRes.ok) throw SiparisHttpHatasi(existingRes.status);
-            const existing = await existingRes.json();
-            if (existing && existing.uid !== authUser.uid) throw new Error('Sipariş sahipliği doğrulanamadı.');
-            if (!existing) {
-                if(taslakVerisi.carkOdulu) {
-                    const identity=await WheelIdentity(false);
-                    const reward=identity?await WheelReward(identity):null;
-                    if(!reward||reward.odul!==taslakVerisi.carkOdulu||WheelIsPass(reward.odul)) {
-                        await SecureSil(pendingKey);aktifKullanilanCarkOdulu=null;
-                        throw new Error('Çark ödülünüz doğrulanamadı. Ödülü sepetten çıkarıp yeniden deneyin.');
-                    }
-                }
-                const cartFormatError=SunucuSepetiHatasi(taslakVerisi.sepet);
-                if(cartFormatError) {await SecureSil(pendingKey);throw new Error(cartFormatError);}
-                const menuRes=await fetch(`${FIREBASE_URL}/Menu.json?t=${Date.now()}`);
-                if(!menuRes.ok) throw new Error('Güncel stok bilgisi alınamadı (HTTP '+menuRes.status+').');
-                const menuData=await menuRes.json();
-                if(!Array.isArray(menuData?.products)) throw new Error('Güncel menü verisi geçersiz.');
-                tumUrunler=menuData.products;
-                const savedCart=taslakVerisi.sepet.map(item=>({rawName:item.rawName,baseName:item.tamIsim,baseStockAmount:item.miktar,quantity:1}));
-                const stockError=SepetStokHatasi(savedCart);
-                if(stockError) { await SecureSil(pendingKey); throw new Error(stockError); }
-                // Önceki başarısız denemede 0'sız kaydedilmiş telefon için aynı ID korunur.
-                tel = SiparisTelefonunuStandartlastir(taslakVerisi.telefon);
-                taslakVerisi.telefon = tel;
-                await SecureKaydet(pendingKey, JSON.stringify({id:benzersizSiparisID, data:taslakVerisi}));
-                let taslakRes = await fetch(orderUrl, {method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(taslakVerisi)});
-                if (!taslakRes.ok) throw SiparisHttpHatasi(taslakRes.status);
-            }
-            siparisKaydedildi = true;
-            await SecureKaydet('bg_active_order_id', benzersizSiparisID);
-            await SecureKaydet('last_ord_t', tZaman.toString());
-            await SecureKaydet('bg_order_timestamp', zM);
-            await SecureSil(pendingKey);
-
-            const profilSiparisRes = await fetch(`${FIREBASE_URL}/DoğrulanmisHesaplar/${tel}/aktifSiparis.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify({ siparisId: benzersizSiparisID, zamanMuhru: zM, odemeTuru: odemeTuru }) });
-            // Siparis kaydi basariliysa profil baglantisi hatasinda ikinci siparis gonderme.
-            if(!profilSiparisRes.ok) console.warn("Siparis kaydedildi; profil takip baglantisi guncellenemedi:", profilSiparisRes.status);
-
-            if (aktifKullanilanCarkOdulu !== null) { await SecureSil("bg_cark_data"); aktifKullanilanCarkOdulu = null; /* Ödül kaydı yalnız yetkili sunucu/kasa tarafından yönetilir. */ }
-
-            await SecureKaydet("bg_active_order_id", benzersizSiparisID); await SecureKaydet("last_ord_t", tZaman.toString()); await SecureKaydet("bg_odeme_turu", odemeTuru);
-            await SecureKaydet("bg_order_timestamp", zM); await SiparisDurumBildiriminiBaslat(benzersizSiparisID); await SecureSil("bg_saved_cart"); await SecureSil("bg_saved_note"); await SecureSil("bg_saved_coupon"); await SecureSil("bg_saved_cark");
-
-            HapticTitresim(); CheckoutKapat(); BasariEkraniGoster();
-
-            sepet = []; aktifKuponKodu = ""; document.getElementById("siparis-notu").value = ""; SepetEkraniniCiz(); await HesaplaVeGuncelle(); seciliEkstraIstekler = []; isProcessingOrder = false;
-        } catch (e) { OzelUyariGoster(siparisKaydedildi ? "Sipariş alındı" : "Sipariş gönderimi", siparisKaydedildi ? "Sipariş kasaya kaydedildi. Takip ekranı güncellenemedi; yeni sipariş göndermeyin, sipariş geçmişini açın." : escapeHTML(e?.name === 'AbortError' ? 'Sunucu yanıtı zaman aşımına uğradı. Yeniden denediğinizde aynı sipariş kontrol edilecek.' : e?.message || 'Sunucuya ulaşılamadı. Bağlantınızı kontrol edip yeniden deneyin.'), "📡"); isProcessingOrder = false; document.getElementById("final-submit-btn").disabled = false; document.getElementById("final-submit-btn").classList.remove("loading"); btnText.innerHTML = `${sonOdenecekFiyat.toFixed(2)} TL Öde`; }
+      PAID_PRODUCT_REQUIRED:'Siparişe menüden en az bir ürün ekleyin. Kupon ve çark hediyesi tek başına gönderilemez.',
+      INVALID_CART:'Sepette geçersiz bir ürün veya miktar var. Sepeti kontrol edin.',INVALID_PRODUCT:'Sepette menüyle eşleşmeyen bir ürün var.',INVALID_QUANTITY:'Ürün miktarı geçersiz.',
+      OUT_OF_STOCK:'Seçtiğiniz ürünün stoğu azaldı. Sepeti güncelleyip tekrar deneyin.',BREAD_OUT_OF_STOCK:'Ekmek stoğu yetersiz. Ekmek sayısını azaltın veya ekmeksiz seçin.',
+      ACTIVE_ORDER_EXISTS:'Devam eden bir siparişiniz var. Önce Siparişlerim ekranını kontrol edin.',SHOP_CLOSED:'İşletme şu anda sipariş kabul etmiyor.',
+      COUPON_INVALID:'Kuponun kullanım hakkı, ürün koşulu veya alt limiti uygun değil. Kuponu kaldırıp tekrar deneyin.',PRICE_CHANGED:'Menü fiyatı değişti. Sepetinizdeki ürünleri güncel fiyatla tekrar ekleyin.',
+      REWARD_INVALID:'Çark ödülünüz kullanılamıyor veya süresi dolmuş.',REWARD_ALREADY_USED:'Bu çark ödülü başka bir siparişte kullanılmış.',REWARD_OUT_OF_STOCK:'Çark hediyesinin stoğu bitti. Hediyeyi çıkarıp sipariş verebilirsiniz.',
+      REWARD_NOT_CONFIGURED:'İşletme çark hediyesinin ürün eşleştirmesini henüz tamamlamamış. Hediyeyi çıkarıp sipariş verebilir veya işletmeye ulaşabilirsiniz.',
+      ORDER_COOLDOWN:'Yeni sipariş için üç dakikalık bekleme süresi henüz dolmadı.',DAILY_ORDER_LIMIT:'Günlük sipariş sınırına ulaştınız. İşletmeyle iletişime geçin.',
+      CANCELLATION_CLOSED:'İptal/düzenleme süresi doldu veya ödeme yöntemi bu işleme uygun değil. İşletmeyle iletişime geçin.',ORDER_ALREADY_ACCEPTED:'Sipariş kasa tarafından işleme alındı. Değişiklik için işletmeyle iletişime geçin.',
+      LOCATION_REQUIRED:'Teslimat konumu doğrulanamadı.',OUTSIDE_DELIVERY_AREA:'Konumunuz teslimat bölgesinde doğrulanamadı.',
+      INVALID_ORDER:'Sipariş bilgileri geçersiz veya zaman aşımına uğramış. Bilgilerinizi kontrol edip tekrar deneyin.',
+      IDEMPOTENCY_CONFLICT:'Bekleyen gönderimle yeni sepet uyuşmuyor. Önce Siparişlerim ekranından sonucu kontrol edin.',
+      BUSY_RETRY:'İşlem başka bir istekle çakıştı. Birkaç saniye sonra tekrar deneyin; aynı sipariş kontrol edilir.',
+      DATABASE_UNAVAILABLE:'Sipariş bilgilerine şu anda ulaşılamıyor. Bağlantıyı kontrol ederek aynı siparişle yeniden deneyin.',REQUEST_TEMPORARILY_UNAVAILABLE:'İşlem gecikti. Yeniden denediğinizde aynı sipariş kontrol edilir.',REQUEST_TOO_LARGE:'Sepet bilgisi boyut sınırını aşıyor. Notu kısaltın veya ürün satırlarını azaltın.',PHONE_NOT_VERIFIED:'Telefon doğrulamanızı tamamlayın.',ACCOUNT_BLOCKED:'Hesabınızın sipariş erişimi kapatılmış.',LOGIN_REQUIRED:'Oturumunuz doğrulanamadı. Hesabınıza yeniden giriş yapın.',CUSTOMER_REQUIRED:'Doğrulanmış müşteri hesabınızla giriş yapın.',APP_CHECK_INVALID:'Uygulama güvenlik kontrolü tamamlanamadı. Sayfayı yenileyin.',APP_CHECK_REQUIRED:'Uygulama güvenlik kontrolü gerekli. Sayfayı yenileyin.',RATE_LIMITED:'Çok kısa sürede fazla işlem yapıldı. Bir süre bekleyip yeniden deneyin.'
+    })[code]||'İşlem şu anda tamamlanamadı. Bir süre sonra aynı işlemle yeniden deneyin.';}
+    async function CustomerService(path,payload){
+      const user=WheelSession(),epoch=wheelSessionEpoch;if(!user)throw new Error('E-postası doğrulanmış müşteri hesabınızla giriş yapın.');
+      for(let attempt=0;attempt<2;attempt++){
+        const [token,check]=await WheelWait(Promise.all([user.getIdToken(attempt===1),appCheck.getToken(attempt===1)]));
+        if(!WheelStillCurrent(user,epoch))throw new Error('Oturum değişti. İşlem durduruldu.');
+        const control=new AbortController(),timer=setTimeout(()=>control.abort(),30000);
+        let response,data;
+        try{
+          response=await fetch(new URL(path,WHEEL_API_URL).href,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token,'X-Firebase-AppCheck':check.token},body:JSON.stringify(payload),signal:control.signal,cache:'no-store'});
+          const text=await response.text();if(text.length>65536)throw new Error('Sunucu yanıtı geçersiz.');try{data=JSON.parse(text);}catch(_){throw new Error('Sipariş hizmetine şu anda ulaşılamıyor. Lütfen daha sonra tekrar deneyin.');}if(!data||typeof data!=='object'||Array.isArray(data))throw new Error('Sunucu yanıtı doğrulanamadı.');
+        }finally{clearTimeout(timer);}
+        if(!WheelStillCurrent(user,epoch))throw new Error('Oturum değişti. Siparişin sonucunu yeniden giriş yaparak kontrol edin.');
+        if(attempt===0&&response.status===401&&['LOGIN_REQUIRED','APP_CHECK_INVALID','APP_CHECK_REQUIRED'].includes(data?.code))continue;
+        if(!response.ok||!data?.ok){const e=new Error(OrderServiceMessage(data?.code));e.code=data?.code;e.status=response.status;throw e;}
+        return data;
+      }
+      throw new Error('Oturum doğrulanamadı. Tekrar giriş yapın.');
+    }
+    async function DevamEtPaketGonder(isim,tel,adres,odemeTuru,temizSepet,lat=0,lng=0,accuracy=0){
+      const user=WheelSession();if(!user||isBannedUser)return;
+      const btn=document.getElementById('final-submit-btn'),label=document.getElementById('final-btn-text'),pendingKey='bg_pending_order_'+user.uid;
+      label.textContent='Sipariş kontrol ediliyor…';let saved=false;
+      try{
+        const cart=temizSepet.map(u=>({rawName:u.rawName,tamIsim:(u.quantity>1?u.quantity+'x ':'')+u.baseName,miktar:u.baseStockAmount*u.quantity,quantity:u.quantity}));
+        const error=SunucuSepetiHatasi(cart);if(error)throw new Error(error);
+        let pending;try{pending=JSON.parse(await SecureOku(pendingKey));}catch(_){}
+        if(!pending?.id||pending.data?.uid!==user.uid){
+          pending={id:generateUUID(),uiCart:JSON.parse(JSON.stringify(temizSepet)),data:{uid:user.uid,telefon:tel,musteriAd:isim,adres,odemeTuru,siparisNotu:document.getElementById('siparis-notu').value.trim(),kuponKodu:aktifKuponKodu,carkOdulu:aktifKullanilanCarkOdulu,sepet:cart,gpsInfo:{latitude:lat,longitude:lng,accuracy},timestamp:Date.now(),durum:'KASA ONAYI BEKLENİYOR ⏳',expectedTotal:sonOdenecekFiyat}};
+          await SecureKaydet(pendingKey,JSON.stringify(pending));
+        }
+        const reply=await CustomerService('/orders/create',{orderId:pending.id,telefon:pending.data.telefon,draft:pending.data});
+        if(reply.orderId!==pending.id)throw new Error('Sipariş yanıtı eşleşmiyor. Siparişlerim ekranını kontrol edin.');
+        saved=true;
+        await SecureKaydet('bg_order_edit_'+pending.id,JSON.stringify({cart:pending.uiCart||[],note:pending.data.siparisNotu,coupon:pending.data.kuponKodu,reward:pending.data.carkOdulu}));
+        await SecureKaydet('bg_active_order_id',pending.id);await SecureKaydet('bg_order_timestamp',ZamanMuhruKodla(reply.timestamp,pending.id));await SecureKaydet('last_ord_t',String(reply.timestamp));await SecureKaydet('bg_odeme_turu',pending.data.odemeTuru);await SecureSil(pendingKey);
+        window.isOrderFinished=false;aktifKullanilanCarkOdulu=null;aktifKuponKodu='';aktifKuponIndirimTutari=0;aktifKuponAltLimit=0;aktifKuponHedefUrun='Herşey';sepet=[];
+        document.getElementById('siparis-notu').value='';document.getElementById('aktif-hediye-uyari').style.display='none';document.getElementById('coupon-code').value='';KuponArayuzunuGuncelle();SepetEkraniniCiz();await HesaplaVeGuncelle();
+        seciliEkstraIstekler=[];CheckoutKapat();BasariEkraniGoster();await SiparisDurumBildiriminiBaslat(pending.id);
+      }catch(e){
+        // Only definitive pre-commit validation failures permit a new payload/ID. Network/5xx retries retain it.
+        if(['INVALID_CART','INVALID_PRODUCT','INVALID_QUANTITY','PAID_PRODUCT_REQUIRED','INVALID_ORDER','OUT_OF_STOCK','BREAD_OUT_OF_STOCK','SHOP_CLOSED','COUPON_INVALID','PRICE_CHANGED','REWARD_INVALID','REWARD_ALREADY_USED','REWARD_OUT_OF_STOCK','REWARD_NOT_CONFIGURED','LOCATION_REQUIRED','OUTSIDE_DELIVERY_AREA'].includes(e.code))await SecureSil(pendingKey);
+        OzelUyariGoster(saved?'Sipariş alındı':'Sipariş gönderilemedi',saved?'Sipariş kaydedildi. Yeni sipariş göndermeden Siparişlerim ekranını kontrol edin.':escapeHTML(e.name==='AbortError'?'Yanıt gecikti. Tekrar denediğinizde aynı sipariş kontrol edilecek.':e.message||'Bağlantı kurulamadı. Aynı siparişle yeniden deneyebilirsiniz.'),'ℹ');
+      }finally{isProcessingOrder=false;btn.classList.remove('loading');TogglePayButton();}
     }
 
     function CheckoutKapat() { let pu = document.getElementById("checkout-popup"); pu.classList.remove("active"); setTimeout(() => { pu.style.display = "none"; }, 500); }
@@ -2855,15 +2774,17 @@
     let bgDurumSiparisId = '';
     async function SiparisDurumBildiriminiBaslat(siparisId) {
         const currentUser=firebase.auth().currentUser;
-        
+        if(!currentUser||typeof siparisId!=='string'||!/^[-A-Za-z0-9_]{15,128}$/.test(siparisId)){if(bgDurumRef)bgDurumRef.off();bgDurumRef=null;bgDurumSiparisId='';return;}
+        const uid=currentUser.uid;
         if (siparisId===bgDurumSiparisId && bgDurumRef) return;
         if(bgDurumRef) bgDurumRef.off();
         bgDurumSiparisId=siparisId;
         bgDurumRef=firebase.database().ref(`CanliPaketler/${siparisId}/durum`);
         bgDurumRef.on('value', async snapshot => {
-            const ham=snapshot.val(); if(!ham || !firebase.auth().currentUser) return;
+            const ham=snapshot.val(); if(!ham || firebase.auth().currentUser?.uid!==uid || bgDurumSiparisId!==siparisId) return;
+            const durum=String(ham).toLocaleUpperCase('tr-TR');
+            if(/TESLİM|AFİYET|TAMAM|İPTAL|RED/u.test(durum) && await SecureOku('bg_active_order_id')===siparisId)await SecureSil('bg_active_order_id');
             if(document.getElementById('history-container')?.style.display === 'block') return;
-            const durum=String(ham).toUpperCase();
             const son=await SecureOku('bg_last_status');
             if(durum===son) return;
             await SecureKaydet('bg_last_status',durum);
@@ -2891,11 +2812,11 @@
             let idToken = await authUser.getIdToken(true); let odemeTuru = await SecureOku("bg_odeme_turu") || "Kapıda Nakit"; let nakitDisiOdeme = !odemeTuru.includes("Nakit");
 
             if (!bP || bP.error) {
-                let taslakRes = await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}.json?auth=${idToken}&t=${Date.now()}`); let taslakData = await taslakRes.json();
+                let taslakRes = await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${siparisId}.json?auth=${idToken}&t=${Date.now()}`); if(!taslakRes.ok)throw new Error("Sipariş bilgisi alınamadı"); let taslakData = await taslakRes.json();
                 if (taslakData && !taslakData.error && taslakData.durum) {
                     let rawOrderTs = await SecureOku("bg_order_timestamp"); let orderTs = rawOrderTs ? ZamanMuhruOku(rawOrderTs, siparisId) : GetServerTimeFast();
                     let leftMs = 180000 - (GetServerTimeFast() - orderTs); let canEdit = false;
-                    if(leftMs > 0 && orderTs > 0) { canEdit = true; }
+                    if(leftMs > 0 && orderTs > 0 && taslakData.durum === "KASA ONAYI BEKLENİYOR ⏳") { canEdit = true; }
                     
                     let butonlar = "";
                     if (canEdit) { 
@@ -2912,21 +2833,22 @@
                 }
             }
 
+            let canEdit=false,dR="",orderTs=0;
             let sipZamani = (bP && bP.timestamp) ? bP.timestamp : null; let isGhost = sipZamani ? ((Date.now() - sipZamani) > GHOST_TIMEOUT_MS) : false; let h = "";
             if(!bP || isGhost) { 
                 window.isOrderFinished = false; h = `<div class="empty-state-box">${emptyHistorySVG}<p>Aktif bir siparişiniz bulunmuyor.</p></div>`; sonCekilenAdisyonHTML = "";
                 await SecureSil("bg_active_order_id"); await SecureSil("bg_last_status"); await BuluttanAktifAdisyonuSil();
             } else {
-                let dR = bP.durum ? bP.durum.toUpperCase() : "SİPARİŞ ALINDI 🔔";
+                dR = bP.durum ? bP.durum.toUpperCase() : "SİPARİŞ ALINDI 🔔";
                 let durumRenk = "var(--primary)"; let durumBg = "rgba(255,107,0,0.1)"; let durumIkon = "⏳"; let iptalButonuHTML = "";
                 
                 let oncekiDurum = await SecureOku("bg_last_status") || "";
                 if (dR !== oncekiDurum) { await SecureKaydet("bg_last_status", dR); if (dR.includes("TESLİM") || dR.includes("AFİYET")) { BildirimGonder("Afiyet Olsun! 😋", "Bekmez GO: Siparişiniz teslim edildi. Bizi tercih ettiğiniz için teşekkür ederiz!"); } else if (dR.includes("YOLDA") || dR.includes("KURYE")) { BildirimGonder("Kurye Yola Çıktı! 🛵", "Siparişiniz yola çıktı, gelmek üzere!"); } }
 
-                let rawOrderTs = await SecureOku("bg_order_timestamp"); let orderTs = rawOrderTs ? ZamanMuhruOku(rawOrderTs, siparisId) : GetServerTimeFast();
-                let leftMs = 180000 - (GetServerTimeFast() - orderTs); let canEdit = false; let lockMsg = "";
+                let rawOrderTs = await SecureOku("bg_order_timestamp"); orderTs = rawOrderTs ? ZamanMuhruOku(rawOrderTs, siparisId) : 0;
+                let leftMs = 180000 - (GetServerTimeFast() - orderTs); canEdit = false; let lockMsg = "Kasa siparişinizi işleme aldı. Değişiklik için işletmeyle iletişime geçin.";
 
-                if (dR.includes("HAZIRLANIYOR") || dR.includes("SİPARİŞ ALINDI")) { durumRenk = "var(--primary)"; durumBg = "rgba(255,107,0,0.1)"; durumIkon = "👨‍🍳"; if(leftMs > 0 && orderTs > 0) { canEdit = true; } else { lockMsg = "3 dakikalık süre doldu."; } }
+                if (dR.includes("HAZIRLANIYOR") || dR.includes("SİPARİŞ ALINDI")) { durumRenk = "var(--primary)"; durumBg = "rgba(255,107,0,0.1)"; durumIkon = "👨‍🍳"; canEdit = false; }
                 else if (dR.includes("PİŞİYOR") || dR.includes("MUTFAK")) { durumRenk = "var(--warning)"; durumBg = "rgba(255, 204, 0, 0.1)"; durumIkon = "🔥"; lockMsg = "Sipariş mutfakta işleme alındı."; }
                 else if (dR.includes("YOLDA") || dR.includes("KURYE") || dR.includes("PAKET")) { durumRenk = "#0A84FF"; durumBg = "rgba(10, 132, 255, 0.1)"; durumIkon = "🛵"; lockMsg = "Kuryemiz yola çıktı."; }
                 else if (dR.includes("İPTAL") || dR.includes("RED")) { durumRenk = "var(--danger)"; durumBg = "rgba(255, 59, 48, 0.1)"; durumIkon = "❌"; await BuluttanAktifAdisyonuSil(); }
@@ -2944,50 +2866,32 @@
                 else { h = `<div class="receipt-card"><div style="text-align: center; margin-bottom: 25px;"><div style="font-size:30px; margin-bottom:5px;">${durumIkon}</div><div style="font-weight: 900; font-size: 22px; color:#1c1c1e;">BEKMEZ GO</div><div style="font-size: 14px; font-weight: 800; color:var(--text-muted); margin-top:4px;">PAKET SERVİS</div></div><div class="receipt-header"><span>DURUM</span><span style="color:${durumRenk}; font-weight:900; background:${durumBg}; padding:8px 14px; border-radius:12px; text-align:right;">${escapeHTML(dR)}</span></div>`; if(bP.siparisler) { bP.siparisler.forEach(u => { h += `<div class="receipt-item"><span>${escapeHTML(u.itemName)}</span><span>${parseFloat(u.itemPrice).toFixed(2)} ₺</span></div>`; }); } if (bP.siparisNotu) { h += `<div style="margin-top: 20px; padding: 16px; background: rgba(0,0,0,0.03); border-radius:16px; font-size: 13px; font-weight: 600; color:#8e8e93; border: 1px dashed #d1d1d6;">NOT:<br>${escapeHTML(bP.siparisNotu)}</div>`; } h += `<div class="receipt-total">TOPLAM: <span style="font-size:28px; display:block; margin-top:8px;">${parseFloat(bP.toplamTutar).toFixed(2)} TL</span></div>${iptalButonuHTML}<div style="text-align: center; font-size: 11px; margin-top: 25px; color:#a1a1aa; font-weight: 600;">Bizi tercih ettiğiniz için teşekkür ederiz.</div></div>`; sonCekilenAdisyonHTML = h; }
             }
             if (document.getElementById("history-content").innerHTML !== h) { document.getElementById("history-content").innerHTML = h; if (canEdit && !nakitDisiOdeme && !dR.includes("İPTAL")) CanliAdisyonSayaciBaslat(orderTs); }
-        } catch(e) {}
+        } catch(e) { document.getElementById("history-content").innerHTML = `<div class="empty-state-box"><p>Sipariş bilgisi şu anda alınamıyor. Kaydınız korunuyor; yeni sipariş vermeden bağlantıyı kontrol edin.</p></div>`; }
     }
 
-    async function BuluttanAktifAdisyonuSil() { try { let tel = await SecureOku("bg_t"); let authUser = firebase.auth().currentUser; if(tel && authUser) { let idToken = await authUser.getIdToken(true); await fetch(`${FIREBASE_URL}/DoğrulanmisHesaplar/${tel}/aktifSiparis.json?auth=${idToken}`, { method: "DELETE" }); } } catch(e){} }
+    async function BuluttanAktifAdisyonuSil(){ /* Sipariş bağlantısını yetkili sunucu yönetir. */ }
 
-    async function IptalOnaySor() {
-        SoruSor("Siparişi İptal Et", "Siparişiniz henüz hazırlanmaya başlanmadı. İptal etmek istediğinize emin misiniz?", "❌", async () => {
-            let sipId = await SecureOku("bg_active_order_id"); let authUser = firebase.auth().currentUser;
-            if(sipId && authUser) {
-                try {
-                    let idToken = await authUser.getIdToken(true);
-                    let res = await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${sipId}/durum.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify("MÜŞTERİ İPTAL ETTİ") });
-                    if(!res.ok) throw new Error("İptal işlemi reddedildi.");
-                    OzelUyariGoster("İptal Edildi", "Siparişiniz başarıyla iptal edildi.", "✅");
-                    await SecureSil("bg_active_order_id"); await SecureSil("bg_last_status"); await BuluttanAktifAdisyonuSil();
-                    document.getElementById("history-content").innerHTML = `<div class="empty-state-box">${emptyHistorySVG}<p>Aktif bir siparişiniz bulunmuyor.</p></div>`;
-                    SayfaGoster('urunler');
-                } catch(e) { OzelUyariGoster("Hata", "İşlem sırasında bir hata oluştu.", "❌"); }
-            }
-        }, true);
+    let customerCancelBusy=false;
+    async function CustomerCancel(editing){
+      if(customerCancelBusy)return;customerCancelBusy=true;
+      try{
+        const id=await SecureOku('bg_active_order_id'),identity=await WheelIdentity();if(!id||!identity)return;
+        const result=await CustomerService('/orders/cancel',{orderId:id,telefon:identity.tel,editing});
+        if(editing){
+          let stored;try{stored=JSON.parse(await SecureOku('bg_order_edit_'+id));}catch(_){}
+          sepet=Array.isArray(stored?.cart)&&stored.cart.length?stored.cart:result.cart.map(r=>({rawName:r.rawName,baseName:r.tamIsim,baseStockAmount:r.miktar,quantity:1,basePrice:r.linePrice||0}));
+          document.getElementById('siparis-notu').value=result.note||'';aktifKuponKodu='';aktifKuponIndirimTutari=0;
+          if(result.reward)await WheelRestoreGift(result.reward);SepetEkraniniCiz();await HesaplaVeGuncelle();
+        }
+        await SecureSil('bg_active_order_id');await SecureSil('bg_last_status');await SecureSil('last_ord_t');await SecureSil('bg_order_edit_'+id);
+        if(aktifAdisyonDinleyiciRef){aktifAdisyonDinleyiciRef.off();aktifAdisyonDinleyiciRef=null;}
+        document.getElementById('history-content').innerHTML=`<div class="empty-state-box"><p>Sipariş iptal edildi.</p></div>`;
+        SayfaGoster(editing?'sepet':'urunler');OzelUyariGoster(editing?'Sepetiniz hazır':'Sipariş iptal edildi',editing?'Ürünleriniz sepete geri yüklendi. Kupon koşulları yeni siparişte yeniden kontrol edilir.':'Siparişiniz kasa işleme almadan iptal edildi.','✅');
+      }catch(e){OzelUyariGoster('İşlem tamamlanamadı',escapeHTML(e.message||'Bağlantınızı kontrol edin.'),'ℹ');}
+      finally{customerCancelBusy=false;}
     }
-
-    async function DuzenleOnaySor() {
-        SoruSor("Siparişi Düzenle", "Mevcut sipariş iptal edilecek ve ürünleriniz tekrar sepete yüklenecek. Onaylıyor musunuz?", "✏️", async () => {
-            let sipId = await SecureOku("bg_active_order_id"); let authUser = firebase.auth().currentUser;
-            if(sipId && authUser) {
-                try {
-                    let idToken = await authUser.getIdToken(true);
-                    let res = await fetch(`${FIREBASE_URL}/SiparisTaslaklari/${sipId}/durum.json?auth=${idToken}`, { method: "PUT", body: JSON.stringify("MÜŞTERİ İPTAL ETTİ (DÜZENLEME)") });
-                    if(!res.ok) throw new Error("Düzenleme işlemi reddedildi.");
-                    await SecureSil("bg_active_order_id"); await SecureSil("bg_last_status"); await BuluttanAktifAdisyonuSil();
-                    
-                    let sC = await SecureOku("bg_saved_cart"); let sN = await SecureOku("bg_saved_note"); let sK = await SecureOku("bg_saved_coupon"); let sCark = await SecureOku("bg_saved_cark");
-                    if(sC) sepet = JSON.parse(sC); if(sN) document.getElementById("siparis-notu").value = sN;
-                    if(sK) { document.getElementById("coupon-code").value = sK; await KuponSorgula(); }
-                    if(sCark) await WheelRestoreGift(sCark);
-                    
-                    OzelUyariGoster("Düzenleme Modu", "Siparişiniz iptal edildi. Ürünleriniz sepete geri yüklendi.", "🛒");
-                    document.getElementById("history-content").innerHTML = `<div class="empty-state-box">${emptyHistorySVG}<p>Aktif bir siparişiniz bulunmuyor.</p></div>`;
-                    SayfaGoster('sepet'); await HesaplaVeGuncelle();
-                } catch(e) { OzelUyariGoster("Hata", "Sipariş düzenlenemedi.", "❌"); }
-            }
-        }, false);
-    }
+    async function IptalOnaySor(){SoruSor('Siparişi iptal et','Sipariş henüz kasa tarafından işleme alınmadıysa iptal edilir. Devam edilsin mi?','❌',()=>CustomerCancel(false),true);}
+    async function DuzenleOnaySor(){SoruSor('Siparişi düzenle','Sipariş kasa tarafından alınmadıysa iptal edilip ürünler sepete geri yüklenecek. Devam edilsin mi?','✏️',()=>CustomerCancel(true),false);}
 
     /* İşletme tarafından yayından önce doldurulmalıdır. Markayı tüzel kişi unvanı olarak kullanmayın. */
     const LEGAL_BUSINESS = { controllerName: '', address: '', applicationContact: '', taxInfo: '', retentionPolicy: '', transferDetails: '' };
