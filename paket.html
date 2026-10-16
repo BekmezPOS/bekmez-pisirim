@@ -2712,7 +2712,12 @@
       }
       throw new Error('Oturum doğrulanamadı. Tekrar giriş yapın.');
     }
-    async function DevamEtPaketGonder(isim,tel,adres,odemeTuru,temizSepet,lat=0,lng=0,accuracy=0){
+    function BekmezPendingOrderMatches(previous,current){
+      // Compare the customer's intent; a refreshed GPS fix is not a new order.
+      const fields=['telefon','musteriAd','adres','odemeTuru','siparisNotu','kuponKodu','carkOdulu','expectedTotal'];
+      return fields.every(k=>(previous?.[k]??null)===(current?.[k]??null))&&JSON.stringify(previous?.sepet||[])===JSON.stringify(current?.sepet||[]);
+    }
+    async function DevamEtPaketGonder(isim,tel,adres,odemeTuru,temizSepet,lat=0,lng=0,accuracy=0,confirmedPendingId=null){
       const user=WheelSession();if(!user||isBannedUser)return;
       const btn=document.getElementById('final-submit-btn'),label=document.getElementById('final-btn-text'),pendingKey='bg_pending_order_'+user.uid;
       label.textContent='Sipariş kontrol ediliyor…';let saved=false;
@@ -2720,6 +2725,15 @@
         const cart=temizSepet.map(u=>({rawName:u.rawName,tamIsim:(u.quantity>1?u.quantity+'x ':'')+u.baseName,miktar:u.baseStockAmount*u.quantity,quantity:u.quantity}));
         const error=SunucuSepetiHatasi(cart);if(error)throw new Error(error);
         let pending;try{pending=JSON.parse(await SecureOku(pendingKey));}catch(_){}
+        const intent={telefon:tel,musteriAd:isim,adres,odemeTuru,siparisNotu:document.getElementById('siparis-notu').value.trim(),kuponKodu:aktifKuponKodu,carkOdulu:aktifKullanilanCarkOdulu,sepet:cart,expectedTotal:sonOdenecekFiyat};
+        if(pending?.id&&pending.data?.uid===user.uid&&pending.id!==confirmedPendingId&&!BekmezPendingOrderMatches(pending.data,intent)){
+          SoruSor('Önceki siparişin sonucu bekleniyor','Daha önce gönderdiğiniz siparişin yanıtı alınamadı. Çift sipariş oluşturmamak için önce o sipariş kontrol edilecek.<br><br>Önceki ödeme: <b>'+escapeHTML(pending.data.odemeTuru||'Doğrulanmadı')+'</b><br>Önceki tutar: <b>'+escapeHTML(String(pending.data.expectedTotal??'—'))+' TL</b><br><br>Onay verirseniz önceki sepet ve ödeme bilgisiyle devam edilir. Yeni seçtiğiniz ödeme bu işleme uygulanmaz.','ℹ',()=>{
+            if(isProcessingOrder||WheelSession()?.uid!==user.uid)return;
+            isProcessingOrder=true;btn.classList.add('loading');btn.disabled=true;
+            DevamEtPaketGonder(isim,tel,adres,odemeTuru,temizSepet,lat,lng,accuracy,pending.id);
+          });
+          return;
+        }
         if(!pending?.id||pending.data?.uid!==user.uid){
           pending={id:generateUUID(),uiCart:JSON.parse(JSON.stringify(temizSepet)),data:{uid:user.uid,telefon:tel,musteriAd:isim,adres,odemeTuru,siparisNotu:document.getElementById('siparis-notu').value.trim(),kuponKodu:aktifKuponKodu,carkOdulu:aktifKullanilanCarkOdulu,sepet:cart,gpsInfo:{latitude:lat,longitude:lng,accuracy},timestamp:Date.now(),durum:'KASA ONAYI BEKLENİYOR ⏳',expectedTotal:sonOdenecekFiyat}};
           await SecureKaydet(pendingKey,JSON.stringify(pending));
