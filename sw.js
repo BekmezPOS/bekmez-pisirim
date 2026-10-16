@@ -4,7 +4,7 @@
  * FCM/kapalı uygulamaya otomatik push/çevrimdışı sipariş içermez.
  */
 'use strict';
-const CACHE_NAME = 'bekmez-go-v16-orders-devices';
+const CACHE_NAME = 'bekmez-go-v51-order-payment';
 const APP_URL = new URL('./paket.html', self.registration.scope);
 const ASSETS = ['./paket.html', './manifest.json', './icon-192.png', './icon-app.svg']
   .map(path => new URL(path, self.registration.scope).href);
