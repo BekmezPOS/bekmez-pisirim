@@ -1,12 +1,13 @@
-/* Bekmez GO — Service Worker v16.
+/* Bekmez GO — Service Worker v17.
  * paket.html ile aynı klasörde sw.js olarak yayımlayın.
  * Statik dosya önbelleği ve yerel bildirim tıklamaları.
  * FCM/kapalı uygulamaya otomatik push/çevrimdışı sipariş içermez.
  */
 'use strict';
-const CACHE_NAME = 'bekmez-go-v51-order-payment';
+const CACHE_NAME = 'bekmez-go-v6-reconcile';
+const IMAGE_CACHE='bekmez-go-public-images-v1',MAX_IMAGES=80;
 const APP_URL = new URL('./paket.html', self.registration.scope);
-const ASSETS = ['./paket.html', './manifest.json', './icon-192.png', './icon-app.svg']
+const ASSETS = ['./paket.html', './manifest.json', './icon-192.png', './icon-512.png', './icon-app.svg']
   .map(path => new URL(path, self.registration.scope).href);
 const ASSET_PATHS = new Set(ASSETS.map(url => new URL(url).pathname));
 const PAGES = new Set(['urunler', 'sepet', 'gecmis', 'profil', 'firsatlar']);
@@ -41,7 +42,7 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', event => {
   event.waitUntil((async () => {
     const names = await caches.keys();
-    await Promise.all(names.filter(name => name.startsWith('bekmez-go-') && name !== CACHE_NAME)
+    await Promise.all(names.filter(name => name.startsWith('bekmez-go-') && name !== CACHE_NAME && name !== IMAGE_CACHE)
       .map(name => caches.delete(name)));
     await self.clients.claim();
   })());
@@ -74,13 +75,25 @@ async function serve(request, key) {
     return {response: cached || Response.error(), write: Promise.resolve()};
   }
 }
+function publicImageKey(request){
+  const url=new URL(request.url);
+  if(request.method!=='GET'||request.headers.has('Authorization')||request.headers.has('Range')||url.search||url.origin!=='https://nwzxvksywfzpvxwvtypf.supabase.co')return null;
+  // Only immutable public product UUID WebPs. No API, signed URL or account data.
+  return /^\/storage\/v1\/object\/public\/Bekmez-GO%20Photos\/products\/[a-f0-9-]{36}\.webp$/i.test(url.pathname)?url.href:null;
+}
+async function serveImage(key){
+  let cache;try{cache=await caches.open(IMAGE_CACHE);const hit=await cache.match(key);if(hit)return {response:hit,write:Promise.resolve()};}catch(_){}
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),8000);let response;
+  try{response=await fetch(key,{mode:'cors',credentials:'omit',cache:'force-cache',signal:controller.signal});}finally{clearTimeout(timer);}
+  const copy=response.ok&&response.type==='cors'&&!response.redirected&&!/no-store/i.test(response.headers.get('Cache-Control')||'')&&/image\/webp/i.test(response.headers.get('Content-Type')||'')?response.clone():null;
+  const write=copy&&cache?(async()=>{const blob=await copy.blob();if(blob.size>524288)return;await cache.put(key,new Response(blob,{status:200,headers:copy.headers}));const keys=await cache.keys();await Promise.all(keys.slice(0,Math.max(0,keys.length-MAX_IMAGES)).map(k=>cache.delete(k)));})().catch(()=>{}):Promise.resolve();
+  return {response,write};
+}
 self.addEventListener('fetch', event => {
-  const key = assetKey(event.request);
-  if (!key) return; // Firebase, Supabase, API, POST ve diğer dosyalar doğrudan ağa gider.
-  const operation = serve(event.request, key);
-  event.respondWith(operation.then(result => result.response));
-  // waitUntil, sonradan then içinde değil event işlenirken kaydedilir.
-  event.waitUntil(operation.then(result => result.write).catch(() => {}));
+  const image=publicImageKey(event.request),key=assetKey(event.request);if(!image&&!key)return;
+  const operation=image?serveImage(image):serve(event.request,key);
+  event.respondWith(operation.then(result=>result.response));
+  event.waitUntil(operation.then(result=>result.write).catch(()=>{}));
 });
 self.addEventListener('notificationclick', event => {
   event.notification.close();
