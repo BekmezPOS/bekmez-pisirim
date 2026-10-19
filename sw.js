@@ -1,10 +1,10 @@
-/* Bekmez GO — Service Worker v13.1 tam HTML sürümü.
+/* Bekmez GO — Service Worker v13.2 bağlantı düzeltmesi.
  * paket.html ile aynı klasörde sw.js olarak yayımlayın.
  * Statik dosya önbelleği ve yerel bildirim tıklamaları.
  * FCM/kapalı uygulamaya otomatik push/çevrimdışı sipariş içermez.
  */
 'use strict';
-const CACHE_NAME = 'bekmez-go-v13-1-complete-20261019';
+const CACHE_NAME = 'bekmez-go-v13-2-connection-20261019';
 const APP_URL = new URL('./paket.html', self.registration.scope);
 const ASSETS = ['./paket.html', './manifest.json', './icon-192.png', './icon-512.png']
   .map(path => new URL(path, self.registration.scope).href);
