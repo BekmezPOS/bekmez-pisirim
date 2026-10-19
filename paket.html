@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta name="bekmez-build" content="WEB-13.1-TAM-20261019">
+    <meta name="bekmez-build" content="WEB-13.2-BAGLANTI-20261019">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <!-- v13.1: Tam uygulama tek HTML içinde; yalnız SHA-256 ile izin verilen scriptler; olay nitelikleri kapalı -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-zcpAx7p0lS74uXU+rJPpF34WeAgzKJg8BUNplDO2xBY=' 'sha256-qJk09ywFUAaqhJ/qGsVFinoZ0cz9Ah8hPnXWUAtFueg=' https://bekmezpos-default-rtdb.firebaseio.com/ https://www.gstatic.com/firebasejs/10.8.1/ https://www.gstatic.com/recaptcha/ https://www.google.com/recaptcha/ https://www.recaptcha.net/recaptcha/ https://challenges.cloudflare.com; script-src-attr 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://*.visa.com https://upload.wikimedia.org https://nwzxvksywfzpvxwvtypf.supabase.co; frame-src https://www.google.com https://recaptcha.google.com https://www.recaptcha.net https://bekmezpos.firebaseapp.com https://challenges.cloudflare.com; connect-src 'self' https://bekmez-kasa.arifbekmez63.workers.dev https://bekmezpos-default-rtdb.firebaseio.com wss://bekmezpos-default-rtdb.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firebaseappcheck.googleapis.com https://www.google.com https://www.recaptcha.net https://www.gstatic.com https://challenges.cloudflare.com https://nwzxvksywfzpvxwvtypf.supabase.co; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-zcpAx7p0lS74uXU+rJPpF34WeAgzKJg8BUNplDO2xBY=' 'sha256-vAiZG4C3qZ6Rht0xwODYblnR3m2n9dclGJWEn1eALyM=' https://bekmezpos-default-rtdb.firebaseio.com/ https://www.gstatic.com/firebasejs/10.8.1/ https://www.gstatic.com/recaptcha/ https://www.google.com/recaptcha/ https://www.recaptcha.net/recaptcha/ https://challenges.cloudflare.com; script-src-attr 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://*.visa.com https://upload.wikimedia.org https://nwzxvksywfzpvxwvtypf.supabase.co; frame-src https://bekmezpos-default-rtdb.firebaseio.com https://www.google.com https://recaptcha.google.com https://www.recaptcha.net https://bekmezpos.firebaseapp.com https://challenges.cloudflare.com; connect-src 'self' https://bekmez-kasa.arifbekmez63.workers.dev https://bekmezpos-default-rtdb.firebaseio.com wss://bekmezpos-default-rtdb.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firebaseappcheck.googleapis.com https://content-firebaseappcheck.googleapis.com https://www.google.com https://www.recaptcha.net https://www.gstatic.com https://challenges.cloudflare.com https://nwzxvksywfzpvxwvtypf.supabase.co; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests;">
     <title>Bekmez GO - Premium Paket</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -1289,6 +1289,57 @@ button:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
     const appCheck = firebase.appCheck();
     appCheck.activate(new firebase.appCheck.ReCaptchaEnterpriseProvider('6LfaV-AtAAAAAGqAbPWGYWxmlGfQNasMlne4iHne'), true);
 
+// Bounded diagnostics: resource names and fixed codes only; no token, user or URL query.
+const bkmReadEvents=[];
+function BkmReadFailure(code,resource,status=0,detail=''){
+    const error=new Error(code);error.bkmCode=code;error.resource=resource;error.status=Number(status)||0;error.detail=String(detail||'').replace(/[^A-Za-z0-9_\/-]/g,'').slice(0,80);return error;
+}
+function BkmReadRecord(resource,error){
+    const row={at:new Date().toISOString(),resource:String(resource).replace(/[^A-Za-z0-9_-]/g,'').slice(0,40),code:error?.bkmCode||'CLIENT_READ_FAILED',http:Number(error?.status)||0,detail:error?.detail||''};
+    bkmReadEvents.push(row);if(bkmReadEvents.length>12)bkmReadEvents.shift();console.warn('[BEKMEZ-WEB-TANI]',JSON.stringify(row));return row;
+}
+window.BekmezBaglantiRaporu=()=>JSON.stringify({build:'WEB-13.2-BAGLANTI-20261019',events:bkmReadEvents.slice()},null,2);
+document.addEventListener('securitypolicyviolation',event=>{
+    let host='inline';try{host=new URL(event.blockedURI).hostname;}catch(_){}
+    if(host==='content-firebaseappcheck.googleapis.com'||host==='bekmezpos-default-rtdb.firebaseio.com')BkmReadRecord('CSP',BkmReadFailure('CSP_CONNECTION_BLOCKED','CSP',0,event.effectiveDirective));
+});
+function BkmReadPanel(id,title,error,retry){
+    const host=document.getElementById(id);if(!host)return;const row=BkmReadRecord(id==='menu-grid'?'Menu':'KuponlarPublic',error);
+    host.textContent='';const box=document.createElement('div');box.className='empty-state-box';box.style.gridColumn='1 / -1';
+    const heading=document.createElement('p');heading.textContent=title;
+    const text=document.createElement('p');text.style.cssText='font-size:12px;line-height:1.6;overflow-wrap:anywhere';
+    let hint='Bağlantıyı kontrol edip yeniden deneyin.';
+    if(row.code.startsWith('APP_CHECK'))hint='Uygulama doğrulaması alınamadı. Devam ederse Firebase App Check alan adı ve reCAPTCHA ayarı kontrol edilmeli.';
+    else if(row.code==='RTDB_PERMISSION_DENIED')hint='Firebase isteği reddetti. Yayımlanan okuma kuralları ve App Check ayarı kontrol edilmeli.';
+    else if(row.code==='MENU_FORMAT_INVALID'||row.code==='PUBLIC_JSON_INVALID')hint='Sunucudan beklenen veri biçimi gelmedi. Kasa menü yayını kontrol edilmeli.';
+    text.textContent=hint+' Kod: '+row.code+(row.http?' · HTTP '+row.http:'')+(row.detail?' · '+row.detail:'');box.append(heading,text);
+    if(typeof retry==='function'){
+        const button=document.createElement('button');button.type='button';button.className='customer-action-btn';button.textContent='Yeniden dene';
+        button.addEventListener('click',async()=>{if(button.disabled)return;button.disabled=true;try{await retry();}finally{button.disabled=false;}});box.append(button);
+    }
+    const copy=document.createElement('button');copy.type='button';copy.className='customer-action-btn';copy.textContent='Tanı raporunu kopyala';
+    copy.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(window.BekmezBaglantiRaporu());copy.textContent='Rapor kopyalandı';}catch(_){copy.textContent='Rapor Console içinde: BEKMEZ-WEB-TANI';}});box.append(copy);host.append(box);
+}
+async function BkmPublicJson(resource){
+    if(!['Menu','MenuVersion','PopulerUrunler','PopulerUrunlerV2','KuponlarPublic'].includes(resource))throw BkmReadFailure('PUBLIC_PATH_REJECTED','Unknown');
+    let response;try{response=await fetch(FIREBASE_URL+'/'+resource+'.json',{cache:'no-store'});}catch(error){if(error?.bkmCode)throw error;throw BkmReadFailure(error?.name==='AbortError'?'PUBLIC_READ_TIMEOUT':'PUBLIC_READ_NETWORK',resource);}
+    if(!response.ok)throw BkmReadFailure(response.status===401||response.status===403?'RTDB_PERMISSION_DENIED':'PUBLIC_HTTP_ERROR',resource,response.status);
+    let data;try{data=await response.json();}catch(_){throw BkmReadFailure('PUBLIC_JSON_INVALID',resource,response.status);}
+    if(data&&typeof data==='object'&&Object.hasOwn(data,'error'))throw BkmReadFailure('RTDB_PERMISSION_DENIED',resource,response.status);
+    return data;
+}
+function BkmMenuProducts(data){
+    if(data===null)return [];
+    if(!data||typeof data!=='object'||Array.isArray(data))throw BkmReadFailure('MENU_FORMAT_INVALID','Menu');
+    if(!Object.hasOwn(data,'products'))throw BkmReadFailure('MENU_FORMAT_INVALID','Menu');
+    let list=data.products;if(list===null)return [];
+    if(!Array.isArray(list)){
+        if(!list||typeof list!=='object'||Object.keys(list).some(k=>!/^\d{1,3}$/.test(k)||Number(k)>=500))throw BkmReadFailure('MENU_FORMAT_INVALID','Menu');
+        list=Object.keys(list).sort((a,b)=>Number(a)-Number(b)).map(k=>list[k]);
+    }
+    list=list.filter(p=>p!==null);try{bkmValidateCatalog(list);}catch(_){throw BkmReadFailure('MENU_FORMAT_INVALID','Menu');}return list;
+}
+
     const orjinalFetch = window.fetch;
     let bgAppCheckPromise = null;
     window.fetch = async function(input, init = {}) {
@@ -1297,9 +1348,9 @@ button:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
         let tokenRes;
         try {
             if (!bgAppCheckPromise) bgAppCheckPromise = appCheck.getToken(false).finally(() => { bgAppCheckPromise = null; });
-            tokenRes = await bgAppCheckPromise;
-            if (!tokenRes?.token) throw new Error('Token yok');
-        } catch (_) { throw new Error('Uygulama doğrulaması başarısız (App Check). Siteyi yenileyin; sürerse web uygulamasının reCAPTCHA ve alan adı ayarları kontrol edilmeli.'); }
+            tokenRes = await new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(BkmReadFailure('APP_CHECK_TIMEOUT','AppCheck')),15000);bgAppCheckPromise.then(value=>{clearTimeout(timer);resolve(value);},error=>{clearTimeout(timer);reject(error);});});
+            if (!tokenRes?.token) throw BkmReadFailure('APP_CHECK_UNAVAILABLE','AppCheck');
+        } catch (error) { if(error?.bkmCode)throw error;throw BkmReadFailure('APP_CHECK_UNAVAILABLE','AppCheck',0,error?.code); }
         const headers = new Headers(input instanceof Request ? input.headers : undefined);
         new Headers(init.headers).forEach((v,k) => headers.set(k,v));
         headers.set('X-Firebase-AppCheck', tokenRes.token);
@@ -1906,6 +1957,8 @@ button:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
     }
     const oldFragment=new URLSearchParams(location.hash.slice(1));
     if(oldFragment.has('access_token') || oldFragment.has('refresh_token')) history.replaceState(null,'',location.pathname+location.search);
+    let fotoHaritasi = Object.create(null);
+    let fotoSonCekilis = 0;
     function FotoUrunUrl(urunAdi) {
         const yol = fotoHaritasi[String(urunAdi || '').trim()];
         if(!yol || !/^products\/[0-9a-f-]{36}\.webp$/.test(yol)) return '';
@@ -1913,11 +1966,12 @@ button:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
     }
 
     async function FotoHaritasiniYenile() {
+        const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),8000);
         try {
-            const response=await fetch(FOTO_SB_URL+'/rest/v1/'+encodeURIComponent(FOTO_TABLE)+'?select=urun_adi,dosya_yolu&limit=500',{headers:{apikey:FOTO_SB_PUBLIC_KEY,Authorization:'Bearer '+FOTO_SB_PUBLIC_KEY},cache:'no-store'});if(!response.ok)throw new Error('Fotoğraf listesi alınamadı');const data=await response.json();if(!Array.isArray(data)||data.length>500)throw new Error('Fotoğraf listesi geçersiz');
+            const response=await fetch(FOTO_SB_URL+'/rest/v1/'+encodeURIComponent(FOTO_TABLE)+'?select=urun_adi,dosya_yolu&limit=500',{headers:{apikey:FOTO_SB_PUBLIC_KEY,Authorization:'Bearer '+FOTO_SB_PUBLIC_KEY},cache:'no-store',signal:controller.signal});if(!response.ok)throw new Error('Fotoğraf listesi alınamadı');const data=await response.json();if(!Array.isArray(data)||data.length>500)throw new Error('Fotoğraf listesi geçersiz');
             const yeni = Object.create(null);
             for(const x of (data || [])) {
-                if(typeof x.urun_adi==='string' && /^products\/[0-9a-f-]{36}\.webp$/.test(x.dosya_yolu || ''))
+                if(x&&typeof x.urun_adi==='string' && /^products\/[0-9a-f-]{36}\.webp$/.test(x.dosya_yolu || ''))
                     yeni[x.urun_adi.trim()] = x.dosya_yolu;
             }
             const eski = JSON.stringify(fotoHaritasi);
@@ -1925,10 +1979,10 @@ button:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
             fotoSonCekilis = Date.now();
             return JSON.stringify(yeni) !== eski;
         } catch(e) {
-            console.warn('Fotoğraf eşleştirmeleri henüz okunamıyor (SQL tablo kurulmuş mu?):', e.message);
+            BkmReadRecord('Photos',BkmReadFailure(e?.name==='AbortError'?'PHOTO_TIMEOUT':'PHOTO_UNAVAILABLE','Photos'));
             fotoSonCekilis = Date.now();
             return false;
-        }
+        } finally {clearTimeout(timer);}
     }
 
     function FotoUrunResimHatasi(resim) {
@@ -1964,18 +2018,14 @@ button:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
         EkranaUrunleriCiz(gorunenler);
     }
 
+    let bkmMenuFlight=null;
     async function CanliMenuCek(ilkYukleme) {
-        if(isBannedUser) return;
+        if(isBannedUser)return false;if(bkmMenuFlight)return bkmMenuFlight;
+        bkmMenuFlight=(async()=>{
         try {
-            if (ilkYukleme) await FotoHaritasiniYenile();
-            let pRes = await fetch(`${FIREBASE_URL}/PopulerUrunler.json?t=${Date.now()}`); let pD = await pRes.json(); if(pD && Array.isArray(pD)) populerUrunlerListesi = pD;
-            let vRes = await fetch(`${FIREBASE_URL}/MenuVersion.json?t=${Date.now()}`); let vD = await vRes.json(); if (!ilkYukleme && vD && vD.v == sonMenuVersiyonu) return; if (vD) sonMenuVersiyonu = vD.v;
-
-            let mRes = await fetch(`${FIREBASE_URL}/Menu.json?t=${Date.now()}`); let data = await mRes.json();
-            let liste = (data && data.products) ? data.products : []; let yeniVeri = JSON.stringify(liste);
-
-            if (sonMenuVerisi !== yeniVeri) {
-                tumUrunler = liste; sonMenuVerisi = yeniVeri;
+            const data=await BkmPublicJson('Menu'),liste=BkmMenuProducts(data),yeniVeri=JSON.stringify(liste);
+            if(ilkYukleme||sonMenuVerisi!==yeniVeri){
+                tumUrunler=liste;
                 if(seciliUrun){const latest=SepetUrununuBul(seciliUrun.pName);if(latest){seciliUrun=latest;seciliFiyat=UnityFiyatiniHesapla(latest,seciliMiktar);PopupStokButonlari();}else if(document.getElementById("product-popup").classList.contains("active"))PopupKapat();}
                 IndirimleriKontrolEt(liste);
                 let ekmek = tumUrunler.find(u => u.pName && u.pName.trim().toLocaleLowerCase('tr-TR') === ekmekUrunAdi.trim().toLocaleLowerCase('tr-TR')); 
@@ -1986,10 +2036,20 @@ button:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
                 for (let kayitliUrun in history) { if (!mevcutUrunAdlari.includes(kayitliUrun)) { delete history[kayitliUrun]; historyUpdated = true; } }
 
                 if (historyUpdated) { await SecureKaydet('bg_phist', JSON.stringify(history)); }
-                if (ilkYukleme) { document.getElementById("kategori-sekmeleri").style.display = "flex"; KategoriSec(aktifKategori); } 
-                else { if (document.getElementById("menu-container").style.display === "block") { if (document.getElementById('tab-Arama').style.display === "flex") { UrunAra(); } else { KategoriSec(aktifKategori); } } }
+                if (ilkYukleme) { document.getElementById("kategori-sekmeleri").style.display = "flex"; await KategoriSec(aktifKategori); } 
+                else { if (document.getElementById("menu-container").style.display === "block") { if (document.getElementById('tab-Arama').style.display === "flex") { await UrunAra(); } else { await KategoriSec(aktifKategori); } } }
+                sonMenuVerisi=yeniVeri;
             }
-        } catch(error) { if (ilkYukleme && !isBannedUser) { document.getElementById("menu-grid").innerHTML = `<div class="empty-state-box">${emptyCartSVG}<p>Bağlantı Hatası!</p></div>`; } }
+            if(Number.isSafeInteger(data?.sharedRevision))sonMenuVersiyonu=data.sharedRevision;
+            if(ilkYukleme){
+                FotoHaritasiniYenile().then(changed=>{if(changed&&!isBannedUser)FotoMusteriKartlariniTazele();}).catch(()=>{});
+                BkmPublicJson('PopulerUrunlerV2').then(async value=>{const list=Array.isArray(value?.names)?value.names:await BkmPublicJson('PopulerUrunler');if(Array.isArray(list)){populerUrunlerListesi=list;if(!isBannedUser)FotoMusteriKartlariniTazele();}}).catch(error=>BkmReadRecord('Popular',error));
+            }
+            return true;
+        }catch(error){
+            if(ilkYukleme&&!isBannedUser)BkmReadPanel('menu-grid','Menü yüklenemedi',error,()=>CanliMenuCek(true));else BkmReadRecord('Menu',error);return false;
+        }
+        })().finally(()=>{bkmMenuFlight=null;});return bkmMenuFlight;
     }
 
     function GetKategoriAd(u) { try { if (u.categoryIndex !== undefined && u.categoryIndex !== null) { let c = parseInt(u.categoryIndex); if(c===1) return "İçecek"; if(c===2) return "Ekstra"; if(c===0) return "Ana Yemek"; } if (!u.pName) return "Ana Yemek"; let ad = u.pName.toString().toLocaleLowerCase('tr-TR'); if (ad.includes("cola") || ad.includes("ayran") || ad.includes("su") || ad.includes("şalgam") || ad.includes("fanta")) return "İçecek"; if (ad.includes("ekmek") || ad.includes("salata") || ad.includes("ezme") || ad.includes("patates")) return "Ekstra"; return "Ana Yemek"; } catch(e) { return "Ana Yemek"; } }
@@ -2070,8 +2130,9 @@ button:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
         document.getElementById('tab-Arama').style.display = 'none';
         document.getElementById('search-input').value = '';
         AramaButonunuGuncelle();
-        EkranaUrunleriCiz(tumUrunler.filter(u => GetKategoriAd(u) === aktifKategori));
+        const drawing=EkranaUrunleriCiz(tumUrunler.filter(u => GetKategoriAd(u) === aktifKategori));
         if (btnObj) document.getElementById('menu-section-title')?.scrollIntoView({behavior:'smooth',block:'nearest'});
+        return drawing;
     }
 // Bekmez catalog v11: fixed menu recipes, shared ingredient stock, explicit bread.
 function bkmNum(v){const n=Number(String(v??'0').replace(',','.'));return Number.isFinite(n)&&n>=0?n:NaN;}
@@ -2284,8 +2345,7 @@ function bkmValidateCatalog(products){if(!Array.isArray(products)||products.leng
     // ==========================================
     async function KuponlariCek() {
         try {
-            let mR = await fetch(`${FIREBASE_URL}/KuponlarPublic.json?t=${Date.now()}`);
-            let data = await mR.json(); let list = document.getElementById("firsatlar-list");
+            let data=await BkmPublicJson('KuponlarPublic');if(data!==null&&(typeof data!=='object'||Array.isArray(data)))throw BkmReadFailure('PUBLIC_JSON_INVALID','KuponlarPublic');let list=document.getElementById('firsatlar-list');
             if (!data || data.error) { list.innerHTML = `<div class="empty-state-box">${emptyCouponSVG}<p>Aktif kampanya bulunmuyor 😔</p></div>`; return; }
             let yeniVeri = JSON.stringify(data); if (sonKuponVerisi === yeniVeri) return; sonKuponVerisi = yeniVeri;
             list.innerHTML = ""; let hasKupon = false;
@@ -2297,7 +2357,7 @@ function bkmValidateCatalog(products){if(!Array.isArray(products)||products.leng
                 }
             }
             if (!hasKupon) list.innerHTML = `<div class="empty-state-box">${emptyCouponSVG}<p>Aktif kampanya bulunmuyor 😔</p></div>`;
-        } catch (e) { document.getElementById("firsatlar-list").innerHTML = `<div class="empty-state-box">${emptyCouponSVG}<p>Kuponlar yüklenemedi.</p></div>`; }
+        } catch (e) {sonKuponVerisi='';BkmReadPanel('firsatlar-list','Kuponlar yüklenemedi',e,KuponlariCek);}
     }
 
     function KuponKopyala(kod) { HapticTitresim(); navigator.clipboard.writeText(kod).then(() => { OzelUyariGoster("Kopyalandı", `Kupon kodu (${kod}) kopyalandı! Sepetinizde kullanabilirsiniz.`, "📋"); }); }
