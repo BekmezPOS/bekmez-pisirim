@@ -1,3 +1,15 @@
+# WEB-16: telefon doğrulamasına geri dönüş
+
+WhatsApp'tan dönüldüğünde bekleyen doğrulama aynı hesapla sunucudan yeniden açılır.
+“Şimdilik kapat” artık oturumu veya bekleyen telefon kaydını silmez. CSP hash'leri
+HTML ve `_headers` içinde birlikte güncellendi; Firebase WebSocket politikası korundu.
+Yeni 128 bit base64url kodu ve eski 32 hex kodu okunur. Worker güncellemesi ayrıdır.
+TLS 1.3 için Cloudflare minimum TLS ayarı gerekir; HTML bunu zorlayamaz.
+Kasa mTLS'si ayrı kasa hostname'inde uygulanır, müşteri sitesinde sertifika aranmaz.
+
+Doğrulama: `node --test tests/*.test.cjs` — 30 test. Bunlar çevrimdışı testlerdir;
+Android/WhatsApp veya Cloudflare canlı dağıtımının yapıldığı anlamına gelmez.
+
 # Bekmez GO — giriş ve kayıt düzeltmesi (WEB-15)
 
 Konsol kaydındaki kök sorun, Firebase Realtime Database bağlantısının yönlendirildiği sunucunun CSP tarafından engellenmesidir. Kimlik doğrulamasından sonraki hesap erişimi sorgusu yanıt beklerken giriş düğmesi süresiz dönüyordu. Bu sürüm ayrıca kesilen kayıt/e-posta akışını devam edilebilir hâle getirir.

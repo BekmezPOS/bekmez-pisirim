@@ -1,10 +1,10 @@
-/* Bekmez GO — Service Worker v15 — bekmezgo.com kök adresi.
+/* Bekmez GO — Service Worker v16 — bekmezgo.com kök adresi.
  * paket.html ile aynı klasörde sw.js olarak yayımlayın.
  * Statik dosya önbelleği ve yerel bildirim tıklamaları.
  * FCM/kapalı uygulamaya otomatik push/çevrimdışı sipariş içermez.
  */
 'use strict';
-const CACHE_NAME = 'bekmez-go-auth-v15-20261020';
+const CACHE_NAME = 'bekmez-go-phone-v16-20261020';
 const APP_URL = new URL('./', self.registration.scope);
 const ASSETS = ['./', './manifest.json', './icon-192.png']
   .map(path => new URL(path, self.registration.scope).href);

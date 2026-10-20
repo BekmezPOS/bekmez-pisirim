@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta name="bekmez-build" content="WEB-15-AUTH-CSP-20261020">
+    <meta name="bekmez-build" content="WEB-16-PHONE-RESUME-20261020">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <!-- v13.1: Tam uygulama tek HTML içinde; yalnız SHA-256 ile izin verilen scriptler; olay nitelikleri kapalı -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-g8m9f9OlNanlX1GsFJjg4G81D0RondwI0IzznqZ9KNE=' 'sha256-20zyIxr/ZqnzeJ4zT7TS6gcCi1hwRBsfLPXnBrcShZw=' https://www.gstatic.com/firebasejs/10.8.1/ https://www.gstatic.com/recaptcha/ https://www.google.com/recaptcha/ https://www.recaptcha.net/recaptcha/ https://challenges.cloudflare.com; script-src-attr 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://*.visa.com https://upload.wikimedia.org https://nwzxvksywfzpvxwvtypf.supabase.co; frame-src https://www.google.com https://recaptcha.google.com https://www.recaptcha.net https://bekmezpos.firebaseapp.com https://challenges.cloudflare.com; connect-src 'self' https://api.bekmezgo.com https://bekmezpos-default-rtdb.firebaseio.com wss://*.firebaseio.com/.ws https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firebaseappcheck.googleapis.com https://content-firebaseappcheck.googleapis.com https://www.google.com https://www.recaptcha.net https://www.gstatic.com https://challenges.cloudflare.com https://nwzxvksywfzpvxwvtypf.supabase.co; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-g8m9f9OlNanlX1GsFJjg4G81D0RondwI0IzznqZ9KNE=' 'sha256-4pRdEBdc+h65452i9lYIPhBOF68QvSWCSPS1j7xFOJc=' https://www.gstatic.com/firebasejs/10.8.1/ https://www.gstatic.com/recaptcha/ https://www.google.com/recaptcha/ https://www.recaptcha.net/recaptcha/ https://challenges.cloudflare.com; script-src-attr 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://*.visa.com https://upload.wikimedia.org https://nwzxvksywfzpvxwvtypf.supabase.co; frame-src https://www.google.com https://recaptcha.google.com https://www.recaptcha.net https://bekmezpos.firebaseapp.com https://challenges.cloudflare.com; connect-src 'self' https://api.bekmezgo.com https://bekmezpos-default-rtdb.firebaseio.com wss://*.firebaseio.com/.ws https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firebaseappcheck.googleapis.com https://content-firebaseappcheck.googleapis.com https://www.google.com https://www.recaptcha.net https://www.gstatic.com https://challenges.cloudflare.com https://nwzxvksywfzpvxwvtypf.supabase.co; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests;">
     <title>Bekmez GO - Premium Paket</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -1303,7 +1303,7 @@ function BkmReadRecord(resource,error){
     const row={at:new Date().toISOString(),resource:String(resource).replace(/[^A-Za-z0-9_-]/g,'').slice(0,40),code:error?.bkmCode||'CLIENT_READ_FAILED',http:Number(error?.status)||0,detail:error?.detail||''};
     bkmReadEvents.push(row);if(bkmReadEvents.length>12)bkmReadEvents.shift();console.warn('[BEKMEZ-WEB-TANI]',JSON.stringify(row));return row;
 }
-window.BekmezBaglantiRaporu=()=>JSON.stringify({build:'WEB-15-AUTH-CSP-20261020',events:bkmReadEvents.slice()},null,2);
+window.BekmezBaglantiRaporu=()=>JSON.stringify({build:'WEB-16-PHONE-RESUME-20261020',events:bkmReadEvents.slice()},null,2);
 document.addEventListener('securitypolicyviolation',event=>{
     let host='inline';try{host=new URL(event.blockedURI).hostname;}catch(_){}
     if(host==='content-firebaseappcheck.googleapis.com'||host==='bekmezpos-default-rtdb.firebaseio.com')BkmReadRecord('CSP',BkmReadFailure('CSP_CONNECTION_BLOCKED','CSP',0,event.effectiveDirective));
@@ -1389,7 +1389,7 @@ const BKM_AUTH_PHASES = Object.freeze({
 function BkmAuthFault(code, phase='SESSION', status=0) {
     return Object.assign(new Error(code), {code, phase, status});
 }
-function BkmAuthReport() { return JSON.stringify({build:'WEB-15-AUTH-CSP-20261020',events:bkmAuthEvents.slice()},null,2); }
+function BkmAuthReport() { return JSON.stringify({build:'WEB-16-PHONE-RESUME-20261020',events:bkmAuthEvents.slice()},null,2); }
 window.BekmezGirisRaporu = BkmAuthReport;
 function BkmAuthStatus(message, failed=false) {
     let host=document.getElementById('bkm-auth-status');
@@ -1915,9 +1915,10 @@ async function BkmContinueLogin(user, candidate=null, silent=false) {
         const epoch=wheelSessionEpoch,result=await CustomerService('/profile/verification',{telefon:phone});
         if(!WheelStillCurrent(user,epoch))return;
         if(result.verified){await BasariliGirisIslemleri(phone,email,true);return;}
-        if(!/^BKMZ-[A-F0-9]{32}$/.test(result.code||''))throw new Error('Doğrulama yanıtı geçersiz.');
+        if(!/^BKMZ-(?:[A-Za-z0-9_-]{22}|[A-F0-9]{32})$/.test(result.code||''))throw new Error('Doğrulama yanıtı geçersiz.');
         aktifWhatsappKodu=result.code;aktifWhatsappNumarasi=phone.slice(1);
-        await SecureKaydet('bg_wp_kod',result.code);await SecureKaydet('bg_pending_tel',phone);await SecureKaydet('bg_pending_email',user.email);
+        await BkmAuthStep(Promise.all([SecureKaydet('bg_wp_kod',result.code),SecureKaydet('bg_pending_tel',phone),SecureKaydet('bg_pending_email',user.email),SecureKaydet('bg_wp_waiting','true')]),'LOCAL_STORAGE');
+        if(!WheelStillCurrent(user,epoch))return;
         let overlay=document.getElementById('whatsapp-wait-overlay');if(!overlay){overlay=document.createElement('div');overlay.id='whatsapp-wait-overlay';overlay.className='custom-alert-overlay';document.body.appendChild(overlay);}
         overlay.style.zIndex='65000';overlay.innerHTML=`<div class="custom-alert-box"><div class="custom-alert-content"><h3>Telefonunuzu doğrulayın</h3><p style="line-height:1.6;color:var(--text-muted)">WhatsApp düğmesine basıp hazır mesajı kendi numaranızdan gönderin. İşletme, gönderen numarayı kontrol edip kasadan onay verecek. Bu ekran onay geldiğinde kendiliğinden kapanır.</p><div style="padding:16px;border:1px dashed var(--border-highlight);border-radius:14px;overflow-wrap:anywhere;font:600 14px monospace">${escapeHTML(result.code)}</div><p style="color:var(--text-muted);font-size:12px">Kod 10 dakika geçerlidir. Mesajı ${escapeHTML(phone)} numarasından gönderin.</p><button id="wp-onay-btn" class="premium-submit-btn" data-bkm-click="a71">WhatsApp mesajını gönder</button><button class="alert-btn" data-bkm-click="a72">Şimdilik kapat</button><div id="wp-dinleme-yazisi" style="display:none;margin-top:12px;color:var(--success)">İşletmenin onayı bekleniyor…</div></div></div>`;
         overlay.style.display='flex';setTimeout(()=>overlay.classList.add('active'),10);
@@ -1937,7 +1938,28 @@ async function BkmContinueLogin(user, candidate=null, silent=false) {
 
     async function WhatsappMesajiGonder() { HapticTitresim(); let dinlemeYazisi = document.getElementById("wp-dinleme-yazisi"); if (dinlemeYazisi) dinlemeYazisi.style.display = "block"; let btn = document.getElementById("wp-onay-btn"); if (btn) { btn.innerHTML = `<div class="spinner-small"></div> <span style="vertical-align:middle;">Onay Bekleniyor...</span>`; btn.style.background = "#1da851"; btn.style.boxShadow = "0 0 15px rgba(37, 211, 102, 0.8)"; } let mesaj = "Merhaba Bekmez GO. Hesabımı onaylamak için kodum: " + aktifWhatsappKodu; let url = `https://wa.me/${DUKKAN_WHATSAPP_NUMARASI}?text=${encodeURIComponent(mesaj)}`; await SecureKaydet("bg_wp_waiting", "true"); window.location.href = url; }
 
-    async function IptalEtWhatsappBekleme() { PhoneVerificationStop(); if(whatsappInterval) clearInterval(whatsappInterval); let wpOverlay = document.getElementById("whatsapp-wait-overlay"); if (wpOverlay) { wpOverlay.classList.remove("active"); setTimeout(() => wpOverlay.style.display = "none", 400); } let btn = document.getElementById("btn-email-verify"); if(btn) { btn.innerText = "Hesabımı Oluştur"; btn.disabled = false; } await SecureSil("bg_wp_waiting"); await SecureSil("bg_wp_kod"); await SecureSil("bg_pending_tel"); await SecureSil("bg_pending_email"); let user = firebase.auth().currentUser; if (user) { /* Doğrulama iptali mevcut hesabı silmez. */ } firebase.auth().signOut(); OzelUyariGoster("İptal Edildi", "WhatsApp onayı yapılmadığı için işlem iptal edildi.", "❌"); }
+    async function IptalEtWhatsappBekleme() {
+      PhoneVerificationStop();
+      const overlay=document.getElementById('whatsapp-wait-overlay');
+      if(overlay){overlay.classList.remove('active');overlay.style.display='none';}
+      BkmAuthStatus('Telefon doğrulaması beklemede. Hesabınızdan çıkmadan daha sonra devam edebilirsiniz.');
+    }
+    let phoneResumeJob=null,phoneResumeAt=0;
+    async function BkmResumePhoneVerification() {
+      if(document.visibilityState!=='visible'||phoneVerificationOpening||phoneResumeJob||bkmAuthAction||bkmCredentialPending||Date.now()<phoneResumeAt)return;
+      const user=firebase.auth().currentUser;if(!user||user.isAnonymous||!user.emailVerified)return;
+      const epoch=wheelSessionEpoch,job={};phoneResumeJob=job;phoneResumeAt=Date.now()+3000;
+      try{
+        const waiting=await BkmAuthStep(SecureOku('bg_wp_waiting'),'LOCAL_STORAGE');
+        if(waiting!=='true'||!WheelStillCurrent(user,epoch))return;
+        const phone=await BkmAuthPendingPhone(user);
+        if(!phone||!WheelStillCurrent(user,epoch))return;
+        await BkmAuthRun('restore',()=>WhatsappDoğrulamasiniBaslat(phone,user.email,true));
+      }catch(error){if(WheelStillCurrent(user,epoch))BkmAuthShowError(error,'PHONE');}
+      finally{if(phoneResumeJob===job)phoneResumeJob=null;}
+    }
+    document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')void BkmResumePhoneVerification();});
+    window.addEventListener('pageshow',()=>{void BkmResumePhoneVerification();});
 
     let profileSyncRequest=null;
     function SyncCustomerProfile(phone){
