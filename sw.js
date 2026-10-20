@@ -1,12 +1,12 @@
-/* Bekmez GO — Service Worker v13.2 bağlantı düzeltmesi.
+/* Bekmez GO — Service Worker v17 — bekmezgo.com kök adresi.
  * paket.html ile aynı klasörde sw.js olarak yayımlayın.
  * Statik dosya önbelleği ve yerel bildirim tıklamaları.
  * FCM/kapalı uygulamaya otomatik push/çevrimdışı sipariş içermez.
  */
 'use strict';
-const CACHE_NAME = 'bekmez-go-v13-2-connection-20261019';
-const APP_URL = new URL('./paket.html', self.registration.scope);
-const ASSETS = ['./paket.html', './manifest.json', './icon-192.png', './icon-512.png']
+const CACHE_NAME = 'bekmez-go-wp5-v17-20261020';
+const APP_URL = new URL('./', self.registration.scope);
+const ASSETS = ['./', './manifest.json', './icon-192.png']
   .map(path => new URL(path, self.registration.scope).href);
 const ASSET_PATHS = new Set(ASSETS.map(url => new URL(url).pathname));
 const PAGES = new Set(['urunler', 'sepet', 'gecmis', 'profil', 'firsatlar']);

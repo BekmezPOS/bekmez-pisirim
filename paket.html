@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta name="bekmez-build" content="WEB-13.2-BAGLANTI-20261019">
+    <meta name="bekmez-build" content="WEB-17-WP5-20261020">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <!-- v13.1: Tam uygulama tek HTML içinde; yalnız SHA-256 ile izin verilen scriptler; olay nitelikleri kapalı -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-zcpAx7p0lS74uXU+rJPpF34WeAgzKJg8BUNplDO2xBY=' 'sha256-vAiZG4C3qZ6Rht0xwODYblnR3m2n9dclGJWEn1eALyM=' https://bekmezpos-default-rtdb.firebaseio.com/ https://www.gstatic.com/firebasejs/10.8.1/ https://www.gstatic.com/recaptcha/ https://www.google.com/recaptcha/ https://www.recaptcha.net/recaptcha/ https://challenges.cloudflare.com; script-src-attr 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://*.visa.com https://upload.wikimedia.org https://nwzxvksywfzpvxwvtypf.supabase.co; frame-src https://bekmezpos-default-rtdb.firebaseio.com https://www.google.com https://recaptcha.google.com https://www.recaptcha.net https://bekmezpos.firebaseapp.com https://challenges.cloudflare.com; connect-src 'self' https://bekmez-kasa.arifbekmez63.workers.dev https://bekmezpos-default-rtdb.firebaseio.com wss://bekmezpos-default-rtdb.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firebaseappcheck.googleapis.com https://content-firebaseappcheck.googleapis.com https://www.google.com https://www.recaptcha.net https://www.gstatic.com https://challenges.cloudflare.com https://nwzxvksywfzpvxwvtypf.supabase.co; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-g8m9f9OlNanlX1GsFJjg4G81D0RondwI0IzznqZ9KNE=' 'sha256-HIkM+QcIGPEGNXo+/8ahqG+3ezpLf34pWS+nu+4Jr8c=' https://www.gstatic.com/firebasejs/10.8.1/ https://www.gstatic.com/recaptcha/ https://www.google.com/recaptcha/ https://www.recaptcha.net/recaptcha/ https://challenges.cloudflare.com; script-src-attr 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://*.visa.com https://upload.wikimedia.org https://nwzxvksywfzpvxwvtypf.supabase.co; frame-src https://www.google.com https://recaptcha.google.com https://www.recaptcha.net https://bekmezpos.firebaseapp.com https://challenges.cloudflare.com; connect-src 'self' https://api.bekmezgo.com https://bekmezpos-default-rtdb.firebaseio.com wss://*.firebaseio.com/.ws https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firebaseappcheck.googleapis.com https://content-firebaseappcheck.googleapis.com https://www.google.com https://www.recaptcha.net https://www.gstatic.com https://challenges.cloudflare.com https://nwzxvksywfzpvxwvtypf.supabase.co; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests;">
     <title>Bekmez GO - Premium Paket</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -23,7 +23,7 @@
     <script id="bekmez-security-core">
 /* Bekmez customer security v13. Same-origin JavaScript access is not a hardware attestation. */
 (()=>{'use strict';
- const API='https://bekmez-kasa.arifbekmez63.workers.dev', enc=new TextEncoder(), dec=new TextDecoder();
+ const API='https://api.bekmezgo.com', enc=new TextEncoder(), dec=new TextDecoder();
  let opening,configuration,migration;const keyJobs=new Map(),enrollJobs=new Map(),scriptJobs=new Map();
  const b64=bytes=>{const values=new Uint8Array(bytes);let text='';for(let i=0;i<values.length;i+=8192)text+=String.fromCharCode(...values.subarray(i,i+8192));return btoa(text);};
  const from64=text=>Uint8Array.from(atob(text),x=>x.charCodeAt(0));
@@ -1064,7 +1064,7 @@ button:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
             <div class="custom-alert-content">
                 <div class="spinner"></div>
                 <h3 style="margin: 0 0 14px 0; font-weight: 900; font-size: 20px; color: var(--text-main); letter-spacing:-0.5px;">E-Postanızı Kontrol Edin</h3>
-                <p style="color: var(--text-muted); font-size: 13px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;">Girdiğiniz adrese bir doğrulama linki gönderdik. <br><br><span style="color:white; font-weight:800;">Lütfen mailinize gidip linke tıklayın.</span> Biz bu ekranda tıkladığınızı otomatik anlayacağız...</p>
+                <p style="color: var(--text-muted); font-size: 13px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.5;">Hesabınızı tamamlamak için e-postanızdaki doğrulama bağlantısını açın. E-posta gelmediyse aşağıdaki yeniden gönder düğmesini kullanın.</p>
                 <button data-bkm-click="a64" class="alert-btn ripple-element" style="background: rgba(255,255,255,0.05); color:white; overflow:hidden;">Vazgeç</button>
             </div>
         </div>
@@ -1174,6 +1174,11 @@ button:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
         appId: "1:1013709760225:web:ec71341cb6cdcce9fbf9a0", measurementId: "G-BXKNH6B49K"
     };
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    // Configure before creating any database references. JSONP long-polling is intentionally disabled.
+    // The pinned compat SDK exposes this documented Database instance API.
+    const bkmDatabaseTransport = firebase.database();
+    bkmDatabaseTransport.INTERNAL.forceWebSockets();
+
 
     // UCRETSIZ YEREL BILDIRIMLER — ek sunucu, FCM tokeni veya DB kuralı gerekmez.
     // Tarayici calisirken ve gerekli izin varsa cihaz bildirimi olusturur.
@@ -1298,7 +1303,7 @@ function BkmReadRecord(resource,error){
     const row={at:new Date().toISOString(),resource:String(resource).replace(/[^A-Za-z0-9_-]/g,'').slice(0,40),code:error?.bkmCode||'CLIENT_READ_FAILED',http:Number(error?.status)||0,detail:error?.detail||''};
     bkmReadEvents.push(row);if(bkmReadEvents.length>12)bkmReadEvents.shift();console.warn('[BEKMEZ-WEB-TANI]',JSON.stringify(row));return row;
 }
-window.BekmezBaglantiRaporu=()=>JSON.stringify({build:'WEB-13.2-BAGLANTI-20261019',events:bkmReadEvents.slice()},null,2);
+window.BekmezBaglantiRaporu=()=>JSON.stringify({build:'WEB-17-WP5-20261020',events:bkmReadEvents.slice()},null,2);
 document.addEventListener('securitypolicyviolation',event=>{
     let host='inline';try{host=new URL(event.blockedURI).hostname;}catch(_){}
     if(host==='content-firebaseappcheck.googleapis.com'||host==='bekmezpos-default-rtdb.firebaseio.com')BkmReadRecord('CSP',BkmReadFailure('CSP_CONNECTION_BLOCKED','CSP',0,event.effectiveDirective));
@@ -1369,15 +1374,136 @@ function BkmMenuProducts(data){
 
     firebase.auth().languageCode = 'tr';
 
+// Customer authentication: bounded waits, one foreground action, no credential logging.
+let bkmAuthAction = null, bkmCredentialPending = null, bkmAuthSequence = 0;
+let bkmEmailSequence = 0, bkmEmailCheck = null, bkmEmailResendAt = 0;
+const bkmAuthEvents = [];
+const BKM_AUTH_PHASES = Object.freeze({
+    PERSISTENCE:'Oturum hazırlanıyor…', SIGN_IN:'Hesabınıza giriş yapılıyor…',
+    SIGN_UP:'Hesabınız oluşturuluyor…', APP_CHECK:'Güvenlik kontrolü yapılıyor…',
+    ACCOUNT_ACCESS:'Hesap erişiminiz kontrol ediliyor…', PROFILE:'Profiliniz yükleniyor…',
+    DEVICE:'Cihazınız doğrulanıyor…', LOCAL_STORAGE:'Güvenli kayıt hazırlanıyor…',
+    EMAIL_SEND:'Doğrulama e-postası gönderiliyor…', EMAIL_CHECK:'E-posta onayı kontrol ediliyor…',
+    PHONE:'Telefon doğrulamanız hazırlanıyor…', SESSION:'Oturum kontrol ediliyor…'
+});
+function BkmAuthFault(code, phase='SESSION', status=0) {
+    return Object.assign(new Error(code), {code, phase, status});
+}
+function BkmAuthReport() { return JSON.stringify({build:'WEB-17-WP5-20261020',events:bkmAuthEvents.slice()},null,2); }
+window.BekmezGirisRaporu = BkmAuthReport;
+function BkmAuthStatus(message, failed=false) {
+    let host=document.getElementById('bkm-auth-status');
+    if(!host) {
+        const parent=document.getElementById('auth-wrapper');if(!parent)return;
+        host=document.createElement('div');host.id='bkm-auth-status';host.setAttribute('role','status');host.setAttribute('aria-live','polite');
+        host.style.cssText='padding:14px;margin:12px 0;border:1px solid var(--border-highlight);border-radius:14px;font-size:13px;line-height:1.6;overflow-wrap:anywhere';parent.prepend(host);
+    }
+    host.replaceChildren();const text=document.createElement('p');text.textContent=message;text.style.margin='0';host.append(text);
+    host.style.color=failed?'var(--warning)':'var(--text-muted)';
+    if(failed){const copy=document.createElement('button');copy.type='button';copy.className='alert-btn';copy.textContent='Hata raporunu kopyala';copy.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(BkmAuthReport());copy.textContent='Rapor kopyalandı';}catch(_){copy.textContent='Kopyalanamadı; ekrandaki hata kodunu paylaşın.';}});host.append(copy);}
+}
+function BkmAuthMessage(error) {
+    const code=error?.code||error?.bkmCode||'';
+    if(code.startsWith('appCheck/')||code.startsWith('APP_CHECK'))return 'Uygulama güvenlik doğrulaması tamamlanamadı. Sayfayı yenileyip tekrar deneyin.';
+    return ({
+        'auth/invalid-credential':'E-posta veya şifre doğrulanamadı.', 'auth/wrong-password':'E-posta veya şifre doğrulanamadı.',
+        'auth/user-not-found':'E-posta veya şifre doğrulanamadı.', 'auth/invalid-login-credentials':'E-posta veya şifre doğrulanamadı.',
+        'auth/invalid-email':'Geçerli bir e-posta adresi girin.', 'auth/weak-password':'Şifreniz güvenlik koşullarını karşılamıyor.',
+        'auth/too-many-requests':'Çok fazla deneme yapıldı. Bir süre bekleyip tekrar deneyin.',
+        'auth/network-request-failed':'Kimlik hizmetine bağlantı kurulamadı. İnternet bağlantınızı kontrol edin.',
+        'auth/operation-not-allowed':'Bu giriş yöntemi şu anda kullanılamıyor. İşletmeyle iletişime geçin.',
+        'auth/user-disabled':'Bu hesabın erişimi kapatılmış.',
+        AUTH_STEP_TIMEOUT:'Bu adım zamanında yanıt vermedi. İşlemin sonucunu kontrol edip tekrar deneyin.',
+        AUTH_OPERATION_PENDING:'Önceki kimlik isteğinin yanıtı bekleniyor. Biraz bekleyin veya sayfayı yenileyin.',
+        AUTH_SESSION_CHANGED:'Oturum değişti. Lütfen yeniden giriş yapın.',
+        ACCOUNT_ACCESS_DENIED:'Hesap erişimi doğrulanamadı. İşlem tamamlanmadı.',
+        ACCOUNT_BLOCKED:'Bu hesabın erişimi kapatılmış.', CUSTOMER_REQUIRED:'Müşteri hesabınızla giriş yapın.',
+        PHONE_NOT_VERIFIED:'Telefon doğrulamanızı tamamlayın.', RECENT_LOGIN_REQUIRED:'Cihaz doğrulaması için yeniden giriş yapın.',
+        ORIGIN_REJECTED:'Bu adres hesap hizmetinde yetkili değil. İşletmeyle iletişime geçin.',
+        CUSTOMER_DEVICE_UNKNOWN:'Güvenli cihaz kaydı tamamlanamadı. Yeniden giriş yapın.',
+        PHONE_REQUIRED:'Telefon eşleştirmesi eksik. Kayıt bölümünde aynı e-posta ve şifreyle devam edin.',
+        SERVICE_RESPONSE_INVALID:'Hesap hizmetinden geçerli yanıt alınamadı.',
+        SERVICE_CONNECTION_FAILED:'Hesap hizmetine bağlantı kurulamadı.',
+        SECURE_STORAGE_UNAVAILABLE:'Bu tarayıcıda güvenli yerel kayıt açılamadı. Güncel bir tarayıcı kullanın.',
+        SECURE_STORAGE_INVALID:'Güvenli yerel kayıt doğrulanamadı. İşletmeyle iletişime geçin.'
+    })[code]||'Hesap işlemi tamamlanamadı. Aşağıdaki hata koduyla işletmeyle iletişime geçin.';
+}
+function BkmAuthShowError(error, phase='SESSION') {
+    const code=String(error?.code||error?.bkmCode||'AUTH_FAILED').replace(/[^A-Za-z0-9_\/-]/g,'').slice(0,80);
+    const step=Object.hasOwn(BKM_AUTH_PHASES,error?.phase)?error.phase:phase;
+    const row={at:new Date().toISOString(),phase:step,code,http:Number(error?.status)||0};
+    bkmAuthEvents.push(row);if(bkmAuthEvents.length>12)bkmAuthEvents.shift();
+    BkmAuthStatus(BkmAuthMessage(error)+' Kod: '+step+' / '+code,true);
+    return row;
+}
+function BkmAuthStep(promise, phase, milliseconds=15000) {
+    if(bkmAuthAction){bkmAuthAction.phase=phase;BkmAuthStatus(BKM_AUTH_PHASES[phase]||BKM_AUTH_PHASES.SESSION);}
+    let timer;
+    return Promise.race([Promise.resolve(promise),new Promise((_,reject)=>{timer=setTimeout(()=>reject(BkmAuthFault('AUTH_STEP_TIMEOUT',phase)),milliseconds);})])
+        .catch(error=>{if(error&&typeof error==='object'&&!error.phase)error.phase=phase;throw error;}).finally(()=>clearTimeout(timer));
+}
+async function BkmAuthCredential(factory, phase) {
+    if(bkmCredentialPending)throw BkmAuthFault('AUTH_OPERATION_PENDING',phase);
+    const pending=Promise.resolve().then(factory);bkmCredentialPending=pending;
+    pending.finally(()=>{if(bkmCredentialPending===pending)bkmCredentialPending=null;}).catch(()=>{});
+    return BkmAuthStep(pending,phase,25000);
+}
+function BkmAuthCurrent(user) {
+    if(!user||firebase.auth().currentUser?.uid!==user.uid)throw BkmAuthFault('AUTH_SESSION_CHANGED');
+}
+async function BkmAuthRun(kind, operation) {
+    if(bkmAuthAction||bkmCredentialPending){BkmAuthStatus('Bir hesap işlemi hâlen sürüyor. Tamamlanmasını bekleyin.');return false;}
+    const action={id:++bkmAuthSequence,kind,phase:'SESSION'};bkmAuthAction=action;
+    const login=document.querySelector('#login-form-area .premium-submit-btn'),register=document.getElementById('btn-email-verify');
+    if(login){login.disabled=true;login.textContent=kind==='login'?'Giriş yapılıyor…':'Oturum kontrol ediliyor…';}
+    if(register){register.disabled=true;register.textContent=kind==='register'?'Kayıt kontrol ediliyor…':'İşlem sürüyor…';}
+    try{await operation();return true;}catch(error){BkmAuthShowError(error,action.phase);return false;}
+    finally{
+        if(bkmAuthAction===action)bkmAuthAction=null;
+        if(login){login.disabled=false;login.textContent='Giriş Yap';}
+        if(register){register.textContent='Hesabımı Oluştur';KayitOnayToggle();}
+        for(const id of ['login-pass','prof-password']){const input=document.getElementById(id);if(input)input.value='';}
+        isPasswordValid=false;KayitOnayToggle();
+    }
+}
+async function BkmAuthAppCheck() {
+    const check=await BkmAuthStep(appCheck.getToken(false),'APP_CHECK');
+    if(!check?.token)throw BkmAuthFault('APP_CHECK_UNAVAILABLE','APP_CHECK');return check;
+}
+async function BkmAuthRemember(phone,email) {
+    await BkmAuthStep(Promise.all([SecureKaydet('bg_pending_tel',phone),SecureKaydet('bg_pending_email',email)]),'LOCAL_STORAGE');
+}
+async function BkmAuthPendingPhone(user) {
+    const [email,phone]=await BkmAuthStep(Promise.all([SecureOku('bg_pending_email'),SecureOku('bg_pending_tel')]),'LOCAL_STORAGE');
+    return email===user.email&&/^0[0-9]{10}$/.test(phone||'')?phone:null;
+}
+async function BkmContinueLogin(user, candidate=null, silent=false) {
+    BkmAuthCurrent(user);
+    if(user.uid==='jO9Jmp2cgXfGUfMVbv5fdlCPgV52'){
+        await BkmAuthStep(firebase.auth().signOut(),'SESSION');throw BkmAuthFault('CUSTOMER_REQUIRED');
+    }
+    if(!user.emailVerified){EpostaOnayiniBekle(user,candidate||await BkmAuthPendingPhone(user),user.email);return;}
+    if(await BanKontrolu(candidate))return;
+    BkmAuthCurrent(user);
+    let phone=/^0[0-9]{10}$/.test(user.displayName||'')?user.displayName:null;
+    if(!phone&&candidate){BkmAuthStatus(BKM_AUTH_PHASES.PHONE);await WhatsappDoğrulamasiniBaslat(candidate,user.email,true);return;}
+    if(!phone){const own=await CustomerService('/profile/find',{});phone=own.telefon;}
+    BkmAuthCurrent(user);
+    if(!/^0[0-9]{10}$/.test(phone||''))throw BkmAuthFault('PHONE_REQUIRED','PROFILE');
+    await BasariliGirisIslemleri(phone,user.email,true,silent);
+    BkmAuthStatus('Hesabınız doğrulandı.');
+}
+
+
     // v13: Kişisel veriler ayrı AES-GCM kasasında; genel UI tercihleri localStorage içindedir.
     // Aynı origin içinde çalıştırılabilen zararlı JavaScript ve ele geçirilmiş cihaz bu korumanın dışındadır.
-    async function SecureKaydet(anahtar,veri){return BekmezSecurity.save(anahtar,veri);}
-    async function SecureOku(anahtar){return BekmezSecurity.load(anahtar);}
-    async function SecureSil(anahtar){return BekmezSecurity.remove(anahtar);}
+    async function SecureKaydet(anahtar,veri){return BkmAuthStep(BekmezSecurity.save(anahtar,veri),'LOCAL_STORAGE');}
+    async function SecureOku(anahtar){return BkmAuthStep(BekmezSecurity.load(anahtar),'LOCAL_STORAGE');}
+    async function SecureSil(anahtar){return BkmAuthStep(BekmezSecurity.remove(anahtar),'LOCAL_STORAGE');}
 
     function ZararliKarakterTemizle(el) { el.value = el.value.replace(/[<>\\/{}\[\]]/g, ''); }
     function escapeHTML(str) { return str ? str.toString().replace(/[&<>'"]/g, function(tag){ return {'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[tag]; }) : ""; }
-    function HapticTitresim() { if(navigator.vibrate) navigator.vibrate(15); }
+    function HapticTitresim() { if(navigator.userActivation && !navigator.userActivation.hasBeenActive)return; if(navigator.vibrate)navigator.vibrate(15); }
     function generateUUID() {
         if(!window.isSecureContext || !window.crypto || !crypto.getRandomValues) throw new Error('Guvenli rastgelelik kullanilamiyor. HTTPS gerekli.');
         if (crypto.randomUUID) return crypto.randomUUID();
@@ -1543,14 +1669,37 @@ function BkmMenuProducts(data){
       const generation=banNesli,uid=user.uid,ref=firebase.database().ref('HesapErisimleri/'+uid);
       const current=()=>generation===banNesli&&firebase.auth().currentUser?.uid===uid;
       const callback=snapshot=>{const value=snapshot.val();if(current()&&(value?.banned===true||value?.deleted===true))BanOturumunuKapat(uid,value.sebep||'Hesabınızın erişimi kapatıldı.');};
-      banDinleyicileri.push({ref,callback});ref.on('value',callback,()=>{if(current())BanOturumunuKapat(uid,'Hesap erişimi doğrulanamadı. Bağlantı ve izinleri kontrol ederek tekrar giriş yapın.');});
+      banDinleyicileri.push({ref,callback});ref.on('value',callback,()=>{if(current()){BanDinlemeyiDurdur();ProfilArayuzunuGuncelle(false);BkmAuthShowError(BkmAuthFault('ACCOUNT_ACCESS_DENIED','ACCOUNT_ACCESS'));}});
+    }
+
+    let bkmAccountReadJob=null;
+    function BkmAccountRead(user){
+      const epoch=banAuthNesli;
+      if(bkmAccountReadJob?.uid===user.uid&&bkmAccountReadJob.epoch===epoch)return bkmAccountReadJob.promise;
+      const entry={uid:user.uid,epoch};
+      entry.promise=(async()=>{
+        await BkmAuthAppCheck();BkmAuthCurrent(user);
+        const ref=firebase.database().ref('HesapErisimleri/'+user.uid);
+        return BkmAuthStep(new Promise((resolve,reject)=>{
+          let timer,finished=false;
+          const finish=(error,value)=>{if(finished)return;finished=true;clearTimeout(timer);ref.off('value',onValue);error?reject(error):resolve(value);};
+          const onValue=snapshot=>{
+            if(epoch!==banAuthNesli||firebase.auth().currentUser?.uid!==user.uid){finish(BkmAuthFault('AUTH_SESSION_CHANGED','ACCOUNT_ACCESS'));return;}
+            finish(null,snapshot.val());
+          };
+          timer=setTimeout(()=>finish(BkmAuthFault('AUTH_STEP_TIMEOUT','ACCOUNT_ACCESS')),12000);
+          try{ref.on('value',onValue,()=>finish(BkmAuthFault('ACCOUNT_ACCESS_DENIED','ACCOUNT_ACCESS')));}catch(error){finish(error);}
+        }),'ACCOUNT_ACCESS',13000);
+      })().finally(()=>{if(bkmAccountReadJob===entry)bkmAccountReadJob=null;});
+      bkmAccountReadJob=entry;return entry.promise;
     }
     async function BanKontrolu(tel){
       const user=firebase.auth().currentUser;if(!user?.emailVerified)return false;
-      const epoch=banAuthNesli;
-      try{const snap=await firebase.database().ref('HesapErisimleri/'+user.uid).once('value');if(epoch!==banAuthNesli||firebase.auth().currentUser?.uid!==user.uid)return true;const v=snap.val();if(v?.banned===true||v?.deleted===true){BanOturumunuKapat(user.uid,v.sebep||'Hesabınızın erişimi kapatıldı.');return true;}BanCanliDinle(tel);return isBannedUser;}
-      catch(_){if(epoch===banAuthNesli)BanOturumunuKapat(user.uid,'Hesap erişimi doğrulanamadı. Bağlantıyı kontrol edin.');return true;}
+      const value=await BkmAccountRead(user);BkmAuthCurrent(user);
+      if(value?.banned===true||value?.deleted===true){BanOturumunuKapat(user.uid,value.sebep||'Hesabınızın erişimi kapatıldı.');return true;}
+      BanCanliDinle(tel);return isBannedUser;
     }
+
 
     function SistemAyarlariniDinle() {
         if(sistemAyarlariDinleyiciRef) sistemAyarlariDinleyiciRef.off();
@@ -1640,30 +1789,18 @@ function BkmMenuProducts(data){
         }
     }
 
-    async function GirisYapTetikle() {
-        let email = document.getElementById("login-email").value.trim().toLowerCase(); let pass = document.getElementById("login-pass").value; let btn = document.querySelector("#login-form-area .premium-submit-btn");
-        if(!email || !pass) { OzelUyariGoster("Eksik Bilgi", "Lütfen e-posta ve şifrenizi girin.", "⚠"); return; }
-                
-        btn.disabled = true; btn.innerHTML = `<div class="spinner-small"></div> Giriş Yapılıyor...`;
 
-        try {
-            await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-            let userCred = await firebase.auth().signInWithEmailAndPassword(email, pass); let user = userCred.user; if (user.uid === 'jO9Jmp2cgXfGUfMVbv5fdlCPgV52') { await firebase.auth().signOut(); OzelUyariGoster('Kasa hesabı', 'Yönetim Windows kasa uygulamasına taşındı. Müşteri hesabınızla giriş yapın.', '🔒'); return; }
-            document.getElementById('login-pass').value='';
-            
-
-            let foundTel = user.displayName;
-            if (!foundTel || foundTel.length < 10) {
-                const own=await CustomerService('/profile/find',{});foundTel=own.telefon;
-            }
-            if(foundTel && foundTel.length >= 10) { let isBan = await BanKontrolu(foundTel); if(isBan) { await firebase.auth().signOut(); btn.disabled = false; btn.innerText = "Giriş Yap"; return; } await BasariliGirisIslemleri(foundTel, email, true); } 
-            else { firebase.auth().signOut(); OzelUyariGoster("Güvenlik Güncellemesi", "Sistem güvenliği nedeniyle telefon numaranız eşleşmedi. Lütfen tekrar kayıt olun.", "🛡️"); AuthModuDegistir('register'); }
-        } catch(e) { OzelUyariGoster('Giriş tamamlanamadı',escapeHTML(e.code?.startsWith('auth/')?'E-posta ve şifrenizi kontrol edin.':e.message||'Hesabınız doğrulanamadı.'),'ℹ'); }
-        finally {
-            document.getElementById('login-pass').value='';
-            btn.disabled = false; btn.innerText = "Giriş Yap";
-        }
+    async function GirisYapTetikle(){
+      const email=document.getElementById('login-email').value.trim().toLowerCase(),pass=document.getElementById('login-pass').value;
+      if(!email||!pass){BkmAuthStatus('E-posta ve şifrenizi girin.',true);return;}
+      await BkmAuthRun('login',async()=>{
+        await BkmAuthStep(firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL),'PERSISTENCE');
+        const credential=await BkmAuthCredential(()=>firebase.auth().signInWithEmailAndPassword(email,pass),'SIGN_IN');
+        document.getElementById('login-pass').value='';
+        await BkmContinueLogin(credential.user,await BkmAuthPendingPhone(credential.user));
+      });
     }
+
 
     function FormatTelefon(input) { let val = input.value.replace(/[^0-9]/g, ''); if (val.startsWith('0')) { val = val.substring(1); } if (val.length > 10) { val = val.substring(0, 10); } input.value = val; let chk = document.getElementById('chk-telefon'); if (chk) chk.value = val; }
 
@@ -1678,57 +1815,96 @@ function BkmMenuProducts(data){
 
     function KayitOnayToggle() { let cb = document.getElementById("kayit-onay-cb"); let btn = document.getElementById("btn-email-verify"); if (cb && btn) { if (cb.checked && isPasswordValid) { btn.disabled = false; btn.style.opacity = "1"; } else { btn.disabled = true; btn.style.opacity = "0.5"; } } }
 
-    firebase.auth().onAuthStateChanged(async (user) => {
-        WheelResetSession();
-        void CarkDurumunuKontrolEt();
-        ++banAuthNesli;
-        BanDinlemeyiDurdur();
-        const authEpoch = banNesli;
-        if (user) { isBannedUser = false; const overlay = document.getElementById('banned-user-overlay'); if (overlay) overlay.style.display = 'none'; }
-        if (user?.emailVerified && user.uid !== 'jO9Jmp2cgXfGUfMVbv5fdlCPgV52') {
-            const tel = user.displayName || await SecureOku('bg_t');
-            if (authEpoch !== banNesli || firebase.auth().currentUser?.uid !== user.uid) return;
-            if (await BanKontrolu(tel)) return;
+
+    firebase.auth().onAuthStateChanged(user=>{
+      WheelResetSession();++banAuthNesli;BanDinlemeyiDurdur();
+      if(!user||user.isAnonymous){ProfilArayuzunuGuncelle(false);return;}
+      isBannedUser=false;const overlay=document.getElementById('banned-user-overlay');if(overlay)overlay.style.display='none';
+      // Explicit sign-in/signup owns profile restoration while its SDK request is pending.
+      if(bkmAuthAction||bkmCredentialPending)return;
+      void BkmAuthRun('restore',async()=>{
+        BkmAuthCurrent(user);
+        await BkmContinueLogin(user,await BkmAuthPendingPhone(user),true);
+        if(document.readyState!=='loading')SistemAyarlariniDinle();
+      });
+    },()=>BkmAuthShowError(BkmAuthFault('AUTH_FAILED','SESSION')));
+
+
+
+    async function YeniNesilKayitOl(){
+      const phone=document.getElementById('prof-telefon').value.replace(/[^0-9]/g,''),email=document.getElementById('prof-email').value.trim().toLowerCase(),pass=document.getElementById('prof-password').value;
+      if(!isPasswordValid||!document.getElementById('kayit-onay-cb')?.checked){BkmAuthStatus('Şifre koşullarını ve kayıt onayını tamamlayın.',true);return;}
+      if(!/^[1-9][0-9]{9}$/.test(phone)){BkmAuthStatus('Telefon numaranızı başında 0 olmadan 10 hane girin.',true);return;}
+      if(!/^[^\s@]+@gmail\.com$/.test(email)){BkmAuthStatus('Geçerli bir @gmail.com adresi girin.',true);return;}
+      await BkmAuthRun('register',async()=>{
+        await BkmAuthStep(firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL),'PERSISTENCE');
+        // Detect unavailable attestation/storage before creating a partially configured account.
+        await BkmAuthAppCheck();await BkmAuthRemember('0'+phone,email);
+        let credential;
+        try{credential=await BkmAuthCredential(()=>firebase.auth().createUserWithEmailAndPassword(email,pass),'SIGN_UP');}
+        catch(error){if(error.code!=='auth/email-already-in-use')throw error;credential=await BkmAuthCredential(()=>firebase.auth().signInWithEmailAndPassword(email,pass),'SIGN_IN');}
+        BkmAuthCurrent(credential.user);document.getElementById('prof-password').value='';
+        await handleVerifiedUser(credential,'0'+phone,email);
+      });
+    }
+    async function handleVerifiedUser(credential,phone,email){
+      const user=credential.user;BkmAuthCurrent(user);
+      if(user.emailVerified){await BkmContinueLogin(user,phone);return;}
+      await BkmAuthRemember(phone,email);EpostaOnayiniBekle(user,phone,email);
+      // A mail failure leaves the existing account and pending verification recoverable.
+      try{await BkmSendVerification(user);}catch(error){BkmAuthShowError(error,'EMAIL_SEND');BkmEmailStatus(BkmAuthMessage(error)+' Yeniden gönder düğmesiyle devam edebilirsiniz.');}
+    }
+    function BkmEmailStatus(message){const node=document.getElementById('bkm-email-status');if(node)node.textContent=message;}
+    async function BkmSendVerification(user){
+      BkmAuthCurrent(user);
+      if(Date.now()<bkmEmailResendAt){BkmEmailStatus('Yeni bir e-posta istemeden önce bir dakika bekleyin.');return;}
+      bkmEmailResendAt=Date.now()+60000;
+      await BkmAuthStep(user.sendEmailVerification(),'EMAIL_SEND');BkmAuthCurrent(user);
+      BkmEmailStatus('Doğrulama e-postası gönderildi. Gelen kutunuzu ve spam klasörünü kontrol edin.');
+    }
+    function EpostaOnayiniBekle(user,phone,email){
+      if(emailInterval)clearTimeout(emailInterval);const generation=++bkmEmailSequence;
+      const overlay=document.getElementById('email-wait-overlay'),content=overlay.querySelector('.custom-alert-content');
+      let status=document.getElementById('bkm-email-status');
+      if(!status){status=document.createElement('p');status.id='bkm-email-status';status.setAttribute('role','status');content.append(status);}
+      status.textContent='E-posta onayı bekleniyor. Daha önce gelen doğrulama bağlantısını açabilir veya yeni e-posta isteyebilirsiniz.';
+      let check=document.getElementById('bkm-email-check'),resend=document.getElementById('bkm-email-resend');
+      if(!check){check=document.createElement('button');check.id='bkm-email-check';check.type='button';check.className='alert-btn';check.textContent='Doğrulamayı kontrol et';content.append(check);}
+      if(!resend){resend=document.createElement('button');resend.id='bkm-email-resend';resend.type='button';resend.className='alert-btn';resend.textContent='E-postayı yeniden gönder';content.append(resend);}
+      overlay.style.display='flex';setTimeout(()=>{if(generation===bkmEmailSequence)overlay.classList.add('active');},10);
+      const current=()=>generation===bkmEmailSequence&&firebase.auth().currentUser?.uid===user.uid;
+      const until=Date.now()+15*60*1000;
+      const poll=async()=>{
+        if(!current())return;
+        if(bkmEmailCheck){emailInterval=setTimeout(poll,1000);return;}
+        const job={};bkmEmailCheck=job;check.disabled=true;
+        try{
+          await BkmAuthStep(user.reload(),'EMAIL_CHECK',10000);if(!current())return;
+          if(user.emailVerified){
+            if(bkmAuthAction||bkmCredentialPending){BkmEmailStatus('Mevcut hesap işleminin tamamlanması bekleniyor…');return;}
+            await BkmAuthStep(user.getIdToken(true),'SESSION');if(!current())return;
+            if(emailInterval)clearTimeout(emailInterval);++bkmEmailSequence;overlay.classList.remove('active');overlay.style.display='none';
+            await BkmAuthRun('verify',()=>BkmContinueLogin(user,phone));return;
+          }
+          BkmEmailStatus('Henüz onay alınmadı. E-postadaki bağlantıyı açtıktan sonra tekrar kontrol edebilirsiniz.');
+        }catch(error){if(current()){BkmAuthShowError(error,'EMAIL_CHECK');BkmEmailStatus(BkmAuthMessage(error));}}
+        finally{
+          if(bkmEmailCheck===job)bkmEmailCheck=null;check.disabled=false;
+          if(current()&&Date.now()<until)emailInterval=setTimeout(poll,4000);
+          else if(current())BkmEmailStatus('Otomatik kontrol durdu. Doğrulamayı kontrol et düğmesiyle devam edebilirsiniz.');
         }
-        // Dinleyiciler başlangıçta anonim açılmışsa oturum değişince yeniden yetkilendir.
-        if (document.readyState !== 'loading') SistemAyarlariniDinle();
-        if (user) {
-            if (user.uid === 'jO9Jmp2cgXfGUfMVbv5fdlCPgV52') { await firebase.auth().signOut(); OzelUyariGoster('Kasa hesabı', 'Yönetim Windows kasa uygulamasına taşındı. Müşteri hesabınızla giriş yapın.', '🔒'); return; }
-            
-            let bekleyenTel = await SecureOku("bg_pending_tel"); let bekleyenEmail = await SecureOku("bg_pending_email");
-            if (isBannedUser || firebase.auth().currentUser?.uid !== user.uid) return;
-            if (bekleyenTel && bekleyenEmail && user.email === bekleyenEmail) { await user.reload(); if (user.emailVerified) { IptalEtEpostaBekleme(false); SayfaGoster('profil'); WhatsappDoğrulamasiniBaslat(bekleyenTel, bekleyenEmail); } else { EpostaOnayiniBekle(user, bekleyenTel, bekleyenEmail); } }
-            else if(user.emailVerified&&(user.displayName||await SecureOku('bg_t')))await BasariliGirisIslemleri(user.displayName||await SecureOku('bg_t'),user.email,true,true);
-        }
-    });
-
-    async function YeniNesilKayitOl() {
-        if (!isPasswordValid) { OzelUyariGoster("Zayıf Şifre", "Lütfen şifre gereksinimlerinin tamamını karşılayın.", "🔒"); return; }
-        let telInput = document.getElementById("prof-telefon").value.replace(/[^0-9]/g, ''); let emailInput = document.getElementById("prof-email").value.trim().toLowerCase(); let passInput = document.getElementById("prof-password").value; let btn = document.getElementById("btn-email-verify");
-        if(telInput.length < 10) { OzelUyariGoster("Eksik Numara", "Lütfen başında 0 olmadan tam 10 haneli numaranızı girin.", "📱"); return; }
-        if(emailInput.length < 5 || !emailInput.includes("@")) { OzelUyariGoster("Eksik E-Posta", "Lütfen geçerli bir e-posta adresi girin.", "📧"); return; }
-        if(!emailInput.endsWith("@gmail.com")) { OzelUyariGoster("Sadece Gmail", "Sadece @gmail.com adresleri kabul edilmektedir.", "🛑"); return; }
-        
-        let formatliTel = "0" + telInput; let autoPass = passInput; btn.innerHTML = `<div class="spinner-small"></div> Kontrol Ediliyor...`; btn.disabled = true;
-        try {
-            let banliMi = await BanKontrolu(formatliTel); if(banliMi) { btn.innerText = "Hesabımı Oluştur"; btn.disabled = false; return; }
-
-            try { let userCred = await firebase.auth().createUserWithEmailAndPassword(emailInput, autoPass); await userCred.user.sendEmailVerification(); await SecureKaydet("bg_pending_tel", formatliTel); await SecureKaydet("bg_pending_email", emailInput); EpostaOnayiniBekle(userCred.user, formatliTel, emailInput); } catch (error) { if (error.code === 'auth/email-already-in-use') { try { let userCred = await firebase.auth().signInWithEmailAndPassword(emailInput, autoPass); await handleVerifiedUser(userCred, formatliTel, emailInput); } catch(loginErr) { btn.innerText = "Hesabımı Oluştur"; btn.disabled = false; OzelUyariGoster("E-Posta Uyuşmazlığı", "Bu e-posta adresi başka bir hesaba ait veya şifrenizi yanlış girdiniz.", "❌"); } } else { btn.innerText = "Hesabımı Oluştur"; btn.disabled = false; OzelUyariGoster("Kayıt Hatası", escapeHTML(error.message), "❌"); } }
-        } catch (e) { btn.innerText = "Hesabımı Oluştur"; btn.disabled = false; OzelUyariGoster("İşlem Başarısız", "Bağlantı hatası oluştu.", "📡"); }
+      };
+      check.onclick=()=>{clearTimeout(emailInterval);void poll();};
+      resend.onclick=async()=>{if(resend.disabled||!current())return;resend.disabled=true;try{await BkmSendVerification(user);}catch(error){if(current()){BkmAuthShowError(error,'EMAIL_SEND');BkmEmailStatus(BkmAuthMessage(error));}}finally{resend.disabled=false;}};
+      emailInterval=setTimeout(poll,4000);
+    }
+    async function IptalEtEpostaBekleme(cancel=false){
+      ++bkmEmailSequence;if(emailInterval)clearTimeout(emailInterval);
+      const overlay=document.getElementById('email-wait-overlay');if(overlay){overlay.classList.remove('active');overlay.style.display='none';}
+      if(cancel){await BkmAuthRun('cancel',async()=>{await BkmAuthStep(firebase.auth().signOut(),'SESSION');});}
+      // Retain pending identity so an interrupted registration can be resumed with the same account.
     }
 
-    async function handleVerifiedUser(userCred, formatliTel, emailInput) { if(userCred.user.emailVerified) { await WhatsappDoğrulamasiniBaslat(formatliTel, emailInput, true); } else { await userCred.user.sendEmailVerification(); await SecureKaydet("bg_pending_tel", formatliTel); await SecureKaydet("bg_pending_email", emailInput); EpostaOnayiniBekle(userCred.user, formatliTel, emailInput); } }
-
-    function EpostaOnayiniBekle(user, formatliTel, email) {
-        let p = document.getElementById("email-wait-overlay"); p.style.display = "flex"; setTimeout(() => p.classList.add("active"), 10);
-        if(emailInterval) clearInterval(emailInterval); emailInterval = setInterval(async () => { try { await user.reload(); if (user.emailVerified) { await user.getIdToken(true);clearInterval(emailInterval); p.classList.remove("active"); setTimeout(() => p.style.display = "none", 400); WhatsappDoğrulamasiniBaslat(formatliTel, email); } } catch(e) {} }, 3000);
-    }
-
-    async function IptalEtEpostaBekleme(tamamenIptal = false) {
-        if(emailInterval) clearInterval(emailInterval);
-        if(tamamenIptal) { await SecureSil("bg_pending_tel"); await SecureSil("bg_pending_email"); let user = firebase.auth().currentUser; if(user) { await firebase.auth().signOut(); } }
-        let p = document.getElementById("email-wait-overlay"); if(p) { p.classList.remove("active"); setTimeout(() => p.style.display = "none", 400); } let btn = document.getElementById("btn-email-verify"); if(btn) { btn.innerText = "Hesabımı Oluştur"; btn.disabled = false; }
-    }
 
     let phoneVerificationRef=null,phoneVerificationTimer=null,phoneVerificationOpening=false;
     function PhoneVerificationStop(){if(phoneVerificationRef){phoneVerificationRef.off();phoneVerificationRef=null;}if(phoneVerificationTimer){clearTimeout(phoneVerificationTimer);phoneVerificationTimer=null;}}
@@ -1739,9 +1915,10 @@ function BkmMenuProducts(data){
         const epoch=wheelSessionEpoch,result=await CustomerService('/profile/verification',{telefon:phone});
         if(!WheelStillCurrent(user,epoch))return;
         if(result.verified){await BasariliGirisIslemleri(phone,email,true);return;}
-        if(!/^BKMZ-[A-F0-9]{32}$/.test(result.code||''))throw new Error('Doğrulama yanıtı geçersiz.');
+        if(!/^BKMZ-(?:[0-9]{5}|[A-Za-z0-9_-]{22}|[A-F0-9]{32})$/.test(result.code||''))throw new Error('Doğrulama yanıtı geçersiz.');
         aktifWhatsappKodu=result.code;aktifWhatsappNumarasi=phone.slice(1);
-        await SecureKaydet('bg_wp_kod',result.code);await SecureKaydet('bg_pending_tel',phone);await SecureKaydet('bg_pending_email',user.email);
+        await BkmAuthStep(Promise.all([SecureKaydet('bg_wp_kod',result.code),SecureKaydet('bg_pending_tel',phone),SecureKaydet('bg_pending_email',user.email),SecureKaydet('bg_wp_waiting','true')]),'LOCAL_STORAGE');
+        if(!WheelStillCurrent(user,epoch))return;
         let overlay=document.getElementById('whatsapp-wait-overlay');if(!overlay){overlay=document.createElement('div');overlay.id='whatsapp-wait-overlay';overlay.className='custom-alert-overlay';document.body.appendChild(overlay);}
         overlay.style.zIndex='65000';overlay.innerHTML=`<div class="custom-alert-box"><div class="custom-alert-content"><h3>Telefonunuzu doğrulayın</h3><p style="line-height:1.6;color:var(--text-muted)">WhatsApp düğmesine basıp hazır mesajı kendi numaranızdan gönderin. İşletme, gönderen numarayı kontrol edip kasadan onay verecek. Bu ekran onay geldiğinde kendiliğinden kapanır.</p><div style="padding:16px;border:1px dashed var(--border-highlight);border-radius:14px;overflow-wrap:anywhere;font:600 14px monospace">${escapeHTML(result.code)}</div><p style="color:var(--text-muted);font-size:12px">Kod 10 dakika geçerlidir. Mesajı ${escapeHTML(phone)} numarasından gönderin.</p><button id="wp-onay-btn" class="premium-submit-btn" data-bkm-click="a71">WhatsApp mesajını gönder</button><button class="alert-btn" data-bkm-click="a72">Şimdilik kapat</button><div id="wp-dinleme-yazisi" style="display:none;margin-top:12px;color:var(--success)">İşletmenin onayı bekleniyor…</div></div></div>`;
         overlay.style.display='flex';setTimeout(()=>overlay.classList.add('active'),10);
@@ -1753,7 +1930,7 @@ function BkmMenuProducts(data){
           if(record.state==='approved'){completing=true;PhoneVerificationStop();overlay.classList.remove('active');overlay.style.display='none';await BasariliGirisIslemleri(phone,email,isLogin);}
         },()=>{PhoneVerificationStop();OzelUyariGoster('Doğrulama bağlantısı kesildi','Sayfayı yenileyip aynı hesabınızla devam edin.','ℹ');});
         phoneVerificationTimer=setTimeout(()=>{PhoneVerificationStop();const text=document.getElementById('wp-dinleme-yazisi');if(text){text.style.display='block';text.textContent='Kodun süresi doldu. Kapatıp yeniden doğrulama başlatabilirsiniz.';}},Math.max(1000,result.expiresAt-Date.now()));
-      }catch(e){OzelUyariGoster('Telefon doğrulanamadı',escapeHTML(e.message||'Bağlantınızı kontrol edin.'),'ℹ');}
+      }catch(e){if(bkmAuthAction)throw e;BkmAuthShowError(e,'PHONE');OzelUyariGoster('Telefon doğrulanamadı',escapeHTML(BkmAuthMessage(e)),'ℹ');}
       finally{phoneVerificationOpening=false;const button=document.getElementById('btn-email-verify');if(button){button.disabled=false;button.textContent='Hesabımı Oluştur';}}
     }
 
@@ -1761,7 +1938,28 @@ function BkmMenuProducts(data){
 
     async function WhatsappMesajiGonder() { HapticTitresim(); let dinlemeYazisi = document.getElementById("wp-dinleme-yazisi"); if (dinlemeYazisi) dinlemeYazisi.style.display = "block"; let btn = document.getElementById("wp-onay-btn"); if (btn) { btn.innerHTML = `<div class="spinner-small"></div> <span style="vertical-align:middle;">Onay Bekleniyor...</span>`; btn.style.background = "#1da851"; btn.style.boxShadow = "0 0 15px rgba(37, 211, 102, 0.8)"; } let mesaj = "Merhaba Bekmez GO. Hesabımı onaylamak için kodum: " + aktifWhatsappKodu; let url = `https://wa.me/${DUKKAN_WHATSAPP_NUMARASI}?text=${encodeURIComponent(mesaj)}`; await SecureKaydet("bg_wp_waiting", "true"); window.location.href = url; }
 
-    async function IptalEtWhatsappBekleme() { PhoneVerificationStop(); if(whatsappInterval) clearInterval(whatsappInterval); let wpOverlay = document.getElementById("whatsapp-wait-overlay"); if (wpOverlay) { wpOverlay.classList.remove("active"); setTimeout(() => wpOverlay.style.display = "none", 400); } let btn = document.getElementById("btn-email-verify"); if(btn) { btn.innerText = "Hesabımı Oluştur"; btn.disabled = false; } await SecureSil("bg_wp_waiting"); await SecureSil("bg_wp_kod"); await SecureSil("bg_pending_tel"); await SecureSil("bg_pending_email"); let user = firebase.auth().currentUser; if (user) { /* Doğrulama iptali mevcut hesabı silmez. */ } firebase.auth().signOut(); OzelUyariGoster("İptal Edildi", "WhatsApp onayı yapılmadığı için işlem iptal edildi.", "❌"); }
+    async function IptalEtWhatsappBekleme() {
+      PhoneVerificationStop();
+      const overlay=document.getElementById('whatsapp-wait-overlay');
+      if(overlay){overlay.classList.remove('active');overlay.style.display='none';}
+      BkmAuthStatus('Telefon doğrulaması beklemede. Hesabınızdan çıkmadan daha sonra devam edebilirsiniz.');
+    }
+    let phoneResumeJob=null,phoneResumeAt=0;
+    async function BkmResumePhoneVerification() {
+      if(document.visibilityState!=='visible'||phoneVerificationOpening||phoneResumeJob||bkmAuthAction||bkmCredentialPending||Date.now()<phoneResumeAt)return;
+      const user=firebase.auth().currentUser;if(!user||user.isAnonymous||!user.emailVerified)return;
+      const epoch=wheelSessionEpoch,job={};phoneResumeJob=job;phoneResumeAt=Date.now()+3000;
+      try{
+        const waiting=await BkmAuthStep(SecureOku('bg_wp_waiting'),'LOCAL_STORAGE');
+        if(waiting!=='true'||!WheelStillCurrent(user,epoch))return;
+        const phone=await BkmAuthPendingPhone(user);
+        if(!phone||!WheelStillCurrent(user,epoch))return;
+        await BkmAuthRun('restore',()=>WhatsappDoğrulamasiniBaslat(phone,user.email,true));
+      }catch(error){if(WheelStillCurrent(user,epoch))BkmAuthShowError(error,'PHONE');}
+      finally{if(phoneResumeJob===job)phoneResumeJob=null;}
+    }
+    document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')void BkmResumePhoneVerification();});
+    window.addEventListener('pageshow',()=>{void BkmResumePhoneVerification();});
 
     let profileSyncRequest=null;
     function SyncCustomerProfile(phone){
@@ -1774,8 +1972,8 @@ function BkmMenuProducts(data){
       const user=WheelSession();if(!user)return false;
       try{
         const phone=SiparisTelefonunuStandartlastir(formatliTel),epoch=wheelSessionEpoch;
-        const result=await SyncCustomerProfile(phone);if(!WheelStillCurrent(user,epoch))return false;
-        if(user.displayName!==phone)await user.updateProfile({displayName:phone});
+        BkmAuthStatus(BKM_AUTH_PHASES.PROFILE);const result=await SyncCustomerProfile(phone);if(!WheelStillCurrent(user,epoch))throw BkmAuthFault('AUTH_SESSION_CHANGED');
+        if(user.displayName!==phone)await BkmAuthStep(user.updateProfile({displayName:phone}),'PROFILE');
         const profile=result.profile||{};
         await SecureKaydet('bg_t',phone);await SecureKaydet('bg_i',profile.isim||'');await SecureKaydet('bg_a',profile.adres||'');
         for(const key of ['bg_wp_waiting','bg_wp_kod','bg_pending_tel','bg_pending_email'])await SecureSil(key);
@@ -1786,7 +1984,7 @@ function BkmMenuProducts(data){
         if(!silent)OzelUyariGoster(isLogin?'Hoş geldiniz':'Hesabınız doğrulandı',isLogin?'Hesabınıza giriş yapıldı.':'Telefon ve e-posta doğrulamanız tamamlandı. Ad ve teslimat adresinizi kaydedebilirsiniz.','✅');
         if(order?.siparisId){await SiparisDurumBildiriminiBaslat(order.siparisId);if(!silent)SayfaGoster('gecmis');}
         return true;
-      }catch(e){OzelUyariGoster('Hesap doğrulanamadı',escapeHTML(e.message||'Sunucuya ulaşılamadı. Kaydınız değiştirilmedi.'),'ℹ');return false;}
+      }catch(e){if(bkmAuthAction)throw e;BkmAuthShowError(e,'PROFILE');OzelUyariGoster('Hesap doğrulanamadı',escapeHTML(BkmAuthMessage(e)),'ℹ');return false;}
     }
     async function ProfiliKaydet(alertGoster=true){
       const user=WheelSession();if(!user){if(alertGoster)OzelUyariGoster('Giriş yapın','Bilgilerinizi kaydetmek için doğrulanmış müşteri hesabınızla giriş yapın.','🔒');return false;}
@@ -1836,45 +2034,10 @@ function BkmMenuProducts(data){
             SyncServerTime(); 
             if(typeof SistemAyarlariniDinle === "function") SistemAyarlariniDinle();
             
-            let kt = null; try { kt = await SecureOku("bg_t"); } catch(e) {}
-            if (kt && kt !== "") { let banCheck = await BanKontrolu(kt); if(banCheck) return; }
-
-            let isWaitingWp = null, pTel = null, pMail = null;
-            try { isWaitingWp = await SecureOku("bg_wp_waiting"); pTel = await SecureOku("bg_pending_tel"); pMail = await SecureOku("bg_pending_email"); } catch(e) {}
-
-            if (isWaitingWp === "true" && pTel && pMail) {
-                let splash = document.getElementById('splash-screen'); if (splash) { splash.style.display = 'none'; splash.style.opacity = '0'; }
-                SayfaGoster('profil'); WhatsappDoğrulamasiniBaslat(pTel, pMail);
-            } else {
-                let st = new Date().getHours(); let m = "Hoş Geldiniz ✨"; 
-                if (st >= 5 && st < 11) m = "Günaydın ☀️"; else if (st >= 11 && st < 17) m = "İyi Günler 🌤️"; else if (st >= 17 && st < 22) m = "İyi Akşamlar 🌙"; else m = "İyi Geceler 🌌";
-                let ko = document.getElementById("dinamik-karsilama"); if(ko) ko.innerText = m;
-                setTimeout(() => { SplashKapatSinematik(); }, 2500);
-            }
-
-            let ki = null, ka = null;
-            try { ki = await SecureOku("bg_i"); ka = await SecureOku("bg_a"); } catch(e) {}
-            
-            if (kt && WheelSession()) { 
-                ProfilArayuzunuGuncelle(true, ki || "");
-                let displayTel = kt.startsWith("0") ? kt.substring(1) : kt;
-                let chkTel = document.getElementById("chk-telefon"); if (chkTel) chkTel.value = displayTel; 
-
-                try {
-                    let authUser = firebase.auth().currentUser;
-                    if (authUser) {
-                        
-                        const sync=await SyncCustomerProfile(SiparisTelefonunuStandartlastir(kt));
-                        let adisyonData=sync.profile?.aktifSiparis;
-                        if(adisyonData && adisyonData.siparisId) {
-                            await SecureKaydet("bg_active_order_id", adisyonData.siparisId);
-                            if(Number.isFinite(adisyonData.timestamp))await SecureKaydet("bg_order_timestamp",ZamanMuhruKodla(adisyonData.timestamp,adisyonData.siparisId));else if(adisyonData.zamanMuhru)await SecureKaydet("bg_order_timestamp",adisyonData.zamanMuhru);
-                            if(adisyonData.odemeTuru) await SecureKaydet("bg_odeme_turu", adisyonData.odemeTuru);
-                        } else { await SecureSil("bg_active_order_id"); }
-                    }
-                } catch(e) {}
-            } else { ProfilArayuzunuGuncelle(false); }
-            
+            const [ki,ka]=await Promise.all([SecureOku('bg_i'),SecureOku('bg_a')]).catch(()=>[null,null]);
+            const hour=new Date().getHours(),greeting=hour>=5&&hour<11?'Günaydın ☀️':hour>=11&&hour<17?'İyi Günler 🌤️':hour>=17&&hour<22?'İyi Akşamlar 🌙':'İyi Geceler 🌌';
+            const welcome=document.getElementById('dinamik-karsilama');if(welcome)welcome.textContent=greeting;
+            setTimeout(()=>SplashKapatSinematik(),2500);
             if(ki) { let pI = document.getElementById("prof-isim"); let cI = document.getElementById("chk-isim"); if(pI) pI.value = ki; if(cI) cI.value = ki; }
             if(ka) { let pA = document.getElementById("prof-adres"); let cA = document.getElementById("chk-adres"); if(pA) pA.value = ka; if(cA) cA.value = ka; }
 
@@ -2417,7 +2580,7 @@ function bkmValidateCatalog(products){if(!Array.isArray(products)||products.leng
         }
     }
     // Set to your existing Worker's HTTPS /wheel/spin endpoint after deployment.
-    const WHEEL_API_URL = 'https://bekmez-kasa.arifbekmez63.workers.dev/wheel/spin';
+    const WHEEL_API_URL = 'https://api.bekmezgo.com/wheel/spin';
     let wheelRequest = null, wheelSessionEpoch = 0;
     function WheelSession() {
         const user = firebase.auth().currentUser;
@@ -2532,7 +2695,7 @@ function bkmValidateCatalog(products){if(!Array.isArray(products)||products.leng
     }
     async function WheelSend(identity, requestId) {
         const url=new URL(WHEEL_API_URL);
-        if(url.protocol!=='https:'||url.hostname!=='bekmez-kasa.arifbekmez63.workers.dev'||url.pathname!=='/wheel/spin'||url.search||url.hash||url.username||url.password)throw WheelError('SERVICE_URL_INVALID','Çark kampanyası şu anda kullanılamıyor.');
+        if(url.protocol!=='https:'||url.hostname!=='api.bekmezgo.com'||url.pathname!=='/wheel/spin'||url.search||url.hash||url.username||url.password)throw WheelError('SERVICE_URL_INVALID','Çark kampanyası şu anda kullanılamıyor.');
         for(let attempt=0;attempt<2;attempt++) {
             WheelDiagnostic('security');
             let tokens;
@@ -2777,24 +2940,36 @@ function bkmValidateCatalog(products){if(!Array.isArray(products)||products.leng
       BUSY_RETRY:'İşlem başka bir istekle çakıştı. Birkaç saniye sonra tekrar deneyin; aynı sipariş kontrol edilir.',
       DATABASE_UNAVAILABLE:'Sipariş bilgilerine şu anda ulaşılamıyor. Bağlantıyı kontrol ederek aynı siparişle yeniden deneyin.',REQUEST_TEMPORARILY_UNAVAILABLE:'İşlem gecikti. Yeniden denediğinizde aynı sipariş kontrol edilir.',REQUEST_TOO_LARGE:'Sepet bilgisi boyut sınırını aşıyor. Notu kısaltın veya ürün satırlarını azaltın.',PHONE_NOT_VERIFIED:'Telefon doğrulamanızı tamamlayın.',ACCOUNT_BLOCKED:'Hesabınızın sipariş erişimi kapatılmış.',LOGIN_REQUIRED:'Oturumunuz doğrulanamadı. Hesabınıza yeniden giriş yapın.',CUSTOMER_REQUIRED:'Doğrulanmış müşteri hesabınızla giriş yapın.',APP_CHECK_INVALID:'Uygulama güvenlik kontrolü tamamlanamadı. Sayfayı yenileyin.',APP_CHECK_REQUIRED:'Uygulama güvenlik kontrolü gerekli. Sayfayı yenileyin.',RATE_LIMITED:'Çok kısa sürede fazla işlem yapıldı. Bir süre bekleyip yeniden deneyin.'
     })[code]||'İşlem şu anda tamamlanamadı. Bir süre sonra aynı işlemle yeniden deneyin.';}
+
     async function CustomerService(path,payload){
-      const user=WheelSession(),epoch=wheelSessionEpoch;if(!user)throw new Error('E-postası doğrulanmış müşteri hesabınızla giriş yapın.');
+      const user=WheelSession(),epoch=wheelSessionEpoch;if(!user)throw BkmAuthFault('CUSTOMER_REQUIRED');
       for(let attempt=0;attempt<2;attempt++){
-        const [token,check]=await WheelWait(Promise.all([user.getIdToken(attempt===1),appCheck.getToken(attempt===1)]));
-        if(!WheelStillCurrent(user,epoch))throw new Error('Oturum değişti. İşlem durduruldu.');
-        const control=new AbortController(),timer=setTimeout(()=>control.abort(),30000);
-        let response,data;
+        const [token,check]=await BkmAuthStep(Promise.all([user.getIdToken(attempt===1),appCheck.getToken(attempt===1)]),'APP_CHECK');
+        if(!check?.token)throw BkmAuthFault('APP_CHECK_UNAVAILABLE','APP_CHECK');
+        if(!WheelStillCurrent(user,epoch))throw BkmAuthFault('AUTH_SESSION_CHANGED');
+        // Prepare attested device proof before starting the request timer. A timeout here never sends the profile/order request.
+        const headers=await BkmAuthStep(BekmezSecurity.headers(path,payload,user,token,check.token),'DEVICE',45000);
+        if(!WheelStillCurrent(user,epoch))throw BkmAuthFault('AUTH_SESSION_CHANGED');
+        const control=new AbortController();let response,data;
         try{
-          response=await fetch(new URL(path,WHEEL_API_URL).href,{method:'POST',headers:await BekmezSecurity.headers(path,payload,user,token,check.token),body:JSON.stringify(payload),signal:control.signal,cache:'no-store'});
-          const text=await response.text();if(text.length>65536)throw new Error('Sunucu yanıtı geçersiz.');try{data=JSON.parse(text);}catch(_){throw new Error('Sipariş hizmetine şu anda ulaşılamıyor. Lütfen daha sonra tekrar deneyin.');}if(!data||typeof data!=='object'||Array.isArray(data))throw new Error('Sunucu yanıtı doğrulanamadı.');
-        }finally{clearTimeout(timer);}
-        if(!WheelStillCurrent(user,epoch))throw new Error('Oturum değişti. Siparişin sonucunu yeniden giriş yaparak kontrol edin.');
+          const operation=(async()=>{
+            response=await fetch(new URL(path,WHEEL_API_URL).href,{method:'POST',headers,body:JSON.stringify(payload),signal:control.signal,cache:'no-store'});
+            const text=await response.text();if(text.length>65536)throw BkmAuthFault('SERVICE_RESPONSE_INVALID','PROFILE',response.status);
+            try{data=JSON.parse(text);}catch(_){throw BkmAuthFault('SERVICE_RESPONSE_INVALID','PROFILE',response.status);}
+            if(!data||typeof data!=='object'||Array.isArray(data))throw BkmAuthFault('SERVICE_RESPONSE_INVALID','PROFILE',response.status);
+          })();
+          await BkmAuthStep(operation,'PROFILE',30000);
+        }catch(error){if(error?.code||error?.bkmCode)throw error;throw BkmAuthFault('SERVICE_CONNECTION_FAILED','PROFILE');}
+        finally{control.abort();}
+        if(!WheelStillCurrent(user,epoch))throw BkmAuthFault('AUTH_SESSION_CHANGED');
         if(attempt===0&&response.status===401&&['LOGIN_REQUIRED','APP_CHECK_INVALID','APP_CHECK_REQUIRED'].includes(data?.code))continue;
-        if(!response.ok||!data?.ok){const e=new Error(OrderServiceMessage(data?.code));e.code=data?.code;e.status=response.status;throw e;}
+        if(!response.ok||!data.ok){const error=new Error(OrderServiceMessage(data.code));error.code=data.code||'SERVICE_FAILED';error.status=response.status;throw error;}
         return data;
       }
-      throw new Error('Oturum doğrulanamadı. Tekrar giriş yapın.');
+      throw BkmAuthFault('AUTH_SESSION_CHANGED');
     }
+
+
     async function DevamEtPaketGonder(isim,tel,adres,odemeTuru,temizSepet,lat=0,lng=0,accuracy=0){
       const user=WheelSession();if(!user||isBannedUser)return;
       const btn=document.getElementById('final-submit-btn'),label=document.getElementById('final-btn-text'),pendingKey='bg_pending_order_'+user.uid;
