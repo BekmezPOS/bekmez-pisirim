@@ -1,3 +1,11 @@
+# WEB-17: beş rakamlı WhatsApp işlem kodu
+
+Yeni Worker `BKMZ-12345` biçiminde beş rakam üretir. Web bu biçimi kabul eder;
+geçişte önceki uzun kod yanıtlarını da okuyabilir. Automate'in `BKMZ-[0-9]+`
+ifadesi yeni kodun tamamıyla eşleşir. Önce bu web dosyalarını, ardından
+ayrı WhatsApp 5 Hane Worker paketini yükleyin. Bu değişiklik Firebase'e doğrudan
+PUT izni vermez ve eski bot kayıtlarını otomatik müşteri onayına dönüştürmez.
+
 # WEB-16: telefon doğrulamasına geri dönüş
 
 WhatsApp'tan dönüldüğünde bekleyen doğrulama aynı hesapla sunucudan yeniden açılır.

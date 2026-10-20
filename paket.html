@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta name="bekmez-build" content="WEB-16-PHONE-RESUME-20261020">
+    <meta name="bekmez-build" content="WEB-17-WP5-20261020">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <!-- v13.1: Tam uygulama tek HTML içinde; yalnız SHA-256 ile izin verilen scriptler; olay nitelikleri kapalı -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-g8m9f9OlNanlX1GsFJjg4G81D0RondwI0IzznqZ9KNE=' 'sha256-4pRdEBdc+h65452i9lYIPhBOF68QvSWCSPS1j7xFOJc=' https://www.gstatic.com/firebasejs/10.8.1/ https://www.gstatic.com/recaptcha/ https://www.google.com/recaptcha/ https://www.recaptcha.net/recaptcha/ https://challenges.cloudflare.com; script-src-attr 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://*.visa.com https://upload.wikimedia.org https://nwzxvksywfzpvxwvtypf.supabase.co; frame-src https://www.google.com https://recaptcha.google.com https://www.recaptcha.net https://bekmezpos.firebaseapp.com https://challenges.cloudflare.com; connect-src 'self' https://api.bekmezgo.com https://bekmezpos-default-rtdb.firebaseio.com wss://*.firebaseio.com/.ws https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firebaseappcheck.googleapis.com https://content-firebaseappcheck.googleapis.com https://www.google.com https://www.recaptcha.net https://www.gstatic.com https://challenges.cloudflare.com https://nwzxvksywfzpvxwvtypf.supabase.co; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-g8m9f9OlNanlX1GsFJjg4G81D0RondwI0IzznqZ9KNE=' 'sha256-HIkM+QcIGPEGNXo+/8ahqG+3ezpLf34pWS+nu+4Jr8c=' https://www.gstatic.com/firebasejs/10.8.1/ https://www.gstatic.com/recaptcha/ https://www.google.com/recaptcha/ https://www.recaptcha.net/recaptcha/ https://challenges.cloudflare.com; script-src-attr 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://*.visa.com https://upload.wikimedia.org https://nwzxvksywfzpvxwvtypf.supabase.co; frame-src https://www.google.com https://recaptcha.google.com https://www.recaptcha.net https://bekmezpos.firebaseapp.com https://challenges.cloudflare.com; connect-src 'self' https://api.bekmezgo.com https://bekmezpos-default-rtdb.firebaseio.com wss://*.firebaseio.com/.ws https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firebaseappcheck.googleapis.com https://content-firebaseappcheck.googleapis.com https://www.google.com https://www.recaptcha.net https://www.gstatic.com https://challenges.cloudflare.com https://nwzxvksywfzpvxwvtypf.supabase.co; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests;">
     <title>Bekmez GO - Premium Paket</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -1303,7 +1303,7 @@ function BkmReadRecord(resource,error){
     const row={at:new Date().toISOString(),resource:String(resource).replace(/[^A-Za-z0-9_-]/g,'').slice(0,40),code:error?.bkmCode||'CLIENT_READ_FAILED',http:Number(error?.status)||0,detail:error?.detail||''};
     bkmReadEvents.push(row);if(bkmReadEvents.length>12)bkmReadEvents.shift();console.warn('[BEKMEZ-WEB-TANI]',JSON.stringify(row));return row;
 }
-window.BekmezBaglantiRaporu=()=>JSON.stringify({build:'WEB-16-PHONE-RESUME-20261020',events:bkmReadEvents.slice()},null,2);
+window.BekmezBaglantiRaporu=()=>JSON.stringify({build:'WEB-17-WP5-20261020',events:bkmReadEvents.slice()},null,2);
 document.addEventListener('securitypolicyviolation',event=>{
     let host='inline';try{host=new URL(event.blockedURI).hostname;}catch(_){}
     if(host==='content-firebaseappcheck.googleapis.com'||host==='bekmezpos-default-rtdb.firebaseio.com')BkmReadRecord('CSP',BkmReadFailure('CSP_CONNECTION_BLOCKED','CSP',0,event.effectiveDirective));
@@ -1389,7 +1389,7 @@ const BKM_AUTH_PHASES = Object.freeze({
 function BkmAuthFault(code, phase='SESSION', status=0) {
     return Object.assign(new Error(code), {code, phase, status});
 }
-function BkmAuthReport() { return JSON.stringify({build:'WEB-16-PHONE-RESUME-20261020',events:bkmAuthEvents.slice()},null,2); }
+function BkmAuthReport() { return JSON.stringify({build:'WEB-17-WP5-20261020',events:bkmAuthEvents.slice()},null,2); }
 window.BekmezGirisRaporu = BkmAuthReport;
 function BkmAuthStatus(message, failed=false) {
     let host=document.getElementById('bkm-auth-status');
@@ -1915,7 +1915,7 @@ async function BkmContinueLogin(user, candidate=null, silent=false) {
         const epoch=wheelSessionEpoch,result=await CustomerService('/profile/verification',{telefon:phone});
         if(!WheelStillCurrent(user,epoch))return;
         if(result.verified){await BasariliGirisIslemleri(phone,email,true);return;}
-        if(!/^BKMZ-(?:[A-Za-z0-9_-]{22}|[A-F0-9]{32})$/.test(result.code||''))throw new Error('Doğrulama yanıtı geçersiz.');
+        if(!/^BKMZ-(?:[0-9]{5}|[A-Za-z0-9_-]{22}|[A-F0-9]{32})$/.test(result.code||''))throw new Error('Doğrulama yanıtı geçersiz.');
         aktifWhatsappKodu=result.code;aktifWhatsappNumarasi=phone.slice(1);
         await BkmAuthStep(Promise.all([SecureKaydet('bg_wp_kod',result.code),SecureKaydet('bg_pending_tel',phone),SecureKaydet('bg_pending_email',user.email),SecureKaydet('bg_wp_waiting','true')]),'LOCAL_STORAGE');
         if(!WheelStillCurrent(user,epoch))return;
